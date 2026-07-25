@@ -64,6 +64,7 @@
     "src/systems/SystemsLean/KernelMult.lean"
     "src/systems/SystemsLean/EmitMult.lean"
     "src/systems/SystemsLean/EmitLinear.lean"
+    "src/systems/SystemsLean/EmitErasure.lean"
     "src/systems/SystemsLean/FreestandingEmit.lean"
     "src/systems/SystemsLean/ParityMult.lean"
     "src/systems/SystemsLean/KernelLinear.lean"
@@ -89,6 +90,8 @@
     "src/systems/emit/host_emit_mult.ssot.txt"
     # HOST-EMIT-LINEAR durable Linear product text.
     "src/systems/emit/host_emit_linear.ssot.txt"
+    # HOST-EMIT-ERASURE durable Erasure product text.
+    "src/systems/emit/host_emit_erasure.ssot.txt"
   ];
 
   hostLeans = [
@@ -110,6 +113,7 @@
     "src/systems/SystemsLean/KernelMult.lean"
     "src/systems/SystemsLean/EmitMult.lean"
     "src/systems/SystemsLean/EmitLinear.lean"
+    "src/systems/SystemsLean/EmitErasure.lean"
     "src/systems/SystemsLean/FreestandingEmit.lean"
     "src/systems/SystemsLean/ParityMult.lean"
     "src/systems/SystemsLean/KernelLinear.lean"
@@ -1263,6 +1267,42 @@
       anyGroups = [
         [
           "emitLinearOk"
+          "headerHonestyOk"
+        ]
+      ];
+    }
+    {
+      # Host-owned Erasure freestanding product emit (HOST-EMIT-ERASURE).
+      rel = "src/systems/SystemsLean/EmitErasure.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "SLAKE_SELF_HOST_EMIT_ERASURE_V0"
+        "HOST-EMIT-ERASURE"
+        "SELF-HOST-EMIT-ERASURE"
+        "erasureHeaderFragment"
+        "erasureBodyFragment"
+        "emitErasureReady"
+        "SystemsLean.EmitErasure"
+        "EMIT-ERASURE-SMOKE"
+        "HOST-EMIT-ERASURE-SMOKE"
+        "example"
+        "ERASE-RULE-MULT-0"
+        "ERASE-NO-RUNTIME"
+        "slake_erased"
+        "slake_erased_mark"
+        "slake_erasure_is_runtime_absent"
+        "NON-SSOT"
+        "src/systems/emit/host_emit_erasure.ssot.txt"
+        "src/systems/SystemsLean/EmitErasure.lean"
+        "UNIT_SURFACE"
+        "Not freestanding emit"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+        "Not freestanding emit residual free"
+      ];
+      anyGroups = [
+        [
+          "emitErasureOk"
           "headerHonestyOk"
         ]
       ];
@@ -2765,10 +2805,12 @@
         "example"
         "HOST-EMIT-MULT"
         "HOST-EMIT-LINEAR"
+        "HOST-EMIT-ERASURE"
         "HOST-EMIT-SSOT"
         "SLAKE_EMIT_FREESTANDING_C_V0"
         "emitMultReady"
         "emitLinearReady"
+        "emitErasureReady"
         "intentional PARTIAL"
         "defined freestanding compile step"
         "freestandingProductSelfHostComplete"
@@ -2776,6 +2818,7 @@
         "provablyUnlocked"
         "import SystemsLean.EmitMult"
         "import SystemsLean.EmitLinear"
+        "import SystemsLean.EmitErasure"
         "import SystemsLean.SelfApplyFs"
         "import SystemsLean.LlvmHold"
         "import SystemsLean.DualResidual"
@@ -2803,11 +2846,12 @@
         "example : selfHostBodyDoesNotComplete = true"
         "example : selfHostBodyDoesNotMeanResidualFree = true"
         "example : selfHostBodyOk = selfHostBodyReady"
-        # Structural compose pins: body path must fold Mult + Linear emit.
+        # Structural compose pins: body path must fold Mult + Linear + Erasure emit.
         # Complete flag once via SelfApplyFs (local freestandingProductSelfHostComplete
         # is alias; not double-fold theater).
         "EmitMult.emitMultReady"
         "EmitLinear.emitLinearReady"
+        "EmitErasure.emitErasureReady"
         "&& selfHostBodySurfaceOk"
         "&& (freestandingEmitStageCite == \"SLAKE_EMIT_FREESTANDING_C_V0\")"
         "&& !residualFreeClaimed"
@@ -2832,6 +2876,7 @@
           "selfHostBodyReady"
           "emitMultReady"
           "emitLinearReady"
+          "emitErasureReady"
           "selfHostBodyDoesNotComplete"
         ]
       ];
@@ -2894,6 +2939,24 @@
       ];
     }
     {
+      # HOST-EMIT-ERASURE durable Erasure product text.
+      rel = "src/systems/emit/host_emit_erasure.ssot.txt";
+      all = [
+        "HOST-EMIT-ERASURE"
+        "NON-SSOT"
+        "SELF-HOST-EMIT-ERASURE"
+        "SLAKE_SELF_HOST_EMIT_ERASURE_V0"
+        "ERASE-RULE-MULT-0"
+        "ERASE-NO-RUNTIME"
+        "slake_erased"
+        "slake_erased_mark"
+        "slake_erasure_is_runtime_absent"
+        "ERASURE_C_HEADER_BEGIN"
+        "ERASURE_C_BODY_BEGIN"
+        "EmitErasure"
+      ];
+    }
+    {
       rel = "src/systems/SystemsLean.lean";
       all = [
         "import SystemsLean.Mult"
@@ -2914,6 +2977,7 @@
         "import SystemsLean.KernelMult"
         "import SystemsLean.EmitMult"
         "import SystemsLean.EmitLinear"
+        "import SystemsLean.EmitErasure"
         "import SystemsLean.ParityMult"
         "import SystemsLean.KernelLinear"
         "import SystemsLean.ParityLinear"

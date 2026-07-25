@@ -21,7 +21,7 @@ not "into Slake." Host use pins live in `joinAlgUseOk`; path inventory lives in
 | Dual algorithm | Host use (Systems Lean; matches joinAlgUseOk) | Product wire (honesty) |
 |----------------|-----------------------------------------------|------------------------|
 | **ConsumeToken** | `HostCompose` mint/consume live-flag (`hostMintConsumeOnceOk` / `consumeTokenHostUseOk`); empty LinearHost not live. Linear.Token / mkToken / consume / roundTrip stay dual-cite axioms on `Linear.lean` (not joinAlgUseOk pins; noncomputable) | `slake_consume_token_*` / `slake_linear_token_*` via **HOST-EMIT-LINEAR** (`EmitLinear` + `host_emit_linear.ssot.txt`) |
-| **ErasedIndex** | `Erasure` mark / `isRuntimeAbsent` / `isErasureGrade` MULT-0 (`erasedIndexHostUseOk`) | `slake_erasure_is_runtime_absent` / `slake_erased` (frozen wire) |
+| **ErasedIndex** | `Erasure` mark / `isRuntimeAbsent` / `isErasureGrade` MULT-0 (`erasedIndexHostUseOk`) | `slake_erasure_is_runtime_absent` / `slake_erased` via **HOST-EMIT-ERASURE** (`EmitErasure` + `host_emit_erasure.ssot.txt`) |
 | **UnrestrictedShare** | `Mult` `multOmega` / `name` MULT-OMEGA + `Linear.shareNat` unrestricted sketch (`unrestrictedShareHostUseOk`; shareNat only here) | MULT-OMEGA grade surface (`slake_mult` / `EmitMult` name table) |
 
 **Use vs dual-cite:**

@@ -24,13 +24,14 @@ If role is unclear after compaction: **ask once**. Do not assume coordinator or 
 UnrestrictedShare) + IR sketch + systems skeleton + unit surface + compile path
 + **frozen** freestanding emit product wire (through emit body) +
 **SYSTEMS_LEAN_HOST partial** (Lake + Mult..SelfHostBody under `src/systems/`;
-36 host modules including EmitLinear + SelfHostBody). Self-host body defined
+37 host modules including EmitLinear + EmitErasure + SelfHostBody). Self-host body defined
 (acceptance + gated emit path). Still **not residual free**. Progress meter
 100% is evidence-weighted milestones, not freestanding residual free.
 
 **Active product residual:** freestanding **Slake** bootstrap under
 `src/systems/` (Lean host + freestanding emit). Living Open queue: **empty**
-(done-for-now after **Thin process glue**). Done (archive): **Self-host body**;
+(done-for-now after **Host owns freestanding erasure C**). Done (archive):
+**Host owns freestanding erasure C**; **Self-host body**;
 **Dual algorithms into Slake** -- stated map `src/systems/join-map.md`;
 `JoinMap.joinAlgUseOk` host use pins (ConsumeToken / ErasedIndex /
 UnrestrictedShare); dual trees read-only; **Thin process glue** -- shell
@@ -44,6 +45,26 @@ model jargon: `doc/vocabulary.md`.
 
 **Next:** Open queue empty. Do not invent Open Names. Human names next residual
 when ready. Do not forge residual free / proof complete / llvm unlock.
+
+### Decisions and discovery (survive compaction)
+
+Read this block after status. Detail lives in the linked paths -- do not re-derive
+from chat.
+
+| Topic | Decision / fact | Where documented |
+|-------|-----------------|------------------|
+| Goal | Systems Lean + Slake; freestanding runtimeless C primary product wire; isolation | `doc/goals.md`, this file North star |
+| Open residual | Empty (done-for-now). Agents do **not** invent Open Names | `RESIDUAL-systems.md`, `WATCHER.md` |
+| Host-owned freestanding C text | Mult, Linear/ConsumeToken, Erasure, EMIT_BODY dialect are Lean SSOT + FreestandingEmit embed; bulk Types/IR/compose/emit plan-apply still **template-owned** | `src/systems/emit/host-owned-emit.md` (**ownership SSoT**) |
+| HOST-EMIT-ERASURE | Erasure on freestanding C is **mult-0 absence honesty** (`slake_erased` + mark / is_marked / is_runtime_absent) -- **not** a type system in C; not elaborator Types on the product wire | `EmitErasure.lean`, `host_emit_erasure.ssot.txt`, ownership map, README C emit bullets |
+| Self-host body readiness | `selfHostBodyReady` folds `emitMultReady` && `emitLinearReady` && `emitErasureReady` + freestanding emit stage; complete/free stay false | `SelfHostBody.lean`, `self-host.md` |
+| Dual ErasedIndex product cite | Freestanding path via **HOST-EMIT-ERASURE** (not "frozen wire only") | `join-map.md` |
+| Process glue | Remaining novel shell is process glue only; static presence pure Nix; compile-path stamp only | `src/systems/README.md` Shell ownership |
+| Still false | residual free; freestanding product self-host complete; proof complete; PROVABLY; llvm / CompCert seal | residual files, SelfApplyFs / LlvmHold / SpecProof |
+
+**Systems reseed after compaction:** `RESIDUAL-systems.md` -> `src/systems/README.md` ->
+`emit/host-owned-emit.md` -> `self-host.md` -> module headers. Gates:
+`just systems-host`, `just systems-emit-wire`, `just hygiene`, `./src/systems/check.sh`.
 
 ---
 
@@ -84,12 +105,17 @@ Read `AGENTS.md` (**Three languages only** + **Nix tooling**) and `doc/vocabular
 
 | Path | Why |
 |------|-----|
-| `AGENTS.md` | Agent policy + isolation + Nix tooling hard rule |
+| `AGENTS.md` | Agent policy + isolation + Nix tooling + **document slices for compaction** |
 | `doc/goals.md` | Canonical goals |
 | `doc/vocabulary.md` | Stable product terms + tooling terms |
 | `doc/architecture.md` | Meet-in-middle sketch |
 | `doc/divergence.md` | Honest differences / trusted computing base |
-| `RESIDUAL.md` | Living open work (Systems Lean only); Hold vs Open |
+| `RESIDUAL.md` | Coordinator join board; Hold vs Open |
+| `RESIDUAL-systems.md` | Systems / Slake living residual (Open Names + Done archive) |
+| `WATCHER.md` | Next implement action only (fenced block) |
+| `src/systems/emit/host-owned-emit.md` | **SSoT:** which freestanding C text Lean owns vs template |
+| `src/systems/self-host.md` | Self-host acceptance + body path |
+| `src/systems/host-partial-inventory.md` | Host module inventory + intentional PARTIAL |
 | `nix/` | Pure flake tooling modules (hygiene, professional-tone, progress, systems-host-presence, systems-emit-wire, novel-source filter) |
 | `flake.nix` | Thin flake wire-up only (not a shell-script dump) |
 | `justfile` | Task runner: check / progress / hygiene / professional-tone / watch / build / emit |

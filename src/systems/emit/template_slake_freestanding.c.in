@@ -17,6 +17,8 @@
  * (Lean freestanding emit embeds HOST-EMIT-MULT Mult product text).
  * HOST-EMIT-LINEAR -- Linear/ConsumeToken product text from SystemsLean.EmitLinear +
  * host_emit_linear.ssot.txt (Lean freestanding emit embeds HOST-EMIT-LINEAR text).
+ * HOST-EMIT-ERASURE -- Erasure product text from SystemsLean.EmitErasure +
+ * host_emit_erasure.ssot.txt (Lean freestanding emit embeds HOST-EMIT-ERASURE text).
  *
  * RUNTIME-FS product surface goal: no Lean managed runtime on the wire.
  * not residual free; not freestanding residual free product claim.
@@ -62,36 +64,7 @@ uint32_t slake_type_tag_get(const slake_type_tag *t)
 
 /* __HOST_EMIT_LINEAR_BODY__ */
 
-/* ---- Erasure (ERASE-RULE-MULT-0 / ERASE-NO-RUNTIME) ---- */
-
-int slake_erased_mark(slake_erased *e)
-{
-  if (e == 0) {
-    return -1;
-  }
-  e->marked = 1;
-  return 0;
-}
-
-int slake_erased_is_marked(const slake_erased *e)
-{
-  if (e == 0) {
-    return 0;
-  }
-  return (e->marked != 0) ? 1 : 0;
-}
-
-int slake_erasure_is_runtime_absent(const slake_erased *e)
-{
-  /* Fail closed: only marked MULT-0 handles claim runtime absence. */
-  if (e == 0) {
-    return 0;
-  }
-  if (e->marked == 0) {
-    return 0;
-  }
-  return 1;
-}
+/* __HOST_EMIT_ERASURE_BODY__ */
 
 /* ---- Extract (EMIT-BOUNDARY / RUNTIME-FS) ---- */
 

@@ -3,11 +3,11 @@
   Imports Mult + Linear + Types + ordered IR program + Erasure + Extract +
   IrGraph + HostCompose + EmitPlan + EmitApply + EmitBody + CompilePath +
   JoinMap + SelfHost + SurfaceMatrix + KernelMult + EmitMult + EmitLinear +
-  ParityMult + KernelLinear + ParityLinear + KernelTypes + ParityTypes +
-  KernelProgram + ParityProgram + KernelEmit + ParityEmit + SelfApply +
-  SelfApplyFs + LlvmHold + InventoryClose + ProductPath + DualResidual +
-  ProbeWire + SpecProof + SelfHostBody host modules (unit-surface markers live
-  on those files).
+  EmitErasure + ParityMult + KernelLinear + ParityLinear + KernelTypes +
+  ParityTypes + KernelProgram + ParityProgram + KernelEmit + ParityEmit +
+  SelfApply + SelfApplyFs + LlvmHold + InventoryClose + ProductPath +
+  DualResidual + ProbeWire + SpecProof + SelfHostBody host modules
+  (unit-surface markers live on those files).
   SKELETON package root only (import shell; not freestanding residual free).
   Not freestanding residual free. Not product C. Not PROVABLY.
   Not freestanding emit residual free. Not llvm unlocked (SH6 hold).
@@ -42,6 +42,7 @@ import SystemsLean.SurfaceMatrix
 import SystemsLean.KernelMult
 import SystemsLean.EmitMult
 import SystemsLean.EmitLinear
+import SystemsLean.EmitErasure
 import SystemsLean.ParityMult
 import SystemsLean.KernelLinear
 import SystemsLean.ParityLinear

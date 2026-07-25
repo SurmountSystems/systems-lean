@@ -119,8 +119,9 @@ companions.
 | Self-host body | **done** (partial) | `RESIDUAL-systems.md` -- SELF-HOST-BODY acceptance + SelfHostBody.lean; complete/free stay false |
 | Dual algorithms into Slake | **done** (partial) | `RESIDUAL-systems.md` -- join-map.md + JoinMap.joinAlgUseOk three dual host uses; dual trees read-only; free/complete stay false |
 | Thin process glue | **done** | `RESIDUAL-systems.md` -- shell ownership note; compile-path stamp only; static pure Nix; free/complete stay false |
+| Host owns freestanding erasure C | **done** (partial) | `RESIDUAL-systems.md` -- EmitErasure + host_emit_erasure.ssot.txt + FreestandingEmit embed; SelfHostBody folds emitErasureReady; free/complete stay false |
 
-**Open queue empty (done-for-now).** No invent Open Names. Still not residual
+**Open queue empty (done-for-now after Host owns freestanding erasure C).** No invent Open Names. Still not residual
 free; freestanding product self-host complete still false; proof complete false;
 llvm / CompCert PROVABLY deferred. Watcher: `WATCHER.md` (blocked / done-for-now).
 

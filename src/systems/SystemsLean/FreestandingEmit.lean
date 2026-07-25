@@ -6,24 +6,30 @@
     - emit/host_emit_body_fragment.ssot.txt (HOST-EMIT-SSOT dialect)
     - emit/host_emit_mult.ssot.txt (HOST-EMIT-MULT Mult product text)
     - emit/host_emit_linear.ssot.txt (HOST-EMIT-LINEAR Linear product text)
+    - emit/host_emit_erasure.ssot.txt (HOST-EMIT-ERASURE Erasure product text)
   Never writes out/freestanding-c/ (release copy is just out-freestanding-c).
 
   Spec (readable):
-  - Fail-closed load of body + Mult + Linear SSOT keys/blocks.
+  - Fail-closed load of body + Mult + Linear + Erasure SSOT keys/blocks.
   - EMPTY_FRAGMENT must match empty-compose dialect; HEADER_* recompose it.
   - Mult MULT_NAME_* and MULT_C_HEADER / MULT_C_BODY blocks required.
   - Linear LINEAR_C_HEADER / LINEAR_C_BODY blocks required.
-  - Templates embed Mult + Linear via whole-line placeholders; body put_str via SSOT keys.
+  - Erasure ERASURE_C_HEADER / ERASURE_C_BODY blocks required.
+  - Templates embed Mult + Linear + Erasure via whole-line placeholders;
+    body put_str via SSOT keys.
   - Stage honesty: not residual free; not PROVABLY; no product GC.
 
   Intentional non-claims:
   - Not freestanding residual free. Not PROVABLY. Not full Slake self-host.
   - Templates hold frozen bulk product wire (Types/IR/Emit APIs).
-  - Mult + Linear + EMIT_BODY put_str dialect remain SSOT-owned (not a second dialect).
+  - Mult + Linear + Erasure + EMIT_BODY put_str dialect remain SSOT-owned
+    (not a second dialect). Erasure is mult-0 absence honesty on freestanding C
+    -- not a type system in C.
 
   Greppable: SYSTEMS_LEAN_HOST, SLAKE_EMIT_FREESTANDING_C_V0, HOST-EMIT-SSOT,
-  HOST-EMIT-MULT, HOST-EMIT-LINEAR, NON-SSOT, UNIT_TRANSLATION_V0, UNIT_DEEPEN_V1,
-  RUNTIME-FS, not residual free, UNIT_SURFACE host surface.
+  HOST-EMIT-MULT, HOST-EMIT-LINEAR, HOST-EMIT-ERASURE, NON-SSOT,
+  UNIT_TRANSLATION_V0, UNIT_DEEPEN_V1, RUNTIME-FS, not residual free,
+  UNIT_SURFACE host surface.
   Module: SystemsLean.FreestandingEmit
   Lake exe: slake-emit-freestanding-c
   Red/green: just out-freestanding-c; just systems-emit-wire; cc probe via check.sh
@@ -236,16 +242,58 @@ def loadLinearSsot (path : System.FilePath) : IO LinearSsot := do
       throw (IO.userError s!"Linear body missing {tok}")
   pure { headerBlock := header, bodyBlock := body }
 
-def renderHeader (template : String) (mult : MultSsot) (linear : LinearSsot) : IO String := do
+/-- Erasure SSOT C blocks (mult-0 absence honesty on freestanding C). -/
+structure ErasureSsot where
+  headerBlock : String
+  bodyBlock : String
+  deriving Repr
+
+def loadErasureSsot (path : System.FilePath) : IO ErasureSsot := do
+  requireFile path "HOST-EMIT-ERASURE artifact"
+  let content <- IO.FS.readFile path
+  requireToken content "HOST-EMIT-ERASURE" "HOST-EMIT-ERASURE"
+  requireToken content "NON-SSOT" "HOST-EMIT-ERASURE"
+  for tok in (["ERASE-RULE-MULT-0", "ERASE-NO-RUNTIME", "slake_erased",
+               "slake_erased_mark", "slake_erasure_is_runtime_absent"] : List String) do
+    requireToken content tok "HOST-EMIT-ERASURE"
+  let header <- match ssotBlock content "ERASURE_C_HEADER" with
+    | some b => pure b
+    | none =>
+      red s!"HOST-EMIT-ERASURE missing block ERASURE_C_HEADER in {path}"
+      throw (IO.userError "missing ERASURE_C_HEADER")
+  let body <- match ssotBlock content "ERASURE_C_BODY" with
+    | some b => pure b
+    | none =>
+      red s!"HOST-EMIT-ERASURE missing block ERASURE_C_BODY in {path}"
+      throw (IO.userError "missing ERASURE_C_BODY")
+  for tok in (["HOST-EMIT-ERASURE", "slake_erased", "slake_erased_mark",
+               "slake_erasure_is_runtime_absent", "ERASE-RULE-MULT-0"] : List String) do
+    unless containsStr header tok do
+      red s!"Erasure SSOT header block missing token {tok}"
+      throw (IO.userError s!"Erasure header missing {tok}")
+  for tok in (["HOST-EMIT-ERASURE", "slake_erased_mark", "slake_erased_is_marked",
+               "slake_erasure_is_runtime_absent"] : List String) do
+    unless containsStr body tok do
+      red s!"Erasure SSOT body block missing token {tok}"
+      throw (IO.userError s!"Erasure body missing {tok}")
+  pure { headerBlock := header, bodyBlock := body }
+
+def renderHeader (template : String) (mult : MultSsot) (linear : LinearSsot)
+    (erasure : ErasureSsot) : IO String := do
   let withMult <- match embedPlaceholderLine template "__HOST_EMIT_MULT_HEADER__" mult.headerBlock with
     | none =>
       red "header template missing __HOST_EMIT_MULT_HEADER__"
       throw (IO.userError "missing mult header placeholder")
     | some s => pure s
-  match embedPlaceholderLine withMult "__HOST_EMIT_LINEAR_HEADER__" linear.headerBlock with
+  let withLinear <- match embedPlaceholderLine withMult "__HOST_EMIT_LINEAR_HEADER__" linear.headerBlock with
+    | none =>
+      red "header template missing __HOST_EMIT_LINEAR_HEADER__"
+      throw (IO.userError "missing linear header placeholder")
+    | some s => pure s
+  match embedPlaceholderLine withLinear "__HOST_EMIT_ERASURE_HEADER__" erasure.headerBlock with
   | none =>
-    red "header template missing __HOST_EMIT_LINEAR_HEADER__"
-    throw (IO.userError "missing linear header placeholder")
+    red "header template missing __HOST_EMIT_ERASURE_HEADER__"
+    throw (IO.userError "missing erasure header placeholder")
   | some s =>
     if containsStr s "__HOST_EMIT_MULT_" then
       red "Mult SSOT placeholders remain after header embed"
@@ -253,10 +301,13 @@ def renderHeader (template : String) (mult : MultSsot) (linear : LinearSsot) : I
     if containsStr s "__HOST_EMIT_LINEAR_" then
       red "Linear SSOT placeholders remain after header embed"
       throw (IO.userError "placeholder remain header linear")
+    if containsStr s "__HOST_EMIT_ERASURE_" then
+      red "Erasure SSOT placeholders remain after header embed"
+      throw (IO.userError "placeholder remain header erasure")
     pure s
 
 def renderSource (template : String) (body : BodySsot) (mult : MultSsot)
-    (linear : LinearSsot) : IO String := do
+    (linear : LinearSsot) (erasure : ErasureSsot) : IO String := do
   let withMult <- match embedPlaceholderLine template "__HOST_EMIT_MULT_BODY__" mult.bodyBlock with
     | none =>
       red "source template missing __HOST_EMIT_MULT_BODY__"
@@ -267,7 +318,12 @@ def renderSource (template : String) (body : BodySsot) (mult : MultSsot)
       red "source template missing __HOST_EMIT_LINEAR_BODY__"
       throw (IO.userError "missing linear body placeholder")
     | some s => pure s
-  let s := replaceAll withLinear "__SSOT_EMPTY_FRAGMENT__" body.emptyFragment
+  let withErasure <- match embedPlaceholderLine withLinear "__HOST_EMIT_ERASURE_BODY__" erasure.bodyBlock with
+    | none =>
+      red "source template missing __HOST_EMIT_ERASURE_BODY__"
+      throw (IO.userError "missing erasure body placeholder")
+    | some s => pure s
+  let s := replaceAll withErasure "__SSOT_EMPTY_FRAGMENT__" body.emptyFragment
   let s := replaceAll s "__SSOT_HEADER_OPEN__" body.headerOpen
   let s := replaceAll s "__SSOT_HEADER_E__" body.headerE
   let s := replaceAll s "__SSOT_HEADER_CLOSE__" body.headerClose
@@ -281,6 +337,9 @@ def renderSource (template : String) (body : BodySsot) (mult : MultSsot)
   if containsStr s "__HOST_EMIT_LINEAR_" then
     red "Linear SSOT placeholders remain after source embed"
     throw (IO.userError "placeholder remain source linear")
+  if containsStr s "__HOST_EMIT_ERASURE_" then
+    red "Erasure SSOT placeholders remain after source embed"
+    throw (IO.userError "placeholder remain source erasure")
   if containsStr s "__SSOT_" then
     red "body SSOT placeholders remain after source embed"
     throw (IO.userError "ssot placeholder remain")
@@ -291,11 +350,12 @@ def validateProduct (path : System.FilePath) (content : String) (isSource : Bool
     (body : BodySsot) : IO Unit := do
   for tok in ([
       "SLAKE_EMIT_FREESTANDING_C_V0", "UNIT_TRANSLATION_V0", "UNIT_DEEPEN_V1",
-      "HOST-EMIT-SSOT", "HOST-EMIT-MULT", "HOST-EMIT-LINEAR", "RUNTIME-FS",
-      "not residual free",
+      "HOST-EMIT-SSOT", "HOST-EMIT-MULT", "HOST-EMIT-LINEAR", "HOST-EMIT-ERASURE",
+      "RUNTIME-FS", "not residual free",
       "MULT-0", "MULT-1", "MULT-OMEGA", "slake_mult_is_valid",
       "EMIT_BODY_V0", "EMIT_PLAN_V0", "EMIT_APPLY_V0", "JOIN-ALG", "ConsumeToken",
       "LINEAR-EXACT-ONCE", "FAIL_CLOSED_CHECKER_V1", "CONSUME_TOKEN_HOST_V0",
+      "ERASE-RULE-MULT-0", "slake_erased_mark", "slake_erasure_is_runtime_absent",
       "TYPED_IR_V0", "IR_PROGRAM_V0", "IR_GRAPH_EDGES_V0", "HOST_COMPOSE_V0",
       "SLAKE_IR_PROGRAM_CAP", "SLAKE_IR_EDGE_MAX", "SLAKE_EMIT_APPLY_CAP",
       "SLAKE_EMIT_BODY_CAP"
@@ -321,6 +381,7 @@ def emitAtRoot (root : System.FilePath) : IO Unit := do
   let bodyPath := emitDir / "host_emit_body_fragment.ssot.txt"
   let multPath := emitDir / "host_emit_mult.ssot.txt"
   let linearPath := emitDir / "host_emit_linear.ssot.txt"
+  let erasurePath := emitDir / "host_emit_erasure.ssot.txt"
   let tmplH := emitDir / "template_slake_freestanding.h.in"
   let tmplC := emitDir / "template_slake_freestanding.c.in"
   let outH := emitDir / "slake_freestanding.h"
@@ -334,12 +395,13 @@ def emitAtRoot (root : System.FilePath) : IO Unit := do
   let body <- loadBodySsot bodyPath
   let mult <- loadMultSsot multPath
   let linear <- loadLinearSsot linearPath
+  let erasure <- loadErasureSsot erasurePath
   requireFile tmplH "header template"
   requireFile tmplC "source template"
   let th <- IO.FS.readFile tmplH
   let tc <- IO.FS.readFile tmplC
-  let header <- renderHeader th mult linear
-  let source <- renderSource tc body mult linear
+  let header <- renderHeader th mult linear erasure
+  let source <- renderSource tc body mult linear erasure
   IO.FS.createDirAll emitDir
   IO.FS.writeFile outH header
   IO.FS.writeFile outC source

@@ -38,6 +38,10 @@ Stable terms for **Systems Lean**. Prefer plain English. Do not invent fashion n
 | **out/freestanding-c/** | Runtimeless freestanding product C for external consumers. Tracked files are **generator outputs** (not hand-authored). Prefer **subtree release** (or tarball) after green build + emit + check |
 | **out/llvm-ir/** | LLVM IR for Rust-native link; **deferred** until self-hosted Systems Lean / Slake |
 | **RC necessity** | Freestanding RC (reference counting) only if proven unavoidable vs linear/affine/arena design |
+| **Host-owned freestanding emit** | Lean modules + durable `emit/host_emit_*.ssot.txt` own selected freestanding C product text; `FreestandingEmit` embeds into templates. Ownership map SSoT: `src/systems/emit/host-owned-emit.md`. Stage ids `HOST-EMIT-*` only -- do not mint residual C ladders (`EMIT_MULT_V0`, `EMIT_ERASURE_V0`, ...) as freestanding residual progress |
+| **HOST-EMIT-ERASURE** | Host-owned mult-0 **absence honesty** on freestanding C (`slake_erased` + mark / is_marked / is_runtime_absent). **Not** elaborator types or a type system written in C. Pair: `EmitErasure.lean` + `host_emit_erasure.ssot.txt` |
+| **MULT-0 / erased** | Quantitative Type Theory (QTT) grade 0: compile-time only; no runtime payload. Product wire may carry a zero-payload **marker** that claims runtime absence after mark -- that is erasure honesty, not "types live in freestanding C" |
+| **Open Name** | Living residual work item title in `RESIDUAL-systems.md` (plain English, 2-6 words). Agents do not invent Open Names when the queue is empty; the human names the next residual |
 
 ---
 

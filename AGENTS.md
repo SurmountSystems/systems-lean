@@ -8,15 +8,16 @@ Global rules in `~/.grok/AGENTS.md` still apply (subagents, multi-chat, GPG). Th
 
 ## Discovery after compaction (read order)
 
-1. **This file** (`AGENTS.md`) -- policy, **Three languages only**, **Repository structure**, **Nix tooling**
-2. `doc/SESSION-HANDOFF.md` (includes three-languages reseed)
-3. `RESIDUAL.md` (status) and `WATCHER.md` (next implement prompt)
+1. **This file** (`AGENTS.md`) -- policy, **Three languages only**, **Document slices so they survive compaction**, **Repository structure**, **Nix tooling**
+2. `doc/SESSION-HANDOFF.md` -- Status + **Decisions and discovery** table + three-languages reseed
+3. `RESIDUAL.md` (join board) + `RESIDUAL-systems.md` (Systems Open/Done/**Decisions**) + `WATCHER.md` (next action only)
 4. `doc/goals.md` and `doc/vocabulary.md` if goals or terms (including tooling terms) are unclear
 5. `doc/architecture.md` / `doc/divergence.md` for technical framing
 6. Entry maps when touching refs: `doc/idris-entry.md`, `doc/lean-entry.md`, `doc/compcert-entry.md`, `doc/rust-entry.md`
-7. Workspace READMEs: `src/idris2/`, `src/lean4/`, `src/systems/`
+7. Workspace READMEs: `src/idris2/`, `src/lean4/`, `src/systems/` -- Systems also: **`src/systems/emit/host-owned-emit.md`** (freestanding C ownership SSoT)
 
 Do **not** re-map the whole universe in parent context if handoff + residual already answer.
+Do **not** re-derive product ownership or Open-queue rules from chat when the tables above already state them.
 
 **Held hard work:** do not start items listed under Hold in `RESIDUAL.md` unless this chat has claimed research or primary implementor ownership for that work (supports clean chat forks).
 
@@ -301,10 +302,28 @@ If a process correction matters, **document it in this file** or a named durable
 ## Documentation hygiene
 
 - Product is not docs. **Minimum useful text** only; document once in the single source of truth (SSoT), link elsewhere.
-- SSoT map: goals `doc/goals.md` | terms `doc/vocabulary.md` | residual `RESIDUAL.md` | reseed `doc/SESSION-HANDOFF.md` | this file for agent policy and Nix tooling.
+- SSoT map: goals `doc/goals.md` | terms `doc/vocabulary.md` | residual `RESIDUAL.md` + `RESIDUAL-systems.md` | reseed `doc/SESSION-HANDOFF.md` | this file for agent policy and Nix tooling | freestanding C ownership `src/systems/emit/host-owned-emit.md`.
 - Research: `doc/research/` header **Kind: analysis only. Not residual.**
 - Process corrections: document in this file or a named durable doc in the same turn.
 - Do not invent residual from research unless asked.
+
+### Document slices so they survive compaction (hard rule)
+
+Chat memory dies. **Every durable implement slice and every material decision** must land on disk in the same turn, in places agents reseed first -- not only in the reply.
+
+After a Systems / Slake slice (or any residual that changes product claims, ownership, or Open queue):
+
+1. **Residual ledger** -- `RESIDUAL-systems.md` Done archive (capability + primary paths) and Open queue (or done-for-now). Coordinator join: `RESIDUAL.md` Systems Open table when status changes.
+2. **Next action** -- `WATCHER.md` fenced block + same text as the reply final section.
+3. **Reseed status** -- `doc/SESSION-HANDOFF.md` Active product residual / Next / module count when they change.
+4. **Ownership / product decisions** -- if freestanding C text ownership or "what is still template" changes: update `src/systems/emit/host-owned-emit.md` and the matching rows in `src/systems/README.md` (lead table + C emit product wire bullets).
+5. **Self-host / join map** -- when emit readiness or dual product cites change: `src/systems/self-host.md`, `src/systems/join-map.md` as needed; inventory companion `src/systems/host-partial-inventory.md` for module count and HOST-EMIT-* closed gaps.
+6. **Gates** -- pure Nix presence (`nix/systems-host-presence/`, `nix/systems-emit-wire/`) when new modules or SSOT artifacts appear.
+7. **Terms** -- new durable product terms go in `doc/vocabulary.md` (Unicode allowlist) when agents will re-use them after compaction.
+
+**Prominence:** put the one-line status and "where to look next" in `SESSION-HANDOFF.md` and residual Open/Done; put the detailed map in the named companion (e.g. `host-owned-emit.md`), not only in module headers. Do not bury decisions only inside long greppable token soup.
+
+**Do not** leave "we decided X" only in chat. **Do not** invent Open Names to fill emptiness -- document done-for-now and wait for the human to name the next residual.
 
 ### Learn preferences on every instruction (hard rule)
 
@@ -319,6 +338,8 @@ Examples of rules worth documenting:
 - ASCII-only novel work; acronym expansion for agents
 - Isolation; workspace paths; freestanding vs runtime claims
 - Human-in-the-loop (HITL) flake staging; professional tone / no profanity
+- Slice decisions + residual status that must survive compaction (see **Document slices so they survive compaction** above)
+- Product ownership maps (e.g. host-owned freestanding emit) when they change
 
 Do **not** wait to be told "document that." Do **not** only fix the immediate file and forget the preference. The goal is fewer repeat mistakes and better agent UX after compaction.
 

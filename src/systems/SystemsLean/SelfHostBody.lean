@@ -6,6 +6,7 @@
   Pair map (read-only): self-host.md SELF-HOST-BODY acceptance;
     FreestandingEmit.lean SLAKE_EMIT_FREESTANDING_C_V0 writer;
     EmitMult.lean HOST-EMIT-MULT; EmitLinear.lean HOST-EMIT-LINEAR;
+    EmitErasure.lean HOST-EMIT-ERASURE;
     SelfApplyFs.lean freestandingProductSelfHostComplete stays false;
     LlvmHold.lean SH6 hold; DualResidual.lean product residual remains;
     host-partial-inventory.md; emit/host-owned-emit.md.
@@ -15,16 +16,17 @@
     greppable defined freestanding compile step -- host SSOT + templates +
     Lake exe slake-emit-freestanding-c write emit product; release copy under
     out/freestanding-c via just out-freestanding-c; gates prove the path.
-  - Input surface: host_emit_*.ssot.txt + templates + EmitMult/EmitLinear ready.
+  - Input surface: host_emit_*.ssot.txt + templates +
+    EmitMult/EmitLinear/EmitErasure ready.
   - Process: FreestandingEmit writes slake_freestanding.{h,c}; just copies out/.
-  - Output: product headers/sources with Mult/Linear/body ownership tokens.
+  - Output: product headers/sources with Mult/Linear/Erasure/body ownership tokens.
   - Gate path: systems-host / systems-emit-wire / check.sh out-freestanding-c.
   - freestandingProductSelfHostComplete MUST decide false (still open).
   - residualFreeClaimed MUST decide false (product residual remains).
   - selfHostBodySurfaceOk: stage ids + acceptance/module/emit path cites.
-  - selfHostBodyReady: emitMultReady && emitLinearReady && surface &&
-    freestanding emit stage cite && free/complete/unlock claims stay false
-    (complete via !SelfApplyFs.freestandingProductSelfHostComplete once;
+  - selfHostBodyReady: emitMultReady && emitLinearReady && emitErasureReady &&
+    surface && freestanding emit stage cite && free/complete/unlock claims stay
+    false (complete via !SelfApplyFs.freestandingProductSelfHostComplete once;
     local freestandingProductSelfHostComplete is alias for theorems/smokes).
   - Host model = structural body path pin. Not an AI/ML model.
     Not product C residual free. Not freestanding product self-host complete.
@@ -53,7 +55,8 @@
   productSelfHostCompleteClaimed, freestandingProductSelfHostComplete,
   selfHostBodyDoesNotComplete, selfHostBodyDoesNotMeanResidualFree,
   selfHostBodyOk, selfHostBodyOk_eq_ready, SLAKE_EMIT_FREESTANDING_C_V0,
-  HOST-EMIT-MULT, HOST-EMIT-LINEAR, HOST-EMIT-SSOT, emitMultReady, emitLinearReady,
+  HOST-EMIT-MULT, HOST-EMIT-LINEAR, HOST-EMIT-ERASURE, HOST-EMIT-SSOT,
+  emitMultReady, emitLinearReady, emitErasureReady,
   intentional PARTIAL, MULT-0, MULT-1, MULT-OMEGA, JOIN-ALG, RUNTIME-FS, SELF-HOST,
   SELF-HOST-BODY-THEOREM, HOST-SELF-HOST-BODY-THEOREM,
   selfHostBodyReady_true, freestandingProductSelfHostComplete_false,
@@ -69,6 +72,7 @@
 
 import SystemsLean.EmitMult
 import SystemsLean.EmitLinear
+import SystemsLean.EmitErasure
 import SystemsLean.SelfApplyFs
 import SystemsLean.LlvmHold
 import SystemsLean.DualResidual
@@ -105,6 +109,9 @@ def multSsotPath : String := "src/systems/emit/host_emit_mult.ssot.txt"
 /-- Durable Linear SSOT artifact path cite. -/
 def linearSsotPath : String := "src/systems/emit/host_emit_linear.ssot.txt"
 
+/-- Durable Erasure SSOT artifact path cite. -/
+def erasureSsotPath : String := "src/systems/emit/host_emit_erasure.ssot.txt"
+
 /-- Lake exe name for freestanding emit (process glue). -/
 def lakeExeName : String := "slake-emit-freestanding-c"
 
@@ -122,6 +129,9 @@ def hostEmitMultCite : String := "HOST-EMIT-MULT"
 
 /-- Host Linear emit map cite. -/
 def hostEmitLinearCite : String := "HOST-EMIT-LINEAR"
+
+/-- Host Erasure emit map cite. -/
+def hostEmitErasureCite : String := "HOST-EMIT-ERASURE"
 
 /-- Host body dialect SSOT map cite. -/
 def hostEmitSsotCite : String := "HOST-EMIT-SSOT"
@@ -145,12 +155,14 @@ def selfHostBodySurfaceOk : Bool :=
     && (bodySsotPath == "src/systems/emit/host_emit_body_fragment.ssot.txt")
     && (multSsotPath == "src/systems/emit/host_emit_mult.ssot.txt")
     && (linearSsotPath == "src/systems/emit/host_emit_linear.ssot.txt")
+    && (erasureSsotPath == "src/systems/emit/host_emit_erasure.ssot.txt")
     && (lakeExeName == "slake-emit-freestanding-c")
     && (releaseOutPath == "out/freestanding-c/")
     && (emitProductPath == "src/systems/emit/slake_freestanding.c")
     && (freestandingEmitStageCite == "SLAKE_EMIT_FREESTANDING_C_V0")
     && (hostEmitMultCite == "HOST-EMIT-MULT")
     && (hostEmitLinearCite == "HOST-EMIT-LINEAR")
+    && (hostEmitErasureCite == "HOST-EMIT-ERASURE")
     && (hostEmitSsotCite == "HOST-EMIT-SSOT")
     && (intentionalPartialToken == "intentional PARTIAL")
     && (definedBodyPathToken == "defined freestanding compile step")
@@ -169,9 +181,10 @@ def freestandingProductSelfHostComplete : Bool :=
   SelfApplyFs.freestandingProductSelfHostComplete
 
 /-- selfHostBodyReady -- defined freestanding compile body path after host-owned
-    Mult + Linear emit readiness. FAIL-CLOSED: emitMultReady && emitLinearReady &&
-    surface && freestanding emit stage cite && free/complete/unlock stay false
-    (complete flag once as !SelfApplyFs.freestandingProductSelfHostComplete).
+    Mult + Linear + Erasure emit readiness. FAIL-CLOSED: emitMultReady &&
+    emitLinearReady && emitErasureReady && surface && freestanding emit stage
+    cite && free/complete/unlock stay false (complete flag once as
+    !SelfApplyFs.freestandingProductSelfHostComplete).
     Honest scope: body path definition only -- NOT residual free, NOT
     freestanding product self-host complete, NOT full product compiler
     self-application, NOT llvm unlock, NOT PROVABLY, NOT Mult..Emit readiness
@@ -180,6 +193,7 @@ def freestandingProductSelfHostComplete : Bool :=
 def selfHostBodyReady : Bool :=
   EmitMult.emitMultReady
     && EmitLinear.emitLinearReady
+    && EmitErasure.emitErasureReady
     && selfHostBodySurfaceOk
     && (freestandingEmitStageCite == "SLAKE_EMIT_FREESTANDING_C_V0")
     && !residualFreeClaimed
@@ -269,12 +283,14 @@ example : bodySsotPath = "src/systems/emit/host_emit_body_fragment.ssot.txt" :=
   by decide
 example : multSsotPath = "src/systems/emit/host_emit_mult.ssot.txt" := by decide
 example : linearSsotPath = "src/systems/emit/host_emit_linear.ssot.txt" := by decide
+example : erasureSsotPath = "src/systems/emit/host_emit_erasure.ssot.txt" := by decide
 example : lakeExeName = "slake-emit-freestanding-c" := by decide
 example : releaseOutPath = "out/freestanding-c/" := by decide
 example : emitProductPath = "src/systems/emit/slake_freestanding.c" := by decide
 example : freestandingEmitStageCite = "SLAKE_EMIT_FREESTANDING_C_V0" := by decide
 example : hostEmitMultCite = "HOST-EMIT-MULT" := by decide
 example : hostEmitLinearCite = "HOST-EMIT-LINEAR" := by decide
+example : hostEmitErasureCite = "HOST-EMIT-ERASURE" := by decide
 example : hostEmitSsotCite = "HOST-EMIT-SSOT" := by decide
 example : intentionalPartialToken = "intentional PARTIAL" := by decide
 example : definedBodyPathToken = "defined freestanding compile step" := by decide
@@ -288,9 +304,10 @@ example : SelfApplyFs.freestandingProductSelfHostComplete = false := by decide
 example : LlvmHold.llvmUnlocked = false := by decide
 example : LlvmHold.provablyUnlocked = false := by decide
 
-/-- SELF-HOST-BODY-SMOKE: host-owned Mult + Linear emit path pieces. -/
+/-- SELF-HOST-BODY-SMOKE: host-owned Mult + Linear + Erasure emit path pieces. -/
 example : EmitMult.emitMultReady = true := by decide
 example : EmitLinear.emitLinearReady = true := by decide
+example : EmitErasure.emitErasureReady = true := by decide
 example : DualResidual.productResidualRemains = true := by decide
 example : LlvmHold.llvmHoldReady = true := by decide
 

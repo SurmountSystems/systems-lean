@@ -28,13 +28,14 @@ Primary product focus: freestanding Systems Lean + Slake; min Quantitative Type 
 Living residual: plain **Open Names** in RESIDUAL-systems.md (Goal / Done when / Out of scope). No phase / track / wave residual titles. Chain short implement loops autonomously when Done when is checkable; BLOCKED with one need when not.
 
 ## Read first (order)
-1. AGENTS.md (policy: language, ASCII allowlist, residual loop, forks, subagent token strategy, isolation, technical honesty)
-2. doc/SESSION-HANDOFF.md
-3. RESIDUAL-systems.md -- claim items; skim RESIDUAL.md join board; re-read doc/fork-guidance-systems.md
+1. AGENTS.md (policy: language, ASCII allowlist, residual loop, **document slices for compaction**, forks, subagent token strategy, isolation, technical honesty)
+2. doc/SESSION-HANDOFF.md -- Status + **Decisions and discovery** table
+3. RESIDUAL-systems.md -- Open queue + Done archive + Decisions; skim RESIDUAL.md join board; re-read doc/fork-guidance-systems.md
 4. doc/goals.md (Primary product focus), doc/vocabulary.md, doc/architecture.md, doc/divergence.md
-5. doc/shared-ir-sketch.md then src/systems/README.md
-6. This file doc/fork-systems.md
-7. Optional dual anchors (read-only): src/idris2/JOIN.md, src/lean4/JOIN.md
+5. doc/shared-ir-sketch.md then src/systems/README.md then **src/systems/emit/host-owned-emit.md** (what Lean owns on freestanding C)
+6. src/systems/self-host.md + host-partial-inventory.md when touching self-host or host module count
+7. This file doc/fork-systems.md
+8. Optional dual anchors (read-only): src/idris2/JOIN.md, src/lean4/JOIN.md
 
 ## Hard rules
 - Re-read doc/fork-guidance-systems.md at the start of every implement loop (coordinator directives).
@@ -74,20 +75,22 @@ Anti-patterns: status-only spawns; serial dependency parallelized; parent redoin
 
 ## Planned residual (priority order -- claim and execute)
 
-Authoritative ledger: `RESIDUAL-systems.md` (this list is a paste prompt snapshot).
+Authoritative ledger: `RESIDUAL-systems.md` (this list is a paste prompt snapshot --
+**trust the residual file over this snapshot** after compaction).
 
-1. **Done (frozen wire):** freestanding unit surface, compile path, emit V0 ladder through
-   EMIT_BODY_V0 under emit/ -- product wire only; never residual free; do not grow as
-   residual treadmill (no EMIT_MODULE reintroduction).
-2. **Done (partial):** SYSTEMS_LEAN_HOST -- Lake package + SystemsLean/Mult.lean +
-   SystemsLean/Linear.lean (MULT-0/1/OMEGA closed inductive; typed isValid total-true by
-   match; raw-tag fail-closed via isValidTag; JOIN-ALG ConsumeToken axioms).
-3. **Next:** deepen Lean host -- Types + ordered IR program (node list) in real .lean;
-   no banned metaphor names; map C emit as honesty notes only.
-4. Later: Erasure/Extract in Lean; rename legacy metaphor stage markers; never forge residual free.
+1. **Done (frozen wire + host-owned Mult/Linear/Erasure text):** freestanding unit
+   surface, compile path, emit through EMIT_BODY_V0; HOST-EMIT-SSOT / MULT / LINEAR /
+   ERASURE host-owned product text; ownership map `emit/host-owned-emit.md`; never
+   residual free; no EMIT_MODULE reintroduction; no new EMIT_* residual C stages.
+2. **Done (partial):** SYSTEMS_LEAN_HOST Mult..SelfHostBody (see host-partial-inventory.md);
+   SelfHostBody folds emitMultReady && emitLinearReady && emitErasureReady; complete/free false.
+3. **Open:** empty (done-for-now). Do **not** invent Open Names. Human names next residual.
+4. Template bulk still open as future *named* residual only (not invented): Extract,
+   Types/IR/compose/emit plan-apply bulk per ownership map -- only when human names them.
 5. Do not touch out/llvm-ir or CompCert PROVABLY until residual and evidence allow.
-6. Presence and honesty gates every durable slice: src/systems/check.sh green;
-   just build honest; just out-freestanding-c still green (frozen wire); just check green.
+6. Every durable slice: update residual + WATCHER + SESSION-HANDOFF + ownership/README as
+   needed (AGENTS.md **Document slices so they survive compaction**); gates:
+   systems-host / systems-emit-wire / hygiene / src/systems/check.sh / just check.
 
 ## Implement loop design (run this mode)
 
@@ -120,8 +123,11 @@ Update RESIDUAL-systems.md. Re-read doc/fork-guidance-systems.md each loop. Coor
 ## Coordination handoff (every slice)
 - Paths changed
 - Build / check honesty (Lean host vs emit wire)
-- Residual status lines for RESIDUAL-systems.md
+- Residual status lines for RESIDUAL-systems.md (Open / Done / Decisions)
+- SESSION-HANDOFF Status + Decisions if status or ownership changed
+- host-owned-emit.md + README if freestanding C ownership changed
 - What the coordinator should update in RESIDUAL.md / fork guidance
+- Document decisions on disk so the next compaction reseed finds them
 - Final section: residual implement prompt (same shape as above) for what remains
 ```
 

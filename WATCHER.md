@@ -41,11 +41,11 @@ WATCHER_BEGIN
 ```
 DONE-FOR-NOW (Open queue empty)
 
-Thin process glue complete:
-- Remaining novel shell is process glue only (Lake / cc / drivers /
-  compile-path stamp). Static presence is pure Nix.
-- Ownership note: src/systems/README.md (Shell ownership table + line counts).
-- script/slake-compile-path.sh is stamp only (no UNIT_SURFACE greps).
+Host owns freestanding erasure C complete:
+- EmitErasure.lean + host_emit_erasure.ssot.txt + FreestandingEmit embed
+- Templates use __HOST_EMIT_ERASURE_{HEADER,BODY}__
+- SelfHostBody folds emitErasureReady
+- Ownership map host-owned-emit.md; pure Nix presence/emit-wire
 
 Still false / deferred (do not forge):
 - residual free

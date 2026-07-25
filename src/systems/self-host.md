@@ -3,7 +3,8 @@
 **Greppable:** SELF-HOST, SELF-HOST-ACCEPTANCE, SLAKE_SELF_HOST_KERNEL_MULT_V0,
 SELF-HOST-KERNEL-MULT, SLAKE_SELF_HOST_EMIT_MULT_V0, HOST-EMIT-MULT,
 SELF-HOST-EMIT-MULT, SLAKE_SELF_HOST_EMIT_LINEAR_V0, HOST-EMIT-LINEAR,
-SELF-HOST-EMIT-LINEAR, SLAKE_SELF_HOST_PARITY_MULT_V0, HOST-PARITY-MULT,
+SELF-HOST-EMIT-LINEAR, SLAKE_SELF_HOST_EMIT_ERASURE_V0, HOST-EMIT-ERASURE,
+SELF-HOST-EMIT-ERASURE, SLAKE_SELF_HOST_PARITY_MULT_V0, HOST-PARITY-MULT,
 SELF-HOST-PARITY-MULT, SLAKE_SELF_HOST_KERNEL_LINEAR_V0, SELF-HOST-KERNEL-LINEAR,
 HOST-KERNEL-LINEAR, SLAKE_SELF_HOST_PARITY_LINEAR_V0, HOST-PARITY-LINEAR,
 SELF-HOST-PARITY-LINEAR, SLAKE_SELF_HOST_KERNEL_TYPES_V0, SELF-HOST-KERNEL-TYPES,
@@ -29,7 +30,7 @@ to runtimeless freestanding C with no classic Lean managed runtime on the
 product wire. That complete bar is **not** claimed yet.
 
 **Capability status (short):** Mult kernel + host Mult emit + Mult parity;
-HOST-EMIT-LINEAR Linear/ConsumeToken product text; Linear / Types / Program /
+HOST-EMIT-LINEAR Linear/ConsumeToken product text; HOST-EMIT-ERASURE Erasure product text; Linear / Types / Program /
 Emit kernels and freestanding path parity (partial); host self-apply structural
 only (not freestanding product self-host complete); llvm / CompCert PROVABLY
 held; inventory / product path / dual residual / probe-vs-wire / spec-proof
@@ -42,6 +43,7 @@ Related: `SystemsLean/SelfHost.lean` (direction canary only),
 `SystemsLean/KernelMult.lean` (first kernel IR fixture),
 `SystemsLean/EmitMult.lean` (host-owned Mult product C text),
 `SystemsLean/EmitLinear.lean` (host-owned Linear + ConsumeToken product C text),
+`SystemsLean/EmitErasure.lean` (host-owned Erasure product C text; mult-0 absence honesty),
 `SystemsLean/ParityMult.lean` (Mult closed-loop parity),
 `SystemsLean/KernelLinear.lean` (Linear kernel IR + HostCompose path),
 `SystemsLean/ParityLinear.lean` (Linear freestanding path parity Mult+Linear),
@@ -92,7 +94,7 @@ stays false; residual free stays false),
 
 **Greppable:** SELF-HOST-BODY, HOST-SELF-HOST-BODY, SLAKE_SELF_HOST_BODY_V0,
 defined freestanding compile step, SLAKE_EMIT_FREESTANDING_C_V0, HOST-EMIT-SSOT,
-HOST-EMIT-MULT, HOST-EMIT-LINEAR, selfHostBodyReady
+HOST-EMIT-MULT, HOST-EMIT-LINEAR, HOST-EMIT-ERASURE, selfHostBodyReady
 
 This residual defines the **first real freestanding compile step** with a tiny
 input surface and written acceptance. It is **not** another readiness canary
@@ -120,7 +122,7 @@ re-list of Mult..Emit / ProductPath / SelfApply.
 
 - `src/systems/emit/slake_freestanding.{h,c}` -- product wire (generator output)
 - `out/freestanding-c/slake_freestanding.{h,c}` -- release surface copy
-- Greppable ownership tokens on the wire: HOST-EMIT-MULT, HOST-EMIT-LINEAR,
+- Greppable ownership tokens on the wire: HOST-EMIT-MULT, HOST-EMIT-LINEAR, HOST-EMIT-ERASURE,
   HOST-EMIT-SSOT, MULT-0/1/OMEGA, LINEAR-EXACT-ONCE, RUNTIME-FS, not residual free
 
 ### What green means
@@ -133,7 +135,7 @@ re-list of Mult..Emit / ProductPath / SelfApply.
 | Lake smokes on `SelfHostBody` | `selfHostBodyReady_true`; complete/free false proved |
 
 Host pin: `selfHostBodyReady` = `EmitMult.emitMultReady` &&
-`EmitLinear.emitLinearReady` && surface cites && freestanding emit stage cite &&
+`EmitLinear.emitLinearReady` && `EmitErasure.emitErasureReady` && surface cites && freestanding emit stage cite &&
 !complete && !residual free && !llvm unlock. Does **not** re-fold ProductPath /
 SelfApply readiness theater.
 
@@ -200,13 +202,13 @@ Canonical terms also live in `doc/vocabulary.md` (**Wire / product wire**,
 |-------|--------|------------|
 | **SH0** | Acceptance prose (this file) | Greppable bar + non-claims |
 | **SH1** | Mult grades (MULT-0 / MULT-1 / MULT-OMEGA) | Host builds real ordered IR for the three grades; fail-closed unknown tags; Lake smoke -- **done (partial)** in `KernelMult.lean` |
-| **SH2** | Host-owned product emit for Mult | Product C text derived from host for Mult contracts; bash NON-SSOT -- **done (partial)** in `EmitMult.lean` + `emit/host_emit_mult.ssot.txt`. Linear + ConsumeToken freestanding text also host-owned: **HOST-EMIT-LINEAR** / `EmitLinear.lean` + `emit/host_emit_linear.ssot.txt` (ownership map `emit/host-owned-emit.md`; no EMIT_LINEAR_V0 residual C stage) |
+| **SH2** | Host-owned product emit for Mult | Product C text derived from host for Mult contracts; bash NON-SSOT -- **done (partial)** in `EmitMult.lean` + `emit/host_emit_mult.ssot.txt`. Linear + ConsumeToken freestanding text also host-owned: **HOST-EMIT-LINEAR** / `EmitLinear.lean` + `emit/host_emit_linear.ssot.txt` (ownership map `emit/host-owned-emit.md`; no EMIT_LINEAR_V0 residual C stage). Erasure freestanding text host-owned: **HOST-EMIT-ERASURE** / `EmitErasure.lean` + `emit/host_emit_erasure.ssot.txt` (mult-0 absence honesty; no EMIT_ERASURE_V0 residual C stage) |
 | **SH3** | First closed loop | Host + product C parity smoke for Mult -- **done (partial)** in `ParityMult.lean` + probe Mult name/is_known/tag checks |
 | **SH3b** | Linear freestanding path parity | Mult+Linear freestanding path honesty -- **done (partial)** in `ParityLinear.lean` HOST-PARITY-LINEAR / `linearParityReady` / `multLinearParityReady` + probe linear_token + CONSUME_TOKEN labels; composes KernelLinear + ParityMult; no new EMIT_* C stage; not freestanding product self-host complete |
 | **SH3c** | Types freestanding path parity | Mult+Linear+Types freestanding path honesty -- **done (partial)** in `ParityTypes.lean` HOST-PARITY-TYPES / `typesParityReady` / `multLinearTypesParityReady` + probe TYPED_IR / slake_ir_node labels; composes KernelTypes + ParityLinear; no new EMIT_* C stage; not freestanding product self-host complete |
 | **SH3d** | Program freestanding path parity | Mult+Linear+Types+Program freestanding path honesty -- **done (partial)** in `ParityProgram.lean` HOST-PARITY-PROGRAM / `programParityReady` / `multLinearTypesProgramParityReady` + probe IR_PROGRAM / IR_GRAPH / HOST_COMPOSE labels; composes KernelProgram + ParityTypes; no new EMIT_* C stage; not freestanding product self-host complete |
 | **SH3e** | Emit freestanding path parity | Mult+Linear+Types+Program+Emit freestanding path honesty -- **done (partial)** in `ParityEmit.lean` HOST-PARITY-EMIT / `emitParityReady` / `multLinearTypesProgramEmitParityReady` + probe EMIT_PLAN / EMIT_APPLY / EMIT_BODY labels; composes KernelEmit + ParityProgram; no new EMIT_* C stage; not freestanding product self-host complete |
-| **SH4** | Grow ladder | Linear / types / program / compose / emit path as real codegen -- **done (partial growth)**: `KernelLinear.lean` Linear ordered IR + HostCompose mint/consume path; `KernelTypes.lean` Types / typed IR ordered IR + program-path fold honesty; `KernelProgram.lean` ordered IR program + graph edges + HostCompose path honesty; `KernelEmit.lean` host-owned emit plan/apply/body path over program kernel + Mult emit honesty (`emitKernelReady`); product wire bulk still frozen at EMIT_BODY_V0 except HOST-EMIT-SSOT + HOST-EMIT-MULT + HOST-EMIT-LINEAR (no new EMIT_* C residual stage) |
+| **SH4** | Grow ladder | Linear / types / program / compose / emit path as real codegen -- **done (partial growth)**: `KernelLinear.lean` Linear ordered IR + HostCompose mint/consume path; `KernelTypes.lean` Types / typed IR ordered IR + program-path fold honesty; `KernelProgram.lean` ordered IR program + graph edges + HostCompose path honesty; `KernelEmit.lean` host-owned emit plan/apply/body path over program kernel + Mult emit honesty (`emitKernelReady`); product wire bulk still frozen at EMIT_BODY_V0 except HOST-EMIT-SSOT + HOST-EMIT-MULT + HOST-EMIT-LINEAR + HOST-EMIT-ERASURE (no new EMIT_* C residual stage) |
 | **SH5** | Compiler self-application | **done (partial)** + **freestanding deepen (partial)**: `SelfApply.lean` host self-application readiness (`selfApplyReady` / `kernelRebuildsKernel` = Mult closed loop + Linear + Types + Program + Emit kernel); SELF-APPLY-THEOREM (`selfApplyReady_true`, `kernelRebuildsKernel_true`); structural host kernel-rebuilds-kernel only. **SH5 freestanding deepen:** `SelfApplyFs.lean` HOST-SELF-APPLY-FS / SELF-HOST-SELF-APPLY-FS / `SLAKE_SELF_HOST_SELF_APPLY_FS_V0` (`freestandingExtractPathReady` RUNTIME-FS extract on kernel emit compose; `freestandingBodyPathReady` HOST-EMIT-SSOT body + EmitMult; `freestandingParityLadderReady` = ParityEmit.multLinearTypesProgramEmitParityReady (Mult..Emit freestanding parity compose; dual alias freestandingEmitParityReady = emitParityReady -- equivalent under folds, not a stronger gate); `freestandingSelfApplyReady` = selfApplyReady && path && freestandingParityLadderReady && surface && !complete; `freestandingProductSelfHostComplete` = false; SELF-APPLY-FS-SMOKE; SELF-APPLY-FS-THEOREM (`freestandingSelfApplyReady_true`, `freestandingProductSelfHostComplete_false`)) -- **not** freestanding product self-host complete; SH6 still held |
 | **SH6** | llvm / PROVABLY | **held (documented)**: `LlvmHold.lean` host hold gate (`llvmHoldReady` / `sh6HoldReady` = true; `llvmUnlocked` / `provablyUnlocked` / `freestandingProductSelfHostComplete` = false; `selfApplyDoesNotUnlockLlvm`); greppable HOST-LLVM-HOLD / HOST-PROVABLY-HOLD / LLVM-HOLD-SMOKE; LLVM-HOLD-THEOREM (`llvmHoldReady_true`, `llvmUnlocked_false`, `provablyUnlocked_false`) -- **not** unlocked; not residual-open llvm mill; real freestanding product self-host + real `ccomp` for PROVABLY still required |
 | **Inventory close** | Host inventory close readiness | **done (partial)**: `InventoryClose.lean` HOST-INVENTORY-CLOSE / SELF-HOST-INVENTORY-CLOSE / `SLAKE_SELF_HOST_INVENTORY_CLOSE_V0` (`inventoryCloseReady` = freestandingSelfApplyReady && llvmHoldReady && surface && partialCarry && !complete && !llvmUnlocked && !provablyUnlocked; `residualFreeClaimed` = false; `inventoryCloseDoesNotMeanResidualFree`; INVENTORY-CLOSE-SMOKE; INVENTORY-CLOSE-THEOREM (`inventoryCloseReady_true`, `residualFreeClaimed_false`)) -- Mult..LlvmHold ladder + CLOSABLE-MISS-COUNT-0 compose; **not** residual free; **not** freestanding product self-host complete; intentional PARTIAL carry remains |

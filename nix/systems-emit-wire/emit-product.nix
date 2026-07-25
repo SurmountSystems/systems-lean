@@ -76,6 +76,7 @@ let
     "HOST-EMIT-SSOT"
     "HOST-EMIT-MULT"
     "HOST-EMIT-LINEAR"
+    "HOST-EMIT-ERASURE"
     "SLAKE_IR_KIND_VALUE"
     "SLAKE_IR_KIND_LINEAR"
     "SLAKE_IR_KIND_ERASED"
@@ -150,6 +151,8 @@ in
     "src/systems/emit/host_emit_mult.ssot.txt"
     # HOST-EMIT-LINEAR durable Linear product text (Lean EmitLinear owner).
     "src/systems/emit/host_emit_linear.ssot.txt"
+    # HOST-EMIT-ERASURE durable Erasure product text (Lean EmitErasure owner).
+    "src/systems/emit/host_emit_erasure.ssot.txt"
   ];
 
   optionalFiles = [
@@ -191,9 +194,11 @@ in
         "HOST-EMIT-SSOT"
         "HOST-EMIT-MULT"
         "HOST-EMIT-LINEAR"
+        "HOST-EMIT-ERASURE"
         "host_emit_body_fragment.ssot.txt"
         "host_emit_mult.ssot.txt"
         "host_emit_linear.ssot.txt"
+        "host_emit_erasure.ssot.txt"
         "template_slake_freestanding"
       ];
     }
@@ -204,8 +209,10 @@ in
         "HOST-EMIT-SSOT"
         "HOST-EMIT-MULT"
         "HOST-EMIT-LINEAR"
+        "HOST-EMIT-ERASURE"
         "__HOST_EMIT_MULT_HEADER__"
         "__HOST_EMIT_LINEAR_HEADER__"
+        "__HOST_EMIT_ERASURE_HEADER__"
         "not residual free"
       ];
     }
@@ -216,8 +223,10 @@ in
         "HOST-EMIT-SSOT"
         "HOST-EMIT-MULT"
         "HOST-EMIT-LINEAR"
+        "HOST-EMIT-ERASURE"
         "__HOST_EMIT_MULT_BODY__"
         "__HOST_EMIT_LINEAR_BODY__"
+        "__HOST_EMIT_ERASURE_BODY__"
         "__SSOT_EMPTY_FRAGMENT__"
         "not residual free"
       ];
@@ -260,6 +269,21 @@ in
         "slake_consume_token_consume"
         "LINEAR_C_HEADER_BEGIN"
         "LINEAR_C_BODY_BEGIN"
+      ];
+    }
+    {
+      # HOST-EMIT-ERASURE: Erasure product C text owned by Lean EmitErasure.
+      rel = "src/systems/emit/host_emit_erasure.ssot.txt";
+      all = [
+        "HOST-EMIT-ERASURE"
+        "NON-SSOT"
+        "ERASE-RULE-MULT-0"
+        "ERASE-NO-RUNTIME"
+        "slake_erased"
+        "slake_erased_mark"
+        "slake_erasure_is_runtime_absent"
+        "ERASURE_C_HEADER_BEGIN"
+        "ERASURE_C_BODY_BEGIN"
       ];
     }
     {

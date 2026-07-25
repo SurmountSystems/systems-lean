@@ -55,7 +55,7 @@ the work description; "human-directed product residual" without a Name.
 |------|-----------------|--------|
 | *(empty)* | No open Systems residual Names. Deferred tracks stay deferred. | **done-for-now** |
 
-Open queue empty after **Thin process glue**. Do not invent Open Names. Residual
+Open queue empty after **Thin process glue** and **Host owns freestanding erasure C**. Do not invent Open Names. Residual
 free still false; freestanding product self-host complete still false; proof
 complete false; PROVABLY false; llvm / CompCert still deferred.
 
@@ -87,14 +87,26 @@ Short capability list. Greppable stage ids live in Lean / Nix / companions.
 | Emit plan / apply / body product wire (frozen bulk) | emit product; host `EmitPlan` / `EmitApply` / `EmitBody` |
 | Host Mult + body single sources of truth embedded in emit | `EmitMult`, `EmitBody`, `host_emit_*.ssot.txt` |
 | Host Linear + ConsumeToken product text host-owned emit | `EmitLinear`, `host_emit_linear.ssot.txt`, `host-owned-emit.md` |
-| Product wire matches host compose (PARTIAL inventory honesty) | `host-partial-inventory.md` scannable carry; closed gap **HOST-EMIT-LINEAR** Linear product C text ownership (not template-only); HostCompose mint/consume / plan/apply/body stay consistent without full C parity claim |
+| Host owns freestanding erasure C | `EmitErasure.lean` + `emit/host_emit_erasure.ssot.txt` + FreestandingEmit load/embed; templates `__HOST_EMIT_ERASURE_{HEADER,BODY}__`; `SelfHostBody` folds `emitErasureReady`; map `emit/host-owned-emit.md`; mult-0 **absence honesty** on freestanding C (not types-in-C); no `EMIT_ERASURE_V0` residual C stage; free/complete stay false |
+| Product wire matches host compose (PARTIAL inventory honesty) | `host-partial-inventory.md` scannable carry; closed gap **HOST-EMIT-LINEAR** Linear + **HOST-EMIT-ERASURE** Erasure product C text ownership (not template-only); HostCompose mint/consume / plan/apply/body stay consistent without full C parity claim |
 | Host Mult..SpecProof modules + honesty canaries | `SystemsLean/*.lean` Mult through SpecProof / LlvmHold |
 | Algebraic / fail-closed / path / content theorems (partial) | same host modules; not proof complete |
 | Dual maps + join algorithms (sides) | `src/idris2/`, `src/lean4/` (read for systems) |
 | Shared IR sketch | `doc/shared-ir-sketch.md` |
-| Self-host body (defined freestanding compile step) | plain-English acceptance in `self-host.md` (SELF-HOST-BODY); host pin `SystemsLean/SelfHostBody.lean` (selfHostBodyReady = emitMultReady && emitLinearReady + freestanding emit stage cite; freestandingProductSelfHostComplete false; residual free false); E2E under `just systems-host` / `systems-emit-wire` / `out-freestanding-c` / check.sh |
+| Self-host body (defined freestanding compile step) | plain-English acceptance in `self-host.md` (SELF-HOST-BODY); host pin `SystemsLean/SelfHostBody.lean` (selfHostBodyReady = emitMultReady && emitLinearReady && emitErasureReady + freestanding emit stage cite; freestandingProductSelfHostComplete false; residual free false); E2E under `just systems-host` / `systems-emit-wire` / `out-freestanding-c` / check.sh |
 | Dual algorithms into Slake (stated map + host use) | `join-map.md` stated map; `SystemsLean/JoinMap.lean` joinAlgUseOk (ConsumeToken = HostCompose mint/consume via consumeTokenHostUseOk / hostMintConsumeOnceOk -- not Linear Token axioms; ErasedIndex = erasedIndexHostUseOk; UnrestrictedShare = unrestrictedShareHostUseOk Mult multOmega + shareNat) + joinDualCiteOk inventory; dual trees read-only; residual free false; product self-host complete false |
 | Thin process glue | Shell ownership note in `src/systems/README.md` (role table + line counts); `script/slake-compile-path.sh` stamp only (~50 lines, no static greps); unit walk / honesty stay pure Nix (`systems-emit-wire` / `systems-host`); dual `check.sh` optional elaborators only; residual free false; product self-host complete false |
+
+## Decisions (durable -- reseed, do not re-derive from chat)
+
+| Decision | Implication |
+|----------|-------------|
+| Open queue empty | Do not invent Open Names; human names next residual |
+| Host-owned freestanding C grows by Mult/Linear/Erasure-style slices | Lean module + `host_emit_*.ssot.txt` + FreestandingEmit embed + pure Nix presence; ownership map SSoT `emit/host-owned-emit.md` |
+| Erasure on freestanding C | Mult-0 absence marker APIs only -- **not** a type system in C |
+| Template bulk remains | Types / IR program / graph / compose mutators / emit plan-apply bulk / Extract / fail-closed checker still template-owned until a named residual owns them |
+| Dual SSOT PARTIAL | Lean fragment defs and SSOT file blocks both maintained; FreestandingEmit embeds **file only**; no byte-equality gate yet |
+| Still false | residual free; freestanding product self-host complete; proof complete; PROVABLY; llvm / CompCert product seal |
 
 Still **not residual free**. Still **not** freestanding product self-host complete.
 Still **not** proof complete. Still **not** PROVABLY. llvm still deferred.
@@ -106,9 +118,11 @@ Still **not** proof complete. Still **not** PROVABLY. llvm still deferred.
 ```
 DONE-FOR-NOW (Open queue empty)
 
-Thin process glue is done: remaining novel shell is process glue only
-(Lake / cc / drivers / compile-path stamp). Static presence is pure Nix.
-Ownership note: src/systems/README.md (Shell ownership table).
+Host owns freestanding erasure C complete:
+- EmitErasure.lean + host_emit_erasure.ssot.txt + FreestandingEmit embed
+- Templates use __HOST_EMIT_ERASURE_{HEADER,BODY}__
+- SelfHostBody folds emitErasureReady
+- Ownership map host-owned-emit.md; pure Nix presence/emit-wire
 
 Still false / deferred (do not forge):
 - residual free

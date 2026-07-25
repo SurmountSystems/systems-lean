@@ -1,0 +1,68 @@
+# HOST-EMIT-ERASURE -- Erasure freestanding C product text (durable host artifact)
+# SSoT owner: SystemsLean.EmitErasure (src/systems/SystemsLean/EmitErasure.lean)
+#   erasureHeaderFragment + erasureBodyFragment
+# Lean FreestandingEmit embeds Erasure product text from this artifact (no second dialect).
+# ERASURE_C_HEADER / ERASURE_C_BODY blocks must match erasureHeaderFragment / erasureBodyFragment.
+# Product API: slake_erased + mark / is_marked / slake_erasure_is_runtime_absent.
+# Mult-0 absence honesty on freestanding C -- not a type system in C.
+# Host stage ids only: HOST-EMIT-ERASURE / SELF-HOST-EMIT-ERASURE / SLAKE_SELF_HOST_EMIT_ERASURE_V0.
+# Do not mint EMIT_ERASURE_V0 residual C stage ladder as freestanding residual progress.
+HOST-EMIT-ERASURE
+NON-SSOT
+SELF-HOST-EMIT-ERASURE
+SLAKE_SELF_HOST_EMIT_ERASURE_V0
+ERASE-RULE-MULT-0
+ERASE-NO-RUNTIME
+# ERASURE_C_HEADER_BEGIN
+/* ---- Erasure (Erasure.slake / ERASE-RULE-MULT-0 / ERASE-NO-RUNTIME) ----
+ * Zero-payload marker for MULT-0; EDGE-PROP / ERASE-PROP imperfect on sides.
+ * HOST-EMIT-ERASURE: dialect from SystemsLean.EmitErasure + host_emit_erasure.ssot.txt
+ * (Lean FreestandingEmit embeds this Erasure product text).
+ */
+typedef struct slake_erased {
+  uint8_t marked; /* 1 after mark; no product payload */
+} slake_erased;
+
+int slake_erased_mark(slake_erased *e);
+int slake_erased_is_marked(const slake_erased *e);
+/* 1 if non-null and marked (erased MULT-0 runtime-absent); 0 for null or unmarked.
+ * Canonical UNIT_DEEPEN_V1 map name: slake_erasure_is_runtime_absent.
+ * Fail closed: unmarked handles do not claim runtime absence.
+ */
+int slake_erasure_is_runtime_absent(const slake_erased *e);
+# ERASURE_C_HEADER_END
+# ERASURE_C_BODY_BEGIN
+/* ---- Erasure (ERASE-RULE-MULT-0 / ERASE-NO-RUNTIME) ----
+ * HOST-EMIT-ERASURE: dialect from SystemsLean.EmitErasure + host_emit_erasure.ssot.txt
+ * (Lean FreestandingEmit embeds this Erasure product text).
+ */
+
+int slake_erased_mark(slake_erased *e)
+{
+  if (e == 0) {
+    return -1;
+  }
+  e->marked = 1;
+  return 0;
+}
+
+int slake_erased_is_marked(const slake_erased *e)
+{
+  if (e == 0) {
+    return 0;
+  }
+  return (e->marked != 0) ? 1 : 0;
+}
+
+int slake_erasure_is_runtime_absent(const slake_erased *e)
+{
+  /* Fail closed: only marked MULT-0 handles claim runtime absence. */
+  if (e == 0) {
+    return 0;
+  }
+  if (e->marked == 0) {
+    return 0;
+  }
+  return 1;
+}
+# ERASURE_C_BODY_END

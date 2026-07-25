@@ -17,6 +17,8 @@
  * (Lean freestanding emit embeds HOST-EMIT-MULT Mult product text).
  * HOST-EMIT-LINEAR -- Linear/ConsumeToken product text from SystemsLean.EmitLinear +
  * host_emit_linear.ssot.txt (Lean freestanding emit embeds HOST-EMIT-LINEAR text).
+ * HOST-EMIT-ERASURE -- Erasure product text from SystemsLean.EmitErasure +
+ * host_emit_erasure.ssot.txt (Lean freestanding emit embeds HOST-EMIT-ERASURE text).
  *
  * RUNTIME-FS product surface goal: no Lean managed runtime on the wire.
  * not residual free; not freestanding residual free product claim.
@@ -83,20 +85,7 @@ uint32_t slake_type_tag_get(const slake_type_tag *t);
 
 /* __HOST_EMIT_LINEAR_HEADER__ */
 
-/* ---- Erasure (Erasure.slake / ERASE-RULE-MULT-0 / ERASE-NO-RUNTIME) ----
- * Zero-payload marker for MULT-0; EDGE-PROP / ERASE-PROP imperfect on sides.
- */
-typedef struct slake_erased {
-  uint8_t marked; /* 1 after mark; no product payload */
-} slake_erased;
-
-int slake_erased_mark(slake_erased *e);
-int slake_erased_is_marked(const slake_erased *e);
-/* 1 if non-null and marked (erased MULT-0 runtime-absent); 0 for null or unmarked.
- * Canonical UNIT_DEEPEN_V1 map name: slake_erasure_is_runtime_absent.
- * Fail closed: unmarked handles do not claim runtime absence.
- */
-int slake_erasure_is_runtime_absent(const slake_erased *e);
+/* __HOST_EMIT_ERASURE_HEADER__ */
 
 /* ---- Extract (Extract.slake / EMIT-BOUNDARY / RUNTIME-FS) ----
  * EDGE-RUNTIME / RUNTIME-CLASSIC mark stock-host managed residual (not this wire).
