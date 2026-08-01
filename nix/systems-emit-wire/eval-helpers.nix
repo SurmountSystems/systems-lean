@@ -13,8 +13,12 @@ rec {
     else
       null;
 
-  has = needle: hay: lib.hasInfix needle hay;
-  hasI = needle: hay: lib.hasInfix (lib.toLower needle) (lib.toLower hay);
+  # Do not use lib.hasInfix (regex match): stack-overflows on large files in CI.
+  # See nix/string-contains.nix (NixOS/nix#2147 / libstdc++ long-string RE).
+  has = import ../string-contains.nix;
+  hasI =
+    needle: hay:
+    has (lib.toLower needle) (lib.toLower hay);
 
   # all / anyGroups (case-sensitive) + insensitive variants + none (forbidden).
   checkContent =

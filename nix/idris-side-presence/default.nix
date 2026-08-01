@@ -29,7 +29,9 @@ let
     else
       null;
 
-  has = needle: hay: lib.hasInfix needle hay;
+  # Do not use lib.hasInfix (regex match): stack-overflows on large files in CI.
+  # See nix/string-contains.nix (NixOS/nix#2147 / libstdc++ long-string RE).
+  has = import ../string-contains.nix;
 
   # Every token in `all` must appear; each list in `anyGroups` needs at least one.
   checkContent =
