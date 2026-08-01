@@ -37,7 +37,9 @@ Freestanding product self-host **complete** and product residual **free** are
 both **true** on the freestanding release path. Host still uses classic Lean
 **Lake** (`DependsOnLake` / `StillUsesLake`). Bootstrap **S0+S1+S2+S3** done
 (`FirstSurface`; `MultSubsetEmit`; `MultSubsetRebuild` /
-`just mult-subset-rebuild`). **S4** Lake retire stays deferred (never forge
+`just mult-subset-rebuild`). Ideal ladder **M1** Linear subset emit + rebuild
+done (`LinearSubsetEmit` / `just linear-subset-emit`; `LinearSubsetRebuild` /
+`just linear-subset-rebuild`). **S4** Lake retire stays deferred (never forge
 early). Free is not "Lake is gone," not proof complete, not PROVABLY, not LLVM.
 Detail and claim pins: `self-host.md` + `doc/SESSION-HANDOFF.md`.
 
@@ -67,6 +69,8 @@ just check           # full suite (includes build)
 just first-surface   # bootstrap S1 Mult unit surface (Lake host)
 just mult-subset-emit  # bootstrap S2 Mult subset freestanding package (Lake host)
 just mult-subset-rebuild  # bootstrap S3 Mult subset self-application (Lake host)
+just linear-subset-emit  # ideal M1 Linear subset freestanding package (Lake host)
+just linear-subset-rebuild  # M1 Linear subset self-application (Lake host)
 just systems-host    # pure Nix host presence
 just systems-emit-wire  # pure Nix emit-wire / unit walk
 ./src/systems/check.sh  # optional Lake + build + probe (incomplete alone)

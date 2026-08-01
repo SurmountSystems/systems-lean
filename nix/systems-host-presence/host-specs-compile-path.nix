@@ -245,6 +245,110 @@ hostSpecsCompilePath = [
       ];
     }
     {
+      # LINEAR-SUBSET-EMIT: ideal ladder M1 Linear subset freestanding emit.
+      rel = "src/systems/SystemsLean/LinearSubsetEmit.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "SystemsLean.LinearSubsetEmit"
+        "LINEAR-SUBSET-EMIT"
+        "SLAKE_LINEAR_SUBSET_EMIT"
+        "SLAKE_LINEAR_SUBSET_EMIT_V0"
+        "HOST-LINEAR-SUBSET-EMIT"
+        "linearSubsetEmitReady"
+        "linearSubsetEmitInputId"
+        "linearSubsetEmitWroteExpected"
+        "linearSubsetEmitInputReady"
+        "linearSubsetEmitLinearDialectOk"
+        "linearSubsetEmitPackageOk"
+        "stillUsesLake"
+        "dependsOnLake"
+        "LINEAR-SUBSET-EMIT-SMOKE"
+        "LINEAR-SUBSET-EMIT-THEOREM"
+        "linearSubsetEmitReady_true"
+        "linearSubsetEmitWroteExpected_true"
+        "linearSubsetEmitDoesNotRetireLake_true"
+        "linearSubsetEmitDoesNotMeanResidualFree_true"
+        "linearSubsetEmit_claims_false"
+        "theorem linearSubsetEmitReady_true"
+        "slake-linear-subset-emit"
+        "just linear-subset-emit"
+        "slake_linear_subset.h"
+        "slake_linear_subset.c"
+        "SLAKE_LINEAR_SUBSET_LINEAR"
+        "HOST-EMIT-LINEAR"
+        "import SystemsLean.CompilePathLinear"
+        "import SystemsLean.EmitLinear"
+        "UNIT_SURFACE"
+        "Not freestanding residual free"
+        "LINEAR-EXACT-ONCE"
+      ];
+    }
+    {
+      # Thin Lake main for slake-linear-subset-emit (SKELETON).
+      rel = "src/systems/SystemsLean/LinearSubsetEmitMain.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "SystemsLean.LinearSubsetEmitMain"
+        "slake-linear-subset-emit"
+        "LinearSubsetEmitMain"
+        "SKELETON"
+        "import SystemsLean.LinearSubsetEmit"
+      ];
+    }
+    {
+      # LINEAR-SUBSET-REBUILD: M1 Linear subset self-application measure.
+      rel = "src/systems/SystemsLean/LinearSubsetRebuild.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "SystemsLean.LinearSubsetRebuild"
+        "LINEAR-SUBSET-REBUILD"
+        "SLAKE_LINEAR_SUBSET_REBUILD"
+        "SLAKE_LINEAR_SUBSET_REBUILD_V0"
+        "HOST-LINEAR-SUBSET-REBUILD"
+        "linearSubsetRebuildReady"
+        "linearSubsetRebuildInputReady"
+        "linearSubsetRebuildSelfApplyOk"
+        "linearSubsetRebuildWroteExpected"
+        "linearSubsetRebuildPackagePinOk"
+        "linearSubsetRebuildWithoutLakeFinishedClaimed"
+        "stillUsesLake"
+        "dependsOnLake"
+        "LINEAR-SUBSET-REBUILD-SMOKE"
+        "LINEAR-SUBSET-REBUILD-THEOREM"
+        "linearSubsetRebuildReady_true"
+        "linearSubsetRebuildSelfApplyOk_true"
+        "linearSubsetRebuildWroteExpected_true"
+        "linearSubsetRebuildDoesNotRetireLake_true"
+        "linearSubsetRebuildDoesNotMeanResidualFree_true"
+        "linearSubsetRebuildDoesNotMeanWithoutLakeFinished_true"
+        "linearSubsetRebuild_claims_false"
+        "theorem linearSubsetRebuildReady_true"
+        "slake-linear-subset-rebuild"
+        "just linear-subset-rebuild"
+        "slake_linear_subset.h"
+        "slake_linear_subset.c"
+        "SLAKE_LINEAR_SUBSET_EMIT_V0"
+        "linearSubsetEmitReady"
+        "linearSubsetEmitWroteExpected"
+        "import SystemsLean.LinearSubsetEmit"
+        "UNIT_SURFACE"
+        "Not freestanding residual free"
+        "LINEAR-EXACT-ONCE"
+      ];
+    }
+    {
+      # Thin Lake main for slake-linear-subset-rebuild (SKELETON).
+      rel = "src/systems/SystemsLean/LinearSubsetRebuildMain.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "SystemsLean.LinearSubsetRebuildMain"
+        "slake-linear-subset-rebuild"
+        "LinearSubsetRebuildMain"
+        "SKELETON"
+        "import SystemsLean.LinearSubsetRebuild"
+      ];
+    }
+    {
       # COMPILE-PATH-LINEAR: Linear unit e2e fixture (peeled from CompilePath.lean).
       rel = "src/systems/SystemsLean/CompilePathLinear.lean";
       all = [

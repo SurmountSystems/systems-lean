@@ -24,9 +24,11 @@ If role is unclear after compaction: **ask once**. Do not assume coordinator or 
 UnrestrictedShare) + IR sketch + systems skeleton + unit surface + compile path
 + **frozen** freestanding emit product wire (through emit Out / wire Body) +
 **SYSTEMS_LEAN_HOST partial** (Lake + Mult..SelfHostBody under `src/systems/`;
-**195** `SystemsLean/*.lean` host modules including
+**199** `SystemsLean/*.lean` host modules including
 FirstSurface + FirstSurfaceMain + MultSubsetEmit + MultSubsetEmitMain +
 MultSubsetRebuild + MultSubsetRebuildMain +
+LinearSubsetEmit + LinearSubsetEmitMain +
+LinearSubsetRebuild + LinearSubsetRebuildMain +
 OfficialRetireMain + PerformClaimedMain + OwnershipClaimedMain +
 StepContractFullMain + PerformClaimed + OfficialRetire +
 DualEqWriteCapableGap +
@@ -62,19 +64,29 @@ first (`SYSTEMS_PRODUCT_WIRE_FRESH=1` skips double regenerate in systems check).
 **Living tip (2026-08-01):** freestanding product self-host **complete true**;
 product residual free **true**; Lake host still used (DependsOnLake /
 StillUsesLake; host elaborator residual remains); bootstrap **S0+S1+S2+S3 done**
-(host foundation + first Mult compiler surface + Mult subset freestanding emit +
-Mult subset rebuild / self-application; bootstrap path not finished until S4);
-long-file split campaign is **parked hygiene**, not the product goal. Complete
-is not "Lake is gone." Free is not Lake gone, not proof complete, not PROVABLY,
-not LLVM unlock. Missing freestanding binary does **not** block bootstrap.
+(Mult under Lake; ideal **M0**). Ideal ladder **M1** Linear emit + rebuild
+**done** (`LinearSubsetEmit` / `just linear-subset-emit`;
+`LinearSubsetRebuild` / `just linear-subset-rebuild`). Open **empty**
+(done-for-now; Types ladder or Mult without-Lake M2 next by choice). **S4** /
+**M6** Lake retire **deferred** -- never forge StillUsesLake false early. Step 4
+PROVABLY/LLVM **held**. beastdb orthogonal (soft couple only). Long-file split
+campaign is **parked hygiene**, not the product goal. Complete is not "Lake is
+gone." Free is not Lake gone, not proof complete, not PROVABLY, not LLVM unlock.
+Missing freestanding binary does **not** block bootstrap. Cold/self-host bench
+note: `doc/dev/research/lake-vs-slake-serial-bench-2026-08-01.md`.
 
-**Active product residual:** Open **empty** (done-for-now). Bootstrap **S3 done**
-(`SystemsLean.MultSubsetRebuild` / `just mult-subset-rebuild`; Mult subset
-self-application from S2 package identity). S2 **done** (`MultSubsetEmit` /
-`just mult-subset-emit`). S1 **done** (`FirstSurface` / `just first-surface`).
-S4 Lake retire **deferred**. Plan `.agents/plans/plan-residual-free-freestanding.md`
-Steps 0-3 **done**; Step 5 Phase A+B+C(S2+S3) **done**. Step 4 (proof / PROVABLY /
-LLVM) **held** -- do not auto-start. Claim B complete closed; do not re-open.
+**Active product residual:** Open **empty** (done-for-now). Linear subset rebuild
+**done** (`SystemsLean.LinearSubsetRebuild` / `just linear-subset-rebuild`).
+Linear subset emit **done** (`SystemsLean.LinearSubsetEmit` /
+`just linear-subset-emit`). Bootstrap **S3 done**
+(`SystemsLean.MultSubsetRebuild` / `just mult-subset-rebuild`). S2 **done**
+(`MultSubsetEmit` / `just mult-subset-emit`). S1 **done**
+(`FirstSurface` / `just first-surface`). S4 / M6 Lake retire **deferred**. Plan
+`.agents/plans/plan-residual-free-freestanding.md` Steps 0-3 **done**; Step 5
+Mult S0-S3 **done**; M1 Linear emit + rebuild **done**; follow-on Types ladder
+or M2 without-Lake by operator choice (not auto-opened). Step 4 (proof /
+PROVABLY / LLVM) **held** -- do not auto-start. Claim B complete closed; do not
+re-open.
 Long-file campaign parked (Linear last **118->92** via LinearTheorems **71**). Linear split **done** **118->92**;
 KernelSelfApply split **done** **125->105**;
 ProductOutKernel split **done** **130->106**;
@@ -160,13 +172,14 @@ ProductPathFreestanding* short names **done**. Dual-pin b1-33 **done** (series
 Campaigns: `/tmp/grok-1000/grok-impl-summary-tip-split-camp-0731.md`,
 `/tmp/grok-1000/grok-impl-summary-dualpin-camp-b30plus-0731.md`. Long-file /
 dual-pin / short-name campaigns **done or parked hygiene**. WATCHER = **implement
-Slake Mult subset emit** (bootstrap S2; plan Step 5 Phase C). S1 first compiler
-surface **done** (`FirstSurface` / `just first-surface`). Phase A inventory
+Linear subset emit** (ideal M1; plan Step 5). Mult S0-S3 **done**
+(`FirstSurface` / `MultSubsetEmit` / `MultSubsetRebuild`). Phase A inventory
 **done**
 (`doc/dev/research/slake-first-compiler-surface-inventory-2026-08-01.md`). Steps
 0-3 free foundation **done** (free true; complete true; Lake host remains). Step
-4 held (do not auto-start PROVABLY / LLVM). Product next: S2 Mult subset emit;
-ccomp/CompCert held; never forge free/PROVABLY or StillUsesLake false.
+4 held (do not auto-start PROVABLY / LLVM). Product next: Linear subset emit under
+Lake; follow-on Linear subset rebuild then M2+; ccomp/CompCert held; never forge
+free/PROVABLY or StillUsesLake false.
 Short-name batch 8 done (B16 Read family ->
 CapableRead + CapableReadMain; dual-pin green). Short-name batch 7 done (B15 step-contract family ->
 CapableStepContract + CapableStepContractMain; dual-pin green). Short-name batch 6 done (B20 InstallOut family ->

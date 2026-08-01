@@ -1,4 +1,6 @@
-# Same suite as `just check` (pure flake hygiene + residual workspace gates).
+# Same suite as local `just check` (product wire build + pure flake hygiene + residual gates).
+# Environment: flake default devShell (just, scc, elan, idris2, ripgrep, git, nixfmt)
+# plus host cc from ubuntu-latest for lake link and the behavioral probe.
 name: ci
 
 on:
@@ -8,11 +10,52 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
+    # Cold elan + full systems Lake can take a while; keep room under the default 6h.
+    timeout-minutes: 180
     steps:
       - uses: actions/checkout@v4
+        # ref/* and skills/* submodules are not required for just check
+        # (novel-source / pure gates exclude them; product lives under src/).
+
       - uses: cachix/install-nix-action@v30
         with:
           nix_path: nixpkgs=channel:nixos-unstable
+          # Action defaults enable flakes + nix-command.
+
+      # just build is fail-closed without lake. Flake devShell provides nixpkgs elan
+      # (lake/lean shims). Pin is leanprover/lean4:v4.32.0 from lean-toolchain files.
+      - name: Cache elan toolchains
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('src/systems/lean-toolchain', 'src/lean4/lean-toolchain') }}
+          restore-keys: |
+            elan-${{ runner.os }}-
+
+      - name: Cache Lake build trees
+        uses: actions/cache@v4
+        with:
+          path: |
+            src/systems/.lake
+            src/lean4/.lake
+          key: lake-${{ runner.os }}-${{ hashFiles('src/systems/lean-toolchain', 'src/systems/lakefile.toml', 'src/systems/lake-manifest.json', 'src/lean4/lean-toolchain', 'src/lean4/lakefile.toml', 'src/lean4/lake-manifest.json') }}
+          restore-keys: |
+            lake-${{ runner.os }}-
+
+      - name: Install Lean pin via elan (flake devShell)
+        run: |
+          # Prefer flake devShell over bare nix shell just+scc so elan/idris2 match local.
+          # --command takes executable + args separately; do not quote the whole
+          # command as one argv (nix treats "elan toolchain install ..." as a path).
+          pin=$(tr -d '[:space:]' < src/systems/lean-toolchain)
+          echo "Installing elan pin: $pin (from src/systems/lean-toolchain)"
+          nix develop . --command elan toolchain install "$pin"
+
       - name: just check (full suite)
         run: |
-          nix shell nixpkgs#just nixpkgs#scc -c "just check"
+          # Full local suite: just check -> build (lake freestanding-capable-regenerate)
+          # + hygiene + systems-host + systems-emit-wire + idris-side + lean-side
+          # + nix flake check + residual check.sh (idris2/lean4/systems elaborators).
+          # No invented gate skips. Host cc stays on PATH for lake link + probe.
+          # Quoting: --command just check (two args), not --command "just check".
+          nix develop . --command just check

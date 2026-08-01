@@ -114,11 +114,13 @@ companions.
 
 ### Systems Open (join)
 
-**Living tip:** freestanding product self-host **complete true**; product residual free **true**; Lake host still used (host residual remains); bootstrap **S0+S1+S2+S3 done**; Open empty (done-for-now); S4 Lake retire deferred; long-file campaign parked hygiene. Do not re-open claim B. Free is not Lake gone and is not complete.
+**Living tip:** freestanding product self-host **complete true**; product residual free **true**; Lake host still used (host residual remains); bootstrap **S0+S1+S2+S3 done**; ideal ladder **M1** Linear emit + rebuild **done**; Open **empty** (done-for-now; Types ladder or M2 next by choice); S4 / M6 Lake retire deferred; long-file campaign parked hygiene. Do not re-open claim B. Free is not Lake gone and is not complete. Never forge StillUsesLake false.
 
 | Name | Status | Owner detail |
 |------|--------|--------------|
-| *(empty -- done-for-now)* | **done-for-now** | `RESIDUAL-systems.md` -- S0-S3 done; S4 deferred; Step 4 held |
+| _(Open empty)_ | **done-for-now** | `RESIDUAL-systems.md` -- Linear emit+rebuild done; Types ladder or Mult without-Lake (M2) not auto-opened |
+| **Linear subset rebuild** | **done** (2026-08-01) | `RESIDUAL-systems.md` -- M1 follow-on; LinearSubsetRebuild + slake-linear-subset-rebuild / just linear-subset-rebuild; Linear subset self-application |
+| **Linear subset emit** | **done** (2026-08-01) | `RESIDUAL-systems.md` -- ideal M1; LinearSubsetEmit + slake-linear-subset-emit / just linear-subset-emit; Linear unit package write |
 | **Slake rebuild freestanding subset** | **done** (2026-08-01) | `RESIDUAL-systems.md` -- bootstrap S3; MultSubsetRebuild + slake-mult-subset-rebuild / just mult-subset-rebuild; Mult subset self-application |
 | **Slake Mult subset emit** | **done** (2026-08-01) | `RESIDUAL-systems.md` -- bootstrap S2; MultSubsetEmit + slake-mult-subset-emit / just mult-subset-emit; Mult unit package write |
 | Slake first compiler surface | **done** (2026-08-01) | `RESIDUAL-systems.md` -- bootstrap S1; FirstSurface + slake-first-surface / just first-surface; Mult unit structural readiness |
@@ -139,7 +141,7 @@ companions.
 | Host owns freestanding emit body scaffolding | **done** (partial) | `RESIDUAL-systems.md` -- EmitBody HOST-EMIT-BODY + host_emit_body_fragment.ssot.txt BODY_C_* + FreestandingEmit embed; SelfHostBody folds emitBodyReady; free/complete stay false |
 | Host owns freestanding banner text | **done** (partial) | `RESIDUAL-systems.md` -- EmitBanner + host_emit_banner.ssot.txt + FreestandingEmit embed; HOST-EMIT-BANNER; not SelfHostBody fold; free/complete stay false |
 | Dual SSOT equality gate | **done** | `RESIDUAL-systems.md` -- FreestandingEmit DUAL-SSOT-EQUALITY emit-time fail-closed; pure Nix live tokens; free/complete stay false |
-| Freestanding product self-host | **done** (claim B complete true; stepContractFull true; ownership claimed true; perform claimed true; StillUsesFreestandingEmit false; Full true; lake proof required on complete recipe after RCA 2026-07-30) | `RESIDUAL-systems.md` -- claim B complete closed; claim A free **true** (host residual remains); llvm/PROVABLY false; Lake host remains; long-file hygiene parked; bootstrap S0-S3 done; Open empty (S4 deferred); free foundation Steps 0-3 done; plan `plan-residual-free-freestanding.md` Step 5; RCA `doc/dev/research/selfapplyfs-rebuild-failure-2026-07-30.md` |
+| Freestanding product self-host | **done** (claim B complete true; stepContractFull true; ownership claimed true; perform claimed true; StillUsesFreestandingEmit false; Full true; lake proof required on complete recipe after RCA 2026-07-30) | `RESIDUAL-systems.md` -- claim B complete closed; claim A free **true** (host residual remains); llvm/PROVABLY false; Lake host remains; long-file hygiene parked; bootstrap S0-S3 done; Linear subset emit done; Open **Linear subset rebuild**; S4/M6 deferred; free foundation Steps 0-3 done; plan `plan-residual-free-freestanding.md` Step 5 ideal ladder; RCA `doc/dev/research/selfapplyfs-rebuild-failure-2026-07-30.md` |
 | SelfApplyFs dual-pin thin batch 1 | **done** | `RESIDUAL-systems.md` -- B2 KernelSelfApply historical pins home-owned; tip 5755->5710 (-45); inventory `doc/dev/research/selfapplyfs-dual-pin-thin-b1-2026-07-30.md` |
 | SelfApplyFs dual-pin thin batch 2 | **done** | `RESIDUAL-systems.md` -- B3 ProductOutKernel historical pins home-owned; tip 5710->5657 (-53); inventory `doc/dev/research/selfapplyfs-dual-pin-thin-b2-2026-07-30.md` |
 | SelfApplyFs dual-pin thin batch 3 | **done** | `RESIDUAL-systems.md` -- B4 BootstrapHonesty historical pins home-owned; tip 5657->5609 (-48); remains := true kept on tip; inventory `doc/dev/research/selfapplyfs-dual-pin-thin-b3-2026-07-30.md` |
@@ -306,7 +308,7 @@ Plain-English residual that is still open, held, or not claimed. Detail lives in
 
 | Kind | What | Status |
 |------|------|--------|
-| **Open (WATCHER)** | done-for-now; Step 4 held (PROVABLY / LLVM) | **empty Open** (matches `WATCHER.md`; complete true; free true; host residual remains; free claim done) |
+| **Open (WATCHER)** | Linear subset rebuild (M1 follow-on); Step 4 held (PROVABLY / LLVM) | **open** (matches `WATCHER.md`; complete true; free true; host residual remains; S0-S3 done; Linear subset emit done; S4/M6 deferred) |
 | Linear freestanding contracts | Exact-once / Mult 0/1/omega; axioms documented; lake green | **done** (2026-08-01) |
 | Residual free bar inventory | Checklist before free claim; measure green; honesty modules | **done** (2026-08-01; `doc/dev/research/residual-free-bar-inventory-2026-08-01.md`) |
 | Linear long-file split | **118->92** via LinearTheorems (**71**) | **done** |
@@ -392,7 +394,9 @@ cuts; agent git revert on screw-up (STOP, leave tree); plan-id or gap-docs re-gr
 
 | Priority | What | Why highest value | Where |
 |----------|------|-------------------|-------|
-| **done-for-now** | Open empty (S0-S3 done; S4 deferred) | Bootstrap Mult subset self-application measured; Lake retire needs elaborator proof | `RESIDUAL-systems.md`; plan Step 5 Phase C |
+| **done-for-now** | Open empty | Linear emit+rebuild done; Types ladder or M2 without-Lake next by choice | `RESIDUAL-systems.md`; plan Step 5 |
+| **done** | Linear subset rebuild (M1 follow-on) | LinearSubsetRebuild self-application; just linear-subset-rebuild GREEN | `RESIDUAL-systems.md`; plan Step 5 M1 rebuild done 2026-08-01 |
+| **done** | Linear subset emit (ideal M1) | LinearSubsetEmit Linear unit package write; just linear-subset-emit GREEN | `RESIDUAL-systems.md`; plan Step 5 ideal M1 done 2026-08-01 |
 | **done** | Slake rebuild freestanding subset (bootstrap S3) | MultSubsetRebuild self-application; just mult-subset-rebuild GREEN | `RESIDUAL-systems.md`; plan Step 5 Phase C S3 done 2026-08-01 |
 | **done** | Slake Mult subset emit (bootstrap S2) | MultSubsetEmit Mult unit package write; just mult-subset-emit GREEN | `RESIDUAL-systems.md`; plan Step 5 Phase C S2 done 2026-08-01 |
 | **done** | Residual free claim | Free true; host residual remains; checklist 2-10 green; lake + measure GREEN | `RESIDUAL-systems.md`; plan Step 3 done 2026-08-01 |
@@ -481,8 +485,8 @@ cuts; agent git revert on screw-up (STOP, leave tree); plan-id or gap-docs re-gr
 | **done** | Short product-path module names | All ProductPathFreestanding* retired | campaign shortname-camp-0731 |
 | **done** | Dual-pin b1-33 + tip split | series ~5755->3638 then split **3638->1888** | dualpin-camp + tip-split-camp |
 
-**Highest value next:** **done-for-now** -- bootstrap **S0-S3 done**; Open empty.
-S4 Lake retire **deferred** (never forge StillUsesLake false early). Complete
+**Highest value next:** Open **Linear subset rebuild** (M1 follow-on after Linear subset emit).
+S4 / M6 Lake retire **deferred** (never forge StillUsesLake false early). Complete
 true; free **true**; host residual remains; Lake host remains. Step 4 (proof
 progressive / PROVABLY / LLVM) **held** -- do not auto-start. Never forge
 Lake-gone / llvm / PROVABLY.

@@ -7,10 +7,12 @@ Kind: analysis only. Not residual.
 **S0-S3 done; S4 deferred.** Honest Lake-hosted product wire dogfood is green.
 Freestanding product residual free and claim B writer-path complete are **true**.
 Bootstrap **S0** foundation, **S1** FirstSurface, **S2** MultSubsetEmit, and
-**S3** MultSubsetRebuild product gates re-verified green (ceremony 2026-08-01
-re-run). There is still **no** freestanding Slake-without-Lake peer elaborator
-and **no** S4 Lake retire -- `DependsOnLake` / `stillUsesLake` stay **true**.
-Do not forge them false.
+**S3** MultSubsetRebuild product gates re-verified green. **Cold rebuild** after
+`lake clean` measured 2026-08-01 (see Cold wall-clock): Lake elaborator ~603 s
+real; Slake product `just build` ~1.3 s cold; Mult subset rebuild ~0.6 s cold.
+There is still **no** freestanding without-Lake peer elaborator and **no** S4
+Lake retire -- `DependsOnLake` / StillUsesLake stay **true**. Do not forge them
+false.
 
 This note is wall-clock evidence only. It is **not** residual Open, not a claim
 flip, and not "Slake beats Lake."
@@ -131,9 +133,100 @@ separated so product-path walls do not fold full Lake exe link cost.
    Systems Lean elaboration and not a Slake compile of `.lean` sources.
 4. Ceremony S2 wall (~1.1 s) was higher than post-prebuild B-S2 (~0.3 s)
    because the ceremony recipe paid Lake link/build inside the timed command.
-5. Hot warm times **understate** cold-machine cost. A cold `lake build` of
-   SystemsLean will look much closer to the rebuild-heavy B1 reference than
-   to B2's 0.3 s.
+5. Hot warm times **understate** cold-machine cost. See **Cold wall-clock**
+   below for measured cold numbers after `lake clean`.
+
+## Cold wall-clock (2026-08-01 re-run; single process)
+
+**Wipe:** `cd src/systems && lake clean` then one serial chain. Timer: bash
+`TIMEFORMAT` matching `time -p` (`/usr/bin/time` absent). **Strict serial** --
+one lake/just at a time (earlier multi-agent cold attempts aborted: concurrent
+lake race on CapableRead .olean; SIGTERM exit 143 -- those runs are **invalid**).
+
+Logs: `/tmp/grok-1000/bench-cold-*.log`, warm delta
+`/tmp/grok-1000/bench-warm-*.log`. Join:
+`/tmp/grok-1000/grok-impl-summary-cold-slake-rebuild-bench.md`.
+
+### Cold table (after lake clean)
+
+| Step | real (s) | user (s) | sys (s) | Exit | notes |
+|------|----------|----------|---------|------|--------|
+| **B1 cold** `lake build` (package) | **603.098** | 3904.312 | 72.783 | 0 | Full cold elaborator of SystemsLean (170 jobs). Classic Lake -- **not** freestanding without-Lake Slake. Multi-core (user >> real). |
+| **Product rebuild** `just build` (cold) | **1.330** | 6.624 | 0.941 | 0 | Official freestanding wire via Slake path (capable regenerate + install Out). First run after clean pays Lake link of regenerate exe. Still Lake-hosted. |
+| **S1** `just first-surface` (cold) | **0.684** | 0.623 | 0.239 | 0 | Mult unit surface. Lake-hosted. |
+| **S2** `just mult-subset-emit` (cold) | **0.594** | 0.506 | 0.205 | 0 | Mult subset package write. Lake-hosted. |
+| **S3 rebuild** `just mult-subset-rebuild` (cold) | **0.597** | 0.488 | 0.215 | 0 | Mult subset self-application rebuild. Lake-hosted; withoutLakeFinished false. |
+| Claim `just freestanding-self-host-complete` (cold) | **1.019** | 0.572 | 0.423 | 0 | free true; complete true; DependsOnLake true. Not a compiler. |
+| Host `cc -c` freestanding C (cold) | **0.045** | 0.038 | 0.005 | 0 | Host C of already-emitted wire -- not Slake. |
+
+### Cold vs warm (same session, second pass)
+
+| Step | cold real (s) | warm real (s) | notes |
+|------|---------------|---------------|--------|
+| `just build` | 1.330 | 0.328 | Warm omits cold Lake link of regenerate path |
+| `just mult-subset-rebuild` | 0.597 | 0.301 | Warm Mult subset rebuild after cold path |
+
+### Compare cold Lake elaborator vs cold Slake product paths
+
+| Workload | cold real (s) | What it measures |
+|----------|---------------|------------------|
+| Lake elaborator (`lake build` after clean) | **~603** | Classic Lean elaborates full SystemsLean host package |
+| Slake product wire rebuild (`just build`) | **~1.3** | Lake-hosted ordered freestanding dual-eq WRITE + install |
+| Slake Mult subset rebuild (`just mult-subset-rebuild`) | **~0.6** | Lake-hosted S3 Mult subset re-emit/re-validate |
+
+**Honest reading:** cold Lake elaborator dominates wall clock (~10 minutes real,
+~65 minutes of CPU across cores). Cold Slake product / Mult subset rebuilds
+are sub-second to ~1 s because they are **not** re-elaborating the host Lean
+package; they run already-built (or freshly linked) Lake exes over SSOT/emit.
+This is **not** evidence that freestanding Slake-without-Lake is faster than
+Lake as a peer elaborator -- that peer does not exist until S4 / without-Lake
+finished.
+
+## Self-host: "Slake with Slake" vs "Slake with Lake" (2026-08-01)
+
+Operator ask: self-host Slake with Slake and compare build times.
+
+### Verdict
+
+| Question | Answer |
+|----------|--------|
+| Can freestanding Slake elaborate / rebuild the Systems Lean host tree without Lake? | **No** (not yet) |
+| Is claim B freestanding product self-host complete? | **Yes** (writer-path bar under Lake host) |
+| Is Mult subset self-application measured (bootstrap S3)? | **Yes** (Lake-hosted re-emit of Mult package) |
+| Is without-Lake finished / S4 Lake retire done? | **No** (deferred; do not forge) |
+
+Closest honest "Slake rebuilds Slake surface" today:
+
+1. **Product wire self-apply:** `just build` (Lake-hosted freestanding-capable dual-eq WRITE + install Out)
+2. **Mult subset self-apply:** `just mult-subset-rebuild` (Lake-hosted re-write of `emit/slake_mult_subset.{h,c}`)
+
+Neither path is a freestanding peer elaborator of `.lean` sources. Emitted
+freestanding C is a **library dialect**, not a compiler. Explore map:
+`/tmp/grok-1000/explore-slake-selfhost-map.md`.
+
+### Cold comparison (same wipe session as Cold wall-clock)
+
+| Build path | Command | cold real (s) | cold user (s) | Honest meaning |
+|------------|---------|---------------|---------------|----------------|
+| **Slake with Lake** | `cd src/systems && lake build` (after `lake clean`) | **603.1** | 3904.3 | Classic Lake elaborates full SystemsLean host package (170 jobs) -- builds the host that *is* Slake today |
+| **Slake product self-apply** | `just build` | **1.33** | 6.62 | Official freestanding product wire rebuild via Slake path (still Lake-hosted exe) |
+| **Slake Mult subset self-apply** | `just mult-subset-rebuild` | **0.60** | 0.49 | Bootstrap S3 Mult package re-emit (still Lake-hosted) |
+| **Slake Mult + product** (sum) | product then Mult rebuild | **~1.9** | -- | Both Slake surfaces back-to-back (not one freestanding driver) |
+
+**Ratio (rough):** cold Lake package elaborator is on the order of **~300-1000x**
+longer wall than cold Slake product/subset self-apply -- because those paths do
+**not** re-elaborate Systems Lean theorems; they run short Lake-hosted
+write/validate pipelines over SSOT and Mult package text.
+
+### What true "Slake with Slake" still needs
+
+1. Freestanding (or non-Lake) product **driver** that can write Mult / dialect packages without `lake exe`
+2. Real **front-end** over Systems Lean / Slake sources (not only fixed Mult fixtures + SSOT fragments)
+3. Measured **without-Lake finished** on Mult subset (or larger), without forging `StillUsesLake` false early
+4. **S4** Lake retire only with elaborator proof on DependsOnLake / StillUsesLake
+
+Until then, self-host comparison is **partial**: Lake builds the host compiler;
+Slake paths rebuild freestanding **product surfaces** under that host.
 
 ## Explicit non-claims
 

@@ -66,6 +66,10 @@ requiredFiles = [
   "src/systems/SystemsLean/MultSubsetEmitMain.lean"
   "src/systems/SystemsLean/MultSubsetRebuild.lean"
   "src/systems/SystemsLean/MultSubsetRebuildMain.lean"
+  "src/systems/SystemsLean/LinearSubsetEmit.lean"
+  "src/systems/SystemsLean/LinearSubsetEmitMain.lean"
+  "src/systems/SystemsLean/LinearSubsetRebuild.lean"
+  "src/systems/SystemsLean/LinearSubsetRebuildMain.lean"
   "src/systems/SystemsLean/JoinMap.lean"
   # Long-file peel: JOIN-MAP-THEOREM + JOIN-MAP-SMOKE (same namespace JoinMap).
   "src/systems/SystemsLean/JoinMapTheorems.lean"

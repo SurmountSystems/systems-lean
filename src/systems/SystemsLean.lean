@@ -2,7 +2,7 @@
   SYSTEMS_LEAN_HOST partial -- Systems Lean package root (classic elaborator).
   Imports Mult + MultTheorems + Linear + LinearTheorems + Types + TypesTheorems + ordered IR program + IrProgramTheorems + Erasure + ErasureTheorems + Extract +
   ExtractTheorems +
-  IrGraph + IrGraphTheorems + HostCompose + HostComposeTheorems + EmitPlan + EmitPlanScaffold + EmitApply + EmitApplyScaffold + EmitBody + EmitBanner + EmitBannerScaffold + CompilePath + CompilePathBody + CompilePathErasure + CompilePathPlan + CompilePathApply + CompilePathGraph + CompilePathCompose + CompilePathMult + FirstSurface + MultSubsetEmit + MultSubsetRebuild + CompilePathLinear + CompilePathTypes + CompilePathProgram + CompilePathExtract +
+  IrGraph + IrGraphTheorems + HostCompose + HostComposeTheorems + EmitPlan + EmitPlanScaffold + EmitApply + EmitApplyScaffold + EmitBody + EmitBanner + EmitBannerScaffold + CompilePath + CompilePathBody + CompilePathErasure + CompilePathPlan + CompilePathApply + CompilePathGraph + CompilePathCompose + CompilePathMult + FirstSurface + MultSubsetEmit + MultSubsetRebuild + CompilePathLinear + LinearSubsetEmit + LinearSubsetRebuild + CompilePathTypes + CompilePathProgram + CompilePathExtract +
   JoinMap + JoinMapTheorems + SelfHost + SelfHostTheorems + SurfaceMatrix + SurfaceMatrixTheorems + KernelMult + KernelMultTheorems + EmitMult + EmitMultScaffold + EmitLinear + EmitLinearScaffold +
   EmitErasure + EmitErasureScaffold + EmitExtract + EmitExtractScaffold + EmitTypes + EmitTypesScaffold + EmitProgram + EmitProgramScaffold + EmitGraph + EmitGraphScaffold + EmitCompose + EmitComposeScaffold +
   ParityMult + ParityMultTheorems +
@@ -66,6 +66,8 @@ import SystemsLean.FirstSurface
 import SystemsLean.MultSubsetEmit
 import SystemsLean.MultSubsetRebuild
 import SystemsLean.CompilePathLinear
+import SystemsLean.LinearSubsetEmit
+import SystemsLean.LinearSubsetRebuild
 import SystemsLean.CompilePathTypes
 import SystemsLean.CompilePathProgram
 import SystemsLean.CompilePathExtract

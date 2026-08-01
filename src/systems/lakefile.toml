@@ -270,3 +270,17 @@ supportInterpreter = true
 name = "slake-mult-subset-rebuild"
 root = "SystemsLean.MultSubsetRebuildMain"
 supportInterpreter = true
+
+# Ideal ladder M1 Linear subset freestanding emit: Linear unit input -> Linear unit package write.
+# just linear-subset-emit / lake exe slake-linear-subset-emit. Lake host remains (not S4).
+[[lean_exe]]
+name = "slake-linear-subset-emit"
+root = "SystemsLean.LinearSubsetEmitMain"
+supportInterpreter = true
+
+# M1 Linear subset rebuild / self-application: M1 package identity -> re-emit/re-validate.
+# just linear-subset-rebuild / lake exe slake-linear-subset-rebuild. Lake host remains (not S4).
+[[lean_exe]]
+name = "slake-linear-subset-rebuild"
+root = "SystemsLean.LinearSubsetRebuildMain"
+supportInterpreter = true

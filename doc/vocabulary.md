@@ -34,6 +34,7 @@ Stable terms for **Systems Lean**. Prefer plain English. Do not invent fashion n
 | **Bootstrap S1** | First named Slake compiler surface: defined tiny input (Mult unit), checkable translate/check path -- not only regenerate freestanding C API dialect. **Done** (`FirstSurface` / `just first-surface`) |
 | **Bootstrap S2** | Slake emits freestanding C (or unit package) for that subset with residual free still honest. **Done** (`MultSubsetEmit` / `just mult-subset-emit`) |
 | **Bootstrap S3** | Measured rebuild / self-application of named freestanding Mult subset (Lake-hosted bar). **Done** (`MultSubsetRebuild` / `just mult-subset-rebuild`). Without-Lake finished deepen still later |
+| **Ideal M1 Linear rebuild** | Measured rebuild / self-application of Linear unit package under Lake (parallel Mult S3). **Done** (`LinearSubsetRebuild` / `just linear-subset-rebuild`). Without-Lake finished deepen still later |
 | **Bootstrap S4** | Retire Lake from product path: DependsOnLake / StillUsesLake false only with elaborator proof -- never forge early. **Deferred** after S3 |
 | **First compiler surface** | S1 product name: short modules prefer `FirstSurface` / `SlakeCompile`; not kitchen-sink ProductPath* basenames |
 | **CompCert path** | Emit C suitable for CompCert (`ccomp`) when PROVABLY is earned with a real resolved compiler |

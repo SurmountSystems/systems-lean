@@ -4078,6 +4078,183 @@ mult-subset-emit:
     fi
     echo "mult-subset-emit: GREEN (S2 Mult unit package wrote; subset emit evidence; Lake host remains; not S3/S4; not PROVABLY/llvm)"
 
+# Ideal ladder M1 Linear subset freestanding emit: COMPILE-PATH-LINEAR Linear unit
+# input identity -> written Linear unit package (slake_linear_subset.{h,c}) reusing
+# HOST-EMIT-LINEAR dialect. Not full freestanding API dialect rewrite as sole
+# success. Lake host remains.
+# Greppable: linear-subset-emit, slake-linear-subset-emit, LINEAR-SUBSET-EMIT,
+# SLAKE_LINEAR_SUBSET_EMIT, linearSubsetEmitReady, slake_linear_subset.h.
+linear-subset-emit:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    root="$(pwd)"
+    systems_dir="$root/src/systems"
+    lean_dir="$systems_dir/SystemsLean"
+    emit_dir="$systems_dir/emit"
+    out_h="$emit_dir/slake_linear_subset.h"
+    out_c="$emit_dir/slake_linear_subset.c"
+    echo "== linear-subset-emit (ideal ladder M1 Linear subset freestanding emit) =="
+    echo "  input: SLAKE_LINEAR_SUBSET_LINEAR (COMPILE-PATH-LINEAR / LINEAR-FIXTURE)"
+    echo "  output: Linear unit package slake_linear_subset.h/.c (HOST-EMIT-LINEAR); Lake host remains"
+    mod="$lean_dir/LinearSubsetEmit.lean"
+    main_mod="$lean_dir/LinearSubsetEmitMain.lean"
+    if [[ ! -f "$mod" ]]; then
+      echo "error: missing $mod" >&2
+      exit 1
+    fi
+    if [[ ! -f "$main_mod" ]]; then
+      echo "error: missing $main_mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'linearSubsetEmitReady' "$mod"; then
+      echo "error: missing linearSubsetEmitReady in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'SLAKE_LINEAR_SUBSET_LINEAR' "$mod"; then
+      echo "error: missing SLAKE_LINEAR_SUBSET_LINEAR in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'linearSubsetEmitWrite' "$mod"; then
+      echo "error: missing linearSubsetEmitWrite in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'stillUsesLake' "$mod"; then
+      echo "error: missing stillUsesLake honesty in $mod" >&2
+      exit 1
+    fi
+    if ! command -v lake >/dev/null 2>&1; then
+      echo "error: lake not on PATH; linear-subset-emit requires host Lean pin" >&2
+      exit 1
+    fi
+    (
+      cd "$systems_dir"
+      lake build slake-linear-subset-emit
+      lake exe slake-linear-subset-emit -- "$root"
+    )
+    if [[ ! -f "$out_h" ]]; then
+      echo "error: missing Linear subset header after emit: $out_h" >&2
+      exit 1
+    fi
+    if [[ ! -f "$out_c" ]]; then
+      echo "error: missing Linear subset source after emit: $out_c" >&2
+      exit 1
+    fi
+    for tok in LINEAR-SUBSET-EMIT SLAKE_LINEAR_SUBSET_EMIT_V0 SLAKE_LINEAR_SUBSET_LINEAR HOST-EMIT-LINEAR LINEAR-EXACT-ONCE; do
+      if ! grep -qF "$tok" "$out_h"; then
+        echo "error: $out_h missing greppable token $tok" >&2
+        exit 1
+      fi
+      if ! grep -qF "$tok" "$out_c"; then
+        echo "error: $out_c missing greppable token $tok" >&2
+        exit 1
+      fi
+    done
+    if ! grep -qF 'typedef struct slake_linear_token' "$out_h"; then
+      echo "error: $out_h missing typedef struct slake_linear_token" >&2
+      exit 1
+    fi
+    if ! grep -qF 'slake_consume_token_consume' "$out_c"; then
+      echo "error: $out_c missing slake_consume_token_consume" >&2
+      exit 1
+    fi
+    echo "linear-subset-emit: GREEN (M1 Linear unit package wrote; subset emit evidence; Lake host remains; not rebuild/S4; not PROVABLY/llvm)"
+
+# M1 Linear subset rebuild / self-application: M1 Linear package identity
+# -> re-emit/re-validate Linear unit package (measured self-application bar).
+# Not full freestanding dialect regenerate as sole success. Lake host remains.
+# Greppable: linear-subset-rebuild, slake-linear-subset-rebuild, LINEAR-SUBSET-REBUILD,
+# SLAKE_LINEAR_SUBSET_REBUILD, linearSubsetRebuildReady, linearSubsetRebuildSelfApplyOk.
+linear-subset-rebuild:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    root="$(pwd)"
+    systems_dir="$root/src/systems"
+    lean_dir="$systems_dir/SystemsLean"
+    emit_dir="$systems_dir/emit"
+    out_h="$emit_dir/slake_linear_subset.h"
+    out_c="$emit_dir/slake_linear_subset.c"
+    echo "== linear-subset-rebuild (M1 Linear subset self-application) =="
+    echo "  input: SLAKE_LINEAR_SUBSET_EMIT_V0 / linearSubsetEmitReady (M1 package identity)"
+    echo "  output: re-emit/re-validate Linear unit package; linearSubsetRebuildReady; Lake host remains"
+    mod="$lean_dir/LinearSubsetRebuild.lean"
+    main_mod="$lean_dir/LinearSubsetRebuildMain.lean"
+    if [[ ! -f "$mod" ]]; then
+      echo "error: missing $mod" >&2
+      exit 1
+    fi
+    if [[ ! -f "$main_mod" ]]; then
+      echo "error: missing $main_mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'linearSubsetRebuildReady' "$mod"; then
+      echo "error: missing linearSubsetRebuildReady in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'linearSubsetRebuildSelfApplyOk' "$mod"; then
+      echo "error: missing linearSubsetRebuildSelfApplyOk in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'linearSubsetRebuildWrite' "$mod"; then
+      echo "error: missing linearSubsetRebuildWrite in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'SLAKE_LINEAR_SUBSET_EMIT_V0' "$mod"; then
+      echo "error: missing M1 package input pin SLAKE_LINEAR_SUBSET_EMIT_V0 in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'stillUsesLake' "$mod"; then
+      echo "error: missing stillUsesLake honesty in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'linearSubsetRebuildWithoutLakeFinishedClaimed' "$mod"; then
+      echo "error: missing without-Lake finished non-claim in $mod" >&2
+      exit 1
+    fi
+    if ! command -v lake >/dev/null 2>&1; then
+      echo "error: lake not on PATH; linear-subset-rebuild requires host Lean pin" >&2
+      exit 1
+    fi
+    (
+      cd "$systems_dir"
+      lake build slake-linear-subset-rebuild
+      lake exe slake-linear-subset-rebuild -- "$root"
+    )
+    if [[ ! -f "$out_h" ]]; then
+      echo "error: missing Linear subset header after rebuild: $out_h" >&2
+      exit 1
+    fi
+    if [[ ! -f "$out_c" ]]; then
+      echo "error: missing Linear subset source after rebuild: $out_c" >&2
+      exit 1
+    fi
+    for tok in LINEAR-SUBSET-EMIT SLAKE_LINEAR_SUBSET_EMIT_V0 SLAKE_LINEAR_SUBSET_LINEAR HOST-EMIT-LINEAR LINEAR-EXACT-ONCE; do
+      if ! grep -qF "$tok" "$out_h"; then
+        echo "error: $out_h missing greppable token $tok" >&2
+        exit 1
+      fi
+      if ! grep -qF "$tok" "$out_c"; then
+        echo "error: $out_c missing greppable token $tok" >&2
+        exit 1
+      fi
+    done
+    if ! grep -qF 'typedef struct slake_linear_token' "$out_h"; then
+      echo "error: $out_h missing typedef struct slake_linear_token" >&2
+      exit 1
+    fi
+    if ! grep -qF 'slake_consume_token_consume' "$out_c"; then
+      echo "error: $out_c missing slake_consume_token_consume" >&2
+      exit 1
+    fi
+    if ! grep -qF 'linearSubsetRebuildReady' "$mod"; then
+      echo "error: linearSubsetRebuildReady missing after rebuild (host bar)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'SLAKE_LINEAR_SUBSET_REBUILD_V0' "$mod"; then
+      echo "error: missing SLAKE_LINEAR_SUBSET_REBUILD_V0 stage id in $mod" >&2
+      exit 1
+    fi
+    echo "linear-subset-rebuild: GREEN (M1 Linear subset self-application measured; Lake host remains; not without-Lake finished; not S4; not PROVABLY/llvm)"
+
 # Bootstrap S3 Mult subset rebuild / self-application: S2 Mult package identity
 # -> re-emit/re-validate Mult unit package (measured self-application bar).
 # Not full freestanding dialect regenerate as sole success. Lake host remains.

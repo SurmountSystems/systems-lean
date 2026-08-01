@@ -5,10 +5,11 @@ complete and product residual free (claim A). Living authority when this file
 lags: `WATCHER.md`, `RESIDUAL-systems.md`, `SelfApplyFs.lean` /
 `SelfHostComplete.lean` claim flags, `self-host.md`.
 
-**Living goal (2026-08-01):** bootstrap Slake through host-assisted stages
-(S0 done foundation; S1 first compiler surface next). Free + complete are
-foundation, not the finish line. Missing freestanding binary is bootstrap
-**start**, not a blocker.
+**Living goal (2026-08-01):** foundation free + complete + Mult bootstrap
+**S0-S3 done** under Lake. Ideal ladder **M1** Linear emit + rebuild **done**.
+Open empty (done-for-now); Types ladder or Mult without-Lake (M2) next by
+choice. **S4** never forge early. Free + complete are foundation, not ideal
+self-host. Step 4 PROVABLY/LLVM held.
 
 ---
 
@@ -186,103 +187,93 @@ self-host evidence policy; optional formal Idris/Lean isomorphism if opened;
 revisit Mult grades beyond 0/1/omega after MVP. **Do not auto-start** from free
 or complete alone. Orthogonal to Step 5 bootstrap.
 
-### Step 5 -- Bootstrap program (living goal after free + complete)
+### Step 5 -- Bootstrap program + ideal freestanding ladder
 
 **Correction:** "No freestanding binary" does **not** block bootstrap. Bootstrap
 starts with Lake elaborating early Slake stages. Freestanding self-application
-without Lake is a **later** milestone (S3-S4), not a gate on starting S1.
+without Lake is a **later** milestone (ideal **M2-M6** / **S4**), not a gate on
+starting S1 or growing unit surfaces under Lake (M1).
+
+**Foundation vs ideal:** free + complete + Mult S0-S3 under Lake are
+**foundation**. Ideal freestanding Slake-with-Slake = rebuild the Slake product
+path without classic Lake as the product elaborator/driver. Keep
+`StillUsesLake` / `DependsOnLake` **true** until **M6** with real elaborator
+proof. Never forge early.
+
+#### Mult bootstrap S0-S3 (done under Lake)
 
 | Stage | Name | What success looks like | Status |
 |-------|------|-------------------------|--------|
 | **S0** | Host foundation | Lake elaborates Systems Lean; product wire residual free; claim B writer path true | **Done** |
-| **S1** | First Slake compiler surface | Named front-end / driver: defined Mult unit input, checkable translate/check path -- not only regenerate freestanding C API dialect | **Done** (`FirstSurface` / `just first-surface`) |
+| **S1** | First Slake compiler surface | Named front-end / driver: defined Mult unit input, checkable translate/check path | **Done** (`FirstSurface` / `just first-surface`) |
 | **S2** | Emit freestanding C for that subset | Evidence Slake (host-built) wrote Mult unit package for the subset | **Done** (`MultSubsetEmit` / `just mult-subset-emit`; `emit/slake_mult_subset.{h,c}`) |
 | **S3** | Rebuild own freestanding subset | Measured Mult subset self-application (Lake-hosted re-emit/re-validate) | **Done** (`MultSubsetRebuild` / `just mult-subset-rebuild`) |
-| **S4** | Retire Lake from product path | DependsOnLake / StillUsesLake false only with elaborator proof | **Deferred** after S3; never forge early |
+| **S4** | Retire Lake from product path | DependsOnLake / StillUsesLake false only with elaborator proof | **Deferred** (= ideal **M6**); never forge early |
 | **S5** | Held tracks | PROVABLY, LLVM IR, full formal iso | Held (Step 4) |
 
-#### Phase A -- Inventory (S1 design)
+#### Ideal milestone ladder (M0-M6; living after S3)
 
-**Name:** Slake first compiler surface inventory
+| Id | Milestone | Checkable shape | Status |
+|----|-----------|-----------------|--------|
+| **M0** | S0-S3 Mult under Lake | first-surface / mult-subset-emit / mult-subset-rebuild green | **Done** |
+| **M1** | Grow unit surfaces under Lake | Linear (then Types...) subset emit + rebuild, same dual-evidence pattern as Mult | **Linear emit + rebuild done**; Types ladder or M2 next by choice |
+| **M2** | Non-Lake **driver** for subset re-emit | Rebuild Mult (or Linear) package without invoking Lake for that step; subset withoutLakeFinished only when driver is real | After M1 depth |
+| **M3** | Real front-end over defined subset language | Parse/check good+bad golden inputs; not only fixed Mult fixtures | Design then implement |
+| **M4** | Product-wire regenerate without Lake as product path | Ordered READ+COMPOSE+WRITE-HC+INSTALL without Lake product writer | After M2 |
+| **M5** | Slake rebuilds own compiler packages from subset sources | End-to-end self-application of compiler surface | After M3-M4 |
+| **M6** | **S4** product-path Lake retire | DependsOnLake / StillUsesLake false with elaborator proof; dual residual honesty | **Deferred** until ready |
+| **M7** | PROVABLY / LLVM / full iso | Separate evidence bars | **Held** (Step 4) |
 
-**Status:** **done** (2026-08-01). Inventory:
+**Hard rule:** never set StillUsesLake / DependsOnLake false before M6 proof.
+
+**Cold wall + self-host bench (serial only):** after lake clean, Lake package
+elaborator ~603 s real; Slake product `just build` ~1.3 s; Mult subset rebuild
+~0.6 s (same day 2026-08-01). Different workloads; not a peer elaborator race.
+Detail: `doc/dev/research/lake-vs-slake-serial-bench-2026-08-01.md`.
+
+**beastdb (orthogonal):** soft couple only on freestanding Systems Lean language
+quality. Do not divert iso residual into beastdb tree. Isolation holds.
+
+#### Retrospective: Linear subset emit + rebuild (M1) -- done
+
+**Linear subset emit:** **done** (2026-08-01). `LinearSubsetEmit` /
+`LinearSubsetEmitMain`; `slake-linear-subset-emit`; `just linear-subset-emit`;
+`emit/slake_linear_subset.{h,c}` via HOST-EMIT-LINEAR; dual evidence; join
+`/tmp/grok-1000/grok-impl-summary-linear-subset-emit.md`.
+
+**Linear subset rebuild:** **done** (2026-08-01). `LinearSubsetRebuild` /
+`LinearSubsetRebuildMain`; `slake-linear-subset-rebuild`;
+`just linear-subset-rebuild`; M1 package identity -> re-emit/re-validate Linear
+unit package; withoutLakeFinished false; join
+`/tmp/grok-1000/grok-impl-summary-linear-subset-rebuild.md`.
+
+**Follow-on (not auto-opened):** Types ladder (Types subset emit then rebuild)
+**or** Mult without-Lake driver design (ideal M2) when operator chooses.
+
+#### Retrospective: Phase A / B / C (S1-S3 Mult) -- done
+
+**Phase A -- Inventory (S1 design):** **done** (2026-08-01). Inventory:
 `doc/dev/research/slake-first-compiler-surface-inventory-2026-08-01.md`.
 
-S0 done = bootstrap start; lake exe / CompilePath / emit / dialect vs front-end
-mapped; Mult unit input + structural readiness output recommended; short names
-`FirstSurface` / `SlakeCompile`; non-claims (S1 may use Lake; free != Lake gone;
-StillUsesLake stays true); Phase B residual Done when drafted.
-
-#### Phase B -- Implement S1
-
-**Name:** Slake first compiler surface
-
-**Goal:** land a real named compiler surface (Lean under `src/systems/`) for a
-tiny Mult unit set -- more than regenerate freestanding API dialect; still
-Lake-built if needed.
-
-**Done when:** (from inventory; checkable)
-
-1. Named short-role module(s) (prefer `FirstSurface` / `SlakeCompile`) + lake
-   exe and/or `just` recipe.
-2. End-to-end host gate: fixed Mult unit input -> expected structural readiness
-   (unitCompileReady / Mult fixture fold); optional Mult emit readiness.
-3. Residual free measure green if emit/Out touched; prefer not full wire rewrite
-   as S1 success.
-4. Docs honest: bootstrap S1; Lake host until S4; free/complete non-claims.
-5. Lake green on touched modules; no hand-written product C; no StillUsesLake /
-   free / complete / PROVABLY / llvm flips.
-
-**Out of scope:** S3 without Lake; S4 Lake retire; PROVABLY; llvm; claim B re-open.
-
-**Status:** **done** (2026-08-01). `SystemsLean.FirstSurface` +
-`FirstSurfaceMain`; `slake-first-surface` / `just first-surface`; Mult input
-`SLAKE_FIRST_SURFACE_MULT` -> `firstSurfaceReady`; Lake host remains; join
+**Phase B -- S1 first compiler surface:** **done** (2026-08-01).
+`SystemsLean.FirstSurface` + `FirstSurfaceMain`; `slake-first-surface` /
+`just first-surface`; Mult input `SLAKE_FIRST_SURFACE_MULT` ->
+`firstSurfaceReady`; Lake host remains; join
 `/tmp/grok-1000/grok-impl-summary-s1-first-surface.md`.
 
-#### Phase C -- S2 / S3
+**Phase C S2 -- Mult subset emit:** **done** (2026-08-01). `MultSubsetEmit` /
+`MultSubsetEmitMain`; `slake-mult-subset-emit`; `just mult-subset-emit`;
+`emit/slake_mult_subset.{h,c}` via HOST-EMIT-MULT; dual evidence honesty;
+join `/tmp/grok-1000/grok-impl-summary-s2-mult-subset-emit.md`.
 
-**S2 Done when (retrospective -- met 2026-08-01):** residual Name **Slake Mult
-subset emit**.
+**Phase C S3 -- Mult subset rebuild:** **done** (2026-08-01).
+`MultSubsetRebuild` / `MultSubsetRebuildMain`; `slake-mult-subset-rebuild`;
+`just mult-subset-rebuild`; Mult subset self-application under Lake;
+withoutLakeFinished stays false; join
+`/tmp/grok-1000/grok-impl-summary-s3-subset-rebuild.md`.
 
-1. Named short-role module + lake exe + just: `MultSubsetEmit` /
-   `MultSubsetEmitMain`; `slake-mult-subset-emit`; `just mult-subset-emit`.
-2. Checkable host gate: S1 Mult input `SLAKE_FIRST_SURFACE_MULT` -> Mult unit
-   package `emit/slake_mult_subset.{h,c}` (HOST-EMIT-MULT dialect; not full
-   freestanding dialect rewrite as sole success).
-3. Dual evidence honesty: Lean `multSubsetEmitReady` /
-   `multSubsetEmitWroteExpected` = structural package readiness only; actual
-   file write proven by lake exe `multSubsetEmitWrite` + just greps (not Lean
-   Bool alone as filesystem proof).
-4. Residual free measure green (Out residual free held; subset package is emit
-   workspace dogfood, not product Out install).
-5. Docs honest (README + self-host Bootstrap S2; Lake host until S4;
-   free/complete/PROVABLY/llvm non-claims).
-6. Lake green; no hand-authored Mult product C; no claim flips.
-
-Land note: join `/tmp/grok-1000/grok-impl-summary-s2-mult-subset-emit.md`.
-
-**S3 Done when (retrospective -- met 2026-08-01):** residual Name **Slake
-rebuild freestanding subset**.
-
-1. Named short-role module + lake exe + just: `MultSubsetRebuild` /
-   `MultSubsetRebuildMain`; `slake-mult-subset-rebuild`; `just mult-subset-rebuild`.
-2. Checkable host gate: S2 package identity `SLAKE_MULT_SUBSET_EMIT_V0` /
-   `multSubsetEmitReady` -> measured rebuild / self-application
-   (`multSubsetRebuildReady` / `multSubsetRebuildSelfApplyOk`; re-emit/re-validate
-   Mult unit package; not full dialect regenerate theater alone).
-3. Greppable self-application bar documented in `self-host.md` Bootstrap S3.
-4. Residual free measure green (Out residual free held; subset package is emit
-   workspace dogfood).
-5. Docs honest: S3 may still use Lake; without-Lake finished later (S3 deepen /
-   S4); free/complete/StillUsesLake/PROVABLY/llvm non-claims held.
-6. Lake green; no hand-authored product C; no claim flips.
-
-Land note: join `/tmp/grok-1000/grok-impl-summary-s3-subset-rebuild.md`.
-
-Without-Lake self-application finished + S4 Lake retire stay deferred. Serial
-wall-time benches only when both sides of a comparison exist (see bench
-research note).
+Without-Lake self-application finished + S4 Lake retire stay deferred until M2
+driver design and M6 proof. Serial wall-time benches only (see cold bench note).
 
 ---
 
@@ -366,6 +357,8 @@ sells complete as free).
 | 5 Phase B (S1) | **Done** -- FirstSurface + e2e gate + Lake host honest docs |
 | 5 Phase C (S2) | **Done** -- MultSubsetEmit Mult unit package write + free green + honest docs |
 | 5 Phase C (S3) | **Done** -- MultSubsetRebuild Mult subset self-application measure + free green + honest docs |
+| 5 M1 (Linear subset emit) | **Done** -- LinearSubsetEmit + lake exe + just; Linear unit package write; dual evidence; free green |
+| 5 M1 (Linear subset rebuild) | **Done** -- LinearSubsetRebuild + lake exe + just; Linear subset self-application; withoutLakeFinished false; free green |
 | Always | Hygiene if novel markdown; no C/shell product growth; no free forge |
 
 Claim flag changes still need Lake elaborator proof while we bootstrap. Measure
@@ -381,6 +374,8 @@ stays pure Nix.
 | Linear contracts before residual free claim? | Yes (done) |
 | Open full formal Idris/Lean isomorphism now? | No |
 | Auto-start PROVABLY / LLVM after free? | No |
-| After free + complete, next living goal? | Bootstrap S1 (Step 5); not Step 4 held tracks |
-| Keep Lake for building S1? | **Yes** (normal bootstrap) |
-| Skip inventory and invent S1 without note? | No (Phase A done first) |
+| After free + complete + S0-S3 + Linear emit/rebuild, next? | Open empty; Types ladder or Mult without-Lake (M2) by choice; not Step 4 |
+| Keep Lake for building M1 unit surfaces? | **Yes** (under Lake until M2/M6) |
+| Forge StillUsesLake false before M6? | **No** |
+| Divert residual into beastdb? | **No** (orthogonal; soft couple only) |
+| Skip inventory and invent S1 without note? | No (Phase A done first; Mult path done) |

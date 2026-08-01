@@ -23,17 +23,22 @@ Claim B freestanding product self-host complete stays **true**. Complete is
 | Bootstrap **S1** first compiler surface | **done** (`FirstSurface` / `just first-surface` Mult unit path; Lake host remains) |
 | Bootstrap **S2** Mult subset emit | **done** (`MultSubsetEmit` / `just mult-subset-emit` Mult unit package write; Lake host remains) |
 | Bootstrap **S3** Mult subset rebuild | **done** (`MultSubsetRebuild` / `just mult-subset-rebuild` self-application measure; Lake host remains; without-Lake finished later) |
+| Ideal ladder **M0** (S0-S3 Mult under Lake) | **done** |
+| Ideal ladder **M1** grow unit surfaces under Lake | **Linear dogfood done** -- Linear subset emit + rebuild under Lake; next unit surface or M2 not auto-opened |
+| Ideal ladder **M2-M5** (non-Lake driver ... self-application) | not started; after M1 depth |
+| Bootstrap **S4** / ideal **M6** Lake retire | **deferred** (never forge StillUsesLake false early) |
 | Long-file split campaign | **parked hygiene** (not the product goal) |
-| Next product work | **done-for-now** -- Open empty; bootstrap **S4** Lake retire **deferred** (never forge StillUsesLake false early); Step 4 held tracks do not auto-start |
+| Next product work | **done-for-now** (Open empty); plan follow-ons are Types ladder **or** Mult without-Lake driver (M2) -- pick in chat; S4 / M6 deferred; Step 4 held |
 
 **Language:** Systems / Slake, Idris side, Lean side, coordinator. Do not say
 "pole." Living residual uses **plain Names** (schema below), not phase / track /
 wave / SH* / P* item titles.
 
-**Focus:** bootstrap Slake (S0-S3 done; S4 Lake retire deferred) on the
-freestanding path, with linear types as the primary memory-safety story. Free +
-complete are closed foundation; do not re-climb claim B. Long-file splits stay
-background hygiene only.
+**Focus:** ideal freestanding Slake-with-Slake ladder (M1-M6) after Mult S0-S3
+foundation. Linear subset emit + rebuild dogfood done under Lake. Open empty
+until Types subset emit or M2 without-Lake is chosen. S4 / M6 Lake retire
+deferred with elaborator proof only. Free + complete are closed foundation; do
+not re-climb claim B. Long-file splits stay background hygiene only.
 
 **Autonomy:** when Open has a Name with checkable Done when, agents chain short
 implement loops via `WATCHER.md` without waiting. When Done when is not
@@ -48,7 +53,7 @@ this living residual.
 
 | Plan | Role |
 |------|------|
-| `.agents/plans/plan-residual-free-freestanding.md` | **Living product program** (Steps 0-3 free foundation **done**; Step 5 bootstrap S0-S3 **done**; Phase C S3 **done**; S4 deferred) |
+| `.agents/plans/plan-residual-free-freestanding.md` | **Living product program** (Steps 0-3 free foundation **done**; Step 5 Mult S0-S3 **done**; ideal ladder M1 Linear emit + rebuild **done**; Open empty done-for-now; Types ladder or M2 next by choice; S4/M6 deferred) |
 | `.agents/plans/plan-close-six-claims.md` | Historical six-claims program; section 0 may lag -- **living tip wins** (complete true; free true; host residual remains) |
 | `.agents/plans/plan-unambiguous-residual-work.md` | Residual schema (plain Names, short loops) |
 | `.agents/plans/plan-long-file-refactor.md` | Long-file refactor hygiene (parked; not product north star) |
@@ -83,12 +88,12 @@ the work description; "human-directed product residual" without a Name.
 
 ## Open (living queue -- drives implement)
 
-*(empty -- done-for-now)* Bootstrap **S0-S3** done. **S4** (retire Lake from
-product path) stays **deferred**: Needs elaborator proof on claim pins; never
-forge StillUsesLake / DependsOnLake false early. Without-Lake Mult subset deepen
-may open later with honest Done when that keeps Lake true as intermediate, or
-wait for operator. Step 4 (proof / PROVABLY / LLVM) held. Do not invent Open
-Names.
+_(empty -- done-for-now)_
+
+Linear subset emit + rebuild under Lake are **done**. Plan follow-on is either
+**Types subset emit** (continue M1 unit surfaces) or **Mult without-Lake driver**
+(M2 design) -- not a single checkable default. Open a Name in chat when ready.
+**S4** / ideal **M6** stays **deferred**. Step 4 held. Do not invent Open Names.
 
 ## Deferred (held with reason)
 
@@ -104,6 +109,8 @@ Names.
 ---
 
 ## Done
+| Linear subset rebuild (plan Step 5 ideal M1 follow-on) | Named `SystemsLean.LinearSubsetRebuild` + `LinearSubsetRebuildMain`; lake exe `slake-linear-subset-rebuild`; just `linear-subset-rebuild`; M1 package identity `SLAKE_LINEAR_SUBSET_EMIT_V0` / `linearSubsetEmitReady` -> measured self-application re-emit/re-validate Linear unit package; dual evidence: Lean `linearSubsetRebuildReady` / `linearSubsetRebuildSelfApplyOk` / `linearSubsetRebuildWroteExpected` structural + lake exe write / just greps; StillUsesLake/DependsOnLake true; withoutLakeFinished claimed false; theorems + smoke; presence host-specs-compile-path + required-files + host-leans; docs README + self-host Bootstrap M1 rebuild done; lake green; `just linear-subset-rebuild` + `just systems-host` + `just product-residual-free-measure` + `just hygiene` green; free/complete/StillUsesLake/PROVABLY/llvm unchanged; implement join `/tmp/grok-1000/grok-impl-summary-linear-subset-rebuild.md` |
+| Linear subset emit (plan Step 5 ideal M1) | Named `SystemsLean.LinearSubsetEmit` + `LinearSubsetEmitMain`; lake exe `slake-linear-subset-emit`; just `linear-subset-emit`; fixed Linear unit input `SLAKE_LINEAR_SUBSET_LINEAR` (COMPILE-PATH-LINEAR / `linearFixtureCompilePathReady`) -> Linear unit package `emit/slake_linear_subset.{h,c}` via HOST-EMIT-LINEAR (not full dialect rewrite sole success); dual evidence: Lean `linearSubsetEmitReady` / `linearSubsetEmitWroteExpected` structural package pin only + lake exe write / just greps for on-disk proof; StillUsesLake/DependsOnLake true; theorems + smoke; presence host-specs-compile-path + required-files + host-leans; docs README + self-host Bootstrap M1 done; lake green; `just linear-subset-emit` + `just systems-host` + `just product-residual-free-measure` green; free/complete/StillUsesLake/PROVABLY/llvm unchanged; implement join `/tmp/grok-1000/grok-impl-summary-linear-subset-emit.md` |
 | Slake rebuild freestanding subset (plan Step 5 Phase C / bootstrap S3) | Named `SystemsLean.MultSubsetRebuild` + `MultSubsetRebuildMain`; lake exe `slake-mult-subset-rebuild`; just `mult-subset-rebuild`; S2 package identity `SLAKE_MULT_SUBSET_EMIT_V0` / `multSubsetEmitReady` -> measured self-application re-emit/re-validate Mult unit package; dual evidence: Lean `multSubsetRebuildReady` / `multSubsetRebuildSelfApplyOk` / `multSubsetRebuildWroteExpected` structural + lake exe write / just greps; StillUsesLake/DependsOnLake true; withoutLakeFinished claimed false; theorems + smoke; presence host-specs-compile-path + required-files + host-leans; docs README + self-host Bootstrap S3 done; lake green; `just mult-subset-rebuild` + `just systems-host` + `just product-residual-free-measure` + `just hygiene` green; free/complete/StillUsesLake/PROVABLY/llvm unchanged; implement join `/tmp/grok-1000/grok-impl-summary-s3-subset-rebuild.md` |
 | Slake Mult subset emit (plan Step 5 Phase C / bootstrap S2) | Named `SystemsLean.MultSubsetEmit` + `MultSubsetEmitMain`; lake exe `slake-mult-subset-emit`; just `mult-subset-emit`; S1 Mult input `SLAKE_FIRST_SURFACE_MULT` -> Mult unit package `emit/slake_mult_subset.{h,c}` via HOST-EMIT-MULT (not full dialect rewrite sole success); dual evidence: Lean `multSubsetEmitReady` / `multSubsetEmitWroteExpected` structural package pin only + lake exe write / just greps for on-disk proof; StillUsesLake/DependsOnLake true; theorems + smoke; presence host-specs-compile-path + required-files + host-leans; docs README + self-host Bootstrap S2 done; lake green; `just mult-subset-emit` + `just systems-host` + `just product-residual-free-measure` green; free/complete/StillUsesLake/PROVABLY/llvm unchanged; implement join `/tmp/grok-1000/grok-impl-summary-s2-mult-subset-emit.md` |
 | Slake first compiler surface (plan Step 5 Phase B / bootstrap S1) | Named `SystemsLean.FirstSurface` + `FirstSurfaceMain`; lake exe `slake-first-surface`; just `first-surface`; Mult unit input `SLAKE_FIRST_SURFACE_MULT` reuses COMPILE-PATH-MULT -> `firstSurfaceReady` (unitCompileReady + HOST-EMIT-MULT); StillUsesLake/DependsOnLake true; theorems + smoke; presence in host-specs-compile-path + required-files; docs README + self-host Bootstrap stages S0-S4; lake green; `just systems-host` + `just hygiene` green; free/complete/StillUsesLake/PROVABLY/llvm unchanged; no product C; implement join `/tmp/grok-1000/grok-impl-summary-s1-first-surface.md` |
@@ -208,8 +215,8 @@ Short capability list. Greppable stage ids live in Lean / Nix / companions.
 | Decision | Implication |
 |----------|-------------|
 | `just build` = product freestanding wire | Official product path is root `just build` (emit + `out/freestanding-c/` via freestanding-capable-regenerate). Former `out-freestanding-c` just recipe **retired** (no alias). Former stamp-only `build` **deleted**. `just check` depends on `build` first and exports `SYSTEMS_PRODUCT_WIRE_FRESH=1` so `src/systems/check.sh` skips a second full regenerate. Documented in `AGENTS.md` Commands vs trees. Dual-pin Open unchanged. |
-| Open queue | Living Open **empty** (done-for-now). Bootstrap **S0-S3 done** (S3 Mult subset rebuild / self-application 2026-08-01). S4 Lake retire **deferred**. Residual free claim **done** (free true; host residual remains). Steps 0-3 **done**. Claim B complete **true** (closed; do not re-open). Lake host still used. Long-file / dual-pin campaigns **parked hygiene**. llvm/PROVABLY false; Step 4 held (do not auto-start). Living program: `plan-residual-free-freestanding.md`. |
-| Bootstrap is living goal | After free + complete: grow through S1-S3 with Lake as temporary host elaborator. S3 Mult subset self-application **measured** (Lake-hosted). Without-Lake finished + S4 Lake retire still deferred -- not "cannot start." |
+| Open queue | Living Open **Linear subset rebuild** (M1 follow-on). Linear subset emit **done** (2026-08-01). Bootstrap Mult **S0-S3 done**. Ideal ladder M1-M6 in plan Step 5; S4 / M6 Lake retire **deferred**. Residual free claim **done** (free true; host residual remains). Steps 0-3 **done**. Claim B complete **true** (closed; do not re-open). Lake host still used. Long-file / dual-pin campaigns **parked hygiene**. llvm/PROVABLY false; Step 4 held (do not auto-start). Living program: `plan-residual-free-freestanding.md`. |
+| Bootstrap is living goal | After free + complete: Mult S0-S3 under Lake done (foundation). Ideal freestanding Slake-with-Slake continues via M1+ unit surfaces then M2 non-Lake driver through M6 S4. Without-Lake finished + S4 Lake retire still deferred -- never forge early. |
 | Post-hygiene destination (operator 2026-07-31) | After long-file / dual-pin hygiene: (1) **no-sorry** host Lean on touched paths; (2) **residual free** (claim A) only when free bar + DualResidual honesty met -- never forge; (3) then **ccomp / CompCert** dogfood on product freestanding C (claim D; **held** until real evidence). Not this Open Name. Do not flip free/PROVABLY in dual-pin slices. Documented in `plan-long-file-refactor.md` section 8c. |
 | Chip away >1 KLOC | Novel surfaces over 1000 lines are residual; coherent thoughtfully named seams only (plan long-file). |
 | Operator just check RED during dual-pin (2026-07-30) | Operator `just check` RED while dual-pin lake ran was **exit 143 SIGTERM contention** (killed mid-flight) **plus** probe exit **105** = `return 361` mod 256 from missing `EMIT_BODY_V0` dialect on Capable WRITE official path (fixed; not desync-heal). Dual-pin tip work was not the dialect gap root cause. |
@@ -222,7 +229,7 @@ Short capability list. Greppable stage ids live in Lean / Nix / companions.
 | Naming: emit stage **Out** vs product Out | Emit stage **Out** = last Mult..* stage (`EMIT_BODY_V0` / EmitBody). Product **Out (release)** = `out/freestanding-c/`. Host workspace = `emit/`. No product ABI rename |
 | Naming: SelfHostBody | Prose: **defined freestanding compile step** / **self-host step readiness** (`selfHostBodyReady` fold Mult..Out emit + stage cite). Not claim B freestanding product self-host complete. Module rename later only if scheduled |
 | Theorem mill exhausted for current host surface | Do not re-open Mult..LlvmHold algebraic leftovers as residual; product path is plan-close-six-claims |
-| Product program (six claims A-F) | Living product program: `.agents/plans/plan-residual-free-freestanding.md` (Steps 0-3 residual free + linear freestanding; Step 3 **done** free true). Historical snapshot: `.agents/plans/plan-close-six-claims.md` (section 0: living tip wins). Track 1 Mult..Out host-owned emit **closed** -> Track 2 Mult..Out unit e2e **closed** -> Track 3 B/B2..B40 + Full + claim B complete **true** -> Track 4 **A** residual free **claimed true** (host residual remains); Step 1 free bar inventory **done**; Step 2 Linear freestanding contracts **done**; E llvm / D PROVABLY held (Step 4); F duals parallel; C proofs continuous. Living Open empty; Step 4 held. Long-file hygiene parked. |
+| Product program (six claims A-F) | Living product program: `.agents/plans/plan-residual-free-freestanding.md` (Steps 0-3 residual free + linear freestanding; Step 3 **done** free true; Step 5 Mult S0-S3 **done**; ideal ladder M1 Linear subset emit **done**; next Linear subset rebuild). Historical snapshot: `.agents/plans/plan-close-six-claims.md` (section 0: living tip wins). Track 1 Mult..Out host-owned emit **closed** -> Track 2 Mult..Out unit e2e **closed** -> Track 3 B/B2..B40 + Full + claim B complete **true** -> Track 4 **A** residual free **claimed true** (host residual remains); Step 1 free bar inventory **done**; Step 2 Linear freestanding contracts **done**; E llvm / D PROVABLY held (Step 4); F duals parallel; C proofs continuous. Living Open **Linear subset rebuild**; Step 4 held. Long-file hygiene parked. |
 | Track 3 B kernel rebuild evidence | **done (partial)**: measured Mult..Out regenerate on product wire; acceptance in `self-host.md`; complete stays false until freestanding product path self-application bar (not host canaries alone) |
 | Track 3 B2 product kernel self-application | **done (partial)**: acceptance + SelfApplyFs pin + automated emit/out match + product wire exercise; complete **false**; full product self-application deferred |
 | Track 3 B3 product Out kernel evidence | **done (partial)**: acceptance SELF-HOST-PRODUCT-OUT + SelfApplyFs `productOutKernelEvidencePartialReady` + pure Nix Out B-bar ownership+APIs when release present; complete **false**; primary paths `self-host.md` + `SelfApplyFs.lean` + `nix/systems-emit-wire/` |
@@ -237,7 +244,7 @@ Short capability list. Greppable stage ids live in Lean / Nix / companions.
 | Track 3 B12 product path perform COMPOSE | **done (partial)**: acceptance SELF-HOST-PRODUCT-PATH-PERFORM-COMPOSE + SelfApplyFs `productPathPerformComposePartialReady` + `productPathPerformComposeEntrypointClaimed` true + recipe `compose-product-plan` + ProductPathComposePlan `composePlanApplyBodyAtRoot` + ComposeDependsOnLake true + perform claimed false + pure Nix productPathPerformComposeGreen (compose module forbids FreestandingEmit write symbols + B11 when release); complete **false**; host Lake COMPOSE is not freestanding close of FREESTANDING-PERFORM-GAP-COMPOSE |
 | Track 3 B13 product path perform WRITE-HC | **done (partial)**: acceptance SELF-HOST-PRODUCT-PATH-PERFORM-WRITE-HC + SelfApplyFs `productPathPerformWriteHcPartialReady` + `productPathPerformWriteHcEntrypointClaimed` true + recipe `write-freestanding-hc` + ProductPathWriteHc `writeFreestandingHcAtRoot` -> FreestandingEmit.emitAtRoot + WriteHcDependsOnLake true + perform claimed false + pure Nix productPathPerformWriteHcGreen (write module requires FreestandingEmit + B12 when release); complete **false**; host Lake WRITE-HC is not freestanding close of FREESTANDING-PERFORM-GAP-WRITE-HC |
 | Track 4 A residual free measurement | **done (measurement)**: SELF-HOST-RESIDUAL-FREE-MEASURE acceptance; pure Nix PRODUCT-RESIDUAL-FREE-MEASURE green on release when present. Land-time residualFreeClaimed false superseded by **Step 3 free true** (2026-08-01); host elaborator residual remains |
-| Recommended next residual Name | **done-for-now** -- Step 3 free claim closed; Open empty; plan Step 4 held (proof / PROVABLY / LLVM -- do not auto-start); complete true; free true; host residual remains |
+| Recommended next residual Name | **Linear subset rebuild** (M1 follow-on) -- Open; Linear subset emit done; Mult S0-S3 done; S4/M6 deferred; plan Step 4 held (proof / PROVABLY / LLVM -- do not auto-start); complete true; free true; host residual remains |
 | Host-owned freestanding C grows by Mult/Linear/Erasure/Types-style slices | Lean module + `host_emit_*.ssot.txt` + FreestandingEmit embed + pure Nix presence; ownership map SSoT `emit/host-owned-emit.md` |
 | Erasure on freestanding C | Mult-0 absence marker APIs only -- **not** a type system in C |
 | Extract on freestanding C | extract status + runtime class + FAIL_CLOSED_CHECKER_V1 check bundle; host stage HOST-EMIT-EXTRACT; wire stage tokens FAIL_CLOSED_CHECKER_V1 stay -- not residual EMIT_EXTRACT treadmill |
@@ -262,7 +269,9 @@ Still **not** PROVABLY. llvm still deferred. Free is not Lake gone.
 
 | Order | Suggested Name | Why |
 |-------|----------------|-----|
-| **done-for-now** | Open empty | S0-S3 done; S4 deferred (never forge Lake retire early); Step 4 held |
+| **done-for-now** | (Open empty) | Linear emit+rebuild done; Types ladder or M2 without-Lake next by choice; S4/M6 deferred |
+| **done** | Linear subset rebuild | M1 follow-on; LinearSubsetRebuild / just linear-subset-rebuild; Linear subset self-application (2026-08-01) |
+| **done** | Linear subset emit | Ideal M1; LinearSubsetEmit / just linear-subset-emit; Linear unit package write (2026-08-01) |
 | **done** | Slake rebuild freestanding subset | Bootstrap S3; MultSubsetRebuild / just mult-subset-rebuild; Mult subset self-application measure (2026-08-01) |
 | **done** | Slake Mult subset emit | Bootstrap S2; MultSubsetEmit / just mult-subset-emit; Mult unit package write (2026-08-01) |
 | **done** | Residual free claim | Plan Step 3 closed 2026-08-01; free true; host residual remains; checklist 2-10 green |
@@ -390,10 +399,12 @@ Detail: `.agents/plans/plan-residual-free-freestanding.md` (living product progr
 
 ## Next residual implement prompt (Systems / Slake)
 
-Sole next-action fence: `WATCHER.md`. **Open:** empty (done-for-now). Residual free
-claim (plan Step 3) **done**. Step 2 Linear freestanding contracts **done**. Step 1
-Residual free bar inventory **done**. Living tip: freestanding product self-host
-**complete true**; product residual free **true**; host elaborator residual remains;
-Lake host still used; long-file campaign parked hygiene. llvm/PROVABLY false (Step
-4 held). Claim B closed; do not re-open. Plan: `plan-residual-free-freestanding.md`.
-Living copy matches `WATCHER.md` DONE-FOR-NOW fence.
+Sole next-action fence: `WATCHER.md`. **Open:** **Linear subset rebuild** (M1
+follow-on). Linear subset emit **done**. Residual free claim (plan Step 3) **done**.
+Mult S0-S3 **done**. S4/M6 deferred. Step 2 Linear freestanding contracts **done**.
+Step 1 Residual free bar inventory **done**. Living tip: freestanding product
+self-host **complete true**; product residual free **true**; host elaborator
+residual remains; Lake host still used; long-file campaign parked hygiene.
+llvm/PROVABLY false (Step 4 held). Claim B closed; do not re-open. Plan:
+`plan-residual-free-freestanding.md` Step 5 ideal ladder. Living copy matches
+`WATCHER.md` `/implement` Linear subset rebuild fence.
