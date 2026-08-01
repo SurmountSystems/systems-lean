@@ -312,22 +312,8 @@ def programSubsetRebuildWrite (root : System.FilePath) : IO Unit := do
   let emitDir := root / "src" / "systems" / "emit"
   let outH := emitDir / emitHeaderBase
   let outC := emitDir / emitSourceBase
-  IO.println s!"== {stageId}: Program subset rebuild / self-application (M1 follow-on) =="
-  IO.println s!"  host: {hostId} / surface: {surfaceId}"
-  IO.println s!"  M1 package input id: {programSubsetRebuildInputId} (PROGRAM-SUBSET-EMIT reuse)"
-  IO.println s!"  programSubsetRebuildInputReady: {programSubsetRebuildInputReady} (programSubsetEmitReady)"
-  IO.println s!"  programSubsetRebuildPackagePinOk: {programSubsetRebuildPackagePinOk} (programSubsetEmitWroteExpected)"
-  IO.println s!"  programSubsetRebuildSelfApplyOk: {programSubsetRebuildSelfApplyOk}"
-  IO.println s!"  programSubsetRebuildReady: {programSubsetRebuildReady}"
-  IO.println s!"  programSubsetRebuildWroteExpected: {programSubsetRebuildWroteExpected} (package identity pin)"
-  IO.println s!"  stillUsesLake: {stillUsesLake} (true until S4)"
-  IO.println s!"  dependsOnLake: {dependsOnLake} (host elaborator bootstrap)"
-  IO.println s!"  withoutLakeFinished: {programSubsetRebuildWithoutLakeFinishedClaimed} (false; deepen later)"
-  IO.println s!"  Lake exe: {lakeExeName} / just {justRecipe}"
-  IO.println "  honest: rebuild = measured Program subset self-application (re-emit/re-validate); not full dialect regenerate"
-  IO.println "  honest: Lake host remains; free/complete living tip unchanged; not PROVABLY; not llvm"
-  IO.println "  honest: not without-Lake finished; not S4 Lake retire"
-  IO.println "  short module name ProgramSubsetRebuild (not ProductPathFreestandingProgramSubsetRebuild)"
+  IO.println s!"== {stageId}: Program subset rebuild =="
+  IO.println s!"  readyPin={programSubsetRebuildReady} stillUsesLake={stillUsesLake}"
   IO.FS.createDirAll emitDir
   IO.FS.writeFile outH programSubsetHeaderPackage
   IO.FS.writeFile outC programSubsetSourcePackage
@@ -343,11 +329,8 @@ def programSubsetRebuildWrite (root : System.FilePath) : IO Unit := do
     throw (IO.userError "source mismatch")
   validateProgramSubsetRebuildPackage emitHeaderBase headerWritten false
   validateProgramSubsetRebuildPackage emitSourceBase sourceWritten true
-  IO.println s!"GREEN {stageId}: Program subset self-application rebuild under {emitDir}/"
-  IO.println s!"  rewrote: {outH} ({headerWritten.length} chars)"
-  IO.println s!"  rewrote: {outC} ({sourceWritten.length} chars)"
+  IO.println s!"GREEN {stageId}: wrote {outH} ({headerWritten.length}) {outC} ({sourceWritten.length})"
   IO.println "  greppable: PROGRAM-SUBSET-REBUILD, SLAKE_PROGRAM_SUBSET_REBUILD_V0, PROGRAM-SUBSET-EMIT, programSubsetRebuildReady"
-  IO.println "  honest: subset rebuild / self-application evidence (Lake-hosted; not without-Lake finished)"
 
 /-- Drop lake/exe separators so root path is first real arg. -/
 def filterArgs : List String -> List String

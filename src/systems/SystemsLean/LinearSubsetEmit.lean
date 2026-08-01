@@ -354,21 +354,8 @@ def linearSubsetEmitWrite (root : System.FilePath) : IO Unit := do
   let emitDir := root / "src" / "systems" / "emit"
   let outH := emitDir / emitHeaderBase
   let outC := emitDir / emitSourceBase
-  IO.println s!"== {stageId}: Linear subset freestanding emit (ideal ladder M1) =="
-  IO.println s!"  host: {hostId} / surface: {surfaceId}"
-  IO.println s!"  Linear unit input id: {linearSubsetEmitInputId} (COMPILE-PATH-LINEAR reuse)"
-  IO.println s!"  linearSubsetEmitInputReady: {linearSubsetEmitInputReady} (linearFixtureCompilePathReady)"
-  IO.println s!"  linearSubsetEmitLinearDialectOk: {linearSubsetEmitLinearDialectOk} (HOST-EMIT-LINEAR)"
-  IO.println s!"  linearSubsetEmitPackageOk: {linearSubsetEmitPackageOk}"
-  IO.println s!"  linearSubsetEmitReady: {linearSubsetEmitReady}"
-  IO.println s!"  linearSubsetEmitWroteExpected: {linearSubsetEmitWroteExpected} (package identity pin)"
-  IO.println s!"  stillUsesLake: {stillUsesLake} (true until S4)"
-  IO.println s!"  dependsOnLake: {dependsOnLake} (host elaborator bootstrap)"
-  IO.println s!"  Lake exe: {lakeExeName} / just {justRecipe}"
-  IO.println "  honest: M1 = Linear subset unit package write; not full product-wire regenerate"
-  IO.println "  honest: Lake host remains; free/complete living tip unchanged; not PROVABLY; not llvm"
-  IO.println "  honest: not Linear subset rebuild; not S4 Lake retire"
-  IO.println "  short module name LinearSubsetEmit (not ProductPathFreestandingLinearSubset)"
+  IO.println s!"== {stageId}: Linear subset emit =="
+  IO.println s!"  readyPin={linearSubsetEmitReady} stillUsesLake={stillUsesLake}"
   IO.FS.createDirAll emitDir
   IO.FS.writeFile outH linearSubsetHeaderPackage
   IO.FS.writeFile outC linearSubsetSourcePackage
@@ -384,11 +371,8 @@ def linearSubsetEmitWrite (root : System.FilePath) : IO Unit := do
     throw (IO.userError "source mismatch")
   validateLinearSubsetPackage emitHeaderBase headerWritten false
   validateLinearSubsetPackage emitSourceBase sourceWritten true
-  IO.println s!"GREEN {stageId}: Linear subset freestanding C wrote under {emitDir}/"
-  IO.println s!"  wrote: {outH} ({headerWritten.length} chars)"
-  IO.println s!"  wrote: {outC} ({sourceWritten.length} chars)"
+  IO.println s!"GREEN {stageId}: wrote {outH} ({headerWritten.length}) {outC} ({sourceWritten.length})"
   IO.println "  greppable: LINEAR-SUBSET-EMIT, SLAKE_LINEAR_SUBSET_EMIT_V0, HOST-EMIT-LINEAR, LINEAR-EXACT-ONCE"
-  IO.println "  honest: subset emit evidence (not sole success via full dialect rewrite)"
 
 /-- Drop lake/exe separators so root path is first real arg. -/
 def filterArgs : List String -> List String

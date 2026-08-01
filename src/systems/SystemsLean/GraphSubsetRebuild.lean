@@ -313,22 +313,8 @@ def graphSubsetRebuildWrite (root : System.FilePath) : IO Unit := do
   let emitDir := root / "src" / "systems" / "emit"
   let outH := emitDir / emitHeaderBase
   let outC := emitDir / emitSourceBase
-  IO.println s!"== {stageId}: Graph subset rebuild / self-application (M1 follow-on) =="
-  IO.println s!"  host: {hostId} / surface: {surfaceId}"
-  IO.println s!"  M1 package input id: {graphSubsetRebuildInputId} (GRAPH-SUBSET-EMIT reuse)"
-  IO.println s!"  graphSubsetRebuildInputReady: {graphSubsetRebuildInputReady} (graphSubsetEmitReady)"
-  IO.println s!"  graphSubsetRebuildPackagePinOk: {graphSubsetRebuildPackagePinOk} (graphSubsetEmitWroteExpected)"
-  IO.println s!"  graphSubsetRebuildSelfApplyOk: {graphSubsetRebuildSelfApplyOk}"
-  IO.println s!"  graphSubsetRebuildReady: {graphSubsetRebuildReady}"
-  IO.println s!"  graphSubsetRebuildWroteExpected: {graphSubsetRebuildWroteExpected} (package identity pin)"
-  IO.println s!"  stillUsesLake: {stillUsesLake} (true until S4)"
-  IO.println s!"  dependsOnLake: {dependsOnLake} (host elaborator bootstrap)"
-  IO.println s!"  withoutLakeFinished: {graphSubsetRebuildWithoutLakeFinishedClaimed} (false; deepen later)"
-  IO.println s!"  Lake exe: {lakeExeName} / just {justRecipe}"
-  IO.println "  honest: rebuild = measured Graph subset self-application (re-emit/re-validate); not full dialect regenerate"
-  IO.println "  honest: Lake host remains; free/complete living tip unchanged; not PROVABLY; not llvm"
-  IO.println "  honest: not without-Lake finished; not S4 Lake retire; not full CFG/SSA"
-  IO.println "  short module name GraphSubsetRebuild (not ProductPathFreestandingGraphSubsetRebuild)"
+  IO.println s!"== {stageId}: Graph subset rebuild =="
+  IO.println s!"  readyPin={graphSubsetRebuildReady} stillUsesLake={stillUsesLake}"
   IO.FS.createDirAll emitDir
   IO.FS.writeFile outH graphSubsetHeaderPackage
   IO.FS.writeFile outC graphSubsetSourcePackage
@@ -344,11 +330,8 @@ def graphSubsetRebuildWrite (root : System.FilePath) : IO Unit := do
     throw (IO.userError "source mismatch")
   validateGraphSubsetRebuildPackage emitHeaderBase headerWritten false
   validateGraphSubsetRebuildPackage emitSourceBase sourceWritten true
-  IO.println s!"GREEN {stageId}: Graph subset self-application rebuild under {emitDir}/"
-  IO.println s!"  rewrote: {outH} ({headerWritten.length} chars)"
-  IO.println s!"  rewrote: {outC} ({sourceWritten.length} chars)"
+  IO.println s!"GREEN {stageId}: wrote {outH} ({headerWritten.length}) {outC} ({sourceWritten.length})"
   IO.println "  greppable: GRAPH-SUBSET-REBUILD, SLAKE_GRAPH_SUBSET_REBUILD_V0, GRAPH-SUBSET-EMIT, graphSubsetRebuildReady"
-  IO.println "  honest: subset rebuild / self-application evidence (Lake-hosted; not without-Lake finished)"
 
 /-- Drop lake/exe separators so root path is first real arg. -/
 def filterArgs : List String -> List String

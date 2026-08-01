@@ -43,8 +43,8 @@
   productPathFreestandingPerformClaimed_true,
   productPathOfficialPathUsesDualEqualityWrite_true,
   productPathOfficialPathStillUsesFreestandingEmit_false,
-  productPathOfficialPathStillUsesLake_true,
-  productPathPerformDependsOnLake_true,
+  productPathOfficialPathStillUsesLake_false,
+  productPathPerformDependsOnLake_false,
   productPathFreestandingOwnershipClaimed_false,
   freestandingProductSelfHostComplete_false,
   productPathFreestandingCapableStepContractFullSatisfied_false,
@@ -122,15 +122,15 @@ theorem productPathOfficialPathStillUsesFreestandingEmit_false :
     productPathOfficialPathStillUsesFreestandingEmit = false := rfl
 
 /-- Official path still uses Lake host elaborator pin holds.
-    Greppable: productPathOfficialPathStillUsesLake_true,
+    Greppable: productPathOfficialPathStillUsesLake_false,
     PERFORM-CLAIMED-THEOREM. -/
-theorem productPathOfficialPathStillUsesLake_true :
-    productPathOfficialPathStillUsesLake = true := rfl
+theorem productPathOfficialPathStillUsesLake_false :
+    productPathOfficialPathStillUsesLake = false := rfl
 
-/-- Perform DependsOnLake remains true (regenerate Lake host elaborator).
-    Greppable: productPathPerformDependsOnLake_true, PERFORM-CLAIMED-THEOREM. -/
-theorem productPathPerformDependsOnLake_true :
-    productPathPerformDependsOnLake = true := rfl
+/-- Perform DependsOnLake false after M6 product-path Lake pins flip.
+    Greppable: productPathPerformDependsOnLake_false, PERFORM-CLAIMED-THEOREM. -/
+theorem productPathPerformDependsOnLake_false :
+    productPathPerformDependsOnLake = false := rfl
 
 /-- Land-time ownership claimed stays false (ownership is B40 /
     OwnershipClaimed / tip dual-pin).
@@ -275,8 +275,8 @@ example : productPathFreestandingPerformClaimedStepAdvanced = true := by decide
 example : productPathFreestandingPerformClaimed = true := by decide
 example : productPathOfficialPathUsesDualEqualityWrite = true := by decide
 example : productPathOfficialPathStillUsesFreestandingEmit = false := by decide
-example : productPathOfficialPathStillUsesLake = true := by decide
-example : productPathPerformDependsOnLake = true := by decide
+example : productPathOfficialPathStillUsesLake = false := by decide
+example : productPathPerformDependsOnLake = false := by decide
 example : productPathFreestandingOwnershipClaimed = false := by decide
 example : freestandingProductSelfHostComplete = false := by decide
 example : productPathFreestandingCapableStepContractFullSatisfied = false := by

@@ -523,26 +523,9 @@ def multFsWrite (root : System.FilePath) : IO Unit := do
   let emitDir := root / "src" / "systems" / "emit"
   let outH := emitDir / MultSubsetEmit.emitHeaderBase
   let outC := emitDir / MultSubsetEmit.emitSourceBase
-  IO.println s!"== {stageId}: host MultSubsetEmit freestanding Mult SSOT write =="
-  IO.println s!"  host: {hostId} / surface: {surfaceId}"
-  IO.println s!"  freestandingDeepenPartial: {freestandingDeepenPartial}"
-  IO.println s!"  freestandingDriverComplete: {freestandingDriverComplete} (Name B full Path A host-cc writer)"
-  IO.println s!"  multFsWritePathReady: {multFsWritePathReady} (host MultSubsetEmit SSOT write path)"
-  IO.println s!"  multFsDeepenReady: {multFsDeepenReady}"
-  IO.println s!"  multFsDeepenDriverReady: {multFsDeepenDriverReady}"
-  IO.println s!"  multFsWriteNotRebuildDriver: {multFsWriteNotRebuildDriver}"
-  IO.println s!"  package builder: MultSubsetEmit (HOST-EMIT-MULT freestanding Mult SSOT)"
-  IO.println s!"  measured writer: {freestandingWriteToolBinRel} (host-cc; not Lake Mult write ELF)"
-  IO.println s!"  tool C: {freestandingWriteToolCRel}"
-  IO.println s!"  Lake host write helper: {lakeExeFsWrite} / prebuilt {prebuiltFsWriteRel} (not measured)"
-  IO.println s!"  just {justRecipeFsWrite}"
-  IO.println s!"  stillUsesLake: {stillUsesLake} (true until S4 / M6)"
-  IO.println s!"  dependsOnLake: {dependsOnLake} (host elaborator bootstrap)"
-  IO.println "  honest: Mult package write without Mult rebuild ELF as writer"
-  IO.println "  honest: freestandingDriverComplete true with Path A host-cc writer"
-  IO.println "  honest: product Lake host remains; free/complete tip unchanged; not PROVABLY; not llvm"
-  IO.println "  honest: not S4 Lake retire; not full freestanding dialect rewrite sole success"
-  IO.println "  short module name MultFsDeepen (not ProductPathFreestandingMult)"
+  IO.println s!"== {stageId}: MultSubsetEmit Mult SSOT write =="
+  IO.println s!"  partial={freestandingDeepenPartial} complete={freestandingDriverComplete} writePath={multFsWritePathReady} notRebuild={multFsWriteNotRebuildDriver}"
+  IO.println s!"  deepenReady={multFsDeepenReady} driverReady={multFsDeepenDriverReady} stillUsesLake={stillUsesLake} dependsOnLake={dependsOnLake}"
   IO.FS.createDirAll emitDir
   -- MultSubsetEmit freestanding Mult SSOT package text (not MultSubsetRebuildWrite).
   IO.FS.writeFile outH multSubsetHeaderPackage
@@ -559,11 +542,7 @@ def multFsWrite (root : System.FilePath) : IO Unit := do
     throw (IO.userError "source mismatch")
   MultSubsetEmit.validateMultSubsetPackage MultSubsetEmit.emitHeaderBase headerWritten false
   MultSubsetEmit.validateMultSubsetPackage MultSubsetEmit.emitSourceBase sourceWritten true
-  IO.println s!"GREEN {stageId}: Mult package wrote under {emitDir}/ (host MultSubsetEmit SSOT path)"
-  IO.println s!"  wrote: {outH} ({headerWritten.length} chars)"
-  IO.println s!"  wrote: {outC} ({sourceWritten.length} chars)"
-  IO.println "  greppable: MULT-FS-WRITE, multFsWritePathReady, multFsWrite, MULT-SUBSET-EMIT, HOST-EMIT-MULT"
-  IO.println "  honest: multFsWritePathReady true; freestandingDriverComplete true (Path A); Mult rebuild ELF not the package writer"
+  IO.println s!"GREEN {stageId}: wrote {outH} ({headerWritten.length} chars), {outC} ({sourceWritten.length} chars)"
 
 /-- Drop lake/exe separators so root path is first real arg. -/
 def filterArgs : List String -> List String

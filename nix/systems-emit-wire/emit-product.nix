@@ -773,7 +773,7 @@ let
     "def productPathFreestandingPerformClaimed : Bool := true"
     "def productPathFreestandingOwnershipClaimed : Bool := true"
   ];
-  productPathPerformReadLakefilePath = "src/systems/lakefile.toml";
+  productPathPerformReadLakefilePath = "src/systems/lakefile.lean";
   productPathPerformReadLakefileTokens = [
     "slake-read-product-ssot"
     "SystemsLean.ProductPathReadSsotMain"
@@ -860,7 +860,7 @@ let
     "def productPathFreestandingPerformClaimed : Bool := true"
     "def productPathFreestandingOwnershipClaimed : Bool := true"
   ];
-  productPathPerformComposeLakefilePath = "src/systems/lakefile.toml";
+  productPathPerformComposeLakefilePath = "src/systems/lakefile.lean";
   productPathPerformComposeLakefileTokens = [
     "slake-compose-product-plan"
     "SystemsLean.ProductPathComposePlanMain"
@@ -944,7 +944,7 @@ let
     "def productPathFreestandingPerformClaimed : Bool := true"
     "def productPathFreestandingOwnershipClaimed : Bool := true"
   ];
-  productPathPerformWriteHcLakefilePath = "src/systems/lakefile.toml";
+  productPathPerformWriteHcLakefilePath = "src/systems/lakefile.lean";
   productPathPerformWriteHcLakefileTokens = [
     "slake-write-freestanding-hc"
     "SystemsLean.ProductPathWriteHcMain"
@@ -1030,7 +1030,7 @@ let
     "def productPathFreestandingPerformClaimed : Bool := true"
     "def productPathFreestandingOwnershipClaimed : Bool := true"
   ];
-  productPathFreestandingCapableLakefilePath = "src/systems/lakefile.toml";
+  productPathFreestandingCapableLakefilePath = "src/systems/lakefile.lean";
   productPathFreestandingCapableLakefileTokens = [
     "slake-freestanding-capable-gap"
     "SystemsLean.CapableMain"
@@ -1145,7 +1145,7 @@ let
     "def productPathFreestandingPerformClaimed : Bool := true"
     "def productPathFreestandingOwnershipClaimed : Bool := true"
   ];
-  productPathFreestandingCapableStepContractLakefilePath = "src/systems/lakefile.toml";
+  productPathFreestandingCapableStepContractLakefilePath = "src/systems/lakefile.lean";
   productPathFreestandingCapableStepContractLakefileTokens = [
     "slake-freestanding-capable-step-contract"
     "SystemsLean.CapableStepContractMain"
@@ -1233,7 +1233,7 @@ let
     "def productPathFreestandingPerformClaimed : Bool := true"
     "def productPathFreestandingOwnershipClaimed : Bool := true"
   ];
-  productPathFreestandingCapableReadLakefilePath = "src/systems/lakefile.toml";
+  productPathFreestandingCapableReadLakefilePath = "src/systems/lakefile.lean";
   productPathFreestandingCapableReadLakefileTokens = [
     "slake-freestanding-capable-read"
     "SystemsLean.CapableReadMain"
@@ -1317,7 +1317,7 @@ let
     "def productPathFreestandingPerformClaimed : Bool := true"
     "def productPathFreestandingOwnershipClaimed : Bool := true"
   ];
-  productPathFreestandingCapableComposeLakefilePath = "src/systems/lakefile.toml";
+  productPathFreestandingCapableComposeLakefilePath = "src/systems/lakefile.lean";
   productPathFreestandingCapableComposeLakefileTokens = [
     "slake-freestanding-capable-compose"
     "SystemsLean.CapableComposeMain"
@@ -1434,7 +1434,7 @@ let
     "def productPathFreestandingPerformClaimed : Bool := true"
     "def productPathFreestandingOwnershipClaimed : Bool := true"
   ];
-  productPathFreestandingCapableWriteHcLakefilePath = "src/systems/lakefile.toml";
+  productPathFreestandingCapableWriteHcLakefilePath = "src/systems/lakefile.lean";
   productPathFreestandingCapableWriteHcLakefileTokens = [
     "slake-freestanding-capable-write-hc"
     "SystemsLean.CapableWriteHc"
@@ -1526,7 +1526,7 @@ let
     "def productPathFreestandingPerformClaimed : Bool := true"
     "def productPathFreestandingOwnershipClaimed : Bool := true"
   ];
-  productPathFreestandingCapableRegenerateLakefilePath = "src/systems/lakefile.toml";
+  productPathFreestandingCapableRegenerateLakefilePath = "src/systems/lakefile.lean";
   productPathFreestandingCapableRegenerateLakefileTokens = [
     "slake-freestanding-capable-regenerate"
     "SystemsLean.CapableRegenerateMain"
@@ -1602,7 +1602,7 @@ let
     "def productPathFreestandingPerformClaimed : Bool := true"
     "def productPathFreestandingOwnershipClaimed : Bool := true"
   ];
-  productPathFreestandingCapableInstallOutLakefilePath = "src/systems/lakefile.toml";
+  productPathFreestandingCapableInstallOutLakefilePath = "src/systems/lakefile.lean";
   productPathFreestandingCapableInstallOutLakefileTokens = [
     "slake-freestanding-capable-install-out"
     "SystemsLean.InstallOutMain"
@@ -1680,7 +1680,7 @@ let
     "def productPathFreestandingCapableFullBarInstallOutClosed : Bool := false"
     "def productPathFreestandingCapableFullBarOrderedPipelineJoined : Bool := false"
   ];
-  productPathFreestandingCapableFullBarLakefilePath = "src/systems/lakefile.toml";
+  productPathFreestandingCapableFullBarLakefilePath = "src/systems/lakefile.lean";
   productPathFreestandingCapableFullBarLakefileTokens = [
     "slake-freestanding-capable-full-bar"
     "SystemsLean.CapableFullBarMain"
@@ -1808,7 +1808,7 @@ let
     "OWNERSHIP-REGENERATE-COMPOSE-STILL-LAKE"
     "OWNERSHIP-REGENERATE-WRITE-HC-STILL-LAKE"
   ];
-  productPathOwnershipRegenerateLakefilePath = "src/systems/lakefile.toml";
+  productPathOwnershipRegenerateLakefilePath = "src/systems/lakefile.lean";
   productPathOwnershipRegenerateLakefileTokens = [
     "slake-ownership-regenerate"
     "SystemsLean.ProductPathOwnershipRegenerateMain"
@@ -1966,7 +1966,7 @@ let
     "def freestandingProductSelfHostComplete : Bool := true"
     "def productPathFreestandingOwnershipClaimed : Bool := true"
   ];
-  productPathFreestandingPerformEvidenceLakefilePath = "src/systems/lakefile.toml";
+  productPathFreestandingPerformEvidenceLakefilePath = "src/systems/lakefile.lean";
   productPathFreestandingPerformEvidenceLakefileTokens = [
     "slake-freestanding-perform-evidence"
     "SystemsLean.PerformEvidenceMain"
@@ -2092,7 +2092,7 @@ let
     "def freestandingProductSelfHostComplete : Bool := true"
     "def productPathFreestandingOwnershipClaimed : Bool := true"
   ];
-  productPathFreestandingPerformOfficialPathLakefilePath = "src/systems/lakefile.toml";
+  productPathFreestandingPerformOfficialPathLakefilePath = "src/systems/lakefile.lean";
   productPathFreestandingPerformOfficialPathLakefileTokens = [
     "slake-freestanding-perform-official-path"
     "SystemsLean.OfficialPathMain"
@@ -2223,7 +2223,7 @@ let
     "def productPathFreestandingOwnershipClaimed : Bool := true"
   ];
   productPathFreestandingPerformOfficialPathAlternateLakefilePath =
-    "src/systems/lakefile.toml";
+    "src/systems/lakefile.lean";
   productPathFreestandingPerformOfficialPathAlternateLakefileTokens = [
     "slake-freestanding-perform-official-path-alternate"
     "SystemsLean.OfficialPathAlternateMain"
@@ -2346,7 +2346,7 @@ let
     "def productPathFreestandingOwnershipClaimed : Bool := true"
   ];
   productPathFreestandingPerformDualEqualityWriteParityLakefilePath =
-    "src/systems/lakefile.toml";
+    "src/systems/lakefile.lean";
   productPathFreestandingPerformDualEqualityWriteParityLakefileTokens = [
     "slake-freestanding-perform-dual-equality-write-parity"
     "SystemsLean.DualEqWriteParityMain"
@@ -2475,7 +2475,7 @@ let
     "def productPathFreestandingOwnershipClaimed : Bool := true"
   ];
   productPathFreestandingPerformDualEqualityWriteClosePathLakefilePath =
-    "src/systems/lakefile.toml";
+    "src/systems/lakefile.lean";
   productPathFreestandingPerformDualEqualityWriteClosePathLakefileTokens = [
     "slake-freestanding-perform-dual-equality-write-close-path"
     "SystemsLean.DualEqWriteClosePathMain"
@@ -2676,7 +2676,7 @@ let
     "def productPathFreestandingOwnershipClaimed : Bool := true"
   ];
   productPathFreestandingPerformDualEqualityWriteApiLakefilePath =
-    "src/systems/lakefile.toml";
+    "src/systems/lakefile.lean";
   productPathFreestandingPerformDualEqualityWriteApiLakefileTokens = [
     "slake-freestanding-perform-dual-equality-write-api"
     "SystemsLean.DualEqWriteApiMain"
@@ -2821,7 +2821,7 @@ let
     "def productPathFreestandingOwnershipClaimed : Bool := true"
   ];
   productPathFreestandingPerformDualEqualityWriteCapableGapLakefilePath =
-    "src/systems/lakefile.toml";
+    "src/systems/lakefile.lean";
   productPathFreestandingPerformDualEqualityWriteCapableGapLakefileTokens = [
     "slake-freestanding-perform-dual-equality-write-capable-gap"
     "SystemsLean.DualEqWriteCapableGapMain"
@@ -2944,18 +2944,18 @@ let
     "def productPathOfficialPathRetireOfficialStepAdvanced : Bool := false"
     "def productPathOfficialPathUsesDualEqualityWrite : Bool := false"
     "def productPathOfficialPathStillUsesFreestandingEmit : Bool := true"
-    "def productPathOfficialPathStillUsesLake : Bool := false"
+    "def productPathOfficialPathStillUsesLake : Bool := true"
     "def productPathOfficialPathRetireFreestandingEmitRequired : Bool := true"
     "def productPathOfficialPathDualEqualityBlocksRetirement : Bool := true"
     "def productPathFreestandingPerformClaimed : Bool := true"
-    "def productPathPerformDependsOnLake : Bool := false"
+    "def productPathPerformDependsOnLake : Bool := true"
     "def productPathDualEqualityWriteParityGapOpen : Bool := true"
     "def productPathFreestandingCapableStepContractFullSatisfied : Bool := true"
     "def freestandingProductSelfHostComplete : Bool := true"
     "def productPathFreestandingOwnershipClaimed : Bool := true"
   ];
   productPathOfficialPathRetireOfficialLakefilePath =
-    "src/systems/lakefile.toml";
+    "src/systems/lakefile.lean";
   productPathOfficialPathRetireOfficialLakefileTokens = [
     "slake-freestanding-retire-official"
     "SystemsLean.OfficialRetireMain"
@@ -2983,7 +2983,8 @@ let
     "def productPathOfficialPathDualEqualityBlocksRetirement : Bool := false"
     "def productPathOfficialPathRetireFreestandingEmitRequired : Bool := false"
     "def productPathFreestandingPerformClaimed : Bool := false"
-    "def productPathPerformDependsOnLake : Bool := true"
+    "def productPathPerformDependsOnLake : Bool := false"
+    "def productPathOfficialPathStillUsesLake : Bool := false"
     "freestanding-capable-regenerate"
     "just freestanding-perform-dual-equality-write-capable-gap"
   ];
@@ -3068,23 +3069,24 @@ let
     "import SystemsLean.FreestandingEmit"
     "SystemsLean.FreestandingEmit.emitAtRoot"
     # B39: PERFORM-CLAIMED dual-pin; forbid dishonest flip-back / complete forge.
+    # M6: product StillUsesLake / DependsOnLake false (forbid re-open to true).
     "def productPathFreestandingPerformClaimedMeasured : Bool := false"
     "def productPathFreestandingPerformClaimedStepAdvanced : Bool := false"
     "def productPathFreestandingPerformClaimed : Bool := false"
     "def productPathOfficialPathUsesDualEqualityWrite : Bool := false"
     "def productPathOfficialPathStillUsesFreestandingEmit : Bool := true"
-    "def productPathOfficialPathStillUsesLake : Bool := false"
+    "def productPathOfficialPathStillUsesLake : Bool := true"
     "def productPathOfficialPathRetireFreestandingEmitRequired : Bool := true"
     "def productPathOfficialPathDualEqualityBlocksRetirement : Bool := true"
     "def productPathOfficialPathRetireOfficialMeasured : Bool := false"
-    "def productPathPerformDependsOnLake : Bool := false"
+    "def productPathPerformDependsOnLake : Bool := true"
     "def productPathDualEqualityWriteParityGapOpen : Bool := true"
     "def productPathFreestandingCapableStepContractFullSatisfied : Bool := true"
     "def freestandingProductSelfHostComplete : Bool := true"
     "def productPathFreestandingOwnershipClaimed : Bool := true"
   ];
   productPathFreestandingPerformClaimedLakefilePath =
-    "src/systems/lakefile.toml";
+    "src/systems/lakefile.lean";
   productPathFreestandingPerformClaimedLakefileTokens = [
     "slake-freestanding-perform-claimed"
     "SystemsLean.PerformClaimedMain"
@@ -3113,7 +3115,8 @@ let
     "def productPathOfficialPathDualEqualityBlocksRetirement : Bool := false"
     "def productPathOfficialPathRetireFreestandingEmitRequired : Bool := false"
     "def productPathOfficialPathRetireOfficialMeasured : Bool := true"
-    "def productPathPerformDependsOnLake : Bool := true"
+    "def productPathPerformDependsOnLake : Bool := false"
+    "def productPathOfficialPathStillUsesLake : Bool := false"
     # Land-time PerformClaimed.lean keeps ownership false; SelfApplyFs living tip true after B40.
     "def productPathFreestandingOwnershipClaimed : Bool := false"
     "def freestandingProductSelfHostComplete : Bool := false"
@@ -3204,23 +3207,24 @@ let
     "import SystemsLean.FreestandingEmit"
     "SystemsLean.FreestandingEmit.emitAtRoot"
     # B40: OWNERSHIP-CLAIMED dual-pin; forbid dishonest flip-back / complete forge.
+    # M6: product StillUsesLake / DependsOnLake false (forbid re-open to true).
     "def productPathFreestandingOwnershipClaimedMeasured : Bool := false"
     "def productPathFreestandingOwnershipClaimedStepAdvanced : Bool := false"
     "def productPathFreestandingOwnershipClaimed : Bool := false"
     "def productPathFreestandingPerformClaimed : Bool := false"
     "def productPathOfficialPathUsesDualEqualityWrite : Bool := false"
     "def productPathOfficialPathStillUsesFreestandingEmit : Bool := true"
-    "def productPathOfficialPathStillUsesLake : Bool := false"
+    "def productPathOfficialPathStillUsesLake : Bool := true"
     "def productPathOfficialPathRetireFreestandingEmitRequired : Bool := true"
     "def productPathOfficialPathDualEqualityBlocksRetirement : Bool := true"
     "def productPathOfficialPathRetireOfficialMeasured : Bool := false"
-    "def productPathPerformDependsOnLake : Bool := false"
+    "def productPathPerformDependsOnLake : Bool := true"
     "def productPathDualEqualityWriteParityGapOpen : Bool := true"
     "def productPathFreestandingCapableStepContractFullSatisfied : Bool := true"
     "def freestandingProductSelfHostComplete : Bool := true"
   ];
   productPathFreestandingOwnershipClaimedLakefilePath =
-    "src/systems/lakefile.toml";
+    "src/systems/lakefile.lean";
   productPathFreestandingOwnershipClaimedLakefileTokens = [
     "slake-freestanding-ownership-claimed"
     "SystemsLean.OwnershipClaimedMain"
@@ -3250,7 +3254,8 @@ let
     "def productPathOfficialPathDualEqualityBlocksRetirement : Bool := false"
     "def productPathOfficialPathRetireFreestandingEmitRequired : Bool := false"
     "def productPathOfficialPathRetireOfficialMeasured : Bool := true"
-    "def productPathPerformDependsOnLake : Bool := true"
+    "def productPathPerformDependsOnLake : Bool := false"
+    "def productPathOfficialPathStillUsesLake : Bool := false"
     "def productPathFreestandingCapableStepContractFullSatisfied : Bool := false"
     "def stepContractFull : Bool := true"
     "def freestandingProductSelfHostComplete : Bool := true"
@@ -3342,6 +3347,7 @@ let
     "import SystemsLean.FreestandingEmit"
     "SystemsLean.FreestandingEmit.emitAtRoot"
     # Full dual-pin; forbid dishonest flip-back / complete forge.
+    # M6: product StillUsesLake / DependsOnLake false (forbid re-open to true).
     "def stepContractFullMeasured : Bool := false"
     "def stepContractFullStepAdvanced : Bool := false"
     "def stepContractFull : Bool := false"
@@ -3349,15 +3355,15 @@ let
     "def productPathFreestandingPerformClaimed : Bool := false"
     "def productPathOfficialPathUsesDualEqualityWrite : Bool := false"
     "def productPathOfficialPathStillUsesFreestandingEmit : Bool := true"
-    "def productPathOfficialPathStillUsesLake : Bool := false"
+    "def productPathOfficialPathStillUsesLake : Bool := true"
     "def productPathOfficialPathRetireFreestandingEmitRequired : Bool := true"
     "def productPathOfficialPathDualEqualityBlocksRetirement : Bool := true"
     "def productPathOfficialPathRetireOfficialMeasured : Bool := false"
-    "def productPathPerformDependsOnLake : Bool := false"
+    "def productPathPerformDependsOnLake : Bool := true"
     "def productPathDualEqualityWriteParityGapOpen : Bool := true"
   ];
   stepContractFullLakefilePath =
-    "src/systems/lakefile.toml";
+    "src/systems/lakefile.lean";
   stepContractFullLakefileTokens = [
     "slake-freestanding-step-contract-full"
     "SystemsLean.StepContractFullMain"
@@ -3388,7 +3394,8 @@ let
     "def productPathOfficialPathDualEqualityBlocksRetirement : Bool := false"
     "def productPathOfficialPathRetireFreestandingEmitRequired : Bool := false"
     "def productPathOfficialPathRetireOfficialMeasured : Bool := true"
-    "def productPathPerformDependsOnLake : Bool := true"
+    "def productPathPerformDependsOnLake : Bool := false"
+    "def productPathOfficialPathStillUsesLake : Bool := false"
     "def freestandingProductSelfHostComplete : Bool := true"
     "freestanding-capable-regenerate"
     "just freestanding-ownership-claimed"
@@ -3461,6 +3468,8 @@ let
     "def productPathFreestandingOwnershipClaimed : Bool := true"
     "def productPathFreestandingPerformClaimed : Bool := true"
     "def productPathOfficialPathStillUsesFreestandingEmit : Bool := false"
+    "def productPathOfficialPathStillUsesLake : Bool := false"
+    "def productPathPerformDependsOnLake : Bool := false"
     "def residualFreeClaimed : Bool := true"
     "def llvmUnlocked : Bool := false"
     "def provablyUnlocked : Bool := false"
@@ -3474,11 +3483,13 @@ let
     "def productPathFreestandingOwnershipClaimed : Bool := false"
     "def productPathFreestandingPerformClaimed : Bool := false"
     "def productPathOfficialPathStillUsesFreestandingEmit : Bool := true"
+    "def productPathOfficialPathStillUsesLake : Bool := true"
+    "def productPathPerformDependsOnLake : Bool := true"
     "def residualFreeClaimed : Bool := false"
     "def llvmUnlocked : Bool := true"
     "def provablyUnlocked : Bool := true"
   ];
-  selfHostCompleteLakefilePath = "src/systems/lakefile.toml";
+  selfHostCompleteLakefilePath = "src/systems/lakefile.lean";
   selfHostCompleteLakefileTokens = [
     "slake-freestanding-self-host-complete"
     "SystemsLean.SelfHostComplete"
@@ -4010,7 +4021,7 @@ in
     "src/systems/SystemsLean/FreestandingEmitLoadScaffold.lean"
     # Thin Lake root for slake-emit-freestanding-c (critical path for just build).
     "src/systems/SystemsLean/FreestandingEmitMain.lean"
-    "src/systems/lakefile.toml"
+    "src/systems/lakefile.lean"
     "src/systems/emit/template_slake_freestanding.h.in"
     "src/systems/emit/template_slake_freestanding.c.in"
     emitH
@@ -4078,7 +4089,7 @@ in
     }
     {
       # Lake root for slake-emit-freestanding-c after main split (B13 supporting).
-      rel = "src/systems/lakefile.toml";
+      rel = "src/systems/lakefile.lean";
       all = [
         "slake-emit-freestanding-c"
         "SystemsLean.FreestandingEmitMain"

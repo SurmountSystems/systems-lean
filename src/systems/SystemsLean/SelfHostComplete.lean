@@ -4,7 +4,8 @@
   complete beyond Full step-contract. Evidence: stepContractFull true (Full) +
   ownership-claimed + perform-claimed + official dual-eq WRITE. SelfApplyFs
   claim-bool SSoT freestandingProductSelfHostComplete true. Measured via just
-  freestanding-self-host-complete. StillUsesLake / DependsOnLake true;
+  freestanding-self-host-complete. StillUsesLake / DependsOnLake false after
+  M6 product-path Lake pins flip (host elaborator residual may remain);
   StillUsesFreestandingEmit / Blocks / RetireRequired false. residual free /
   llvm / PROVABLY false. CAPABLE-GAP closed. Lake exe
   slake-freestanding-self-host-complete (just freestanding-self-host-complete-measure).
@@ -101,9 +102,10 @@ def productPathFreestandingOwnershipClaimed : Bool := true
 /-- B39 PERFORM-CLAIMED remains true (prerequisite evidence). -/
 def productPathFreestandingPerformClaimed : Bool := true
 
-/-- Official path regenerate still DependsOnLake (Lake host elaborator).
-    Greppable: productPathPerformDependsOnLake. -/
-def productPathPerformDependsOnLake : Bool := true
+/-- Official product path no longer DependsOnLake as living driver (M6).
+    Host elaborator residual may remain (DualResidual). Greppable:
+    productPathPerformDependsOnLake. -/
+def productPathPerformDependsOnLake : Bool := false
 
 /-- B38 RETIRE-OFFICIAL remains measured (prerequisite substrate). -/
 def productPathOfficialPathRetireOfficialMeasured : Bool := true
@@ -129,8 +131,9 @@ def productPathCapableWriteDualEqualityLive : Bool := true
 /-- Official path no longer uses FreestandingEmit as product writer (B38). -/
 def productPathOfficialPathStillUsesFreestandingEmit : Bool := false
 
-/-- Official path still uses classic Lean Lake host elaborator. -/
-def productPathOfficialPathStillUsesLake : Bool := true
+/-- Official product path no longer uses Lake as living driver (M6).
+    Host elaborator residual may remain for SystemsLean development. -/
+def productPathOfficialPathStillUsesLake : Bool := false
 
 /-- FreestandingEmit retired as official product authority (B38). -/
 def productPathOfficialPathRetireFreestandingEmitRequired : Bool := false
@@ -190,7 +193,7 @@ def b38RetireOfficialRecipe : String := "freestanding-retire-official"
 
 /-- Complete surface ok: measured/step advanced/complete true; Full + ownership +
     perform + dual-eq WRITE; StillUsesFreestandingEmit/Blocks/RetireRequired false;
-    StillUsesLake/DependsOnLake true; free may be true (claim A independent);
+    StillUsesLake/DependsOnLake false (M6 product path); free may be true (claim A);
     llvm/PROVABLY false.
     Greppable: freestandingProductSelfHostCompleteOk. -/
 def freestandingProductSelfHostCompleteOk : Bool :=
@@ -211,11 +214,11 @@ def freestandingProductSelfHostCompleteOk : Bool :=
     && (productPathFreestandingPerformClaimedMeasured == true)
     && (productPathOfficialPathUsesDualEqualityWrite == true)
     && (productPathOfficialPathStillUsesFreestandingEmit == false)
-    && (productPathOfficialPathStillUsesLake == true)
+    && (productPathOfficialPathStillUsesLake == false)
     && (productPathOfficialPathRetireFreestandingEmitRequired == false)
     && (productPathOfficialPathDualEqualityBlocksRetirement == false)
     && (productPathOfficialPathRetireOfficialMeasured == true)
-    && (productPathPerformDependsOnLake == true)
+    && (productPathPerformDependsOnLake == false)
     && (productPathFreestandingPerformDualEqualityWriteCapableGapMeasured == true)
     && (productPathDualEqualityWriteParityGapOpen == false)
     && (productPathCapableWriteDualEqualityLive == true)
@@ -265,7 +268,7 @@ def printSelfHostCompleteMeasure : IO Unit := do
   IO.println s!"    Lake exe: {officialPathLakeExe}"
   IO.println s!"    just recipe: {officialPathJustRecipe}"
   IO.println s!"    still FreestandingEmit: {productPathOfficialPathStillUsesFreestandingEmit} (false = retired)"
-  IO.println s!"    still Lake: {productPathOfficialPathStillUsesLake} (host elaborator OK)"
+  IO.println s!"    still Lake: {productPathOfficialPathStillUsesLake} (false = product path retired Lake)"
   IO.println s!"    retire FreestandingEmit required: {productPathOfficialPathRetireFreestandingEmitRequired} (false = retired)"
   IO.println s!"    dual-equality blocks retirement: {productPathOfficialPathDualEqualityBlocksRetirement} (false = not blocked)"
   IO.println s!"  stepContractFullMeasured: {stepContractFullMeasured} (Full remains)"
@@ -286,17 +289,19 @@ def printSelfHostCompleteMeasure : IO Unit := do
   IO.println s!"  B39 PERFORM-CLAIMED recipe: just {b39PerformClaimedRecipe}"
   IO.println s!"  B38 RETIRE-OFFICIAL recipe: just {b38RetireOfficialRecipe}"
   IO.println "  honest: complete with Full bar is independent of residual free"
-  IO.println "  honest: Lake host elaborator may remain; FreestandingEmit is not official writer"
-  IO.println "  honest: CAPABLE-GAP stays closed; llvm/PROVABLY stay false; free may be true"
+  IO.println "  honest: product path Lake retired (M6); host elaborator residual may remain"
+  IO.println "  honest: FreestandingEmit is not official writer; free may be true"
+  IO.println "  honest: CAPABLE-GAP stays closed; llvm/PROVABLY stay false"
   IO.println "  short module name SelfHostComplete (not ProductPathFreestanding* kitchen-sink)"
   if freestandingProductSelfHostCompleteOk then
-    IO.println s!"GREEN {stageId}: complete surface ok (measured true; complete true; stepContractFull true; ownership claimed true; perform claimed true; official dual-eq WRITE; StillUsesFreestandingEmit false; Blocks false; DependsOnLake true; residual free true; llvm/PROVABLY false)"
+    IO.println s!"GREEN {stageId}: complete surface ok (measured true; complete true; stepContractFull true; ownership claimed true; perform claimed true; official dual-eq WRITE; StillUsesFreestandingEmit false; Blocks false; DependsOnLake false; StillUsesLake false; residual free true; llvm/PROVABLY false)"
   else
     IO.eprintln s!"error: {stageId} complete surface not ok"
     throw (IO.userError "freestandingProductSelfHostCompleteOk false")
 
 /-- Complete PartialReady fold (closed claim B). Tip re-exports chain fold.
     residual free may be true (claim A); llvm / PROVABLY stay false.
+    Product StillUsesLake / DependsOnLake false (M6).
     Greppable: freestandingProductSelfHostCompletePartialReady,
     SELF-HOST-FREESTANDING-PRODUCT-COMPLETE,
     FREESTANDING-PRODUCT-SELF-HOST-COMPLETE. -/
@@ -310,14 +315,14 @@ def freestandingProductSelfHostCompletePartialReady : Bool :=
     && productPathFreestandingPerformClaimed
     && productPathOfficialPathUsesDualEqualityWrite
     && !productPathOfficialPathStillUsesFreestandingEmit
-    && productPathOfficialPathStillUsesLake
+    && !productPathOfficialPathStillUsesLake
     && !productPathOfficialPathRetireFreestandingEmitRequired
     && !productPathOfficialPathDualEqualityBlocksRetirement
     && productPathOfficialPathRetireOfficialMeasured
     && productPathFreestandingOwnershipClaimedMeasured
     && productPathFreestandingPerformClaimedMeasured
     && stepContractFullMeasured
-    && productPathPerformDependsOnLake
+    && !productPathPerformDependsOnLake
     && residualFreeClaimed
     && !llvmUnlocked
     && !provablyUnlocked

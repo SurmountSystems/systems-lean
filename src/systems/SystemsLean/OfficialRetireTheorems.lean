@@ -43,8 +43,8 @@
   productPathOfficialPathRetireOfficialStepAdvanced_true,
   productPathOfficialPathUsesDualEqualityWrite_true,
   productPathOfficialPathStillUsesFreestandingEmit_false,
-  productPathOfficialPathStillUsesLake_true,
-  productPathPerformDependsOnLake_true,
+  productPathOfficialPathStillUsesLake_false,
+  productPathPerformDependsOnLake_false,
   productPathFreestandingPerformClaimed_false,
   productPathFreestandingCapableStepContractFullSatisfied_false,
   productPathOfficialPathRetireFreestandingEmitRequired_false,
@@ -117,11 +117,11 @@ theorem productPathOfficialPathUsesDualEqualityWrite_true :
 theorem productPathOfficialPathStillUsesFreestandingEmit_false :
     productPathOfficialPathStillUsesFreestandingEmit = false := rfl
 
-/-- Official path still uses Lake host elaborator pin holds.
-    Greppable: productPathOfficialPathStillUsesLake_true,
+/-- Official product path no longer uses Lake as living driver (M6).
+    Greppable: productPathOfficialPathStillUsesLake_false,
     RETIRE-OFFICIAL-THEOREM. -/
-theorem productPathOfficialPathStillUsesLake_true :
-    productPathOfficialPathStillUsesLake = true := rfl
+theorem productPathOfficialPathStillUsesLake_false :
+    productPathOfficialPathStillUsesLake = false := rfl
 
 /-- FreestandingEmit retire-required stays false (retired as official authority).
     Greppable: productPathOfficialPathRetireFreestandingEmitRequired_false,
@@ -142,10 +142,10 @@ theorem productPathOfficialPathDualEqualityBlocksRetirement_false :
 theorem productPathFreestandingPerformClaimed_false :
     productPathFreestandingPerformClaimed = false := rfl
 
-/-- Perform DependsOnLake remains true (regenerate Lake host elaborator).
-    Greppable: productPathPerformDependsOnLake_true, RETIRE-OFFICIAL-THEOREM. -/
-theorem productPathPerformDependsOnLake_true :
-    productPathPerformDependsOnLake = true := rfl
+/-- Perform DependsOnLake false after M6 product-path Lake pins flip.
+    Greppable: productPathPerformDependsOnLake_false, RETIRE-OFFICIAL-THEOREM. -/
+theorem productPathPerformDependsOnLake_false :
+    productPathPerformDependsOnLake = false := rfl
 
 /-- Land-time Full long-name stays false (Full lives on StepContractFull).
     Greppable: productPathFreestandingCapableStepContractFullSatisfied_false,
@@ -271,13 +271,13 @@ example : productPathOfficialPathRetireOfficialMeasured = true := by decide
 example : productPathOfficialPathRetireOfficialStepAdvanced = true := by decide
 example : productPathOfficialPathUsesDualEqualityWrite = true := by decide
 example : productPathOfficialPathStillUsesFreestandingEmit = false := by decide
-example : productPathOfficialPathStillUsesLake = true := by decide
+example : productPathOfficialPathStillUsesLake = false := by decide
 example : productPathOfficialPathRetireFreestandingEmitRequired = false := by
   decide
 example : productPathOfficialPathDualEqualityBlocksRetirement = false := by
   decide
 example : productPathFreestandingPerformClaimed = false := by decide
-example : productPathPerformDependsOnLake = true := by decide
+example : productPathPerformDependsOnLake = false := by decide
 example : productPathFreestandingCapableStepContractFullSatisfied = false := by
   decide
 example : productPathOfficialPathRetireOfficialOk = true := by decide

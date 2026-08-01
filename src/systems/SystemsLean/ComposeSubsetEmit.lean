@@ -370,21 +370,8 @@ def composeSubsetEmitWrite (root : System.FilePath) : IO Unit := do
   let emitDir := root / "src" / "systems" / "emit"
   let outH := emitDir / emitHeaderBase
   let outC := emitDir / emitSourceBase
-  IO.println s!"== {stageId}: Compose subset freestanding emit (ideal ladder M1) =="
-  IO.println s!"  host: {hostId} / surface: {surfaceId}"
-  IO.println s!"  Compose unit input id: {composeSubsetEmitInputId} (COMPILE-PATH-COMPOSE reuse)"
-  IO.println s!"  composeSubsetEmitInputReady: {composeSubsetEmitInputReady} (composeFixtureCompilePathReady)"
-  IO.println s!"  composeSubsetEmitComposeDialectOk: {composeSubsetEmitComposeDialectOk} (HOST-EMIT-COMPOSE)"
-  IO.println s!"  composeSubsetEmitPackageOk: {composeSubsetEmitPackageOk}"
-  IO.println s!"  composeSubsetEmitReady: {composeSubsetEmitReady}"
-  IO.println s!"  composeSubsetEmitWroteExpected: {composeSubsetEmitWroteExpected} (package identity pin)"
-  IO.println s!"  stillUsesLake: {stillUsesLake} (true until S4)"
-  IO.println s!"  dependsOnLake: {dependsOnLake} (host elaborator bootstrap)"
-  IO.println s!"  Lake exe: {lakeExeName} / just {justRecipe}"
-  IO.println "  honest: M1 = Compose subset unit package write; not full product-wire regenerate"
-  IO.println "  honest: Lake host remains; free/complete living tip unchanged; not PROVABLY; not llvm"
-  IO.println "  honest: not Compose subset rebuild; not S4 Lake retire; not full CFG/SSA"
-  IO.println "  short module name ComposeSubsetEmit (not ProductPathFreestandingComposeSubset)"
+  IO.println s!"== {stageId}: Compose subset emit =="
+  IO.println s!"  readyPin={composeSubsetEmitReady} stillUsesLake={stillUsesLake}"
   IO.FS.createDirAll emitDir
   IO.FS.writeFile outH composeSubsetHeaderPackage
   IO.FS.writeFile outC composeSubsetSourcePackage
@@ -400,11 +387,8 @@ def composeSubsetEmitWrite (root : System.FilePath) : IO Unit := do
     throw (IO.userError "source mismatch")
   validateComposeSubsetPackage emitHeaderBase headerWritten false
   validateComposeSubsetPackage emitSourceBase sourceWritten true
-  IO.println s!"GREEN {stageId}: Compose subset freestanding C wrote under {emitDir}/"
-  IO.println s!"  wrote: {outH} ({headerWritten.length} chars)"
-  IO.println s!"  wrote: {outC} ({sourceWritten.length} chars)"
+  IO.println s!"GREEN {stageId}: wrote {outH} ({headerWritten.length}) {outC} ({sourceWritten.length})"
   IO.println "  greppable: COMPOSE-SUBSET-EMIT, SLAKE_COMPOSE_SUBSET_EMIT_V0, HOST-EMIT-COMPOSE, HOST_COMPOSE_V0"
-  IO.println "  honest: subset emit evidence (not sole success via full dialect rewrite)"
 
 /-- Drop lake/exe separators so root path is first real arg. -/
 def filterArgs : List String -> List String

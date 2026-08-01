@@ -366,23 +366,8 @@ def multSubsetRebuildWrite (root : System.FilePath) : IO Unit := do
   let emitDir := root / "src" / "systems" / "emit"
   let outH := emitDir / emitHeaderBase
   let outC := emitDir / emitSourceBase
-  IO.println s!"== {stageId}: Mult subset rebuild / self-application (bootstrap S3) =="
-  IO.println s!"  host: {hostId} / surface: {surfaceId}"
-  IO.println s!"  S2 package input id: {multSubsetRebuildInputId} (MULT-SUBSET-EMIT reuse)"
-  IO.println s!"  multSubsetRebuildInputReady: {multSubsetRebuildInputReady} (multSubsetEmitReady)"
-  IO.println s!"  multSubsetRebuildPackagePinOk: {multSubsetRebuildPackagePinOk} (multSubsetEmitWroteExpected)"
-  IO.println s!"  multSubsetRebuildSelfApplyOk: {multSubsetRebuildSelfApplyOk}"
-  IO.println s!"  multSubsetRebuildReady: {multSubsetRebuildReady}"
-  IO.println s!"  multSubsetRebuildWroteExpected: {multSubsetRebuildWroteExpected} (package identity pin)"
-  IO.println s!"  stillUsesLake: {stillUsesLake} (true until S4 / M6)"
-  IO.println s!"  dependsOnLake: {dependsOnLake} (host elaborator bootstrap)"
-  IO.println s!"  withoutLakeFinished: {multSubsetRebuildWithoutLakeFinishedClaimed} (M2 measured step; product Lake remains)"
-  IO.println s!"  Lake exe: {lakeExeName} / just {justRecipe} / just {justRecipeWithoutLake}"
-  IO.println s!"  prebuilt: {prebuiltMultRebuildRel} (bootstrap once with Lake; measured without-Lake uses ELF)"
-  IO.println "  honest: S3 = measured Mult subset self-application (re-emit/re-validate); not full dialect regenerate"
-  IO.println "  honest: product Lake host remains; free/complete living tip unchanged; not PROVABLY; not llvm"
-  IO.println "  honest: without-Lake measured Mult re-emit finished (M2 partial); not S4 Lake retire"
-  IO.println "  short module name MultSubsetRebuild (not ProductPathFreestandingBootstrapS3)"
+  IO.println s!"== {stageId}: Mult subset rebuild =="
+  IO.println s!"  readyPin={multSubsetRebuildReady} stillUsesLake={stillUsesLake}"
   IO.FS.createDirAll emitDir
   -- Self-application: re-write Mult subset package from S2 assembled text.
   IO.FS.writeFile outH multSubsetHeaderPackage
@@ -399,11 +384,8 @@ def multSubsetRebuildWrite (root : System.FilePath) : IO Unit := do
     throw (IO.userError "source mismatch")
   validateMultSubsetRebuildPackage emitHeaderBase headerWritten false
   validateMultSubsetRebuildPackage emitSourceBase sourceWritten true
-  IO.println s!"GREEN {stageId}: Mult subset self-application rebuild under {emitDir}/"
-  IO.println s!"  rewrote: {outH} ({headerWritten.length} chars)"
-  IO.println s!"  rewrote: {outC} ({sourceWritten.length} chars)"
+  IO.println s!"GREEN {stageId}: wrote {outH} ({headerWritten.length}) {outC} ({sourceWritten.length})"
   IO.println "  greppable: MULT-SUBSET-REBUILD, SLAKE_MULT_SUBSET_REBUILD_V0, MULT-SUBSET-EMIT, multSubsetRebuildReady, MULT-WITHOUT-LAKE"
-  IO.println "  honest: subset rebuild / self-application evidence; measured without-Lake via just mult-subset-rebuild-without-lake"
 
 /-- Drop lake/exe separators so root path is first real arg. -/
 def filterArgs : List String -> List String

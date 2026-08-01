@@ -42,8 +42,8 @@
   productPathFreestandingPerformClaimed_true,
   productPathOfficialPathUsesDualEqualityWrite_true,
   productPathOfficialPathStillUsesFreestandingEmit_false,
-  productPathOfficialPathStillUsesLake_true,
-  productPathPerformDependsOnLake_true,
+  productPathOfficialPathStillUsesLake_false,
+  productPathPerformDependsOnLake_false,
   residualFreeClaimed_true, llvmUnlocked_false, provablyUnlocked_false,
   completeId_eq, lakeFreeCompleteRecipe_eq,
   lakeExeName_eq, justMeasureRecipe_eq,
@@ -133,16 +133,16 @@ theorem productPathOfficialPathUsesDualEqualityWrite_true :
 theorem productPathOfficialPathStillUsesFreestandingEmit_false :
     productPathOfficialPathStillUsesFreestandingEmit = false := rfl
 
-/-- Official path still uses Lake host elaborator pin holds.
-    Greppable: productPathOfficialPathStillUsesLake_true,
+/-- Official product path no longer uses Lake as living driver (M6).
+    Greppable: productPathOfficialPathStillUsesLake_false,
     COMPLETE-THEOREM. -/
-theorem productPathOfficialPathStillUsesLake_true :
-    productPathOfficialPathStillUsesLake = true := rfl
+theorem productPathOfficialPathStillUsesLake_false :
+    productPathOfficialPathStillUsesLake = false := rfl
 
-/-- Perform DependsOnLake remains true (regenerate Lake host elaborator).
-    Greppable: productPathPerformDependsOnLake_true, COMPLETE-THEOREM. -/
-theorem productPathPerformDependsOnLake_true :
-    productPathPerformDependsOnLake = true := rfl
+/-- Perform DependsOnLake false after M6 product-path Lake pins flip.
+    Greppable: productPathPerformDependsOnLake_false, COMPLETE-THEOREM. -/
+theorem productPathPerformDependsOnLake_false :
+    productPathPerformDependsOnLake = false := rfl
 
 /-- residual free true (claim A product free; DualResidual aligned).
     Greppable: residualFreeClaimed_true, COMPLETE-THEOREM. -/
@@ -234,8 +234,8 @@ example : productPathFreestandingOwnershipClaimed = true := by decide
 example : productPathFreestandingPerformClaimed = true := by decide
 example : productPathOfficialPathUsesDualEqualityWrite = true := by decide
 example : productPathOfficialPathStillUsesFreestandingEmit = false := by decide
-example : productPathOfficialPathStillUsesLake = true := by decide
-example : productPathPerformDependsOnLake = true := by decide
+example : productPathOfficialPathStillUsesLake = false := by decide
+example : productPathPerformDependsOnLake = false := by decide
 example : residualFreeClaimed = true := by decide
 example : llvmUnlocked = false := by decide
 example : provablyUnlocked = false := by decide

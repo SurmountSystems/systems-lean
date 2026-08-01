@@ -108,7 +108,7 @@ def productPathFreestandingPerformClaimed : Bool := false
 /-- Official product path regenerate still DependsOnLake (Lake host elaborator for
     freestanding-capable-regenerate; not FreestandingEmit). Greppable:
     productPathPerformDependsOnLake. -/
-def productPathPerformDependsOnLake : Bool := true
+def productPathPerformDependsOnLake : Bool := false
 
 /-- B37 CAPABLE-GAP remains measured (prerequisite substrate). -/
 def productPathFreestandingPerformDualEqualityWriteCapableGapMeasured : Bool := true
@@ -124,7 +124,7 @@ def productPathOfficialPathStillUsesFreestandingEmit : Bool := false
 
 /-- Official path still uses classic Lean Lake host elaborator
     (freestanding-capable-regenerate Lake exe). -/
-def productPathOfficialPathStillUsesLake : Bool := true
+def productPathOfficialPathStillUsesLake : Bool := false
 
 /-- FreestandingEmit retired as official product authority (B38). -/
 def productPathOfficialPathRetireFreestandingEmitRequired : Bool := false
@@ -194,11 +194,11 @@ def productPathOfficialPathRetireOfficialOk : Bool :=
     && (productPathOfficialPathRetireOfficialStepAdvanced == true)
     && (productPathOfficialPathUsesDualEqualityWrite == true)
     && (productPathOfficialPathStillUsesFreestandingEmit == false)
-    && (productPathOfficialPathStillUsesLake == true)
+    && (productPathOfficialPathStillUsesLake == false)
     && (productPathOfficialPathRetireFreestandingEmitRequired == false)
     && (productPathOfficialPathDualEqualityBlocksRetirement == false)
     && (productPathFreestandingPerformClaimed == false)
-    && (productPathPerformDependsOnLake == true)
+    && (productPathPerformDependsOnLake == false)
     && (productPathFreestandingPerformDualEqualityWriteCapableGapMeasured == true)
     && (productPathDualEqualityWriteParityGapOpen == false)
     && (productPathCapableWriteDualEqualityLive == true)
@@ -292,11 +292,11 @@ def productPathOfficialPathRetireOfficialPartialReady : Bool :=
     && productPathOfficialPathRetireOfficialStepAdvanced
     && productPathOfficialPathUsesDualEqualityWrite
     && !productPathOfficialPathStillUsesFreestandingEmit
-    && productPathOfficialPathStillUsesLake
+    && !productPathOfficialPathStillUsesLake
     && !productPathOfficialPathRetireFreestandingEmitRequired
     && !productPathOfficialPathDualEqualityBlocksRetirement
     && !productPathFreestandingPerformClaimed
-    && productPathPerformDependsOnLake
+    && !productPathPerformDependsOnLake
     && productPathFreestandingPerformDualEqualityWriteCapableGapMeasured
     && !productPathFreestandingCapableStepContractFullSatisfied
 

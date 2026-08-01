@@ -357,21 +357,8 @@ def extractSubsetEmitWrite (root : System.FilePath) : IO Unit := do
   let emitDir := root / "src" / "systems" / "emit"
   let outH := emitDir / emitHeaderBase
   let outC := emitDir / emitSourceBase
-  IO.println s!"== {stageId}: Extract subset freestanding emit (ideal ladder M1) =="
-  IO.println s!"  host: {hostId} / surface: {surfaceId}"
-  IO.println s!"  Extract unit input id: {extractSubsetEmitInputId} (COMPILE-PATH-EXTRACT reuse)"
-  IO.println s!"  extractSubsetEmitInputReady: {extractSubsetEmitInputReady} (extractRuntimeFsGateReady)"
-  IO.println s!"  extractSubsetEmitExtractDialectOk: {extractSubsetEmitExtractDialectOk} (HOST-EMIT-EXTRACT)"
-  IO.println s!"  extractSubsetEmitPackageOk: {extractSubsetEmitPackageOk}"
-  IO.println s!"  extractSubsetEmitReady: {extractSubsetEmitReady}"
-  IO.println s!"  extractSubsetEmitWroteExpected: {extractSubsetEmitWroteExpected} (package identity pin)"
-  IO.println s!"  stillUsesLake: {stillUsesLake} (true until S4)"
-  IO.println s!"  dependsOnLake: {dependsOnLake} (host elaborator bootstrap)"
-  IO.println s!"  Lake exe: {lakeExeName} / just {justRecipe}"
-  IO.println "  honest: M1 = Extract subset unit package write; not full product-wire regenerate"
-  IO.println "  honest: Lake host remains; free/complete living tip unchanged; not PROVABLY; not llvm"
-  IO.println "  honest: not Extract subset rebuild; not S4 Lake retire"
-  IO.println "  short module name ExtractSubsetEmit (not ProductPathFreestandingExtractSubset)"
+  IO.println s!"== {stageId}: Extract subset emit =="
+  IO.println s!"  readyPin={extractSubsetEmitReady} stillUsesLake={stillUsesLake}"
   IO.FS.createDirAll emitDir
   IO.FS.writeFile outH extractSubsetHeaderPackage
   IO.FS.writeFile outC extractSubsetSourcePackage
@@ -387,11 +374,8 @@ def extractSubsetEmitWrite (root : System.FilePath) : IO Unit := do
     throw (IO.userError "source mismatch")
   validateExtractSubsetPackage emitHeaderBase headerWritten false
   validateExtractSubsetPackage emitSourceBase sourceWritten true
-  IO.println s!"GREEN {stageId}: Extract subset freestanding C wrote under {emitDir}/"
-  IO.println s!"  wrote: {outH} ({headerWritten.length} chars)"
-  IO.println s!"  wrote: {outC} ({sourceWritten.length} chars)"
+  IO.println s!"GREEN {stageId}: wrote {outH} ({headerWritten.length}) {outC} ({sourceWritten.length})"
   IO.println "  greppable: EXTRACT-SUBSET-EMIT, SLAKE_EXTRACT_SUBSET_EMIT_V0, HOST-EMIT-EXTRACT, FAIL_CLOSED_CHECKER_V1"
-  IO.println "  honest: subset emit evidence (not sole success via full dialect rewrite)"
 
 /-- Drop lake/exe separators so root path is first real arg. -/
 def filterArgs : List String -> List String

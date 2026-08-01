@@ -114,11 +114,23 @@ companions.
 
 ### Systems Open (join)
 
-**Living tip:** freestanding product self-host **complete true**; product residual free **true**; Lake host still used (host residual remains); bootstrap **S0+S1+S2+S3 done**; ideal ladder **M1** unit surfaces **done**; M2 including Name B full Path A **done** (freestandingDriverComplete **true**); Open **M3 subset language front-end design**; S4 / M6 Lake retire deferred; long-file campaign parked hygiene. Do not re-open claim B. Free is not Lake gone and is not complete. Never forge StillUsesLake false.
+**Living tip:** freestanding product self-host **complete true**; product residual free **true**; product path StillUsesLake/DependsOnLake **false** (M6 phase 2 lake proof); host elaborator residual **remains**; bootstrap **S0+S1+S2+S3 done**; ideal ladder **M1** unit surfaces **done**; M2 including Name B full Path A **done** (freestandingDriverComplete **true**); M3 design+implement **done** (SubsetFront / just subset-front); M4 design + Name A/B/C **done**; M5 design + Names A/B/C **all done**; M6 design + phase 1 inventory + phase 2 pin flip **all done**; Open **empty** (M0-M6 product path closed; Step 4 held); long-file campaign parked hygiene. **Parallel hygiene rail:** runtime residual archaeology stdout bands **P0-P5** do not block product; see `RESIDUAL-systems.md` Decisions + `AGENTS.md` Driver stdout policy. Do not re-open claim B. Free is not Lake gone and is not complete.
 
 | Name | Status | Owner detail |
 |------|--------|--------------|
-| **M3 subset language front-end design** | **open** | `RESIDUAL-systems.md` -- plan ideal M3; design then implement |
+| **M6 product-path Lake pins flip** | **done** (2026-08-01) | Living tip StillUsesLake/DependsOnLake false with lake proof; join `/tmp/grok-1000/grok-impl-summary-m6-phase2-pin-flip.md` |
+| **M6 Lake retire implement phase 1** | **done** (2026-08-01) | `LakeRetireInventory` / `just lake-retire-inventory`; StillUsesLake stayed true at phase 1; join `/tmp/grok-1000/grok-impl-summary-m6-phase1.md` |
+| **M6 Lake retire design** | **done** (2026-08-01) | `doc/dev/research/m6-lake-retire-design-2026-08-01.md` -- inventory + honesty + phase 1/2/3 Names; no pin flips |
+| **M5 without-Lake package join deepen** | **done** (2026-08-01) | `RESIDUAL-systems.md` -- plan ideal M5 Name C; just subset-packages-rebuild-join-without-lake; subsetPackageJoinWithoutLakeMultiUnitFinishedClaimed true |
+| **M5 front-end Mult package path** | **done** (2026-08-01) | `RESIDUAL-systems.md` -- plan ideal M5 Name B; FrontMultPackage / just front-mult-package; G1 accept then Mult package write |
+| **M5 multi-unit package rebuild join** | **done** (2026-08-01) | `RESIDUAL-systems.md` -- plan ideal M5 Name A; SubsetPackageJoin / just subset-packages-rebuild-join; dual evidence Mult..Compose |
+| **M5 design** | **done** (2026-08-01) | `doc/dev/research/m5-compiler-packages-self-application-design-2026-08-01.md` -- inventory + honesty + Names A/B/C; cites M1/M3/M4 |
+| **M4 official build without-Lake wire-up** | **done** (2026-08-01) | `RESIDUAL-systems.md` -- plan ideal M4 Name C; just build without lake on hot path; StillUsesLake true until M6 |
+| **M4 product-wire freestanding writer** | **done** (2026-08-01) | `RESIDUAL-systems.md` -- plan ideal M4 Name B; Path A host-cc product-wire writer; productWireFsWriterFinished true |
+| **M4 product-wire without-Lake prebuilt** | **done** (2026-08-01) | `RESIDUAL-systems.md` -- plan ideal M4 Name A; just freestanding-capable-regenerate-without-lake; productWireWithoutLakeFinished true; product Lake remains |
+| **M4 product-wire without-Lake design** | **done** | `doc/dev/research/m4-product-wire-without-lake-design-2026-08-01.md` |
+| **M3 subset language front-end implement** | **done** (2026-08-01) | `RESIDUAL-systems.md` -- SubsetFront + goldens G1/G2+B1-B3; just subset-front GREEN |
+| **M3 subset language front-end design** | **done** (2026-08-01) | `RESIDUAL-systems.md` -- note `doc/dev/research/m3-subset-language-frontend-design-2026-08-01.md` |
 | **Name B full freestanding Mult write** | **done** (2026-08-01) | `RESIDUAL-systems.md` -- Path A host-cc Mult package writer; freestandingDriverComplete true |
 | **Name B full Mult write design deepen** | **done** (2026-08-01) | `RESIDUAL-systems.md` -- note `doc/dev/research/name-b-full-mult-write-design-deepen-2026-08-01.md` |
 | **Compose subset rebuild** | **done** (2026-08-01) | `RESIDUAL-systems.md` -- M1 Compose follow-on; ComposeSubsetRebuild + slake-compose-subset-rebuild / just compose-subset-rebuild; Compose subset self-application |
@@ -159,7 +171,7 @@ companions.
 | Host owns freestanding emit body scaffolding | **done** (partial) | `RESIDUAL-systems.md` -- EmitBody HOST-EMIT-BODY + host_emit_body_fragment.ssot.txt BODY_C_* + FreestandingEmit embed; SelfHostBody folds emitBodyReady; free/complete stay false |
 | Host owns freestanding banner text | **done** (partial) | `RESIDUAL-systems.md` -- EmitBanner + host_emit_banner.ssot.txt + FreestandingEmit embed; HOST-EMIT-BANNER; not SelfHostBody fold; free/complete stay false |
 | Dual SSOT equality gate | **done** | `RESIDUAL-systems.md` -- FreestandingEmit DUAL-SSOT-EQUALITY emit-time fail-closed; pure Nix live tokens; free/complete stay false |
-| Freestanding product self-host | **done** (claim B complete true; stepContractFull true; ownership claimed true; perform claimed true; StillUsesFreestandingEmit false; Full true; lake proof required on complete recipe after RCA 2026-07-30) | `RESIDUAL-systems.md` -- claim B complete closed; claim A free **true** (host residual remains); llvm/PROVABLY false; Lake host remains; long-file hygiene parked; bootstrap S0-S3 done; M1 Linear/Types/Program/Extract emit+rebuild **done**; Open **empty** (done-for-now); M2 Name A Mult without-Lake prebuilt driver done; M2 Name B Mult freestanding surface dual-check partial done (freestandingDriverComplete false); design Name B full by choice; S4/Step 4 held; free foundation Steps 0-3 done; plan `plan-residual-free-freestanding.md` Step 5 ideal ladder; RCA `doc/dev/research/selfapplyfs-rebuild-failure-2026-07-30.md` |
+| Freestanding product self-host | **done** (claim B complete true; stepContractFull true; ownership claimed true; perform claimed true; StillUsesFreestandingEmit false; Full true; lake proof required on complete recipe after RCA 2026-07-30) | `RESIDUAL-systems.md` -- claim B complete closed; claim A free **true** (host residual remains); product StillUsesLake/DependsOnLake **false** (M6 phase 2); llvm/PROVABLY false; long-file hygiene parked; bootstrap S0-S3 done; M1-M6 ladder **done**; Open **empty**; Step 4 held; free foundation Steps 0-3 done; plan `plan-residual-free-freestanding.md` Step 5 ideal ladder; RCA `doc/dev/research/selfapplyfs-rebuild-failure-2026-07-30.md` |
 | SelfApplyFs dual-pin thin batch 1 | **done** | `RESIDUAL-systems.md` -- B2 KernelSelfApply historical pins home-owned; tip 5755->5710 (-45); inventory `doc/dev/research/selfapplyfs-dual-pin-thin-b1-2026-07-30.md` |
 | SelfApplyFs dual-pin thin batch 2 | **done** | `RESIDUAL-systems.md` -- B3 ProductOutKernel historical pins home-owned; tip 5710->5657 (-53); inventory `doc/dev/research/selfapplyfs-dual-pin-thin-b2-2026-07-30.md` |
 | SelfApplyFs dual-pin thin batch 3 | **done** | `RESIDUAL-systems.md` -- B4 BootstrapHonesty historical pins home-owned; tip 5657->5609 (-48); remains := true kept on tip; inventory `doc/dev/research/selfapplyfs-dual-pin-thin-b3-2026-07-30.md` |
@@ -326,7 +338,7 @@ Plain-English residual that is still open, held, or not claimed. Detail lives in
 
 | Kind | What | Status |
 |------|------|--------|
-| **Open (WATCHER)** | empty (done-for-now); Extract subset rebuild done; Step 4 held (PROVABLY / LLVM) | **done-for-now** (matches living tip; complete true; free true; host residual remains; S0-S3 done; M1 Linear/Types/Program/Extract emit+rebuild done; M2 Name A + Name B surface dual-check partial done; S4/M6 deferred; next by operator choice) |
+| **Open (WATCHER)** | **empty** (done-for-now); M0-M6 product path closed; M6 phase 2 StillUsesLake/DependsOnLake false with lake proof; Step 4 held (PROVABLY / LLVM) | **done-for-now** (complete true; free true; product Lake pins false; host residual remains) |
 | Linear freestanding contracts | Exact-once / Mult 0/1/omega; axioms documented; lake green | **done** (2026-08-01) |
 | Residual free bar inventory | Checklist before free claim; measure green; honesty modules | **done** (2026-08-01; `doc/dev/research/residual-free-bar-inventory-2026-08-01.md`) |
 | Linear long-file split | **118->92** via LinearTheorems (**71**) | **done** |
@@ -412,7 +424,20 @@ cuts; agent git revert on screw-up (STOP, leave tree); plan-id or gap-docs re-gr
 
 | Priority | What | Why highest value | Where |
 |----------|------|-------------------|-------|
-| **open** | M3 subset language front-end design | Design note then implement residual | `RESIDUAL-systems.md`; plan ideal M3 |
+| **done-for-now** | (empty Open) | Ideal M0-M6 closed; Step 4 held; do not invent Open Names | `RESIDUAL-systems.md`; `WATCHER.md` |
+| **done** | M6 product-path Lake pins flip | Living tip StillUsesLake/DependsOnLake false with lake elaborator proof | join `/tmp/grok-1000/grok-impl-summary-m6-phase2-pin-flip.md` |
+| **done** | M6 Lake retire implement phase 1 | Inventory gate `LakeRetireInventory` / `just lake-retire-inventory`; StillUsesLake stayed true at phase 1 | join `/tmp/grok-1000/grok-impl-summary-m6-phase1.md` |
+| **done** | M6 Lake retire design | Inventory Lake vs Lake-free hot path; operational M6; honesty; phase 1/2/3 | `doc/dev/research/m6-lake-retire-design-2026-08-01.md` |
+| **done** | M5 without-Lake package join deepen (M5 Name C) | just subset-packages-rebuild-join-without-lake; prebuilt Mult..Compose; multi-unit without-Lake pin true | `RESIDUAL-systems.md`; plan ideal M5 Name C done 2026-08-01 |
+| **done** | M5 front-end Mult package path (M5 Name B) | FrontMultPackage / just front-mult-package; G1 accept then Mult package write | `RESIDUAL-systems.md`; plan ideal M5 Name B done 2026-08-01 |
+| **done** | M5 multi-unit package rebuild join (M5 Name A) | SubsetPackageJoin / just subset-packages-rebuild-join; Mult..Compose dual evidence | `RESIDUAL-systems.md`; plan ideal M5 Name A done 2026-08-01 |
+| **done** | M5 design | Inventory subset packages vs product wire; honesty; Names A/B/C | `doc/dev/research/m5-compiler-packages-self-application-design-2026-08-01.md` |
+| **done** | M4 official build without-Lake wire-up (M4 Name C) | just build prefers Name B host-cc else Name A prebuilt; no lake hot path; StillUsesLake true | `RESIDUAL-systems.md`; plan ideal M4 Name C done 2026-08-01 |
+| **done** | M4 product-wire freestanding writer (M4 Name B) | Path A host-cc product-wire writer; productWireFsWriterFinished true; just product-wire-freestanding-write | `RESIDUAL-systems.md`; plan ideal M4 Name B done 2026-08-01 |
+| **done** | M4 product-wire without-Lake prebuilt (M4 Name A) | just freestanding-capable-regenerate-without-lake; prebuilt CapableRegenerate; productWireWithoutLakeFinished true; product Lake remains | `RESIDUAL-systems.md`; plan ideal M4 Name A done 2026-08-01 |
+| **done** | M4 product-wire without-Lake design | Design note inventory + honesty + Names A/B/C | `doc/dev/research/m4-product-wire-without-lake-design-2026-08-01.md` |
+| **done** | M3 subset language front-end implement | SubsetFront parse/check G1/G2+B1-B3; just subset-front GREEN | `RESIDUAL-systems.md`; plan ideal M3 implement done 2026-08-01 |
+| **done** | M3 subset language front-end design | Research note + implement Done when draft | `doc/dev/research/m3-subset-language-frontend-design-2026-08-01.md`; plan ideal M3 design done 2026-08-01 |
 | **done** | Name B full freestanding Mult write (M2) | Path A host-cc Mult package writer; freestandingDriverComplete true | `RESIDUAL-systems.md`; plan Step 5 M2 Name B full done 2026-08-01 |
 | **done** | Name B full Mult write design deepen (M2 prep) | Design note Path A prefer; checkable Done when | `doc/dev/research/name-b-full-mult-write-design-deepen-2026-08-01.md`; plan Step 5 M2 design done 2026-08-01 |
 | **done** | Compose subset rebuild (M1 follow-on) | ComposeSubsetRebuild self-application; just compose-subset-rebuild GREEN | `RESIDUAL-systems.md`; plan Step 5 M1 Compose rebuild done 2026-08-01 |
@@ -521,15 +546,12 @@ cuts; agent git revert on screw-up (STOP, leave tree); plan-id or gap-docs re-gr
 | **done** | Short product-path module names | All ProductPathFreestanding* retired | campaign shortname-camp-0731 |
 | **done** | Dual-pin b1-33 + tip split | series ~5755->3638 then split **3638->1888** | dualpin-camp + tip-split-camp |
 
-**Highest value next:** Open **empty** (done-for-now). Extract subset rebuild
-**done**. No plan default names a next checkable residual. Next by operator
-choice: freestanding Mult write driver complete (Name B full;
-freestandingDriverComplete false today) or more unit surfaces
-(Erasure/Graph/Compose). Do not invent unrelated Open Names. S4 / M6 Lake retire
-**deferred** (never forge StillUsesLake false early). Complete true; free
-**true**; host residual remains; Lake host remains; M2 Name A + Name B surface
-dual-check partial done. Step 4 (proof progressive / PROVABLY / LLVM) **held**
--- do not auto-start. Never forge Lake-gone / llvm / PROVABLY.
+**Highest value next:** **done-for-now** (Open empty). Ideal freestanding ladder
+M0-M6 product path **closed**. Product StillUsesLake/DependsOnLake **false**
+(M6 phase 2 lake elaborator proof). Host elaborator residual **remains**. M5
+A/B/C **done**. Complete true; free **true**. Step 4 (proof progressive /
+PROVABLY / LLVM) **held** -- operator-gated only; do not invent Open Names.
+Never forge host free / llvm / PROVABLY.
 
 ---
 

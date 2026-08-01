@@ -39,10 +39,14 @@
   REGENERATE-SMOKE, HOST-REGENERATE-SMOKE, CapableRegenerateTheorems,
   theorem productPathFreestandingCapableRegeneratePartialReady_true,
   freestanding-capable-regenerate, slake-freestanding-capable-regenerate,
+  freestanding-capable-regenerate-without-lake, PRODUCT-WIRE-WITHOUT-LAKE,
+  productWireWithoutLakeFinishedClaimed, justRecipeProductWireWithoutLake,
+  prebuiltCapableRegenerateRel, productWireWithoutLakeKeepsHostLake,
   CapableRegenerate, RUNTIME-FS, UNIT_SURFACE host surface.
   Module: SystemsLean.CapableRegenerate
   Dual-pin batch 18: home Ok/stage/recipe/exe; tip keeps honesty + chain fold.
   Long-file split: REGENERATE-THEOREM + SMOKE in CapableRegenerateTheorems.
+  M4 Name A: product-wire without-Lake measured step (prebuilt; product Lake remains).
   Module must stay ASCII.
 -/
 
@@ -78,8 +82,39 @@ def blockerMustOwnRegenerate : String :=
 /-- Lake exe name for this freestanding-capable ordered regenerate entrypoint. -/
 def lakeExeName : String := "slake-freestanding-capable-regenerate"
 
-/-- just recipe name. -/
+/-- just recipe name (Lake-hosted official / diagnostic path). -/
 def justRecipeName : String := "freestanding-capable-regenerate"
+
+/-- just recipe for product-wire without-Lake measured regenerate (M4 Name A).
+    Prebuilt CapableRegenerate ELF; no lake on hot path. Product StillUsesLake
+    stays true until M6. Greppable: justRecipeProductWireWithoutLake,
+    freestanding-capable-regenerate-without-lake, PRODUCT-WIRE-WITHOUT-LAKE. -/
+def justRecipeProductWireWithoutLake : String :=
+  "freestanding-capable-regenerate-without-lake"
+
+/-- Relative path of prebuilt CapableRegenerate binary under src/systems
+    (bootstrap once: lake build slake-freestanding-capable-regenerate).
+    Greppable: prebuiltCapableRegenerateRel, slake-freestanding-capable-regenerate. -/
+def prebuiltCapableRegenerateRel : String :=
+  ".lake/build/bin/slake-freestanding-capable-regenerate"
+
+/-- Host elaborator still Lake (bootstrap; S4 / M6 only retires product pins).
+    Greppable: stillUsesLake, DependsOnLake, PRODUCT-WIRE-WITHOUT-LAKE. -/
+def stillUsesLake : Bool := true
+def dependsOnLake : Bool := true
+
+/-- Local product-wire without-Lake measured step finished (M4 Name A): prebuilt
+    driver + just freestanding-capable-regenerate-without-lake with dual evidence.
+    Not product StillUsesLake false (S4 / M6). Not freestanding product writer
+    (Name B). Greppable: productWireWithoutLakeFinishedClaimed,
+    PRODUCT-WIRE-WITHOUT-LAKE. -/
+def productWireWithoutLakeFinishedClaimed : Bool := true
+
+/-- Preferred honesty: product-wire without-Lake measured step finished does not
+    retire product Lake host. Greppable: productWireWithoutLakeKeepsHostLake,
+    PRODUCT-WIRE-WITHOUT-LAKE. -/
+def productWireWithoutLakeKeepsHostLake : Bool :=
+  productWireWithoutLakeFinishedClaimed && stillUsesLake && dependsOnLake
 
 /-- Real freestanding-capable ordered regenerate API name (implemented here).
     Greppable: freestandingCapableOrderedRegenerate. -/
@@ -164,6 +199,22 @@ def productPathFreestandingCapableRegenerateOk : Bool :=
     && (productPathFreestandingCapableRegenerateDependsOnLake == true)
     && (productPathFreestandingCapableRegenerateInstallOutOpen == false)
     && (productPathFreestandingCapableStepContractFullSatisfied == false)
+    && (lakeExeName == "slake-freestanding-capable-regenerate")
+    && (justRecipeName == "freestanding-capable-regenerate")
+
+/-- Structural ready for product-wire without-Lake measured step (Ok + finished
+    pin + recipe/prebuilt path + product Lake honesty). Not StillUsesLake false.
+    Greppable: productWireWithoutLakeReady, PRODUCT-WIRE-WITHOUT-LAKE. -/
+def productWireWithoutLakeReady : Bool :=
+  productPathFreestandingCapableRegenerateOk
+    && productWireWithoutLakeFinishedClaimed
+    && productWireWithoutLakeKeepsHostLake
+    && stillUsesLake
+    && dependsOnLake
+    && (justRecipeProductWireWithoutLake ==
+      "freestanding-capable-regenerate-without-lake")
+    && (prebuiltCapableRegenerateRel ==
+      ".lake/build/bin/slake-freestanding-capable-regenerate")
     && (lakeExeName == "slake-freestanding-capable-regenerate")
     && (justRecipeName == "freestanding-capable-regenerate")
 

@@ -312,22 +312,8 @@ def erasureSubsetRebuildWrite (root : System.FilePath) : IO Unit := do
   let emitDir := root / "src" / "systems" / "emit"
   let outH := emitDir / emitHeaderBase
   let outC := emitDir / emitSourceBase
-  IO.println s!"== {stageId}: Erasure subset rebuild / self-application (M1 follow-on) =="
-  IO.println s!"  host: {hostId} / surface: {surfaceId}"
-  IO.println s!"  M1 package input id: {erasureSubsetRebuildInputId} (ERASURE-SUBSET-EMIT reuse)"
-  IO.println s!"  erasureSubsetRebuildInputReady: {erasureSubsetRebuildInputReady} (erasureSubsetEmitReady)"
-  IO.println s!"  erasureSubsetRebuildPackagePinOk: {erasureSubsetRebuildPackagePinOk} (erasureSubsetEmitWroteExpected)"
-  IO.println s!"  erasureSubsetRebuildSelfApplyOk: {erasureSubsetRebuildSelfApplyOk}"
-  IO.println s!"  erasureSubsetRebuildReady: {erasureSubsetRebuildReady}"
-  IO.println s!"  erasureSubsetRebuildWroteExpected: {erasureSubsetRebuildWroteExpected} (package identity pin)"
-  IO.println s!"  stillUsesLake: {stillUsesLake} (true until S4)"
-  IO.println s!"  dependsOnLake: {dependsOnLake} (host elaborator bootstrap)"
-  IO.println s!"  withoutLakeFinished: {erasureSubsetRebuildWithoutLakeFinishedClaimed} (false; deepen later)"
-  IO.println s!"  Lake exe: {lakeExeName} / just {justRecipe}"
-  IO.println "  honest: rebuild = measured Erasure subset self-application (re-emit/re-validate); not full dialect regenerate"
-  IO.println "  honest: Lake host remains; free/complete living tip unchanged; not PROVABLY; not llvm"
-  IO.println "  honest: not without-Lake finished; not S4 Lake retire"
-  IO.println "  short module name ErasureSubsetRebuild (not ProductPathFreestandingErasureSubsetRebuild)"
+  IO.println s!"== {stageId}: Erasure subset rebuild =="
+  IO.println s!"  readyPin={erasureSubsetRebuildReady} stillUsesLake={stillUsesLake}"
   IO.FS.createDirAll emitDir
   IO.FS.writeFile outH erasureSubsetHeaderPackage
   IO.FS.writeFile outC erasureSubsetSourcePackage
@@ -343,11 +329,8 @@ def erasureSubsetRebuildWrite (root : System.FilePath) : IO Unit := do
     throw (IO.userError "source mismatch")
   validateErasureSubsetRebuildPackage emitHeaderBase headerWritten false
   validateErasureSubsetRebuildPackage emitSourceBase sourceWritten true
-  IO.println s!"GREEN {stageId}: Erasure subset self-application rebuild under {emitDir}/"
-  IO.println s!"  rewrote: {outH} ({headerWritten.length} chars)"
-  IO.println s!"  rewrote: {outC} ({sourceWritten.length} chars)"
+  IO.println s!"GREEN {stageId}: wrote {outH} ({headerWritten.length}) {outC} ({sourceWritten.length})"
   IO.println "  greppable: ERASURE-SUBSET-REBUILD, SLAKE_ERASURE_SUBSET_REBUILD_V0, ERASURE-SUBSET-EMIT, erasureSubsetRebuildReady"
-  IO.println "  honest: subset rebuild / self-application evidence (Lake-hosted; not without-Lake finished)"
 
 /-- Drop lake/exe separators so root path is first real arg. -/
 def filterArgs : List String -> List String

@@ -742,7 +742,20 @@ S4 elaborator proof.
 | **M2** | Mult freestanding surface dual-check partial | **done** (partial) | Name B greps: `just mult-subset-freestanding-deepen` dual-checks freestanding Mult product wire + Mult subset package (no lake; no Mult rebuild prebuilt); `MultFsDeepen`; freestandingDeepenPartial true; product StillUsesLake/DependsOnLake true |
 | **M2** | MultSubsetEmit freestanding Mult SSOT write path | **done** (host path) | Host MultSubsetEmit SSOT write path: `multFsWritePathReady` true; Lake `slake-mult-fs-write` remains bootstrap helper only |
 | **M2** | Name B full freestanding Mult write | **done** | Path A: Lean-generated `emit/slake_mult_fs_write_tool.c` + host-cc `src/systems/bin/slake-mult-fs-write-cc` (outside `.lake`); `just mult-subset-freestanding-write` measured hot path no lake; Mult rebuild ELF not writer; `freestandingDriverComplete` **true**; `multFsDeepenDriverReady` true; product StillUsesLake/DependsOnLake **true** |
-| **S4** | Retire Lake from product path | deferred | DependsOnLake / StillUsesLake false only with elaborator proof -- never forge early |
+| **M3** | Subset language front-end design | **done** (design) | Research note `doc/dev/research/m3-subset-language-frontend-design-2026-08-01.md`: Mult unit ordered IR subset language; good+bad goldens; short roles SubsetFront / slake-subset-front; StillUsesLake true until M6 |
+| **M3** | Subset language front-end implement | **done** | `SystemsLean.SubsetFront` + Main; lake exe `slake-subset-front`; just `subset-front`; goldens G1/G2 accept + B1/B2/B3 reject; dual evidence Lean + file dual-pin; product StillUsesLake/DependsOnLake **true** |
+| **M4** | Product-wire without-Lake design | **done** (design) | Research note `doc/dev/research/m4-product-wire-without-lake-design-2026-08-01.md`: inventory READ+COMPOSE+WRITE-HC+INSTALL vs Lake; honesty StillUsesLake true until M6; Names A/B/C |
+| **M4** | Product-wire without-Lake prebuilt | **done** (Name A) | `just freestanding-capable-regenerate-without-lake` runs prebuilt `.lake/build/bin/slake-freestanding-capable-regenerate` (no lake on hot path); `productWireWithoutLakeFinishedClaimed` true; product StillUsesLake/DependsOnLake true |
+| **M4** | Product-wire freestanding writer | **done** (Name B) | Path A host-cc `slake-product-wire-fs-write-cc`; `just product-wire-freestanding-write`; productWireFsWriterFinished true; product StillUsesLake true |
+| **M4** | Official build without-Lake wire-up | **done** (Name C) | `just build` prefers Name B host-cc writer else Name A prebuilt; no lake on hot path; StillUsesLake true until M6 |
+| **M5** | Compiler packages self-application design | **done** (design) | Research note `doc/dev/research/m5-compiler-packages-self-application-design-2026-08-01.md`: inventory Mult..Compose vs product wire; operational E2E join; honesty StillUsesLake true until M6; Names A/B/C; cites M1/M3/M4 |
+| **M5** | Multi-unit package rebuild join | **done** (Name A) | `SubsetPackageJoin` / `just subset-packages-rebuild-join`; ordered Mult without-Lake + Linear..Compose rebuilds; `subsetPackageJoinFinishedClaimed` true; dual evidence; product StillUsesLake true |
+| **M5** | Front-end Mult package path | **done** (Name B) | `FrontMultPackage` / `just front-mult-package`; SubsetFront G1 accept then Mult package write; `frontMultPackageFinishedClaimed` true; dual evidence; product StillUsesLake true |
+| **M5** | Without-Lake package join deepen | **done** (Name C) | `just subset-packages-rebuild-join-without-lake` runs prebuilt unit rebuild ELFs Mult..Compose (no lake on hot path); `subsetPackageJoinWithoutLakeMultiUnitFinishedClaimed` true; dual evidence; product StillUsesLake true |
+| **M6** | Lake retire design | **done** (design) | Research note `doc/dev/research/m6-lake-retire-design-2026-08-01.md`: inventory Lake host/bootstrap vs Lake-free product hot paths; operational M6 = product StillUsesLake/DependsOnLake false with elaborator proof; dual residual free true != Lake gone; honesty matrix; phase 1 inventory / phase 2 pin flip / phase 3 measure; false-park correction after M5 |
+| **M6** | Lake retire implement phase 1 | **done** | `SystemsLean.LakeRetireInventory` / `just lake-retire-inventory`; `lakeRetireInventoryReady` true; measured Lake-free recipe inventory dual-pinned; product StillUsesLake/DependsOnLake **remain true**; host residual remains; free/complete unchanged |
+| **M6** | Product-path Lake pins flip | **done** | Living tip product StillUsesLake/DependsOnLake/productPathOfficialPathStillUsesLake **false** with lake elaborator proof; LakeRetireInventory product pins false; host residual remains; free/complete unchanged; join `/tmp/grok-1000/grok-impl-summary-m6-phase2-pin-flip.md` |
+| **S4** | Retire Lake from product path | **done** (product path) | DependsOnLake / StillUsesLake **false** on living tip with elaborator proof (M6 phase 2); host elaborator residual remains |
 
 ### S1 surface (done)
 
@@ -1091,8 +1104,201 @@ self-host. Name B freestanding Mult surface dual-check partial is separate
 
 **Non-claims:** not freestanding Mult compiler without Lake; not S4 / M6 product
 StillUsesLake false; not PROVABLY; not llvm unlock; not re-open
-freestandingProductSelfHostComplete. Next ideal ladder: **M3** front-end over
-defined subset language (design then implement).
+freestandingProductSelfHostComplete. Next ideal ladder: **M4** product-wire
+without-Lake (**design done**; Name A prebuilt **open**). M3 front-end
+**design+implement done**.
+
+### M3 subset language front-end design (done)
+
+| Piece | Path / token |
+|-------|----------------|
+| Design note | `doc/dev/research/m3-subset-language-frontend-design-2026-08-01.md` (Kind: analysis only) |
+| Surface | Mult unit ordered IR subset language after M1 unit packages (`node MULT-* kind` lines; fail-closed kindMultOk / empty / unknown grade) |
+| Good goldens (draft) | G1 classic Mult three-node; G2 single MULT-OMEGA VALUE; optional G3 unit tier |
+| Bad goldens (draft) | B1 unknown grade; B2 kind/mult mismatch; B3 empty; optional B4-B6 |
+| Host short roles (implement) | `SubsetFront` / `SubsetFrontMain`; lake exe `slake-subset-front`; just `subset-front`; goldens `src/systems/goldens/mult-front/` |
+| Lake honesty | StillUsesLake / DependsOnLake **true** until M6; free/complete unchanged |
+
+**Non-claims (M3 design):** not parser implement; not freestanding source compiler;
+not S4/M6; not PROVABLY/llvm. Implement residual owns parse/check dual evidence.
+
+### M3 subset language front-end implement (done)
+
+| Piece | Path / token |
+|-------|----------------|
+| Module | `SystemsLean/SubsetFront.lean` (`SystemsLean.SubsetFront`) |
+| Lake exe | `slake-subset-front` (`SubsetFrontMain.lean`) |
+| just recipe | `just subset-front` |
+| Goldens | `src/systems/goldens/mult-front/` G1 `good-mult-classic` + G2 `good-single-value` accept; B1 unknown grade / B2 kind-mult mismatch / B3 empty reject |
+| Ready pin | `subsetFrontReady` (structural goldens + Lake honesty + non-claims) |
+| Dual evidence | Lean pins/theorems + dual-pinned String constants equal on-disk files + lake exe PASS/REJECT lines |
+| Lake host | `stillUsesLake` / `dependsOnLake` / `subsetFrontStillUsesLake` true |
+
+**Non-claims (M3 implement):** not S4/M6; not StillUsesLake false; not free/complete
+re-open; not PROVABLY/llvm; not full language elaborator; not freestanding source
+compiler without Lake; not freestandingDriverComplete flip.
+
+### M4 product-wire without-Lake design (done -- design only)
+
+| Piece | Path / token |
+|-------|----------------|
+| Note | `doc/dev/research/m4-product-wire-without-lake-design-2026-08-01.md` |
+| Meaning | Without Lake for the **measured product-wire regenerate** (ordered READ+COMPOSE+WRITE-HC+INSTALL); not product StillUsesLake false |
+| Today official path (at design time) | was `just build` -> Lake `freestanding-capable-regenerate`; living tip after Name C: without-Lake Name B/A hot path |
+| Lake-free greps (not M4 alone) | B26..B28 Capable* lake-free; B29 ownership-regenerate-lake-free; B30 WithoutLake authority pin |
+| Honesty | StillUsesLake / DependsOnLake stay true until M6; free/complete unchanged; freestandingDriverComplete Mult-orthogonal |
+| Next implement | Name A prebuilt (prefer); Name B freestanding writer; optional Name C official build wire-up |
+
+**Non-claims (M4 design):** not implement; not StillUsesLake false; not free/complete
+re-open; not PROVABLY; not llvm; not S4/M6 forge.
+
+### M4 product-wire without-Lake prebuilt (done -- Name A)
+
+| Piece | Path / token |
+|-------|----------------|
+| Goal | Measured freestanding regenerate without lake on hot path via prebuilt CapableRegenerate ELF |
+| Measured recipe | `just freestanding-capable-regenerate-without-lake` |
+| Prebuilt binary | `.lake/build/bin/slake-freestanding-capable-regenerate` (bootstrap once: `lake build slake-freestanding-capable-regenerate`) |
+| Host pins | `productWireWithoutLakeFinishedClaimed` true; `justRecipeProductWireWithoutLake`; `prebuiltCapableRegenerateRel`; `productWireWithoutLakeKeepsHostLake`; `productWireWithoutLakeReady` |
+| Dual evidence | Lean structural ready + emit/Out greps `SLAKE_EMIT_FREESTANDING_C_V0` / HOST-EMIT-* |
+| Lake honesty | StillUsesLake / DependsOnLake **true** until M6; free/complete/freestandingDriverComplete unchanged |
+| Design | `doc/dev/research/m4-product-wire-without-lake-design-2026-08-01.md` |
+
+**Non-claims (M4 Name A done):** not Name B freestanding writer; not StillUsesLake
+false; not free/complete re-open; not PROVABLY/llvm; not official `just build` rewire (Name C).
+
+### M4 product-wire freestanding writer (done -- Name B)
+
+| Piece | Path / token |
+|-------|----------------|
+| Goal | Dual-eq freestanding dialect WRITE + INSTALL via writer outside `.lake/build/bin` |
+| Path A tool | `ProductWireWriteTool.lean` / `ProductWireWriteToolMain.lean` / lake exe `slake-product-wire-fs-write-tool` (bootstrap: dual-eq WRITE then emit tool C) |
+| Generated writer C | `emit/slake_product_wire_fs_write_tool.c` (embedded dual-eq freestanding dialect bytes) |
+| Measured writer bin | `src/systems/bin/slake-product-wire-fs-write-cc` (host-cc; outside `.lake`; not CapableRegenerate ELF) |
+| Write recipe | `just product-wire-freestanding-write` (host-cc Path A; no lake on hot path; WRITE emit + INSTALL Out) |
+| Finished pin | `productWireFsWriterFinishedClaimed` **true** (separate from Mult freestandingDriverComplete) |
+| Ready / path pins | `productWireFsWriterReady` true; `productWireFsWriterNotLakeBuilt` true; `productWireFsWriterKeepsHostLake` true |
+| Lake honesty | StillUsesLake / DependsOnLake **true** until M6; freestandingDriverComplete Mult-orthogonal |
+| Design | `doc/dev/research/m4-product-wire-without-lake-design-2026-08-01.md` Name B |
+
+**Non-claims (M4 Name B done):** not StillUsesLake false; not free/complete re-open;
+not PROVABLY/llvm; Name A prebuilt path remains valid; Name C official wire-up
+is a separate residual (done after Name B).
+
+### M4 official build without-Lake wire-up (done -- Name C)
+
+| Piece | Path / token |
+|-------|----------------|
+| Official recipe | `just build` (no `lake` on hot path) |
+| Prefer | `just product-wire-freestanding-write` (Name B host-cc) when tool C + cc present |
+| Fallback | `just freestanding-capable-regenerate-without-lake` (Name A prebuilt) |
+| Fail closed | Both writers missing -> bootstrap hints (Lake bootstrap once; not hot path) |
+| Dual evidence | emit + `out/freestanding-c` freestanding stage tokens after build |
+| Lake honesty | StillUsesLake / DependsOnLake **true** until M6 |
+| Design | `doc/dev/research/m4-product-wire-without-lake-design-2026-08-01.md` Name C |
+
+**Non-claims (M4 Name C done):** not StillUsesLake false; not free/complete
+re-open; not PROVABLY/llvm; Name A/B measured paths remain valid; Lake-hosted
+`freestanding-capable-regenerate` remains diagnostic only.
+
+### M5 design (done)
+
+| Piece | Path / token |
+|-------|----------------|
+| Goal | Design Slake rebuild of own compiler packages from subset sources |
+| Plan | `.agents/plans/plan-residual-free-freestanding.md` ideal M5 |
+| Design note | `doc/dev/research/m5-compiler-packages-self-application-design-2026-08-01.md` |
+| Next | M5 multi-unit package rebuild join (Name A) **done**; Name B open |
+
+**Non-claims (M5 design done):** not implement body this design; not StillUsesLake
+false; free/complete unchanged; no PROVABLY/llvm forge.
+
+### M5 multi-unit package rebuild join (done Name A)
+
+| Piece | Path / token |
+|-------|----------------|
+| Goal | Measured ordered rebuild of Mult..Compose unit packages as one E2E join |
+| Module | `SystemsLean/SubsetPackageJoin.lean` (`SystemsLean.SubsetPackageJoin`) |
+| just recipe | `just subset-packages-rebuild-join` |
+| Order | Mult without-Lake then Linear Types Program Extract Erasure Graph Compose |
+| Structural pins | `subsetPackageJoinFinishedClaimed` true; `subsetPackageJoinReady` true; `subsetPackageJoinUnitsReady`; `justRecipeSubsetPackageJoin` |
+| Dual evidence | Lean join pin + on-disk `SLAKE_*_SUBSET_EMIT_V0` on each `emit/slake_*_subset.{h,c}` |
+| Design | `doc/dev/research/m5-compiler-packages-self-application-design-2026-08-01.md` Name A |
+| Lake honesty | StillUsesLake / DependsOnLake **true** until M6 |
+| Non-Mult without-Lake | per-unit stay false; multi-unit join Name C pin true after Name C |
+
+**Non-claims (M5 Name A done):** not Name B front-end wire; not Name C without-Lake
+multi-unit forge; not StillUsesLake false; not free/complete re-open; not
+PROVABLY/llvm; freestandingDriverComplete Mult-orthogonal; M4 product-wire pins
+orthogonal.
+
+### M5 front-end Mult package path (done Name B)
+
+| Piece | Path / token |
+|-------|----------------|
+| Module | `SystemsLean/FrontMultPackage.lean` (`SystemsLean.FrontMultPackage`) |
+| Lake exe | `slake-front-mult-package` (`FrontMultPackageMain.lean`) |
+| just recipe | `just front-mult-package` |
+| Path | SubsetFront accepts golden G1 then Mult package write (`multSubsetEmitWrite`) |
+| Structural pins | `frontMultPackageFinishedClaimed` true; `frontMultPackageReady` true; `frontMultPackageG1Ready`; `justRecipeFrontMultPackage` |
+| Dual evidence | Lean G1 accept + Mult package ready; on-disk `SLAKE_MULT_SUBSET_EMIT_V0` on `emit/slake_mult_subset.{h,c}` |
+| Design | `doc/dev/research/m5-compiler-packages-self-application-design-2026-08-01.md` Name B |
+| Lake honesty | StillUsesLake / DependsOnLake **true** until M6 |
+
+**Non-claims (M5 Name B done):** not full multi-language front-end; not
+StillUsesLake false; not Name C multi-unit without-Lake forge; free/complete/M4/
+subsetPackageJoinFinished/freestandingDriverComplete unchanged; not PROVABLY/llvm.
+
+### M5 without-Lake package join deepen (done Name C)
+
+| Piece | Path / token |
+|-------|----------------|
+| Host deepen | `SystemsLean.SubsetPackageJoin` (Name A module + Name C pins) |
+| just recipe | `just subset-packages-rebuild-join-without-lake` |
+| Hot path | prebuilt `.lake/build/bin/slake-*-subset-rebuild` Mult..Compose; no lake |
+| Structural pins | `subsetPackageJoinWithoutLakeMultiUnitFinishedClaimed` true; `subsetPackageJoinWithoutLakeReady` true; `justRecipeSubsetPackageJoinWithoutLake`; `prebuiltUnitRebuildBinDirRel` |
+| Per-unit honesty | Mult withoutLakeFinished true (M2); non-Mult per-unit withoutLakeFinished **false** |
+| Dual evidence | Lean multi-unit pin + on-disk `SLAKE_*_SUBSET_EMIT_V0` on each `emit/slake_*_subset.{h,c}` |
+| Design | `doc/dev/research/m5-compiler-packages-self-application-design-2026-08-01.md` Name C |
+| Lake honesty | StillUsesLake / DependsOnLake **true** until M6 |
+
+**Non-claims (M5 Name C done):** not M6 StillUsesLake false; not forge per-unit
+withoutLakeFinished for non-Mult (join-level pin only); free/complete/M4/
+freestandingDriverComplete/subsetPackageJoinFinished/frontMultPackageFinished
+unchanged; not PROVABLY/llvm.
+
+### M6 Lake retire implement phase 1 (done)
+
+| Piece | Path / token |
+|-------|----------------|
+| Module | `SystemsLean/LakeRetireInventory.lean` (`SystemsLean.LakeRetireInventory`) |
+| just recipe | `just lake-retire-inventory` |
+| Structural pins | `lakeRetireInventoryReady` true; `lakeRetireInventoryFinishedClaimed` true; `productPathMeasuredStepsLakeFreeEvidence` true; `lakeRetireKeepsProductStillUsesLake` true; `lakeRetireHostElaborateRemains` true |
+| Lake-free recipe inventory | `build`; `product-wire-freestanding-write`; `freestanding-capable-regenerate-without-lake`; `mult-subset-rebuild-without-lake`; `mult-subset-freestanding-write`; `mult-subset-freestanding-deepen`; `subset-packages-rebuild-join-without-lake` |
+| Dual evidence | Lean pins + just greps of justfile recipes + SelfHostComplete `productPathOfficialPathStillUsesLake` true + DualResidual `hostElaboratorResidualRemains` true |
+| Design | `doc/dev/research/m6-lake-retire-design-2026-08-01.md` phase 1 |
+| Lake honesty | StillUsesLake / DependsOnLake **true** (phase 1 inventory only; phase 2 flips with elaborator proof) |
+
+**Non-claims (M6 phase 1 done):** not StillUsesLake false at phase 1 land time;
+not host free forge; free/complete/freestandingDriverComplete/productWire*/
+subsetPackageJoin* unchanged; not PROVABLY/llvm; not deleting diagnostic lake
+recipes. Phase 2 owns pin flip (done below).
+
+### M6 product-path Lake pins flip (done)
+
+| Piece | Path / token |
+|-------|----------------|
+| Living tip modules | `SelfHostComplete`, `SelfApplyFs`, `OfficialRetire`, `PerformClaimed`, `OwnershipClaimed`, `StepContractFull` (+ theorems) |
+| Product pins false | `productPathOfficialPathStillUsesLake` false; `productPathPerformDependsOnLake` false |
+| Inventory honesty | `LakeRetireInventory.stillUsesLake` / `dependsOnLake` false; `lakeRetireProductPathLakeRetired` true; `lakeRetireHostElaborateRemains` true |
+| Claim proof | `just freestanding-self-host-complete` (mandatory lake build + exe); `just lake-retire-inventory` |
+| Dual residual | free true; `hostElaboratorResidualRemains` true (host free not claimed) |
+| Design | `doc/dev/research/m6-lake-retire-design-2026-08-01.md` phase 2 |
+
+**Non-claims (M6 phase 2 done):** not host free; not PROVABLY; not llvm unlock;
+not free/complete re-open; freestandingDriverComplete Mult-orthogonal unchanged;
+land-time B31-B37 and unit diagnostic local stillUsesLake may stay true as host
+residual honesty; phase 3 measure lockstep not required (measure already green).
 
 ---
 
@@ -4794,12 +5000,14 @@ freestandingCapableOrderedRegenerate,
 RUNTIME-FS,
 UNIT_SURFACE
 
-**Status (2026-07-30):** **claim B complete closed** with Full bar evidence.
-`SelfApplyFs.freestandingProductSelfHostComplete` is **true**. Short role module
-`SelfHostComplete.lean` dual-pins complete true with Full + ownership-claimed +
-perform-claimed + official dual-eq WRITE. residual free / llvm / PROVABLY stay
-**false**. Lake host elaborator may remain for freestanding-capable-regenerate;
-FreestandingEmit is **not** the official product writer.
+**Status (2026-07-30 land; living tip 2026-08-01):** **claim B complete closed**
+with Full bar evidence. `SelfApplyFs.freestandingProductSelfHostComplete` is
+**true**. Short role module `SelfHostComplete.lean` dual-pins complete true with
+Full + ownership-claimed + perform-claimed + official dual-eq WRITE. residual
+free **true** (claim A; host residual remains); llvm / PROVABLY stay **false**.
+Product path StillUsesLake/DependsOnLake **false** after M6 phase 2 lake proof.
+Host elaborator residual may remain for development; FreestandingEmit is **not**
+the official product writer.
 
 ### Flip policy status
 
@@ -4807,25 +5015,25 @@ FreestandingEmit is **not** the official product writer.
 |------|--------|
 | 1. Named kernel inputs on freestanding product path (Mult+Linear+Erasure+Types+IR program) | **MET** |
 | 2. Path rebuilds kernel freestanding C on emit/ and out with greppable evidence | **MET** |
-| 3. Product wire freestanding story does not depend on classic Lean **as the product path** (Lake may bootstrap host tools) | **MET** (StillUsesFreestandingEmit false; StillUsesLake true = host elaborator OK) |
-| 4. residual free / proof complete / llvm / PROVABLY remain false unless separate bars pass | **MET** (non-claims stay false) |
+| 3. Product wire freestanding story does not depend on classic Lean **as the product path** (Lake may bootstrap host tools) | **MET** (StillUsesFreestandingEmit false; StillUsesLake/DependsOnLake false after M6; host residual remains) |
+| 4. residual free / proof complete / llvm / PROVABLY remain false unless separate bars pass | **MET** for llvm/PROVABLY/proof; residual free claimed true (host residual remains) |
 
 ### Bootstrap honesty (B4 cleanup)
 
 | Surface | Living tip |
 |---------|------------|
-| Official product writer | `just build` -> `just freestanding-capable-regenerate` (dual-eq WRITE) |
+| Official product writer | `just build` prefers without-Lake product-wire path (M4 Name C); dual-eq WRITE capable path remains |
 | FreestandingEmit | Diagnostic / historical emit stage only; **not** official writer |
-| Lake elaborator | Remains for freestanding-capable host exes (`StillUsesLake` true; `DependsOnLake` true) |
+| Lake elaborator | Product path pins false (M6); classic Lake may still elaborate host for development |
 | Host Lake bootstrap pin | Host tools may stay Lake-backed; do not read as FreestandingEmit-as-path |
 
 ### Host pin
 
 | Surface | Status | Not |
 |---------|--------|-----|
-| **Host pin** | `SelfApplyFs.freestandingProductSelfHostCompletePartialReady` (Full PartialReady + Complete Ok + measured + step advanced + complete true + stepContractFull true + ownership true + perform true + dual-eq WRITE true + StillUsesFreestandingEmit false + StillUsesLake true + DependsOnLake true) | residual free / llvm / PROVABLY |
-| **Lake-free complete** | `just freestanding-self-host-complete` dual-pins complete true + Full + ownership + perform + dual-eq WRITE + StillUsesEmit false + free/llvm false | residual free forge |
-| **Official path** | `just build` -> `just freestanding-capable-regenerate` | FreestandingEmit as official writer; complete recipe as writer |
+| **Host pin** | `SelfApplyFs.freestandingProductSelfHostCompletePartialReady` (Full PartialReady + Complete Ok + measured + step advanced + complete true + stepContractFull true + ownership true + perform true + dual-eq WRITE true + StillUsesFreestandingEmit false + StillUsesLake false + DependsOnLake false after M6) | llvm / PROVABLY / host free |
+| **Lake-free complete** | `just freestanding-self-host-complete` dual-pins complete true + Full + ownership + perform + dual-eq WRITE + StillUsesEmit false + StillUsesLake false + free true + llvm false (mandatory lake claim proof while Lake elaborates host) | host free forge |
+| **Official path** | `just build` without-Lake hot path (M4 Name C) | FreestandingEmit as official writer |
 
 ### Commands (complete loop)
 
@@ -4841,17 +5049,17 @@ just build                                    # official dual-eq WRITE path
 
 ### Proved vs not (complete)
 
-| Proved (claim B complete) | Still false / not claimed |
-|---------------------------|---------------------------|
-| freestandingProductSelfHostComplete true (SelfApplyFs SSoT) | residual free / residualFreeClaimed |
-| stepContractFull true remains (Full) | llvm unlock |
-| ownership claimed true remains (B40) | PROVABLY |
-| perform claimed true remains (B39) | proof complete global |
-| StillUsesFreestandingEmit false / Blocks false / RetireRequired false | Lake-free StillUsesLake false (not required) |
-| UsesDualEqualityWrite true; StillUsesLake true | |
-| DependsOnLake true (Lake host for capable regenerate) | |
-| DualResidual dualResidualReady green with complete true + free false | |
-| pure Nix fail-closed: complete true; Full true; free/llvm/PROVABLY false | |
+| Proved (claim B complete + living tip) | Still false / not claimed |
+|---------------------------------------|---------------------------|
+| freestandingProductSelfHostComplete true (SelfApplyFs SSoT) | llvm unlock |
+| stepContractFull true remains (Full) | PROVABLY |
+| ownership claimed true remains (B40) | proof complete global |
+| perform claimed true remains (B39) | host free (hostElaboratorResidualRemains true) |
+| StillUsesFreestandingEmit false / Blocks false / RetireRequired false | |
+| UsesDualEqualityWrite true; StillUsesLake false; DependsOnLake false (M6) | |
+| residual free / residualFreeClaimed true (claim A; host residual remains) | |
+| DualResidual dualResidualReady green with complete true + free true + host residual remains | |
+| pure Nix fail-closed: complete true; Full true; llvm/PROVABLY false | |
 
 ### Relation to prior pins (complete)
 

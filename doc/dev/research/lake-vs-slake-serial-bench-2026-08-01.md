@@ -2,6 +2,12 @@
 
 Kind: analysis only. Not residual.
 
+**Superseded for post-M6 tip numbers:** see
+`doc/dev/research/lake-vs-slake-proper-bench-2026-08-01.md` (cold Lake ~828 s;
+product without-Lake / host-cc paths; product StillUsesLake/DependsOnLake false
+with host residual remaining). Keep this note for earlier same-day ceremony
+narrative only.
+
 ## Ready?
 
 **S0-S3 done; S4 deferred.** Honest Lake-hosted product wire dogfood is green.

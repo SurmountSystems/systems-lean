@@ -357,21 +357,8 @@ def typesSubsetEmitWrite (root : System.FilePath) : IO Unit := do
   let emitDir := root / "src" / "systems" / "emit"
   let outH := emitDir / emitHeaderBase
   let outC := emitDir / emitSourceBase
-  IO.println s!"== {stageId}: Types subset freestanding emit (ideal ladder M1) =="
-  IO.println s!"  host: {hostId} / surface: {surfaceId}"
-  IO.println s!"  Types unit input id: {typesSubsetEmitInputId} (COMPILE-PATH-TYPES reuse)"
-  IO.println s!"  typesSubsetEmitInputReady: {typesSubsetEmitInputReady} (typesFixtureCompilePathReady)"
-  IO.println s!"  typesSubsetEmitTypesDialectOk: {typesSubsetEmitTypesDialectOk} (HOST-EMIT-TYPES)"
-  IO.println s!"  typesSubsetEmitPackageOk: {typesSubsetEmitPackageOk}"
-  IO.println s!"  typesSubsetEmitReady: {typesSubsetEmitReady}"
-  IO.println s!"  typesSubsetEmitWroteExpected: {typesSubsetEmitWroteExpected} (package identity pin)"
-  IO.println s!"  stillUsesLake: {stillUsesLake} (true until S4)"
-  IO.println s!"  dependsOnLake: {dependsOnLake} (host elaborator bootstrap)"
-  IO.println s!"  Lake exe: {lakeExeName} / just {justRecipe}"
-  IO.println "  honest: M1 = Types subset unit package write; not full product-wire regenerate"
-  IO.println "  honest: Lake host remains; free/complete living tip unchanged; not PROVABLY; not llvm"
-  IO.println "  honest: not Types subset rebuild; not S4 Lake retire"
-  IO.println "  short module name TypesSubsetEmit (not ProductPathFreestandingTypesSubset)"
+  IO.println s!"== {stageId}: Types subset emit =="
+  IO.println s!"  readyPin={typesSubsetEmitReady} stillUsesLake={stillUsesLake}"
   IO.FS.createDirAll emitDir
   IO.FS.writeFile outH typesSubsetHeaderPackage
   IO.FS.writeFile outC typesSubsetSourcePackage
@@ -387,11 +374,8 @@ def typesSubsetEmitWrite (root : System.FilePath) : IO Unit := do
     throw (IO.userError "source mismatch")
   validateTypesSubsetPackage emitHeaderBase headerWritten false
   validateTypesSubsetPackage emitSourceBase sourceWritten true
-  IO.println s!"GREEN {stageId}: Types subset freestanding C wrote under {emitDir}/"
-  IO.println s!"  wrote: {outH} ({headerWritten.length} chars)"
-  IO.println s!"  wrote: {outC} ({sourceWritten.length} chars)"
+  IO.println s!"GREEN {stageId}: wrote {outH} ({headerWritten.length}) {outC} ({sourceWritten.length})"
   IO.println "  greppable: TYPES-SUBSET-EMIT, SLAKE_TYPES_SUBSET_EMIT_V0, HOST-EMIT-TYPES, TYPED_IR_V0"
-  IO.println "  honest: subset emit evidence (not sole success via full dialect rewrite)"
 
 /-- Drop lake/exe separators so root path is first real arg. -/
 def filterArgs : List String -> List String

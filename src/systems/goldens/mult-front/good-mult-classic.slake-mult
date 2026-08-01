@@ -1,0 +1,9 @@
+# Mult unit program (subset language v0) -- G1 classic Mult three-node
+# form: node <multName> <kindName>
+# multName: MULT-0 | MULT-1 | MULT-OMEGA
+# kindName: ERASED | LINEAR | VALUE
+# legal pairings: ERASED/MULT-0, LINEAR/MULT-1, VALUE/MULT-OMEGA
+
+node MULT-0 ERASED
+node MULT-1 LINEAR
+node MULT-OMEGA VALUE

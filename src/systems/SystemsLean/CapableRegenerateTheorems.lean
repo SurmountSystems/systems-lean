@@ -48,6 +48,10 @@
   FREESTANDING-CAPABLE-ORDERED-REGENERATE-PIPELINE,
   freestandingCapableOrderedRegenerate,
   freestanding-capable-regenerate, slake-freestanding-capable-regenerate,
+  freestanding-capable-regenerate-without-lake, PRODUCT-WIRE-WITHOUT-LAKE,
+  productWireWithoutLakeFinishedClaimed, productWireWithoutLakeReady,
+  productWireWithoutLakeKeepsHostLake, justRecipeProductWireWithoutLake,
+  prebuiltCapableRegenerateRel,
   SLAKE_SELF_HOST_PRODUCT_PATH_FREESTANDING_CAPABLE_REGENERATE_V0,
   HOST-SELF-HOST-PRODUCT-PATH-FREESTANDING-CAPABLE-REGENERATE,
   SELF-HOST-PRODUCT-PATH-FREESTANDING-CAPABLE-REGENERATE.
@@ -173,6 +177,45 @@ theorem productPathFreestandingCapableRegeneratePartialReady_true :
     productPathFreestandingCapableRegeneratePartialReady = true := by
   decide
 
+/-- M4 Name A: product-wire without-Lake measured step finished (prebuilt).
+    Greppable: productWireWithoutLakeFinishedClaimed_true,
+    PRODUCT-WIRE-WITHOUT-LAKE, REGENERATE-THEOREM. -/
+theorem productWireWithoutLakeFinishedClaimed_true :
+    productWireWithoutLakeFinishedClaimed = true :=
+  rfl
+
+/-- M4 Name A: without-Lake finished keeps product Lake host.
+    Greppable: productWireWithoutLakeKeepsHostLake_true,
+    PRODUCT-WIRE-WITHOUT-LAKE, REGENERATE-THEOREM. -/
+theorem productWireWithoutLakeKeepsHostLake_true :
+    productWireWithoutLakeKeepsHostLake = true := by
+  decide
+
+/-- M4 Name A: product-wire without-Lake structural ready.
+    Greppable: productWireWithoutLakeReady_true, PRODUCT-WIRE-WITHOUT-LAKE,
+    REGENERATE-THEOREM. -/
+theorem productWireWithoutLakeReady_true :
+    productWireWithoutLakeReady = true := by
+  decide
+
+/-- M4 Name A recipe / prebuilt path pins.
+    Greppable: justRecipeProductWireWithoutLake_eq, prebuiltCapableRegenerateRel_eq,
+    PRODUCT-WIRE-WITHOUT-LAKE, REGENERATE-THEOREM. -/
+theorem justRecipeProductWireWithoutLake_eq :
+    justRecipeProductWireWithoutLake =
+      "freestanding-capable-regenerate-without-lake" :=
+  rfl
+
+theorem prebuiltCapableRegenerateRel_eq :
+    prebuiltCapableRegenerateRel =
+      ".lake/build/bin/slake-freestanding-capable-regenerate" :=
+  rfl
+
+/-- M4 Name A local stillUsesLake / dependsOnLake honesty.
+    Greppable: productWire_stillUsesLake_true, PRODUCT-WIRE-WITHOUT-LAKE. -/
+theorem productWire_stillUsesLake_true : stillUsesLake = true := rfl
+theorem productWire_dependsOnLake_true : dependsOnLake = true := rfl
+
 /-! ### REGENERATE-SMOKE / HOST-REGENERATE-SMOKE
 
   Behavioral `example` canaries. Lake build fails if any example fails.
@@ -224,5 +267,19 @@ example : productPathFreestandingCapableRegenerateOk = true := by decide
 example :
     productPathFreestandingCapableRegeneratePartialReady = true := by
   decide
+/-- PRODUCT-WIRE-WITHOUT-LAKE smoke (M4 Name A prebuilt). -/
+example : productWireWithoutLakeFinishedClaimed = true := rfl
+example : productWireWithoutLakeKeepsHostLake = true := by decide
+example : productWireWithoutLakeReady = true := by decide
+example :
+    justRecipeProductWireWithoutLake =
+      "freestanding-capable-regenerate-without-lake" :=
+  rfl
+example :
+    prebuiltCapableRegenerateRel =
+      ".lake/build/bin/slake-freestanding-capable-regenerate" :=
+  rfl
+example : stillUsesLake = true := rfl
+example : dependsOnLake = true := rfl
 
 end SystemsLean.CapableRegenerate

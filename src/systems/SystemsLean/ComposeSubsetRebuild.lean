@@ -313,22 +313,8 @@ def composeSubsetRebuildWrite (root : System.FilePath) : IO Unit := do
   let emitDir := root / "src" / "systems" / "emit"
   let outH := emitDir / emitHeaderBase
   let outC := emitDir / emitSourceBase
-  IO.println s!"== {stageId}: Compose subset rebuild / self-application (M1 follow-on) =="
-  IO.println s!"  host: {hostId} / surface: {surfaceId}"
-  IO.println s!"  M1 package input id: {composeSubsetRebuildInputId} (COMPOSE-SUBSET-EMIT reuse)"
-  IO.println s!"  composeSubsetRebuildInputReady: {composeSubsetRebuildInputReady} (composeSubsetEmitReady)"
-  IO.println s!"  composeSubsetRebuildPackagePinOk: {composeSubsetRebuildPackagePinOk} (composeSubsetEmitWroteExpected)"
-  IO.println s!"  composeSubsetRebuildSelfApplyOk: {composeSubsetRebuildSelfApplyOk}"
-  IO.println s!"  composeSubsetRebuildReady: {composeSubsetRebuildReady}"
-  IO.println s!"  composeSubsetRebuildWroteExpected: {composeSubsetRebuildWroteExpected} (package identity pin)"
-  IO.println s!"  stillUsesLake: {stillUsesLake} (true until S4)"
-  IO.println s!"  dependsOnLake: {dependsOnLake} (host elaborator bootstrap)"
-  IO.println s!"  withoutLakeFinished: {composeSubsetRebuildWithoutLakeFinishedClaimed} (false; deepen later)"
-  IO.println s!"  Lake exe: {lakeExeName} / just {justRecipe}"
-  IO.println "  honest: rebuild = measured Compose subset self-application (re-emit/re-validate); not full dialect regenerate"
-  IO.println "  honest: Lake host remains; free/complete living tip unchanged; not PROVABLY; not llvm"
-  IO.println "  honest: not without-Lake finished; not S4 Lake retire; not full CFG/SSA"
-  IO.println "  short module name ComposeSubsetRebuild (not ProductPathFreestandingComposeSubsetRebuild)"
+  IO.println s!"== {stageId}: Compose subset rebuild =="
+  IO.println s!"  readyPin={composeSubsetRebuildReady} stillUsesLake={stillUsesLake}"
   IO.FS.createDirAll emitDir
   IO.FS.writeFile outH composeSubsetHeaderPackage
   IO.FS.writeFile outC composeSubsetSourcePackage
@@ -344,11 +330,8 @@ def composeSubsetRebuildWrite (root : System.FilePath) : IO Unit := do
     throw (IO.userError "source mismatch")
   validateComposeSubsetRebuildPackage emitHeaderBase headerWritten false
   validateComposeSubsetRebuildPackage emitSourceBase sourceWritten true
-  IO.println s!"GREEN {stageId}: Compose subset self-application rebuild under {emitDir}/"
-  IO.println s!"  rewrote: {outH} ({headerWritten.length} chars)"
-  IO.println s!"  rewrote: {outC} ({sourceWritten.length} chars)"
+  IO.println s!"GREEN {stageId}: wrote {outH} ({headerWritten.length}) {outC} ({sourceWritten.length})"
   IO.println "  greppable: COMPOSE-SUBSET-REBUILD, SLAKE_COMPOSE_SUBSET_REBUILD_V0, COMPOSE-SUBSET-EMIT, composeSubsetRebuildReady"
-  IO.println "  honest: subset rebuild / self-application evidence (Lake-hosted; not without-Lake finished)"
 
 /-- Drop lake/exe separators so root path is first real arg. -/
 def filterArgs : List String -> List String

@@ -42,8 +42,8 @@
   productPathFreestandingPerformClaimed_true,
   productPathOfficialPathUsesDualEqualityWrite_true,
   productPathOfficialPathStillUsesFreestandingEmit_false,
-  productPathOfficialPathStillUsesLake_true,
-  productPathPerformDependsOnLake_true,
+  productPathOfficialPathStillUsesLake_false,
+  productPathPerformDependsOnLake_false,
   freestandingProductSelfHostComplete_false,
   productPathFreestandingCapableStepContractFullSatisfied_false,
   ownershipClaimedId_eq, lakeFreeOwnershipClaimedRecipe_eq,
@@ -125,15 +125,15 @@ theorem productPathOfficialPathStillUsesFreestandingEmit_false :
     productPathOfficialPathStillUsesFreestandingEmit = false := rfl
 
 /-- Official path still uses Lake host elaborator pin holds.
-    Greppable: productPathOfficialPathStillUsesLake_true,
+    Greppable: productPathOfficialPathStillUsesLake_false,
     OWNERSHIP-CLAIMED-THEOREM. -/
-theorem productPathOfficialPathStillUsesLake_true :
-    productPathOfficialPathStillUsesLake = true := rfl
+theorem productPathOfficialPathStillUsesLake_false :
+    productPathOfficialPathStillUsesLake = false := rfl
 
-/-- Perform DependsOnLake remains true (regenerate Lake host elaborator).
-    Greppable: productPathPerformDependsOnLake_true, OWNERSHIP-CLAIMED-THEOREM. -/
-theorem productPathPerformDependsOnLake_true :
-    productPathPerformDependsOnLake = true := rfl
+/-- Perform DependsOnLake false after M6 product-path Lake pins flip.
+    Greppable: productPathPerformDependsOnLake_false, OWNERSHIP-CLAIMED-THEOREM. -/
+theorem productPathPerformDependsOnLake_false :
+    productPathPerformDependsOnLake = false := rfl
 
 /-- Land-time complete stays false on OWNERSHIP-CLAIMED home (claim B is tip /
     SelfHostComplete / StepContractFull dual-pin).
@@ -229,8 +229,8 @@ example : productPathFreestandingOwnershipClaimed = true := by decide
 example : productPathFreestandingPerformClaimed = true := by decide
 example : productPathOfficialPathUsesDualEqualityWrite = true := by decide
 example : productPathOfficialPathStillUsesFreestandingEmit = false := by decide
-example : productPathOfficialPathStillUsesLake = true := by decide
-example : productPathPerformDependsOnLake = true := by decide
+example : productPathOfficialPathStillUsesLake = false := by decide
+example : productPathPerformDependsOnLake = false := by decide
 example : freestandingProductSelfHostComplete = false := by decide
 example : productPathFreestandingCapableStepContractFullSatisfied = false := by
   decide

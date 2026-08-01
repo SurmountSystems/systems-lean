@@ -36,8 +36,8 @@
   productPathFreestandingPerformClaimed_true,
   productPathOfficialPathUsesDualEqualityWrite_true,
   productPathOfficialPathStillUsesFreestandingEmit_false,
-  productPathOfficialPathStillUsesLake_true,
-  productPathPerformDependsOnLake_true,
+  productPathOfficialPathStillUsesLake_false,
+  productPathPerformDependsOnLake_false,
   freestandingProductSelfHostComplete_true,
   stepContractFullId_eq, lakeFreeStepContractFullRecipe_eq,
   lakeExeName_eq, justMeasureRecipe_eq,
@@ -122,15 +122,15 @@ theorem productPathOfficialPathStillUsesFreestandingEmit_false :
     productPathOfficialPathStillUsesFreestandingEmit = false := rfl
 
 /-- Official path still uses Lake host elaborator pin holds.
-    Greppable: productPathOfficialPathStillUsesLake_true,
+    Greppable: productPathOfficialPathStillUsesLake_false,
     STEP-CONTRACT-FULL-THEOREM. -/
-theorem productPathOfficialPathStillUsesLake_true :
-    productPathOfficialPathStillUsesLake = true := rfl
+theorem productPathOfficialPathStillUsesLake_false :
+    productPathOfficialPathStillUsesLake = false := rfl
 
-/-- Perform DependsOnLake remains true (regenerate Lake host elaborator).
-    Greppable: productPathPerformDependsOnLake_true, STEP-CONTRACT-FULL-THEOREM. -/
-theorem productPathPerformDependsOnLake_true :
-    productPathPerformDependsOnLake = true := rfl
+/-- Perform DependsOnLake false after M6 product-path Lake pins flip.
+    Greppable: productPathPerformDependsOnLake_false, STEP-CONTRACT-FULL-THEOREM. -/
+theorem productPathPerformDependsOnLake_false :
+    productPathPerformDependsOnLake = false := rfl
 
 /-- Claim B complete dual-pin holds on Full surface.
     Greppable: freestandingProductSelfHostComplete_true,
@@ -219,8 +219,8 @@ example : productPathFreestandingOwnershipClaimed = true := by decide
 example : productPathFreestandingPerformClaimed = true := by decide
 example : productPathOfficialPathUsesDualEqualityWrite = true := by decide
 example : productPathOfficialPathStillUsesFreestandingEmit = false := by decide
-example : productPathOfficialPathStillUsesLake = true := by decide
-example : productPathPerformDependsOnLake = true := by decide
+example : productPathOfficialPathStillUsesLake = false := by decide
+example : productPathPerformDependsOnLake = false := by decide
 example : freestandingProductSelfHostComplete = true := by decide
 example : stepContractFullOk = true := by decide
 example : stepContractFullPartialReady = true := by decide

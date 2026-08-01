@@ -358,21 +358,8 @@ def erasureSubsetEmitWrite (root : System.FilePath) : IO Unit := do
   let emitDir := root / "src" / "systems" / "emit"
   let outH := emitDir / emitHeaderBase
   let outC := emitDir / emitSourceBase
-  IO.println s!"== {stageId}: Erasure subset freestanding emit (ideal ladder M1) =="
-  IO.println s!"  host: {hostId} / surface: {surfaceId}"
-  IO.println s!"  Erasure unit input id: {erasureSubsetEmitInputId} (COMPILE-PATH-ERASURE reuse)"
-  IO.println s!"  erasureSubsetEmitInputReady: {erasureSubsetEmitInputReady} (erasureFixtureCompilePathReady)"
-  IO.println s!"  erasureSubsetEmitErasureDialectOk: {erasureSubsetEmitErasureDialectOk} (HOST-EMIT-ERASURE)"
-  IO.println s!"  erasureSubsetEmitPackageOk: {erasureSubsetEmitPackageOk}"
-  IO.println s!"  erasureSubsetEmitReady: {erasureSubsetEmitReady}"
-  IO.println s!"  erasureSubsetEmitWroteExpected: {erasureSubsetEmitWroteExpected} (package identity pin)"
-  IO.println s!"  stillUsesLake: {stillUsesLake} (true until S4)"
-  IO.println s!"  dependsOnLake: {dependsOnLake} (host elaborator bootstrap)"
-  IO.println s!"  Lake exe: {lakeExeName} / just {justRecipe}"
-  IO.println "  honest: M1 = Erasure subset unit package write; not full product-wire regenerate"
-  IO.println "  honest: Lake host remains; free/complete living tip unchanged; not PROVABLY; not llvm"
-  IO.println "  honest: not Erasure subset rebuild; not S4 Lake retire"
-  IO.println "  short module name ErasureSubsetEmit (not ProductPathFreestandingErasureSubset)"
+  IO.println s!"== {stageId}: Erasure subset emit =="
+  IO.println s!"  readyPin={erasureSubsetEmitReady} stillUsesLake={stillUsesLake}"
   IO.FS.createDirAll emitDir
   IO.FS.writeFile outH erasureSubsetHeaderPackage
   IO.FS.writeFile outC erasureSubsetSourcePackage
@@ -388,11 +375,8 @@ def erasureSubsetEmitWrite (root : System.FilePath) : IO Unit := do
     throw (IO.userError "source mismatch")
   validateErasureSubsetPackage emitHeaderBase headerWritten false
   validateErasureSubsetPackage emitSourceBase sourceWritten true
-  IO.println s!"GREEN {stageId}: Erasure subset freestanding C wrote under {emitDir}/"
-  IO.println s!"  wrote: {outH} ({headerWritten.length} chars)"
-  IO.println s!"  wrote: {outC} ({sourceWritten.length} chars)"
+  IO.println s!"GREEN {stageId}: wrote {outH} ({headerWritten.length}) {outC} ({sourceWritten.length})"
   IO.println "  greppable: ERASURE-SUBSET-EMIT, SLAKE_ERASURE_SUBSET_EMIT_V0, HOST-EMIT-ERASURE, ERASE-RULE-MULT-0"
-  IO.println "  honest: subset emit evidence (not sole success via full dialect rewrite)"
 
 /-- Drop lake/exe separators so root path is first real arg. -/
 def filterArgs : List String -> List String

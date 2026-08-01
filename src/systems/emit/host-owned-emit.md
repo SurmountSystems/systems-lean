@@ -59,6 +59,34 @@ bootstrap helper only); freestandingDeepenPartial true; multFsWritePathReady
 true; freestandingDriverComplete **true**. Not the full freestanding product
 wire; not product Out. Product StillUsesLake remains until M6.
 
+**M4 product-wire without-Lake measured step (Name A):**
+`just freestanding-capable-regenerate-without-lake` runs prebuilt
+`.lake/build/bin/slake-freestanding-capable-regenerate` (bootstrap once:
+`lake build slake-freestanding-capable-regenerate`; no lake on hot path).
+Ordered READ+COMPOSE+WRITE-HC+INSTALL of full freestanding dialect + Out.
+Host pins: `productWireWithoutLakeFinishedClaimed` true;
+`productWireWithoutLakeKeepsHostLake`. Product StillUsesLake remains until M6.
+
+**M4 product-wire freestanding writer (Name B Path A):**
+`just product-wire-freestanding-write` host-cc builds
+`src/systems/bin/slake-product-wire-fs-write-cc` from Lean-generated
+`emit/slake_product_wire_fs_write_tool.c` (bootstrap once:
+`lake build slake-product-wire-fs-write-tool` +
+`lake exe slake-product-wire-fs-write-tool -- <root>`; dual-eq WRITE embeds
+freestanding dialect bytes). Measured path: no lake; WRITE
+`emit/slake_freestanding.{h,c}` + INSTALL `out/freestanding-c/`. Host pins:
+`productWireFsWriterFinishedClaimed` true; `productWireFsWriterReady` true;
+`productWireFsWriterNotLakeBuilt` true. freestandingDriverComplete stays
+Mult-orthogonal. Product StillUsesLake remains until M6.
+
+**M4 official build without-Lake (Name C):**
+`just build` no longer calls `lake` on the hot path. Prefers Name B
+`product-wire-freestanding-write` when tool C + host `cc` exist; else Name A
+`freestanding-capable-regenerate-without-lake` when prebuilt CapableRegenerate
+exists; fail closed with bootstrap hints if both missing. Dual evidence on emit
++ Out after build. Product StillUsesLake remains until M6. Lake-hosted
+`freestanding-capable-regenerate` stays diagnostic only.
+
 **Bootstrap Linear subset package (M1):** `SystemsLean/LinearSubsetEmit.lean`
 writes `emit/slake_linear_subset.{h,c}` from HOST-EMIT-LINEAR fragments. Lake
 exe `slake-linear-subset-emit` / `just linear-subset-emit`. Self-application

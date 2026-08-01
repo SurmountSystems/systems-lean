@@ -281,8 +281,9 @@ def productPathOwnershipInputsPartialReady : Bool :=
 /-- productPathFreestandingPerformClaimed Greppable: productPathFreestandingPerformClaimed, SELF-HOST-PRODUCT-PATH-PERFORM. -/
 def productPathFreestandingPerformClaimed : Bool := true
 
-/-- productPathPerformDependsOnLake Greppable: productPathPerformDependsOnLake, SELF-HOST-PRODUCT-PATH-PERFORM. -/
-def productPathPerformDependsOnLake : Bool := true
+/-- productPathPerformDependsOnLake false after M6 product-path Lake pins flip.
+    Greppable: productPathPerformDependsOnLake, SELF-HOST-PRODUCT-PATH-PERFORM. -/
+def productPathPerformDependsOnLake : Bool := false
 
 /-- productPathPerformPartialReady Greppable: productPathPerformPartialReady, SELF-HOST-PRODUCT-PATH-PERFORM, product path perform. -/
 def productPathPerformPartialReady : Bool :=
@@ -291,7 +292,7 @@ def productPathPerformPartialReady : Bool :=
     && productPathHostLakeBootstrapRemains
     && productPathFreestandingOwnershipClaimed
     && productPathFreestandingPerformClaimed
-    && productPathPerformDependsOnLake
+    && !productPathPerformDependsOnLake
 
 /-! ### B10 STEP perform (SELF-HOST-PRODUCT-PATH-PERFORM-STEP) -/
 
@@ -307,7 +308,7 @@ def productPathPerformStepPartialReady : Bool :=
     && productPathHostLakeBootstrapRemains
     && productPathFreestandingOwnershipClaimed
     && productPathFreestandingPerformClaimed
-    && productPathPerformDependsOnLake
+    && !productPathPerformDependsOnLake
     && productPathPerformInstallLakeFreeEntrypointClaimed
 
 /-! ### B11 READ perform (SELF-HOST-PRODUCT-PATH-PERFORM-READ) -/
@@ -326,7 +327,7 @@ def productPathPerformReadPartialReady : Bool :=
     && productPathHostLakeBootstrapRemains
     && productPathFreestandingOwnershipClaimed
     && productPathFreestandingPerformClaimed
-    && productPathPerformDependsOnLake
+    && !productPathPerformDependsOnLake
     && productPathPerformReadDependsOnLake
     && productPathPerformReadEntrypointClaimed
 
@@ -348,7 +349,7 @@ def productPathPerformComposePartialReady : Bool :=
     && productPathHostLakeBootstrapRemains
     && productPathFreestandingOwnershipClaimed
     && productPathFreestandingPerformClaimed
-    && productPathPerformDependsOnLake
+    && !productPathPerformDependsOnLake
     && productPathPerformComposeDependsOnLake
     && productPathPerformComposeEntrypointClaimed
 
@@ -370,7 +371,7 @@ def productPathPerformWriteHcPartialReady : Bool :=
     && productPathHostLakeBootstrapRemains
     && productPathFreestandingOwnershipClaimed
     && productPathFreestandingPerformClaimed
-    && productPathPerformDependsOnLake
+    && !productPathPerformDependsOnLake
     && productPathPerformWriteHcDependsOnLake
     && productPathPerformWriteHcEntrypointClaimed
 
@@ -399,7 +400,7 @@ def productPathFreestandingCapablePartialReady : Bool :=
     && productPathHostLakeBootstrapRemains
     && productPathFreestandingOwnershipClaimed
     && productPathFreestandingPerformClaimed
-    && productPathPerformDependsOnLake
+    && !productPathPerformDependsOnLake
     && productPathFreestandingCapableInstallOnly
     && productPathFreestandingCapableRead
     && !productPathFreestandingCapableFullPerform
@@ -433,7 +434,7 @@ def productPathFreestandingCapableStepContractPartialReady : Bool :=
     && productPathHostLakeBootstrapRemains
     && productPathFreestandingOwnershipClaimed
     && productPathFreestandingPerformClaimed
-    && productPathPerformDependsOnLake
+    && !productPathPerformDependsOnLake
     && productPathFreestandingCapableStepContractAuthorityNotEmit
     && productPathFreestandingCapableStepContractReadSatisfied
     && productPathFreestandingCapableStepContractComposeSatisfied
@@ -669,7 +670,7 @@ def productPathFreestandingPerformEvidencePartialReady : Bool :=
     && PerformEvidence.productPathFreestandingPerformEvidencePartialReady
     && productPathFreestandingPerformEvidenceClaimed
     && productPathFreestandingPerformClaimed
-    && productPathPerformDependsOnLake
+    && !productPathPerformDependsOnLake
     && !productPathFreestandingCapableStepContractFullSatisfied
     && productPathFreestandingOwnershipClaimed
 
@@ -681,8 +682,9 @@ def productPathFreestandingPerformOfficialPathGapMeasured : Bool := true
 /-- Official path FreestandingEmit writer retired (living tip after B38). -/
 def productPathOfficialPathStillUsesFreestandingEmit : Bool := false
 
-/-- Official path still uses classic Lean Lake host elaborator. -/
-def productPathOfficialPathStillUsesLake : Bool := true
+/-- Official product path no longer uses Lake as living driver (M6).
+    Host elaborator residual may remain for SystemsLean development. -/
+def productPathOfficialPathStillUsesLake : Bool := false
 
 /-- FreestandingEmit retire-required cleared (living tip after B38). -/
 def productPathOfficialPathRetireFreestandingEmitRequired : Bool := false
@@ -694,9 +696,9 @@ def productPathFreestandingPerformOfficialPathPartialReady : Bool :=
     && OfficialPath.productPathFreestandingPerformOfficialPathPartialReady
     && productPathFreestandingPerformOfficialPathGapMeasured
     && productPathFreestandingPerformClaimed
-    && productPathPerformDependsOnLake
+    && !productPathPerformDependsOnLake
     && !productPathOfficialPathStillUsesFreestandingEmit
-    && productPathOfficialPathStillUsesLake
+    && !productPathOfficialPathStillUsesLake
     && !productPathOfficialPathRetireFreestandingEmitRequired
     && !productPathFreestandingCapableStepContractFullSatisfied
     && productPathFreestandingOwnershipClaimed
@@ -725,9 +727,9 @@ def productPathFreestandingPerformOfficialPathAlternatePartialReady : Bool :=
     && !productPathOfficialPathAlternateNotOfficial
     && !productPathOfficialPathDualEqualityBlocksRetirement
     && productPathFreestandingPerformClaimed
-    && productPathPerformDependsOnLake
+    && !productPathPerformDependsOnLake
     && !productPathOfficialPathStillUsesFreestandingEmit
-    && productPathOfficialPathStillUsesLake
+    && !productPathOfficialPathStillUsesLake
     && !productPathOfficialPathRetireFreestandingEmitRequired
     && !productPathFreestandingCapableStepContractFullSatisfied
     && productPathFreestandingOwnershipClaimed
@@ -753,9 +755,9 @@ def productPathFreestandingPerformDualEqualityWriteParityPartialReady : Bool :=
     && !productPathCapableWriteStructuralNotDualEquality
     && !productPathOfficialPathDualEqualityBlocksRetirement
     && productPathFreestandingPerformClaimed
-    && productPathPerformDependsOnLake
+    && !productPathPerformDependsOnLake
     && !productPathOfficialPathStillUsesFreestandingEmit
-    && productPathOfficialPathStillUsesLake
+    && !productPathOfficialPathStillUsesLake
     && !productPathOfficialPathRetireFreestandingEmitRequired
     && !productPathFreestandingCapableStepContractFullSatisfied
     && productPathFreestandingOwnershipClaimed
@@ -793,9 +795,9 @@ def productPathFreestandingPerformDualEqualityWriteClosePathPartialReady : Bool 
     && !productPathCapableWriteStructuralNotDualEquality
     && !productPathOfficialPathDualEqualityBlocksRetirement
     && productPathFreestandingPerformClaimed
-    && productPathPerformDependsOnLake
+    && !productPathPerformDependsOnLake
     && !productPathOfficialPathStillUsesFreestandingEmit
-    && productPathOfficialPathStillUsesLake
+    && !productPathOfficialPathStillUsesLake
     && !productPathOfficialPathRetireFreestandingEmitRequired
     && !productPathFreestandingCapableStepContractFullSatisfied
     && productPathFreestandingOwnershipClaimed
@@ -835,9 +837,9 @@ def productPathFreestandingPerformDualEqualityWriteApiPartialReady : Bool :=
     && !productPathCapableWriteStructuralNotDualEquality
     && !productPathOfficialPathDualEqualityBlocksRetirement
     && productPathFreestandingPerformClaimed
-    && productPathPerformDependsOnLake
+    && !productPathPerformDependsOnLake
     && !productPathOfficialPathStillUsesFreestandingEmit
-    && productPathOfficialPathStillUsesLake
+    && !productPathOfficialPathStillUsesLake
     && !productPathOfficialPathRetireFreestandingEmitRequired
     && !productPathFreestandingCapableStepContractFullSatisfied
     && productPathFreestandingOwnershipClaimed
@@ -869,9 +871,9 @@ def productPathFreestandingPerformDualEqualityWriteCapableGapPartialReady : Bool
     && !productPathCapableWriteStructuralNotDualEquality
     && !productPathOfficialPathDualEqualityBlocksRetirement
     && productPathFreestandingPerformClaimed
-    && productPathPerformDependsOnLake
+    && !productPathPerformDependsOnLake
     && !productPathOfficialPathStillUsesFreestandingEmit
-    && productPathOfficialPathStillUsesLake
+    && !productPathOfficialPathStillUsesLake
     && !productPathOfficialPathRetireFreestandingEmitRequired
     && !productPathFreestandingCapableStepContractFullSatisfied
     && productPathFreestandingOwnershipClaimed
@@ -896,11 +898,11 @@ def productPathOfficialPathRetireOfficialPartialReady : Bool :=
     && productPathOfficialPathRetireOfficialStepAdvanced
     && productPathOfficialPathUsesDualEqualityWrite
     && !productPathOfficialPathStillUsesFreestandingEmit
-    && productPathOfficialPathStillUsesLake
+    && !productPathOfficialPathStillUsesLake
     && !productPathOfficialPathRetireFreestandingEmitRequired
     && !productPathOfficialPathDualEqualityBlocksRetirement
     && productPathFreestandingPerformClaimed
-    && productPathPerformDependsOnLake
+    && !productPathPerformDependsOnLake
     && productPathFreestandingOwnershipClaimed
     && stepContractFull
 
@@ -922,11 +924,11 @@ def productPathFreestandingPerformClaimedPartialReady : Bool :=
     && productPathFreestandingPerformClaimed
     && productPathOfficialPathUsesDualEqualityWrite
     && !productPathOfficialPathStillUsesFreestandingEmit
-    && productPathOfficialPathStillUsesLake
+    && !productPathOfficialPathStillUsesLake
     && !productPathOfficialPathRetireFreestandingEmitRequired
     && !productPathOfficialPathDualEqualityBlocksRetirement
     && productPathOfficialPathRetireOfficialMeasured
-    && productPathPerformDependsOnLake
+    && !productPathPerformDependsOnLake
     && productPathFreestandingOwnershipClaimed
     && stepContractFull
 
@@ -953,11 +955,11 @@ def productPathFreestandingOwnershipClaimedPartialReady : Bool :=
     && productPathFreestandingPerformClaimed
     && productPathOfficialPathUsesDualEqualityWrite
     && !productPathOfficialPathStillUsesFreestandingEmit
-    && productPathOfficialPathStillUsesLake
+    && !productPathOfficialPathStillUsesLake
     && !productPathOfficialPathRetireFreestandingEmitRequired
     && !productPathOfficialPathDualEqualityBlocksRetirement
     && productPathOfficialPathRetireOfficialMeasured
-    && productPathPerformDependsOnLake
+    && !productPathPerformDependsOnLake
     && stepContractFull
     && freestandingProductSelfHostComplete
 
@@ -985,13 +987,13 @@ def stepContractFullPartialReady : Bool :=
     && productPathFreestandingPerformClaimed
     && productPathOfficialPathUsesDualEqualityWrite
     && !productPathOfficialPathStillUsesFreestandingEmit
-    && productPathOfficialPathStillUsesLake
+    && !productPathOfficialPathStillUsesLake
     && !productPathOfficialPathRetireFreestandingEmitRequired
     && !productPathOfficialPathDualEqualityBlocksRetirement
     && productPathOfficialPathRetireOfficialMeasured
     && productPathFreestandingOwnershipClaimedMeasured
     && productPathFreestandingPerformClaimedMeasured
-    && productPathPerformDependsOnLake
+    && !productPathPerformDependsOnLake
     && freestandingProductSelfHostComplete
 
 /-! ### SELF-HOST-FREESTANDING-PRODUCT-COMPLETE (claim B complete after Full) -/
@@ -1014,8 +1016,8 @@ def freestandingProductSelfHostCompletePartialReady : Bool :=
     && productPathFreestandingPerformClaimed
     && productPathOfficialPathUsesDualEqualityWrite
     && !productPathOfficialPathStillUsesFreestandingEmit
-    && productPathOfficialPathStillUsesLake
-    && productPathPerformDependsOnLake
+    && !productPathOfficialPathStillUsesLake
+    && !productPathPerformDependsOnLake
 
 /-- Full SH5 freestanding deepen inventory ok. -/
 def selfApplyFsOk : Bool := freestandingSelfApplyReady
@@ -1096,9 +1098,10 @@ theorem productPathOwnershipInputsPartialReady_true :
 theorem productPathFreestandingPerformClaimed_true :
     productPathFreestandingPerformClaimed = true := rfl
 
-/-- productPathPerformDependsOnLake stays true (read/compose/write still Lake). Greppable: productPathPerformDependsOnLake_true, SELF-HOST-PRODUCT-PATH-PERFORM. -/
-theorem productPathPerformDependsOnLake_true :
-    productPathPerformDependsOnLake = true := by decide
+/-- productPathPerformDependsOnLake false after M6 (product path retired Lake).
+    Greppable: productPathPerformDependsOnLake_false, SELF-HOST-PRODUCT-PATH-PERFORM. -/
+theorem productPathPerformDependsOnLake_false :
+    productPathPerformDependsOnLake = false := by decide
 
 /-- productPathPerformInstallLakeFreeEntrypointClaimed is true (B10:
     Greppable: productPathPerformInstallLakeFreeEntrypointClaimed_true, SELF-HOST-PRODUCT-PATH-PERFORM-STEP. -/
@@ -1594,7 +1597,7 @@ example : productWriterPathExecutionPartialReady = true := by decide
 
 /-- SELF-APPLY-FS-SMOKE / SELF-HOST-PRODUCT-PATH-PERFORM: B9 perform gap. -/
 example : productPathFreestandingPerformClaimed = true := by decide
-example : productPathPerformDependsOnLake = true := by decide
+example : productPathPerformDependsOnLake = false := by decide
 example : productPathPerformPartialReady = true := by decide
 example : freestandingProductSelfHostComplete = true := by decide
 example : productPathHostLakeBootstrapRemains = true := by decide
@@ -1605,7 +1608,7 @@ example : productPathOwnershipInputsPartialReady = true := by decide
 example : productPathPerformInstallLakeFreeEntrypointClaimed = true := by decide
 example : productPathPerformStepPartialReady = true := by decide
 example : productPathFreestandingPerformClaimed = true := by decide
-example : productPathPerformDependsOnLake = true := by decide
+example : productPathPerformDependsOnLake = false := by decide
 example : freestandingProductSelfHostComplete = true := by decide
 example : productPathHostLakeBootstrapRemains = true := by decide
 example : productPathFreestandingOwnershipClaimed = true := by decide
@@ -1616,7 +1619,7 @@ example : productPathPerformReadEntrypointClaimed = true := by decide
 example : productPathPerformReadDependsOnLake = true := by decide
 example : productPathPerformReadPartialReady = true := by decide
 example : productPathFreestandingPerformClaimed = true := by decide
-example : productPathPerformDependsOnLake = true := by decide
+example : productPathPerformDependsOnLake = false := by decide
 example : freestandingProductSelfHostComplete = true := by decide
 example : productPathHostLakeBootstrapRemains = true := by decide
 example : productPathFreestandingOwnershipClaimed = true := by decide
@@ -1627,7 +1630,7 @@ example : productPathPerformComposeEntrypointClaimed = true := by decide
 example : productPathPerformComposeDependsOnLake = true := by decide
 example : productPathPerformComposePartialReady = true := by decide
 example : productPathFreestandingPerformClaimed = true := by decide
-example : productPathPerformDependsOnLake = true := by decide
+example : productPathPerformDependsOnLake = false := by decide
 example : freestandingProductSelfHostComplete = true := by decide
 example : productPathHostLakeBootstrapRemains = true := by decide
 example : productPathFreestandingOwnershipClaimed = true := by decide
@@ -1638,7 +1641,7 @@ example : productPathPerformWriteHcEntrypointClaimed = true := by decide
 example : productPathPerformWriteHcDependsOnLake = true := by decide
 example : productPathPerformWriteHcPartialReady = true := by decide
 example : productPathFreestandingPerformClaimed = true := by decide
-example : productPathPerformDependsOnLake = true := by decide
+example : productPathPerformDependsOnLake = false := by decide
 example : freestandingProductSelfHostComplete = true := by decide
 example : productPathHostLakeBootstrapRemains = true := by decide
 example : productPathFreestandingOwnershipClaimed = true := by decide
@@ -1653,7 +1656,7 @@ example : productPathFreestandingCapableWriteHc = true := by decide
 example : productPathFreestandingCapableFullPerform = false := by decide
 example : productPathFreestandingCapablePartialReady = true := by decide
 example : productPathFreestandingPerformClaimed = true := by decide
-example : productPathPerformDependsOnLake = true := by decide
+example : productPathPerformDependsOnLake = false := by decide
 example : freestandingProductSelfHostComplete = true := by decide
 example : productPathHostLakeBootstrapRemains = true := by decide
 example : productPathFreestandingOwnershipClaimed = true := by decide
@@ -1670,7 +1673,7 @@ example : stepContractFull = true := by decide
 example : productPathFreestandingCapableStepContractPartialReady = true := by decide
 example : productPathFreestandingCapablePartialReady = true := by decide
 example : productPathFreestandingPerformClaimed = true := by decide
-example : productPathPerformDependsOnLake = true := by decide
+example : productPathPerformDependsOnLake = false := by decide
 example : freestandingProductSelfHostComplete = true := by decide
 example : productPathHostLakeBootstrapRemains = true := by decide
 example : productPathFreestandingOwnershipClaimed = true := by decide
@@ -1775,7 +1778,7 @@ example : productPathFreestandingCapableFullBarOwnershipRegenerateWithoutLake
 example : productPathFreestandingPerformEvidenceClaimed = true := by decide
 example : productPathFreestandingPerformEvidencePartialReady = true := by decide
 example : productPathFreestandingPerformClaimed = true := by decide
-example : productPathPerformDependsOnLake = true := by decide
+example : productPathPerformDependsOnLake = false := by decide
 example : productPathFreestandingCapableStepContractFullSatisfied = false := by decide
 example : freestandingProductSelfHostComplete = true := by decide
 example : productPathFreestandingOwnershipClaimed = true := by decide
@@ -1788,11 +1791,11 @@ example : productPathOwnershipRegenerateWithoutLake = true := by decide
     chain fold (dual-pin thin batch 23; stage/recipe/Ok home-primary). -/
 example : productPathFreestandingPerformOfficialPathGapMeasured = true := by decide
 example : productPathOfficialPathStillUsesFreestandingEmit = false := by decide
-example : productPathOfficialPathStillUsesLake = true := by decide
+example : productPathOfficialPathStillUsesLake = false := by decide
 example : productPathOfficialPathRetireFreestandingEmitRequired = false := by decide
 example : productPathFreestandingPerformOfficialPathPartialReady = true := by decide
 example : productPathFreestandingPerformClaimed = true := by decide
-example : productPathPerformDependsOnLake = true := by decide
+example : productPathPerformDependsOnLake = false := by decide
 example : productPathFreestandingPerformEvidenceClaimed = true := by decide
 example : productPathFreestandingCapableStepContractFullSatisfied = false := by decide
 example : freestandingProductSelfHostComplete = true := by decide
@@ -1806,7 +1809,7 @@ example : productPathOfficialPathAlternateNotOfficial = false := by decide
 example : productPathOfficialPathDualEqualityBlocksRetirement = false := by decide
 example : productPathFreestandingPerformOfficialPathAlternatePartialReady = true := by decide
 example : productPathFreestandingPerformClaimed = true := by decide
-example : productPathPerformDependsOnLake = true := by decide
+example : productPathPerformDependsOnLake = false := by decide
 example : productPathOfficialPathStillUsesFreestandingEmit = false := by decide
 example : productPathOfficialPathRetireFreestandingEmitRequired = false := by decide
 example : productPathFreestandingPerformOfficialPathGapMeasured = true := by decide
@@ -1821,7 +1824,7 @@ example : productPathDualEqualityWriteParityGapOpen = false := by decide
 example : productPathCapableWriteStructuralNotDualEquality = false := by decide
 example : productPathFreestandingPerformDualEqualityWriteParityPartialReady = true := by decide
 example : productPathFreestandingPerformClaimed = true := by decide
-example : productPathPerformDependsOnLake = true := by decide
+example : productPathPerformDependsOnLake = false := by decide
 example : productPathOfficialPathStillUsesFreestandingEmit = false := by decide
 example : productPathOfficialPathRetireFreestandingEmitRequired = false := by decide
 example : productPathOfficialPathDualEqualityBlocksRetirement = false := by decide

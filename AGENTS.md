@@ -205,7 +205,7 @@ Plan (waves): `.agents/plans/plan-paydown-shell-c-surfaces.md`.
 | **Behavioral tests** | `src/systems/smoke/slake_behavioral_probe.c` | Hosted product-contract tests linked against the wire. Do not grow as Systems Lean body. Prefer shrinking only when Lean theorems **duplicate** a live `cc` contract with evidence. |
 | **Process glue** | Thin just recipes (`idris-elaborate`, `lean-elaborate`, `systems-lake`, `systems-cc-probe`, `build`/`check` orchestration); tiny `script/git-hooks/pre-commit` (calls `just pre-commit` / `just check`) | Orchestration that must invoke external binaries. Keep tiny. Not a place for algorithms. Novel workspace `check.sh` **deleted**. Install optional local hook: `ln -sf ../../script/git-hooks/pre-commit .git/hooks/pre-commit` from repo root (or copy). Prefer `just check` / flake checks as the real gate surface. |
 | **Host emit SSOT text** | `src/systems/emit/host_emit_*.ssot.txt` | Lean-owned fragments; not shell dialect. |
-| **Tool config** | `lakefile.toml`, `lake-manifest.json`, CI YAML | Config only. |
+| **Tool config** | `lakefile.lean` / `lakefile.toml`, `lake-manifest.json`, CI YAML | Config only. |
 | **Prose** | `doc/`, residuals, plans, README | Humans and agents; min useful. |
 
 **Target end state:** product and gates live in **Lean 4** / **Idris 2**; tooling lives in **small pure Nix modules**; `just` is a short menu; scheduled-deletion shells are **gone**; remaining shell is process glue only.
@@ -584,6 +584,22 @@ session is mid-slice.
 7. **No product garbage collection.** Memory safety from linear/affine types and checks.
 8. **Reference counting** on freestanding paths only if proven unavoidable; see `src/systems/README.md`.
 9. **Multiplicities:** only minimum 0 / 1 / omega for freestanding Slake in `src/systems/`.
+
+### Driver stdout policy (Lake / host drivers)
+
+Lake and host **drivers** (subset emit/rebuild mains, Mult write/deepen, freestanding write tools, just-invoked measured steps) may print only:
+
+| Allowed on stdout | Not allowed on stdout |
+|-------------------|------------------------|
+| Short stage banner (greppable stage id once) | Residual non-claims essays (free/complete/Lake-gone theater) |
+| Wrote paths and byte/char counts | Design-path narratives and naming-hygiene lectures |
+| Raw pin / readiness values (bools, ids) | "not PROVABLY" / "not S4" / "not llvm" / free-vs-complete slogans |
+
+**Where honesty lives:** residual ledgers (`RESIDUAL-systems.md`), `self-host.md`, research notes under `doc/dev/research/`, module headers, pure Nix presence specs. Greppable stage ids once in headers and presence; not repeated as stdout essays.
+
+**Why:** runtime residual archaeology. Long driver banners restate product non-claims that already have durable homes and hide the signal (what wrote, paths, pin values). Scrub is touch-as-you-go alongside the freestanding ladder (bands in `RESIDUAL-systems.md` Decisions); it does not block M3 design.
+
+**ASCII only** on novel driver source and banners. No banned professional-tone tokens in novel markdown. Prefer **document** (name the file) over agent jargon for saving rules.
 
 ### Product Lean edits and claim-bool proof (hard rule -- 2026-07-30)
 

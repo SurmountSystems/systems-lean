@@ -266,11 +266,9 @@ def multFsWriteToolEmit (root : System.FilePath) : IO Unit := do
     throw (IO.userError "multFsWriteToolReady false")
   let out := root / "src" / "systems" / "emit" / "slake_mult_fs_write_tool.c"
   let emitDir := root / "src" / "systems" / "emit"
-  IO.println s!"== {stageId}: emit freestanding Mult package writer C (bootstrap) =="
-  IO.println s!"  host: {hostId} / surface: {surfaceId}"
+  IO.println s!"== {stageId}: emit Mult package writer C =="
   IO.println s!"  out: {out}"
-  IO.println s!"  measured bin (host-cc later): {freestandingWriteToolBinRel}"
-  IO.println s!"  honest: not Lake Mult write ELF on measure; product Lake remains"
+  IO.println s!"  measured bin: {freestandingWriteToolBinRel}"
   IO.FS.createDirAll emitDir
   IO.FS.writeFile out multFsWriteToolCSource
   let written <- IO.FS.readFile out
@@ -281,7 +279,6 @@ def multFsWriteToolEmit (root : System.FilePath) : IO Unit := do
     IO.eprintln s!"error: missing tool C after write: {out}"
     throw (IO.userError "missing tool C")
   IO.println s!"GREEN {stageId}: wrote {out} ({written.length} chars)"
-  IO.println "  greppable: MULT-FS-WRITE-TOOL, slake_mult_fs_write_tool.c, freestandingWriteToolNotLakeBuilt"
 
 /-- Drop lake/exe separators so root path is first real arg. -/
 def filterArgs : List String -> List String

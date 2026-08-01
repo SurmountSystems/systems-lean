@@ -122,15 +122,21 @@ check: build hygiene systems-host systems-emit-wire idris-side lean-side
     echo "check OK"
 
 # Product freestanding wire: regenerate emit + out/freestanding-c.
-# Official path (B38 RETIRE-OFFICIAL): freestanding dual-equality WRITE via
-# freestanding-capable-regenerate (READ+COMPOSE+Capable dual-eq WRITE-HC+INSTALL)
-# -- NOT FreestandingEmit / slake-emit-freestanding-c (diagnostic path remains).
+# M4 Name C (official without-Lake hot path): prefer Name B host-cc freestanding
+# writer (product-wire-freestanding-write), else Name A prebuilt regenerate
+# (freestanding-capable-regenerate-without-lake). No lake build/exe/env on hot path.
+# B38 dual-eq WRITE authority remains (Capable* / freestandingCapableWriteFreestandingHc
+# substrate; freestanding-capable-regenerate Lake path stays diagnostic).
+# NOT FreestandingEmit / slake-emit-freestanding-c as official writer.
+# Fail closed if neither Name B tool C + cc nor Name A prebuilt is available.
+# Product StillUsesLake / DependsOnLake stay true until S4 / M6.
 # SLAKE_COMPILE_PATH_V0: retired shell stamp (deleted). Static compile-path /
 # unit walk: just systems-emit-wire + just systems-host (HOST-COMPILE-PATH /
 # SLAKE_COMPILE_PATH_V1 in SystemsLean/CompilePath.lean). Not product C.
-# Requires host Lean pin (elan + lake); fail closed if missing.
 # No separate out-freestanding-c recipe (retired; former stamp-only build deleted).
 # Release dir stays out/freestanding-c/. Not residual free; not PROVABLY.
+# Greppable: product-wire-freestanding-write, freestanding-capable-regenerate-without-lake,
+# freestanding-capable-regenerate, PRODUCT-WIRE-WITHOUT-LAKE, M4 Name C.
 build:
     #!/usr/bin/env bash
     set -euo pipefail
@@ -138,20 +144,24 @@ build:
     dest=out/freestanding-c
     emit_dir="src/systems/emit"
     systems_dir="src/systems"
+    tool_c="$emit_dir/slake_product_wire_fs_write_tool.c"
+    prebuilt="$systems_dir/.lake/build/bin/slake-freestanding-capable-regenerate"
     mkdir -p "$dest"
-    echo "== just build (product freestanding wire) -> $dest =="
+    echo "== just build (product freestanding wire; M4 Name C without-Lake hot path) -> $dest =="
     echo "Release: runtimeless product C (no Lean managed runtime / product GC on the wire)."
     echo "  not residual free; not PROVABLY"
     echo "  SLAKE_COMPILE_PATH_V0: retired shell stamp; static: systems-emit-wire + systems-host"
     echo "  SLAKE_COMPILE_PATH_V1 / HOST-COMPILE-PATH: SystemsLean/CompilePath.lean (not product C)"
-    echo "  emit: freestanding dual-eq WRITE (freestanding-capable-regenerate; B38 RETIRE-OFFICIAL)"
+    echo "  emit: freestanding dual-eq WRITE without lake on hot path (B38 RETIRE-OFFICIAL substrate)"
+    echo "  prefer: product-wire-freestanding-write (Name B host-cc); else freestanding-capable-regenerate-without-lake (Name A)"
     echo "  authority: freestandingCapableOrderedRegenerate / freestandingCapableWriteFreestandingHc"
     echo "  not FreestandingEmit (retired as official product writer; diagnostic Lake path remains)"
+    echo "  product StillUsesLake true until M6 (host elaborator residual remains)"
     if [[ ! -f "$dest/README.md" ]]; then
       echo "error: missing $dest/README.md" >&2
       exit 1
     fi
-    if [[ ! -f "$systems_dir/lakefile.toml" || ! -f "$systems_dir/SystemsLean/CapableRegenerate.lean" ]]; then
+    if [[ ! -f "$systems_dir/lakefile.lean" || ! -f "$systems_dir/SystemsLean/CapableRegenerate.lean" ]]; then
       echo "error: freestanding-capable regenerate missing under $systems_dir" >&2
       echo "  residual requires freestanding dual-eq WRITE official path (B38 RETIRE-OFFICIAL)." >&2
       exit 1
@@ -160,17 +170,48 @@ build:
       echo "error: Capable dual-eq WRITE module missing under $systems_dir" >&2
       exit 1
     fi
-    if ! command -v lake >/dev/null 2>&1; then
-      echo "error: lake not on PATH; freestanding-capable official path requires host Lean pin" >&2
-      echo "  install elan pin from $systems_dir/lean-toolchain then retry." >&2
+    # M4 Name C: no lake on hot path. Prefer Name B freestanding host-cc writer;
+    # fall back to Name A prebuilt freestanding-capable-regenerate (substring keeps
+    # B38 living-tip greps honest about dual-eq regenerate substrate).
+    if [[ -f "$tool_c" ]] && command -v cc >/dev/null 2>&1; then
+      echo "  hot path: product-wire-freestanding-write (Name B host-cc; no lake)"
+      just product-wire-freestanding-write
+      echo "build: product-wire-freestanding-write (M4 Name B/C dual-eq WRITE+INSTALL) done"
+    elif [[ -x "$prebuilt" ]]; then
+      echo "  hot path: freestanding-capable-regenerate-without-lake (Name A prebuilt; no lake)"
+      just freestanding-capable-regenerate-without-lake
+      echo "build: freestanding-capable-regenerate-without-lake (M4 Name A/C dual-eq WRITE) done"
+    else
+      echo "error: official without-Lake product wire missing both measured writers" >&2
+      echo "  Name B: need $tool_c and host cc on PATH" >&2
+      echo "    bootstrap once: (cd $systems_dir && lake build slake-product-wire-fs-write-tool && lake exe slake-product-wire-fs-write-tool -- $root)" >&2
+      echo "  Name A: need executable prebuilt $prebuilt" >&2
+      echo "    bootstrap once: (cd $systems_dir && lake build slake-freestanding-capable-regenerate)" >&2
+      echo "  then re-run: just build" >&2
       exit 1
     fi
-    # Official product writer: freestanding dual-eq ordered regenerate (includes install Out).
-    just freestanding-capable-regenerate
-    echo "build: freestanding-capable-regenerate (B38 RETIRE-OFFICIAL dual-eq WRITE) done"
+    # Dual evidence after without-Lake write (emit + Out stage tokens).
+    out_h="$emit_dir/slake_freestanding.h"
+    out_c="$emit_dir/slake_freestanding.c"
+    install_h="$dest/slake_freestanding.h"
+    install_c="$dest/slake_freestanding.c"
+    for path in "$out_h" "$out_c" "$install_h" "$install_c"; do
+      if [[ ! -f "$path" ]]; then
+        echo "error: missing freestanding product path after build: $path" >&2
+        exit 1
+      fi
+    done
+    for tok in SLAKE_EMIT_FREESTANDING_C_V0 HOST-EMIT-MULT HOST-EMIT-LINEAR HOST-EMIT-SSOT; do
+      for path in "$out_h" "$out_c" "$install_h" "$install_c"; do
+        if ! grep -qF "$tok" "$path"; then
+          echo "error: $path missing greppable token $tok after without-Lake build" >&2
+          exit 1
+        fi
+      done
+    done
     echo "  not residual free; not PROVABLY; no product GC; not Lean managed runtime"
-    echo "  stage: freestanding dual-eq WRITE official path + UNIT_DEEPEN_V1 (still not residual free)"
-    echo "  product path: just build -> emit + out/freestanding-c"
+    echo "  stage: freestanding dual-eq WRITE official without-Lake path + UNIT_DEEPEN_V1"
+    echo "  product path: just build -> emit + out/freestanding-c (no lake on hot path)"
 
 # Partial B11 / SELF-HOST-PRODUCT-PATH-PERFORM-READ: decomposed dual SSOT READ only.
 # Lake host exe SystemsLean.ProductPathReadSsot (IO.FS.readFile Mult..Out SSOT).
@@ -187,7 +228,7 @@ read-product-ssot:
     echo "== read-product-ssot (decomposed READ dual SSOT; no FreestandingEmit write) =="
     echo "  stage: SLAKE_SELF_HOST_PRODUCT_PATH_PERFORM_READ_V0"
     echo "  not freestanding perform claimed; not residual free; not PROVABLY"
-    if [[ ! -f "$systems_dir/lakefile.toml" || ! -f "$systems_dir/SystemsLean/ProductPathReadSsot.lean" ]]; then
+    if [[ ! -f "$systems_dir/lakefile.lean" || ! -f "$systems_dir/SystemsLean/ProductPathReadSsot.lean" ]]; then
       echo "error: ProductPathReadSsot missing under $systems_dir" >&2
       exit 1
     fi
@@ -218,7 +259,7 @@ compose-product-plan:
     echo "== compose-product-plan (decomposed COMPOSE plan/apply/body; no FreestandingEmit write) =="
     echo "  stage: SLAKE_SELF_HOST_PRODUCT_PATH_PERFORM_COMPOSE_V0"
     echo "  not freestanding perform claimed; not residual free; not PROVABLY"
-    if [[ ! -f "$systems_dir/lakefile.toml" || ! -f "$systems_dir/SystemsLean/ProductPathComposePlan.lean" ]]; then
+    if [[ ! -f "$systems_dir/lakefile.lean" || ! -f "$systems_dir/SystemsLean/ProductPathComposePlan.lean" ]]; then
       echo "error: ProductPathComposePlan missing under $systems_dir" >&2
       exit 1
     fi
@@ -249,7 +290,7 @@ write-freestanding-hc:
     echo "== write-freestanding-hc (decomposed WRITE-HC freestanding .h/.c; Lake FreestandingEmit) =="
     echo "  stage: SLAKE_SELF_HOST_PRODUCT_PATH_PERFORM_WRITE_HC_V0"
     echo "  not freestanding perform claimed; not residual free; not PROVABLY"
-    if [[ ! -f "$systems_dir/lakefile.toml" || ! -f "$systems_dir/SystemsLean/ProductPathWriteHc.lean" ]]; then
+    if [[ ! -f "$systems_dir/lakefile.lean" || ! -f "$systems_dir/SystemsLean/ProductPathWriteHc.lean" ]]; then
       echo "error: missing SystemsLean ProductPathWriteHc / lakefile under $systems_dir" >&2
       exit 1
     fi
@@ -278,7 +319,7 @@ freestanding-capable-gap:
     echo "== freestanding-capable-gap (B14 freestanding-capable step measure; not perform claimed) =="
     echo "  stage: SLAKE_SELF_HOST_PRODUCT_PATH_FREESTANDING_CAPABLE_GAP_V0"
     echo "  not freestanding perform claimed; not residual free; not PROVABLY"
-    if [[ ! -f "$systems_dir/lakefile.toml" || ! -f "$systems_dir/SystemsLean/Capable.lean" ]]; then
+    if [[ ! -f "$systems_dir/lakefile.lean" || ! -f "$systems_dir/SystemsLean/Capable.lean" ]]; then
       echo "error: missing SystemsLean Capable / lakefile under $systems_dir" >&2
       exit 1
     fi
@@ -311,7 +352,7 @@ freestanding-capable-step-contract:
     echo "== freestanding-capable-step-contract (B15 step contract; not perform claimed) =="
     echo "  stage: SLAKE_SELF_HOST_PRODUCT_PATH_FREESTANDING_CAPABLE_STEP_CONTRACT_V0"
     echo "  not freestanding perform claimed; not residual free; not PROVABLY"
-    if [[ ! -f "$systems_dir/lakefile.toml" || ! -f "$systems_dir/SystemsLean/CapableStepContract.lean" ]]; then
+    if [[ ! -f "$systems_dir/lakefile.lean" || ! -f "$systems_dir/SystemsLean/CapableStepContract.lean" ]]; then
       echo "error: missing SystemsLean CapableStepContract / lakefile under $systems_dir" >&2
       exit 1
     fi
@@ -348,7 +389,7 @@ freestanding-capable-read:
     echo "  contract: FREESTANDING-CAPABLE-STEP-CONTRACT-READ (ReadSatisfied true)"
     echo "  not freestanding perform claimed; not residual free; not PROVABLY"
     echo "  B14 productPathFreestandingCapableRead true after B26 (see freestanding-capable-read-lake-free)"
-    if [[ ! -f "$systems_dir/lakefile.toml" || ! -f "$systems_dir/SystemsLean/CapableRead.lean" ]]; then
+    if [[ ! -f "$systems_dir/lakefile.lean" || ! -f "$systems_dir/SystemsLean/CapableRead.lean" ]]; then
       echo "error: missing SystemsLean CapableRead / lakefile under $systems_dir" >&2
       exit 1
     fi
@@ -468,7 +509,7 @@ freestanding-capable-compose:
     echo "  contract: FREESTANDING-CAPABLE-STEP-CONTRACT-COMPOSE (ComposeSatisfied true)"
     echo "  not freestanding perform claimed; not residual free; not PROVABLY"
     echo "  B14 productPathFreestandingCapableCompose true after B27 (see freestanding-capable-compose-lake-free)"
-    if [[ ! -f "$systems_dir/lakefile.toml" || ! -f "$systems_dir/SystemsLean/CapableCompose.lean" ]]; then
+    if [[ ! -f "$systems_dir/lakefile.lean" || ! -f "$systems_dir/SystemsLean/CapableCompose.lean" ]]; then
       echo "error: missing SystemsLean CapableCompose / lakefile under $systems_dir" >&2
       exit 1
     fi
@@ -594,7 +635,7 @@ freestanding-capable-write-hc:
     echo "  contract: FREESTANDING-CAPABLE-STEP-CONTRACT-WRITE-HC (WriteHcSatisfied true)"
     echo "  not freestanding perform claimed; not residual free; not PROVABLY"
     echo "  B14 productPathFreestandingCapableWriteHc true after B28 (see freestanding-capable-write-hc-lake-free)"
-    if [[ ! -f "$systems_dir/lakefile.toml" || ! -f "$systems_dir/SystemsLean/CapableWriteHc.lean" ]]; then
+    if [[ ! -f "$systems_dir/lakefile.lean" || ! -f "$systems_dir/SystemsLean/CapableWriteHc.lean" ]]; then
       echo "error: missing SystemsLean CapableWriteHc / lakefile under $systems_dir" >&2
       exit 1
     fi
@@ -746,7 +787,7 @@ freestanding-capable-regenerate:
     echo "  pipeline: FREESTANDING-CAPABLE-ORDERED-REGENERATE-PIPELINE (READ+COMPOSE+WRITE-HC+INSTALL-OUT)"
     echo "  not Full; InstallOut closed by freestanding-capable path; not freestanding perform claimed; not residual free; not PROVABLY"
     echo "  CapableRead/Compose/WriteHc true (B26..B28 Lake-free); Full unsatisfied; WithoutLake open; DependsOnLake true (Lake exe host)"
-    if [[ ! -f "$systems_dir/lakefile.toml" || ! -f "$systems_dir/SystemsLean/CapableRegenerate.lean" ]]; then
+    if [[ ! -f "$systems_dir/lakefile.lean" || ! -f "$systems_dir/SystemsLean/CapableRegenerate.lean" ]]; then
       echo "error: missing SystemsLean CapableRegenerate / lakefile under $systems_dir" >&2
       exit 1
     fi
@@ -761,6 +802,122 @@ freestanding-capable-regenerate:
       lake exe slake-freestanding-capable-regenerate -- "$root"
     )
     echo "freestanding-capable-regenerate: GREEN (no-FreestandingEmit ordered READ+COMPOSE+WRITE-HC+INSTALL-OUT; Full open; InstallOut closed; perform claimed false)"
+
+# M4 Name A: product-wire without-Lake measured regenerate (prebuilt CapableRegenerate).
+# Bootstrap once (not hot path): (cd src/systems && lake build slake-freestanding-capable-regenerate)
+# then run this recipe (runs .lake/build/bin/slake-freestanding-capable-regenerate only).
+# Product StillUsesLake / DependsOnLake stay true until S4 / M6.
+# Greppable: freestanding-capable-regenerate-without-lake, PRODUCT-WIRE-WITHOUT-LAKE,
+# productWireWithoutLakeFinishedClaimed, prebuiltCapableRegenerateRel.
+freestanding-capable-regenerate-without-lake:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    root="$(pwd)"
+    systems_dir="$root/src/systems"
+    lean_dir="$systems_dir/SystemsLean"
+    emit_dir="$systems_dir/emit"
+    out_dir="$root/out/freestanding-c"
+    out_h="$emit_dir/slake_freestanding.h"
+    out_c="$emit_dir/slake_freestanding.c"
+    install_h="$out_dir/slake_freestanding.h"
+    install_c="$out_dir/slake_freestanding.c"
+    prebuilt="$systems_dir/.lake/build/bin/slake-freestanding-capable-regenerate"
+    mod="$lean_dir/CapableRegenerate.lean"
+    echo "== freestanding-capable-regenerate-without-lake (M4 product-wire measured step; no lake on hot path) =="
+    echo "  prebuilt: $prebuilt"
+    echo "  output: emit + out/freestanding-c dual-eq WRITE; dual evidence greps"
+    if [[ ! -f "$mod" ]]; then
+      echo "error: missing $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'productWireWithoutLakeFinishedClaimed' "$mod"; then
+      echo "error: missing productWireWithoutLakeFinishedClaimed in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'justRecipeProductWireWithoutLake' "$mod"; then
+      echo "error: missing justRecipeProductWireWithoutLake pin in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'freestanding-capable-regenerate-without-lake' "$mod"; then
+      echo "error: missing freestanding-capable-regenerate-without-lake cite in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'productWireWithoutLakeKeepsHostLake' "$mod"; then
+      echo "error: missing productWireWithoutLakeKeepsHostLake honesty in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'prebuiltCapableRegenerateRel' "$mod"; then
+      echo "error: missing prebuiltCapableRegenerateRel in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'stillUsesLake' "$mod"; then
+      echo "error: missing stillUsesLake honesty in $mod" >&2
+      exit 1
+    fi
+    if [[ ! -x "$prebuilt" ]]; then
+      echo "error: missing prebuilt CapableRegenerate binary: $prebuilt" >&2
+      echo "  bootstrap once (not hot path): (cd src/systems && lake build slake-freestanding-capable-regenerate)" >&2
+      echo "  then re-run: just freestanding-capable-regenerate-without-lake" >&2
+      exit 1
+    fi
+    # Hot path: run prebuilt ELF only. Do not call lake build / lake exe / lake env.
+    echo "  hot path: exec prebuilt CapableRegenerate (no lake)"
+    "$prebuilt" "$root"
+    if [[ ! -f "$out_h" ]]; then
+      echo "error: missing freestanding header after without-Lake regenerate: $out_h" >&2
+      exit 1
+    fi
+    if [[ ! -f "$out_c" ]]; then
+      echo "error: missing freestanding source after without-Lake regenerate: $out_c" >&2
+      exit 1
+    fi
+    if [[ ! -f "$install_h" ]]; then
+      echo "error: missing Out install header after without-Lake regenerate: $install_h" >&2
+      exit 1
+    fi
+    if [[ ! -f "$install_c" ]]; then
+      echo "error: missing Out install source after without-Lake regenerate: $install_c" >&2
+      exit 1
+    fi
+    for tok in SLAKE_EMIT_FREESTANDING_C_V0 HOST-EMIT-MULT HOST-EMIT-LINEAR HOST-EMIT-SSOT; do
+      if ! grep -qF "$tok" "$out_h"; then
+        echo "error: $out_h missing greppable token $tok" >&2
+        exit 1
+      fi
+      if ! grep -qF "$tok" "$out_c"; then
+        echo "error: $out_c missing greppable token $tok" >&2
+        exit 1
+      fi
+      if ! grep -qF "$tok" "$install_h"; then
+        echo "error: $install_h missing greppable token $tok" >&2
+        exit 1
+      fi
+      if ! grep -qF "$tok" "$install_c"; then
+        echo "error: $install_c missing greppable token $tok" >&2
+        exit 1
+      fi
+    done
+    if ! grep -qF 'productWireWithoutLakeReady' "$mod"; then
+      echo "error: productWireWithoutLakeReady missing after without-Lake regenerate (host bar)" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def productWireWithoutLakeFinishedClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
+      echo "error: productWireWithoutLakeFinishedClaimed must be true for M4 without-Lake finished" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def stillUsesLake[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
+      echo "error: stillUsesLake must stay true (product host residual remains)" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def dependsOnLake[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
+      echo "error: dependsOnLake must stay true (product host residual remains)" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def productPathFreestandingCapableRegenerateDependsOnLake[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
+      echo "error: productPathFreestandingCapableRegenerateDependsOnLake must stay true" >&2
+      exit 1
+    fi
+    echo "freestanding-capable-regenerate-without-lake: GREEN"
 
 # Partial B20: freestanding-capable Install Out without FreestandingEmit as product
 # authority (freestandingCapableInstallFreestandingOut; emit .h/.c -> out/freestanding-c/).
@@ -782,7 +939,7 @@ freestanding-capable-install-out:
     echo "  step: FREESTANDING-CAPABLE-INSTALL-OUT / WRITER-PATH-STEP-INSTALL-OUT"
     echo "  not Full; InstallOutOpen false; not freestanding perform claimed; not residual free; not PROVABLY"
     echo "  CapableRead/Compose/WriteHc true (B26..B28 Lake-free); Full unsatisfied; WithoutLake open; DependsOnLake true (Lake exe host)"
-    if [[ ! -f "$systems_dir/lakefile.toml" || ! -f "$systems_dir/SystemsLean/InstallOut.lean" ]]; then
+    if [[ ! -f "$systems_dir/lakefile.lean" || ! -f "$systems_dir/SystemsLean/InstallOut.lean" ]]; then
       echo "error: missing SystemsLean InstallOut / lakefile under $systems_dir" >&2
       exit 1
     fi
@@ -817,7 +974,7 @@ freestanding-capable-full-bar:
     echo "  closed: step contracts + InstallOut + ordered regenerate (B16..B20) + WithoutLake (B30)"
     echo "  open: Full; perform/ownership claimed (B14 Capable* closed after B26..B28)"
     echo "  not freestanding perform claimed; not residual free; not PROVABLY"
-    if [[ ! -f "$systems_dir/lakefile.toml" || ! -f "$systems_dir/SystemsLean/CapableFullBar.lean" ]]; then
+    if [[ ! -f "$systems_dir/lakefile.lean" || ! -f "$systems_dir/SystemsLean/CapableFullBar.lean" ]]; then
       echo "error: missing SystemsLean CapableFullBar / lakefile under $systems_dir" >&2
       exit 1
     fi
@@ -855,7 +1012,7 @@ ownership-regenerate:
     echo "  stage: SLAKE_SELF_HOST_PRODUCT_PATH_OWNERSHIP_REGENERATE_V0"
     echo "  install+READ+COMPOSE+WRITE-HC Lake-free true; B29 join; B30 authority; WithoutLake true"
     echo "  not ownership claimed; not Full; not freestanding perform claimed; not residual free; not PROVABLY"
-    if [[ ! -f "$systems_dir/lakefile.toml" || ! -f "$systems_dir/SystemsLean/ProductPathOwnershipRegenerate.lean" ]]; then
+    if [[ ! -f "$systems_dir/lakefile.lean" || ! -f "$systems_dir/SystemsLean/ProductPathOwnershipRegenerate.lean" ]]; then
       echo "error: missing SystemsLean ProductPathOwnershipRegenerate / lakefile under $systems_dir" >&2
       exit 1
     fi
@@ -1314,7 +1471,7 @@ freestanding-perform-evidence-measure:
     echo "  stage: SLAKE_SELF_HOST_PRODUCT_PATH_PERFORM_EVIDENCE_V0"
     echo "  evidence claimed true; perform claimed false; FULL-BAR-REQ-PERFORM-CLAIMED-WITH-EVIDENCE open"
     echo "  not freestanding perform claimed; not residual free; not PROVABLY"
-    if [[ ! -f "$systems_dir/lakefile.toml" || ! -f "$systems_dir/SystemsLean/PerformEvidence.lean" ]]; then
+    if [[ ! -f "$systems_dir/lakefile.lean" || ! -f "$systems_dir/SystemsLean/PerformEvidence.lean" ]]; then
       echo "error: missing SystemsLean PerformEvidence / lakefile under $systems_dir" >&2
       exit 1
     fi
@@ -1464,7 +1621,7 @@ freestanding-perform-official-path-measure:
     echo "  stage: SLAKE_SELF_HOST_PRODUCT_PATH_PERFORM_OFFICIAL_PATH_V0"
     echo "  gap measured true; perform claimed false; FULL-BAR-REQ-PERFORM-CLAIMED-WITH-EVIDENCE open"
     echo "  not freestanding perform claimed; not residual free; not PROVABLY"
-    if [[ ! -f "$systems_dir/lakefile.toml" || ! -f "$systems_dir/SystemsLean/OfficialPath.lean" ]]; then
+    if [[ ! -f "$systems_dir/lakefile.lean" || ! -f "$systems_dir/SystemsLean/OfficialPath.lean" ]]; then
       echo "error: missing SystemsLean OfficialPath / lakefile under $systems_dir" >&2
       exit 1
     fi
@@ -1669,7 +1826,7 @@ freestanding-perform-official-path-alternate-measure:
     echo "  stage: SLAKE_SELF_HOST_PRODUCT_PATH_PERFORM_OFFICIAL_PATH_ALTERNATE_V0"
     echo "  alternate measured true; perform claimed false; FULL-BAR-REQ-PERFORM-CLAIMED-WITH-EVIDENCE open"
     echo "  not freestanding perform claimed; not residual free; not PROVABLY"
-    if [[ ! -f "$systems_dir/lakefile.toml" || ! -f "$systems_dir/SystemsLean/OfficialPathAlternate.lean" ]]; then
+    if [[ ! -f "$systems_dir/lakefile.lean" || ! -f "$systems_dir/SystemsLean/OfficialPathAlternate.lean" ]]; then
       echo "error: missing SystemsLean OfficialPathAlternate / lakefile under $systems_dir" >&2
       exit 1
     fi
@@ -1865,7 +2022,7 @@ freestanding-perform-dual-equality-write-parity-measure:
     echo "  stage: SLAKE_SELF_HOST_PRODUCT_PATH_PERFORM_DUAL_EQUALITY_WRITE_PARITY_V0"
     echo "  parity measured true; gap open true; perform claimed false; FULL-BAR-REQ-PERFORM-CLAIMED-WITH-EVIDENCE open"
     echo "  not freestanding perform claimed; not residual free; not PROVABLY"
-    if [[ ! -f "$systems_dir/lakefile.toml" || ! -f "$systems_dir/SystemsLean/DualEqWriteParity.lean" ]]; then
+    if [[ ! -f "$systems_dir/lakefile.lean" || ! -f "$systems_dir/SystemsLean/DualEqWriteParity.lean" ]]; then
       echo "error: missing SystemsLean DualEqWriteParity / lakefile under $systems_dir" >&2
       exit 1
     fi
@@ -2082,7 +2239,7 @@ freestanding-perform-dual-equality-write-close-path-measure:
     echo "  stage: SLAKE_SELF_HOST_PRODUCT_PATH_PERFORM_DUAL_EQUALITY_WRITE_CLOSE_PATH_V0"
     echo "  close path measured true; named true; not gap closed true; gap open true; perform claimed false; FULL-BAR-REQ-PERFORM-CLAIMED-WITH-EVIDENCE open"
     echo "  not freestanding perform claimed; not residual free; not PROVABLY"
-    if [[ ! -f "$systems_dir/lakefile.toml" || ! -f "$systems_dir/SystemsLean/DualEqWriteClosePath.lean" ]]; then
+    if [[ ! -f "$systems_dir/lakefile.lean" || ! -f "$systems_dir/SystemsLean/DualEqWriteClosePath.lean" ]]; then
       echo "error: missing SystemsLean DualEqWriteClosePath / lakefile under $systems_dir" >&2
       exit 1
     fi
@@ -2338,7 +2495,7 @@ freestanding-perform-dual-equality-write-api-measure:
     echo "  stage: SLAKE_SELF_HOST_PRODUCT_PATH_PERFORM_DUAL_EQUALITY_WRITE_API_V0"
     echo "  API measured true; present true; authority not emit; not official; gap closed after B37; perform claimed false; FULL-BAR-REQ-PERFORM-CLAIMED-WITH-EVIDENCE open"
     echo "  not freestanding perform claimed; not residual free; not PROVABLY"
-    if [[ ! -f "$systems_dir/lakefile.toml" || ! -f "$systems_dir/SystemsLean/DualEqWriteApi.lean" ]]; then
+    if [[ ! -f "$systems_dir/lakefile.lean" || ! -f "$systems_dir/SystemsLean/DualEqWriteApi.lean" ]]; then
       echo "error: missing SystemsLean DualEqWriteApi / lakefile under $systems_dir" >&2
       exit 1
     fi
@@ -2594,7 +2751,7 @@ freestanding-perform-dual-equality-write-capable-gap-measure:
     echo "  stage: SLAKE_SELF_HOST_PRODUCT_PATH_PERFORM_DUAL_EQUALITY_WRITE_CAPABLE_GAP_V0"
     echo "  CAPABLE-GAP measured true; gap closed true; dual-eq live true; perform claimed false; FULL-BAR-REQ-PERFORM-CLAIMED-WITH-EVIDENCE open"
     echo "  not freestanding perform claimed; not residual free; not PROVABLY"
-    if [[ ! -f "$systems_dir/lakefile.toml" || ! -f "$systems_dir/SystemsLean/DualEqWriteCapableGap.lean" ]]; then
+    if [[ ! -f "$systems_dir/lakefile.lean" || ! -f "$systems_dir/SystemsLean/DualEqWriteCapableGap.lean" ]]; then
       echo "error: missing SystemsLean DualEqWriteCapableGap / lakefile under $systems_dir" >&2
       exit 1
     fi
@@ -2671,8 +2828,8 @@ freestanding-retire-official:
       echo "error: missing productPathOfficialPathStillUsesFreestandingEmit false in $retire_mod" >&2
       exit 1
     fi
-    if ! grep -qF 'def productPathOfficialPathStillUsesLake : Bool := true' "$retire_mod"; then
-      echo "error: missing productPathOfficialPathStillUsesLake true in $retire_mod" >&2
+    if ! grep -qF 'def productPathOfficialPathStillUsesLake : Bool := false' "$retire_mod"; then
+      echo "error: missing productPathOfficialPathStillUsesLake false (M6) in $retire_mod" >&2
       exit 1
     fi
     if ! grep -qF 'def productPathOfficialPathRetireFreestandingEmitRequired : Bool := false' "$retire_mod"; then
@@ -2687,8 +2844,8 @@ freestanding-retire-official:
       echo "error: missing productPathFreestandingPerformClaimed false in $retire_mod" >&2
       exit 1
     fi
-    if ! grep -qF 'def productPathPerformDependsOnLake : Bool := true' "$retire_mod"; then
-      echo "error: missing productPathPerformDependsOnLake true in $retire_mod" >&2
+    if ! grep -qF 'def productPathPerformDependsOnLake : Bool := false' "$retire_mod"; then
+      echo "error: missing productPathPerformDependsOnLake false (M6) in $retire_mod" >&2
       exit 1
     fi
     if ! grep -qF 'FREESTANDING-DUAL-EQUALITY-WRITE-CLOSE-STEP-RETIRE-OFFICIAL' "$retire_mod"; then
@@ -2808,7 +2965,7 @@ freestanding-retire-official-measure:
     echo "  stage: SLAKE_SELF_HOST_PRODUCT_PATH_PERFORM_RETIRE_OFFICIAL_V0"
     echo "  RETIRE-OFFICIAL measured true; dual-eq WRITE true; StillUsesFreestandingEmit false; OfficialRetire perform claimed false; SelfApplyFs living tip true after B39"
     echo "  not ownership claimed; not residual free; not PROVABLY"
-    if [[ ! -f "$systems_dir/lakefile.toml" || ! -f "$systems_dir/SystemsLean/OfficialRetire.lean" ]]; then
+    if [[ ! -f "$systems_dir/lakefile.lean" || ! -f "$systems_dir/SystemsLean/OfficialRetire.lean" ]]; then
       echo "error: missing SystemsLean OfficialRetire / lakefile under $systems_dir" >&2
       exit 1
     fi
@@ -2883,8 +3040,8 @@ freestanding-perform-claimed:
       echo "error: missing productPathOfficialPathStillUsesFreestandingEmit false in $claimed_mod" >&2
       exit 1
     fi
-    if ! grep -qF 'def productPathOfficialPathStillUsesLake : Bool := true' "$claimed_mod"; then
-      echo "error: missing productPathOfficialPathStillUsesLake true in $claimed_mod" >&2
+    if ! grep -qF 'def productPathOfficialPathStillUsesLake : Bool := false' "$claimed_mod"; then
+      echo "error: missing productPathOfficialPathStillUsesLake false (M6) in $claimed_mod" >&2
       exit 1
     fi
     if ! grep -qF 'def productPathOfficialPathRetireFreestandingEmitRequired : Bool := false' "$claimed_mod"; then
@@ -2899,8 +3056,8 @@ freestanding-perform-claimed:
       echo "error: missing productPathOfficialPathRetireOfficialMeasured true in $claimed_mod" >&2
       exit 1
     fi
-    if ! grep -qF 'def productPathPerformDependsOnLake : Bool := true' "$claimed_mod"; then
-      echo "error: missing productPathPerformDependsOnLake true in $claimed_mod" >&2
+    if ! grep -qF 'def productPathPerformDependsOnLake : Bool := false' "$claimed_mod"; then
+      echo "error: missing productPathPerformDependsOnLake false (M6) in $claimed_mod" >&2
       exit 1
     fi
     if ! grep -qF 'def productPathFreestandingOwnershipClaimed : Bool := false' "$claimed_mod"; then
@@ -3040,7 +3197,7 @@ freestanding-perform-claimed-measure:
     echo "  stage: SLAKE_SELF_HOST_PRODUCT_PATH_PERFORM_CLAIMED_V0"
     echo "  PERFORM-CLAIMED measured true; perform claimed true; dual-eq WRITE true; StillUsesFreestandingEmit false; FULL-BAR-REQ-PERFORM-CLAIMED-WITH-EVIDENCE closed with evidence"
     echo "  not ownership claimed; not residual free; not PROVABLY; not complete"
-    if [[ ! -f "$systems_dir/lakefile.toml" || ! -f "$systems_dir/SystemsLean/PerformClaimed.lean" ]]; then
+    if [[ ! -f "$systems_dir/lakefile.lean" || ! -f "$systems_dir/SystemsLean/PerformClaimed.lean" ]]; then
       echo "error: missing SystemsLean PerformClaimed / lakefile under $systems_dir" >&2
       exit 1
     fi
@@ -3119,8 +3276,8 @@ freestanding-ownership-claimed:
       echo "error: missing productPathOfficialPathStillUsesFreestandingEmit false in $claimed_mod" >&2
       exit 1
     fi
-    if ! grep -qF 'def productPathOfficialPathStillUsesLake : Bool := true' "$claimed_mod"; then
-      echo "error: missing productPathOfficialPathStillUsesLake true in $claimed_mod" >&2
+    if ! grep -qF 'def productPathOfficialPathStillUsesLake : Bool := false' "$claimed_mod"; then
+      echo "error: missing productPathOfficialPathStillUsesLake false (M6) in $claimed_mod" >&2
       exit 1
     fi
     if ! grep -qF 'def productPathOfficialPathRetireFreestandingEmitRequired : Bool := false' "$claimed_mod"; then
@@ -3135,8 +3292,8 @@ freestanding-ownership-claimed:
       echo "error: missing productPathOfficialPathRetireOfficialMeasured true in $claimed_mod" >&2
       exit 1
     fi
-    if ! grep -qF 'def productPathPerformDependsOnLake : Bool := true' "$claimed_mod"; then
-      echo "error: missing productPathPerformDependsOnLake true in $claimed_mod" >&2
+    if ! grep -qF 'def productPathPerformDependsOnLake : Bool := false' "$claimed_mod"; then
+      echo "error: missing productPathPerformDependsOnLake false (M6) in $claimed_mod" >&2
       exit 1
     fi
     if ! grep -qF 'def productPathFreestandingCapableStepContractFullSatisfied : Bool := false' "$claimed_mod"; then
@@ -3288,7 +3445,7 @@ freestanding-ownership-claimed-measure:
     echo "  stage: SLAKE_SELF_HOST_PRODUCT_PATH_OWNERSHIP_CLAIMED_V0"
     echo "  OWNERSHIP-CLAIMED measured true; ownership claimed true; perform claimed true; dual-eq WRITE true; StillUsesFreestandingEmit false; FULL-BAR-REQ-OWNERSHIP-CLAIMED-WITH-EVIDENCE closed with evidence"
     echo "  not Full; not residual free; not PROVABLY; not complete"
-    if [[ ! -f "$systems_dir/lakefile.toml" || ! -f "$systems_dir/SystemsLean/OwnershipClaimed.lean" ]]; then
+    if [[ ! -f "$systems_dir/lakefile.lean" || ! -f "$systems_dir/SystemsLean/OwnershipClaimed.lean" ]]; then
       echo "error: missing SystemsLean OwnershipClaimed / lakefile under $systems_dir" >&2
       exit 1
     fi
@@ -3371,8 +3528,8 @@ freestanding-step-contract-full:
       echo "error: missing productPathOfficialPathStillUsesFreestandingEmit false in $full_mod" >&2
       exit 1
     fi
-    if ! grep -qF 'def productPathOfficialPathStillUsesLake : Bool := true' "$full_mod"; then
-      echo "error: missing productPathOfficialPathStillUsesLake true in $full_mod" >&2
+    if ! grep -qF 'def productPathOfficialPathStillUsesLake : Bool := false' "$full_mod"; then
+      echo "error: missing productPathOfficialPathStillUsesLake false (M6) in $full_mod" >&2
       exit 1
     fi
     if ! grep -qF 'def productPathOfficialPathRetireFreestandingEmitRequired : Bool := false' "$full_mod"; then
@@ -3387,8 +3544,8 @@ freestanding-step-contract-full:
       echo "error: missing productPathOfficialPathRetireOfficialMeasured true in $full_mod" >&2
       exit 1
     fi
-    if ! grep -qF 'def productPathPerformDependsOnLake : Bool := true' "$full_mod"; then
-      echo "error: missing productPathPerformDependsOnLake true in $full_mod" >&2
+    if ! grep -qF 'def productPathPerformDependsOnLake : Bool := false' "$full_mod"; then
+      echo "error: missing productPathPerformDependsOnLake false (M6) in $full_mod" >&2
       exit 1
     fi
     if ! grep -qF 'def freestandingProductSelfHostComplete : Bool := true' "$full_mod"; then
@@ -3540,7 +3697,7 @@ freestanding-step-contract-full-measure:
     echo "  stage: SLAKE_SELF_HOST_PRODUCT_PATH_STEP_CONTRACT_FULL_V0"
     echo "  Full measured true; stepContractFull true; ownership claimed true; perform claimed true; dual-eq WRITE true; StillUsesFreestandingEmit false"
     echo "  not complete; not residual free; not PROVABLY"
-    if [[ ! -f "$systems_dir/lakefile.toml" || ! -f "$systems_dir/SystemsLean/StepContractFull.lean" ]]; then
+    if [[ ! -f "$systems_dir/lakefile.lean" || ! -f "$systems_dir/SystemsLean/StepContractFull.lean" ]]; then
       echo "error: missing SystemsLean StepContractFull / lakefile under $systems_dir" >&2
       exit 1
     fi
@@ -3572,10 +3729,9 @@ freestanding-step-contract-full-measure:
 # (claim A) + llvm/PROVABLY false, then lake build/exe
 # slake-freestanding-self-host-complete (fail closed if lake missing -- claim flip
 # cannot GREEN on greps alone).
-# Honesty: Lake is host bootstrap only (elaborate Systems Lean / Slake host
-# sources). Not freestanding end-state product dependency. DependsOnLake /
-# StillUsesLake stay true until freestanding path retires them. Short role module
-# SelfHostComplete. Measure recipe remains a lake-only subset path.
+# Honesty: product path StillUsesLake / DependsOnLake false after M6 (living tip).
+# Host elaborator residual may remain (DualResidual). Short role module
+# SelfHostComplete. Measure recipe remains a lake-only claim-proof path.
 # Greppable: freestanding-self-host-complete,
 # freestandingProductSelfHostCompleteMeasured,
 # SELF-HOST-FREESTANDING-PRODUCT-COMPLETE,
@@ -3589,7 +3745,7 @@ freestanding-self-host-complete:
     lean_dir="$root/src/systems/SystemsLean"
     echo "== freestanding-self-host-complete (claim B complete after Full) =="
     echo "  framing: Full + ownership-claimed + perform-claimed + official dual-eq WRITE evidence; SelfApplyFs freestandingProductSelfHostComplete true; product residual free claimed (claim A)"
-    echo "  complete measured true; stepContractFull true; ownership claimed true; perform claimed true; dual-eq WRITE true; StillUsesFreestandingEmit false; Blocks false; DependsOnLake true; residual free true; llvm/PROVABLY false"
+    echo "  complete measured true; stepContractFull true; ownership claimed true; perform claimed true; dual-eq WRITE true; StillUsesFreestandingEmit false; Blocks false; DependsOnLake false; StillUsesLake false (M6); residual free true; llvm/PROVABLY false"
     complete_mod="$lean_dir/SelfHostComplete.lean"
     if [[ ! -f "$complete_mod" ]]; then
       echo "error: missing $complete_mod" >&2
@@ -3631,12 +3787,12 @@ freestanding-self-host-complete:
       echo "error: missing StillUsesFreestandingEmit false in $complete_mod" >&2
       exit 1
     fi
-    if ! grep -qF 'def productPathOfficialPathStillUsesLake : Bool := true' "$complete_mod"; then
-      echo "error: missing StillUsesLake true in $complete_mod" >&2
+    if ! grep -qF 'def productPathOfficialPathStillUsesLake : Bool := false' "$complete_mod"; then
+      echo "error: missing StillUsesLake false (M6) in $complete_mod" >&2
       exit 1
     fi
-    if ! grep -qF 'def productPathPerformDependsOnLake : Bool := true' "$complete_mod"; then
-      echo "error: missing DependsOnLake true in $complete_mod" >&2
+    if ! grep -qF 'def productPathPerformDependsOnLake : Bool := false' "$complete_mod"; then
+      echo "error: missing DependsOnLake false (M6) in $complete_mod" >&2
       exit 1
     fi
     if ! grep -qF 'def residualFreeClaimed : Bool := true' "$complete_mod"; then
@@ -3715,12 +3871,12 @@ freestanding-self-host-complete:
       echo "error: missing StillUsesFreestandingEmit false in $self_fs" >&2
       exit 1
     fi
-    if ! grep -qF 'def productPathOfficialPathStillUsesLake : Bool := true' "$self_fs"; then
-      echo "error: missing StillUsesLake true in $self_fs" >&2
+    if ! grep -qF 'def productPathOfficialPathStillUsesLake : Bool := false' "$self_fs"; then
+      echo "error: missing StillUsesLake false (M6) in $self_fs" >&2
       exit 1
     fi
-    if ! grep -qF 'def productPathPerformDependsOnLake : Bool := true' "$self_fs"; then
-      echo "error: missing DependsOnLake true in $self_fs" >&2
+    if ! grep -qF 'def productPathPerformDependsOnLake : Bool := false' "$self_fs"; then
+      echo "error: missing DependsOnLake false (M6) in $self_fs" >&2
       exit 1
     fi
     if ! grep -qF 'freestandingProductSelfHostCompletePartialReady' "$self_fs"; then
@@ -3784,7 +3940,7 @@ freestanding-self-host-complete:
       echo "error: freestanding-self-host-complete requires lake on PATH for claim-B complete proof" >&2
       exit 1
     fi
-    echo "freestanding-self-host-complete: GREEN (claim B complete; Full + ownership-claimed + perform-claimed + official dual-eq WRITE evidence; freestandingProductSelfHostComplete true; StillUsesFreestandingEmit false; Blocks false; DependsOnLake true; residual free true; llvm/PROVABLY false; CAPABLE-GAP closed; lake claim proof ran)"
+    echo "freestanding-self-host-complete: GREEN (claim B complete; Full + ownership-claimed + perform-claimed + official dual-eq WRITE evidence; freestandingProductSelfHostComplete true; StillUsesFreestandingEmit false; Blocks false; DependsOnLake false; StillUsesLake false (M6); residual free true; llvm/PROVABLY false; CAPABLE-GAP closed; lake claim proof ran)"
 
 # Greppable: freestanding-self-host-complete-measure,
 # slake-freestanding-self-host-complete,
@@ -3813,8 +3969,6 @@ regenerate-product-path:
     echo "== regenerate-product-path (B14 ordered host pipeline join; not freestanding-capable close) =="
     echo "  stage: SLAKE_SELF_HOST_PRODUCT_PATH_FREESTANDING_CAPABLE_GAP_V0"
     echo "  order: read-product-ssot -> compose-product-plan -> write-freestanding-hc -> install-freestanding-c-out"
-    echo "  honest: middle steps still classic Lean Lake; install-only is Lake-free when emit present"
-    echo "  not freestanding perform claimed; not residual free; not PROVABLY"
     just read-product-ssot
     just compose-product-plan
     just write-freestanding-hc
@@ -4846,6 +5000,631 @@ compose-subset-rebuild:
     fi
     echo "compose-subset-rebuild: GREEN (M1 Compose subset self-application measured; Lake host remains; not without-Lake finished; not S4; not PROVABLY/llvm)"
 
+# M5 Name A: multi-unit subset package rebuild join (Mult..Compose ordered).
+# Prefer Mult without-Lake measured step; other units use existing rebuild recipes.
+# Dual evidence: Lean SubsetPackageJoin pins + on-disk unit package stage tokens.
+# Product StillUsesLake / DependsOnLake stay true. Not Name B/C; not S4/M6.
+# Greppable: subset-packages-rebuild-join, SUBSET-PACKAGE-JOIN,
+# subsetPackageJoinFinishedClaimed, subsetPackageJoinReady, justRecipeSubsetPackageJoin.
+# Name A join may still use Lake-hosted unit rebuild recipes for non-Mult.
+# Name C without-Lake multi-unit join is subset-packages-rebuild-join-without-lake.
+subset-packages-rebuild-join:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    root="$(pwd)"
+    systems_dir="$root/src/systems"
+    lean_dir="$systems_dir/SystemsLean"
+    emit_dir="$systems_dir/emit"
+    mod="$lean_dir/SubsetPackageJoin.lean"
+    echo "== subset-packages-rebuild-join (M5 multi-unit package rebuild join) =="
+    echo "  order: Mult(without-Lake) Linear Types Program Extract Erasure Graph Compose"
+    echo "  dual: Lean join pin + emit/slake_*_subset stage tokens"
+    if [[ ! -f "$mod" ]]; then
+      echo "error: missing $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'subsetPackageJoinFinishedClaimed' "$mod"; then
+      echo "error: missing subsetPackageJoinFinishedClaimed in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'subsetPackageJoinReady' "$mod"; then
+      echo "error: missing subsetPackageJoinReady in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'justRecipeSubsetPackageJoin' "$mod"; then
+      echo "error: missing justRecipeSubsetPackageJoin in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'subset-packages-rebuild-join' "$mod"; then
+      echo "error: missing subset-packages-rebuild-join cite in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'subsetPackageJoinKeepsHostLake' "$mod"; then
+      echo "error: missing subsetPackageJoinKeepsHostLake honesty in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'stillUsesLake' "$mod"; then
+      echo "error: missing stillUsesLake honesty in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'SLAKE_SUBSET_PACKAGE_JOIN_V0' "$mod"; then
+      echo "error: missing SLAKE_SUBSET_PACKAGE_JOIN_V0 stage id in $mod" >&2
+      exit 1
+    fi
+    # Ordered unit rebuilds (reuse existing recipes; Mult prefers without-Lake).
+    just mult-subset-rebuild-without-lake
+    just linear-subset-rebuild
+    just types-subset-rebuild
+    just program-subset-rebuild
+    just extract-subset-rebuild
+    just erasure-subset-rebuild
+    just graph-subset-rebuild
+    just compose-subset-rebuild
+    # Dual greps: each unit package emit stage token on header + source.
+    for pair in \
+      "mult:SLAKE_MULT_SUBSET_EMIT_V0" \
+      "linear:SLAKE_LINEAR_SUBSET_EMIT_V0" \
+      "types:SLAKE_TYPES_SUBSET_EMIT_V0" \
+      "program:SLAKE_PROGRAM_SUBSET_EMIT_V0" \
+      "extract:SLAKE_EXTRACT_SUBSET_EMIT_V0" \
+      "erasure:SLAKE_ERASURE_SUBSET_EMIT_V0" \
+      "graph:SLAKE_GRAPH_SUBSET_EMIT_V0" \
+      "compose:SLAKE_COMPOSE_SUBSET_EMIT_V0"
+    do
+      unit="${pair%%:*}"
+      tok="${pair##*:}"
+      out_h="$emit_dir/slake_${unit}_subset.h"
+      out_c="$emit_dir/slake_${unit}_subset.c"
+      if [[ ! -f "$out_h" ]]; then
+        echo "error: missing unit package header after join: $out_h" >&2
+        exit 1
+      fi
+      if [[ ! -f "$out_c" ]]; then
+        echo "error: missing unit package source after join: $out_c" >&2
+        exit 1
+      fi
+      if ! grep -qF "$tok" "$out_h"; then
+        echo "error: $out_h missing greppable token $tok" >&2
+        exit 1
+      fi
+      if ! grep -qF "$tok" "$out_c"; then
+        echo "error: $out_c missing greppable token $tok" >&2
+        exit 1
+      fi
+    done
+    # Structural join pins must stay true (M5 Name A finished; Name C multi-unit true).
+    if ! grep -qE 'def subsetPackageJoinFinishedClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
+      echo "error: subsetPackageJoinFinishedClaimed must be true for M5 Name A" >&2
+      exit 1
+    fi
+    if ! grep -qF 'subsetPackageJoinReady' "$mod"; then
+      echo "error: subsetPackageJoinReady missing after multi-unit join (host bar)" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def stillUsesLake[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
+      echo "error: stillUsesLake must stay true (product host residual remains)" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def dependsOnLake[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
+      echo "error: dependsOnLake must stay true (product host residual remains)" >&2
+      exit 1
+    fi
+    # Non-Mult per-unit without-Lake finished stay false (join-level Name C only).
+    for unit_mod in Linear Types Program Extract Erasure Graph Compose; do
+      um="$lean_dir/${unit_mod}SubsetRebuild.lean"
+      case "$unit_mod" in
+        Linear) pin="linearSubsetRebuildWithoutLakeFinishedClaimed" ;;
+        Types) pin="typesSubsetRebuildWithoutLakeFinishedClaimed" ;;
+        Program) pin="programSubsetRebuildWithoutLakeFinishedClaimed" ;;
+        Extract) pin="extractSubsetRebuildWithoutLakeFinishedClaimed" ;;
+        Erasure) pin="erasureSubsetRebuildWithoutLakeFinishedClaimed" ;;
+        Graph) pin="graphSubsetRebuildWithoutLakeFinishedClaimed" ;;
+        Compose) pin="composeSubsetRebuildWithoutLakeFinishedClaimed" ;;
+      esac
+      if ! grep -qE "def ${pin}[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*false" "$um"; then
+        echo "error: $pin must stay false in $um (no dedicated per-unit without-Lake recipe)" >&2
+        exit 1
+      fi
+    done
+    if ! grep -qE 'def subsetPackageJoinWithoutLakeMultiUnitFinishedClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
+      echo "error: subsetPackageJoinWithoutLakeMultiUnitFinishedClaimed must be true (M5 Name C)" >&2
+      exit 1
+    fi
+    echo "subset-packages-rebuild-join: GREEN"
+
+# M5 Name C: multi-unit package rebuild join without Lake on hot path.
+# Runs prebuilt unit rebuild ELFs Mult..Compose (bootstrap once via lake build).
+# No lake build / lake exe / lake env on measured path. Dual evidence all packages.
+# Non-Mult per-unit withoutLakeFinished stay false; multi-unit join pin true.
+# Product StillUsesLake / DependsOnLake stay true. Greppable:
+# subset-packages-rebuild-join-without-lake, SUBSET-PACKAGE-JOIN-WITHOUT-LAKE,
+# subsetPackageJoinWithoutLakeMultiUnitFinishedClaimed,
+# justRecipeSubsetPackageJoinWithoutLake, prebuiltUnitRebuildBinDirRel.
+subset-packages-rebuild-join-without-lake:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    root="$(pwd)"
+    systems_dir="$root/src/systems"
+    lean_dir="$systems_dir/SystemsLean"
+    emit_dir="$systems_dir/emit"
+    bin_dir="$systems_dir/.lake/build/bin"
+    mod="$lean_dir/SubsetPackageJoin.lean"
+    echo "== subset-packages-rebuild-join-without-lake (M5 Name C multi-unit join) =="
+    echo "  order: Mult Linear Types Program Extract Erasure Graph Compose"
+    echo "  hot path: prebuilt unit rebuild ELFs only (no lake)"
+    echo "  dual: Lean multi-unit without-Lake pin + emit/slake_*_subset stage tokens"
+    if [[ ! -f "$mod" ]]; then
+      echo "error: missing $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'subsetPackageJoinWithoutLakeMultiUnitFinishedClaimed' "$mod"; then
+      echo "error: missing subsetPackageJoinWithoutLakeMultiUnitFinishedClaimed in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'justRecipeSubsetPackageJoinWithoutLake' "$mod"; then
+      echo "error: missing justRecipeSubsetPackageJoinWithoutLake in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'subset-packages-rebuild-join-without-lake' "$mod"; then
+      echo "error: missing subset-packages-rebuild-join-without-lake cite in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'prebuiltUnitRebuildBinDirRel' "$mod"; then
+      echo "error: missing prebuiltUnitRebuildBinDirRel in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'subsetPackageJoinWithoutLakeKeepsHostLake' "$mod"; then
+      echo "error: missing subsetPackageJoinWithoutLakeKeepsHostLake honesty in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'subsetPackageJoinWithoutLakeReady' "$mod"; then
+      echo "error: missing subsetPackageJoinWithoutLakeReady in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'stillUsesLake' "$mod"; then
+      echo "error: missing stillUsesLake honesty in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'subsetPackageJoinFinishedClaimed' "$mod"; then
+      echo "error: missing subsetPackageJoinFinishedClaimed (Name A) in $mod" >&2
+      exit 1
+    fi
+    # Hot path: run each prebuilt unit rebuild ELF. No lake build/exe/env.
+    for unit in mult linear types program extract erasure graph compose; do
+      prebuilt="$bin_dir/slake-${unit}-subset-rebuild"
+      if [[ ! -x "$prebuilt" ]]; then
+        echo "error: missing prebuilt unit rebuild binary: $prebuilt" >&2
+        echo "  bootstrap once (not hot path): (cd src/systems && lake build slake-${unit}-subset-rebuild)" >&2
+        echo "  then re-run: just subset-packages-rebuild-join-without-lake" >&2
+        exit 1
+      fi
+      echo "  hot path: exec prebuilt $unit rebuild (no lake)"
+      "$prebuilt" "$root"
+    done
+    # Dual greps: each unit package emit stage token on header + source.
+    for pair in \
+      "mult:SLAKE_MULT_SUBSET_EMIT_V0" \
+      "linear:SLAKE_LINEAR_SUBSET_EMIT_V0" \
+      "types:SLAKE_TYPES_SUBSET_EMIT_V0" \
+      "program:SLAKE_PROGRAM_SUBSET_EMIT_V0" \
+      "extract:SLAKE_EXTRACT_SUBSET_EMIT_V0" \
+      "erasure:SLAKE_ERASURE_SUBSET_EMIT_V0" \
+      "graph:SLAKE_GRAPH_SUBSET_EMIT_V0" \
+      "compose:SLAKE_COMPOSE_SUBSET_EMIT_V0"
+    do
+      unit="${pair%%:*}"
+      tok="${pair##*:}"
+      out_h="$emit_dir/slake_${unit}_subset.h"
+      out_c="$emit_dir/slake_${unit}_subset.c"
+      if [[ ! -f "$out_h" ]]; then
+        echo "error: missing unit package header after without-Lake join: $out_h" >&2
+        exit 1
+      fi
+      if [[ ! -f "$out_c" ]]; then
+        echo "error: missing unit package source after without-Lake join: $out_c" >&2
+        exit 1
+      fi
+      if ! grep -qF "$tok" "$out_h"; then
+        echo "error: $out_h missing greppable token $tok" >&2
+        exit 1
+      fi
+      if ! grep -qF "$tok" "$out_c"; then
+        echo "error: $out_c missing greppable token $tok" >&2
+        exit 1
+      fi
+    done
+    # Structural pins: Name A finished + Name C multi-unit without-Lake true.
+    if ! grep -qE 'def subsetPackageJoinFinishedClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
+      echo "error: subsetPackageJoinFinishedClaimed must stay true (Name A)" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def subsetPackageJoinWithoutLakeMultiUnitFinishedClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
+      echo "error: subsetPackageJoinWithoutLakeMultiUnitFinishedClaimed must be true for M5 Name C" >&2
+      exit 1
+    fi
+    if ! grep -qF 'subsetPackageJoinWithoutLakeReady' "$mod"; then
+      echo "error: subsetPackageJoinWithoutLakeReady missing after without-Lake join" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def stillUsesLake[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
+      echo "error: stillUsesLake must stay true (product host residual remains)" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def dependsOnLake[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
+      echo "error: dependsOnLake must stay true (product host residual remains)" >&2
+      exit 1
+    fi
+    # Non-Mult per-unit without-Lake finished stay false (join-level claim only).
+    for unit_mod in Linear Types Program Extract Erasure Graph Compose; do
+      um="$lean_dir/${unit_mod}SubsetRebuild.lean"
+      case "$unit_mod" in
+        Linear) pin="linearSubsetRebuildWithoutLakeFinishedClaimed" ;;
+        Types) pin="typesSubsetRebuildWithoutLakeFinishedClaimed" ;;
+        Program) pin="programSubsetRebuildWithoutLakeFinishedClaimed" ;;
+        Extract) pin="extractSubsetRebuildWithoutLakeFinishedClaimed" ;;
+        Erasure) pin="erasureSubsetRebuildWithoutLakeFinishedClaimed" ;;
+        Graph) pin="graphSubsetRebuildWithoutLakeFinishedClaimed" ;;
+        Compose) pin="composeSubsetRebuildWithoutLakeFinishedClaimed" ;;
+      esac
+      if ! grep -qE "def ${pin}[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*false" "$um"; then
+        echo "error: $pin must stay false in $um (no dedicated per-unit without-Lake recipe)" >&2
+        exit 1
+      fi
+    done
+    # Mult without-Lake finished stays true (M2 reusable).
+    mult_mod="$lean_dir/MultSubsetRebuild.lean"
+    if ! grep -qE 'def multSubsetRebuildWithoutLakeFinishedClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mult_mod"; then
+      echo "error: multSubsetRebuildWithoutLakeFinishedClaimed must stay true" >&2
+      exit 1
+    fi
+    echo "subset-packages-rebuild-join-without-lake: GREEN"
+
+# M6 Lake retire inventory (phase 1 inventory + phase 2 product pin honesty).
+# Greps Lean inventory pins + justfile Lake-free product recipes + product
+# StillUsesLake false on SelfHostComplete + DualResidual host residual remains.
+# Does not run lake build/exe on hot path. Greppable: lake-retire-inventory,
+# LAKE-RETIRE-INVENTORY, lakeRetireInventoryReady,
+# productPathMeasuredStepsLakeFreeEvidence, lakeRetireProductPathLakeRetired,
+# lakeRetireKeepsProductStillUsesLake, justRecipeLakeRetireInventory.
+lake-retire-inventory:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    root="$(pwd)"
+    systems_dir="$root/src/systems"
+    lean_dir="$systems_dir/SystemsLean"
+    justfile_path="$root/justfile"
+    mod="$lean_dir/LakeRetireInventory.lean"
+    self_host_complete="$lean_dir/SelfHostComplete.lean"
+    dual_residual="$lean_dir/DualResidual.lean"
+    echo "== lake-retire-inventory (M6 inventory + product path Lake retired) =="
+    echo "  dual: Lean inventory pins + justfile Lake-free recipes + product StillUsesLake false"
+    if [[ ! -f "$mod" ]]; then
+      echo "error: missing $mod" >&2
+      exit 1
+    fi
+    if [[ ! -f "$self_host_complete" ]]; then
+      echo "error: missing $self_host_complete" >&2
+      exit 1
+    fi
+    if [[ ! -f "$dual_residual" ]]; then
+      echo "error: missing $dual_residual" >&2
+      exit 1
+    fi
+    # Inventory module structural pins present.
+    for tok in \
+      lakeRetireInventoryReady \
+      lakeRetireInventoryFinishedClaimed \
+      productPathMeasuredStepsLakeFreeEvidence \
+      lakeRetireProductPathLakeRetired \
+      lakeRetireKeepsProductStillUsesLake \
+      justRecipeLakeRetireInventory \
+      lake-retire-inventory \
+      lakeRetireHostElaborateRemains \
+      lakeRetireBootstrapPrebuildRemains \
+      lakeRetireDiagnosticLakeRecipesRemain \
+      measuredLakeFreeJustBuild \
+      measuredLakeFreeProductWireWrite \
+      measuredLakeFreeCapableRegenerate \
+      measuredLakeFreeMultRebuild \
+      measuredLakeFreeMultWrite \
+      measuredLakeFreeMultDeepen \
+      measuredLakeFreeSubsetPackageJoin \
+      stillUsesLake \
+      dependsOnLake \
+      LAKE-RETIRE-INVENTORY \
+      SLAKE_LAKE_RETIRE_INVENTORY_V0 \
+      HOST-LAKE-RETIRE-INVENTORY
+    do
+      if ! grep -qF "$tok" "$mod"; then
+        echo "error: missing $tok in $mod" >&2
+        exit 1
+      fi
+    done
+    # Finished + product path Lake retired + host residual remains.
+    if ! grep -qE 'def lakeRetireInventoryFinishedClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
+      echo "error: lakeRetireInventoryFinishedClaimed must be true" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def stillUsesLake[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*false' "$mod"; then
+      echo "error: stillUsesLake must be false (M6 product path Lake retired)" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def dependsOnLake[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*false' "$mod"; then
+      echo "error: dependsOnLake must be false (M6 product path Lake retired)" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def lakeRetireHostElaborateRemains[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
+      echo "error: lakeRetireHostElaborateRemains must stay true" >&2
+      exit 1
+    fi
+    # Product official path StillUsesLake false (SelfHostComplete living tip).
+    if ! grep -qE 'def productPathOfficialPathStillUsesLake[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*false' "$self_host_complete"; then
+      echo "error: productPathOfficialPathStillUsesLake must be false in SelfHostComplete (M6)" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def productPathPerformDependsOnLake[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*false' "$self_host_complete"; then
+      echo "error: productPathPerformDependsOnLake must be false in SelfHostComplete (M6)" >&2
+      exit 1
+    fi
+    # Dual residual host elaborator residual remains true.
+    if ! grep -qE 'def hostElaboratorResidualRemains[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$dual_residual"; then
+      echo "error: hostElaboratorResidualRemains must stay true in DualResidual" >&2
+      exit 1
+    fi
+    # Free claimed true is orthogonal (not Lake gone).
+    if ! grep -qE 'def residualFreeClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$dual_residual"; then
+      echo "error: residualFreeClaimed must stay true in DualResidual (free != Lake gone)" >&2
+      exit 1
+    fi
+    # justfile documents measured Lake-free product recipes (dual evidence).
+    for recipe in \
+      product-wire-freestanding-write \
+      freestanding-capable-regenerate-without-lake \
+      mult-subset-rebuild-without-lake \
+      mult-subset-freestanding-write \
+      mult-subset-freestanding-deepen \
+      subset-packages-rebuild-join-without-lake \
+      lake-retire-inventory
+    do
+      if ! grep -qE "^${recipe}:" "$justfile_path"; then
+        echo "error: missing just recipe '${recipe}:' in justfile (Lake-free inventory dual)" >&2
+        exit 1
+      fi
+    done
+    # Official build exists as product hot path (M4 Name C).
+    if ! grep -qE '^build:' "$justfile_path"; then
+      echo "error: missing just build recipe (measured Lake-free product path)" >&2
+      exit 1
+    fi
+    # Ban forge: product pins true after M6 is wrong; host residual free is wrong.
+    if grep -qE 'def stillUsesLake[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
+      echo "error: forge ban: stillUsesLake true on inventory after M6 product retire" >&2
+      exit 1
+    fi
+    if grep -qE 'def dependsOnLake[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
+      echo "error: forge ban: dependsOnLake true on inventory after M6 product retire" >&2
+      exit 1
+    fi
+    if grep -qE 'def productPathOfficialPathStillUsesLake[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$self_host_complete"; then
+      echo "error: forge ban: productPathOfficialPathStillUsesLake true after M6" >&2
+      exit 1
+    fi
+    if grep -qE 'def hostElaboratorResidualRemains[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*false' "$dual_residual"; then
+      echo "error: forge ban: hostElaboratorResidualRemains false (host residual remains)" >&2
+      exit 1
+    fi
+    echo "  inventory: product measured Lake-free recipes dual-pinned"
+    echo "  honesty: product StillUsesLake false; DependsOnLake false; host residual remains"
+    echo "  non-claims: free/complete/driver unchanged; not PROVABLY/llvm; not host free"
+    echo "lake-retire-inventory: GREEN"
+
+# M5 Name B: front-end Mult package path (SubsetFront G1 accept then Mult package write).
+# Measured: SubsetFront accepts golden G1, Mult unit package write, dual package greps.
+# Product StillUsesLake / DependsOnLake stay true. Name A join pin unchanged.
+# Greppable: front-mult-package, FRONT-MULT-PACKAGE, frontMultPackageFinishedClaimed,
+# frontMultPackageReady, justRecipeFrontMultPackage, SLAKE_FRONT_MULT_PACKAGE_V0.
+front-mult-package:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    root="$(pwd)"
+    systems_dir="$root/src/systems"
+    lean_dir="$systems_dir/SystemsLean"
+    emit_dir="$systems_dir/emit"
+    goldens_dir="$systems_dir/goldens/mult-front"
+    mod="$lean_dir/FrontMultPackage.lean"
+    main_mod="$lean_dir/FrontMultPackageMain.lean"
+    join_mod="$lean_dir/SubsetPackageJoin.lean"
+    echo "== front-mult-package (M5 front-end Mult package path) =="
+    echo "  path: SubsetFront G1 accept -> Mult package write -> dual greps"
+    echo "  dual: Lean frontMultPackageReady + emit/slake_mult_subset stage token"
+    if [[ ! -f "$mod" ]]; then
+      echo "error: missing $mod" >&2
+      exit 1
+    fi
+    if [[ ! -f "$main_mod" ]]; then
+      echo "error: missing $main_mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'frontMultPackageFinishedClaimed' "$mod"; then
+      echo "error: missing frontMultPackageFinishedClaimed in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'frontMultPackageReady' "$mod"; then
+      echo "error: missing frontMultPackageReady in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'justRecipeFrontMultPackage' "$mod"; then
+      echo "error: missing justRecipeFrontMultPackage in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'front-mult-package' "$mod"; then
+      echo "error: missing front-mult-package cite in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'frontMultPackageG1Ready' "$mod"; then
+      echo "error: missing frontMultPackageG1Ready in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'subsetFrontGoodG1' "$mod"; then
+      echo "error: missing subsetFrontGoodG1 cite in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'SLAKE_FRONT_MULT_PACKAGE_V0' "$mod"; then
+      echo "error: missing SLAKE_FRONT_MULT_PACKAGE_V0 stage id in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'stillUsesLake' "$mod"; then
+      echo "error: missing stillUsesLake honesty in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'acceptG1Golden' "$mod"; then
+      echo "error: missing acceptG1Golden in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'multSubsetEmitWrite' "$mod"; then
+      echo "error: missing multSubsetEmitWrite in $mod" >&2
+      exit 1
+    fi
+    if [[ ! -f "$goldens_dir/good-mult-classic.slake-mult" ]]; then
+      echo "error: missing G1 golden $goldens_dir/good-mult-classic.slake-mult" >&2
+      exit 1
+    fi
+    if ! command -v lake >/dev/null 2>&1; then
+      echo "error: lake not on PATH; front-mult-package requires host Lean pin" >&2
+      exit 1
+    fi
+    (
+      cd "$systems_dir"
+      lake build slake-front-mult-package
+      lake exe slake-front-mult-package -- "$root"
+    )
+    out_h="$emit_dir/slake_mult_subset.h"
+    out_c="$emit_dir/slake_mult_subset.c"
+    if [[ ! -f "$out_h" ]]; then
+      echo "error: missing Mult package header after front path: $out_h" >&2
+      exit 1
+    fi
+    if [[ ! -f "$out_c" ]]; then
+      echo "error: missing Mult package source after front path: $out_c" >&2
+      exit 1
+    fi
+    if ! grep -qF 'SLAKE_MULT_SUBSET_EMIT_V0' "$out_h"; then
+      echo "error: $out_h missing greppable token SLAKE_MULT_SUBSET_EMIT_V0" >&2
+      exit 1
+    fi
+    if ! grep -qF 'SLAKE_MULT_SUBSET_EMIT_V0' "$out_c"; then
+      echo "error: $out_c missing greppable token SLAKE_MULT_SUBSET_EMIT_V0" >&2
+      exit 1
+    fi
+    if ! grep -qF 'MULT-0' "$out_h"; then
+      echo "error: $out_h missing MULT-0 after front path" >&2
+      exit 1
+    fi
+    if ! grep -qF 'MULT-OMEGA' "$out_c"; then
+      echo "error: $out_c missing MULT-OMEGA after front path" >&2
+      exit 1
+    fi
+    # Structural Name B finished pin must stay true.
+    if ! grep -qE 'def frontMultPackageFinishedClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
+      echo "error: frontMultPackageFinishedClaimed must be true for M5 Name B" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def stillUsesLake[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
+      echo "error: stillUsesLake must stay true (product host residual remains)" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def dependsOnLake[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
+      echo "error: dependsOnLake must stay true (product host residual remains)" >&2
+      exit 1
+    fi
+    # Name A join pin and Mult freestanding driver complete stay true (unchanged).
+    if [[ -f "$join_mod" ]]; then
+      if ! grep -qE 'def subsetPackageJoinFinishedClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$join_mod"; then
+        echo "error: subsetPackageJoinFinishedClaimed must stay true (Name A unchanged)" >&2
+        exit 1
+      fi
+    fi
+    echo "front-mult-package: GREEN"
+
+# Ideal ladder M3 Mult subset language front-end: parse/check good+bad goldens
+# under src/systems/goldens/mult-front/ (not only fixed Mult fixtures). Lake host remains.
+# Greppable: subset-front, slake-subset-front, SUBSET-FRONT, SLAKE_SUBSET_FRONT,
+# subsetFrontReady, goldens/mult-front, FAIL-CLOSED-UNKNOWN-GRADE.
+subset-front:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    root="$(pwd)"
+    systems_dir="$root/src/systems"
+    lean_dir="$systems_dir/SystemsLean"
+    goldens_dir="$systems_dir/goldens/mult-front"
+    echo "== subset-front (M3 Mult subset language front-end) =="
+    echo "  input: goldens/mult-front G1/G2 + B1/B2/B3"
+    echo "  output: subsetFrontReady (parse+check); Lake host remains"
+    mod="$lean_dir/SubsetFront.lean"
+    main_mod="$lean_dir/SubsetFrontMain.lean"
+    if [[ ! -f "$mod" ]]; then
+      echo "error: missing $mod" >&2
+      exit 1
+    fi
+    if [[ ! -f "$main_mod" ]]; then
+      echo "error: missing $main_mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'subsetFrontReady' "$mod"; then
+      echo "error: missing subsetFrontReady in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'SLAKE_SUBSET_FRONT_V0' "$mod"; then
+      echo "error: missing SLAKE_SUBSET_FRONT_V0 in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'stillUsesLake' "$mod"; then
+      echo "error: missing stillUsesLake honesty in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'parseSource' "$mod"; then
+      echo "error: missing parseSource in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'subsetFrontGoodG1' "$mod"; then
+      echo "error: missing subsetFrontGoodG1 in $mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'subsetFrontBadB1' "$mod"; then
+      echo "error: missing subsetFrontBadB1 in $mod" >&2
+      exit 1
+    fi
+    for f in good-mult-classic.slake-mult good-single-value.slake-mult \
+             bad-unknown-grade.slake-mult bad-kind-mult-mismatch.slake-mult \
+             bad-empty.slake-mult; do
+      if [[ ! -f "$goldens_dir/$f" ]]; then
+        echo "error: missing golden $goldens_dir/$f" >&2
+        exit 1
+      fi
+    done
+    if ! command -v lake >/dev/null 2>&1; then
+      echo "error: lake not on PATH; subset-front requires host Lean pin" >&2
+      exit 1
+    fi
+    (
+      cd "$systems_dir"
+      lake build slake-subset-front
+      lake exe slake-subset-front -- "$root"
+    )
+    if ! grep -qF 'MULT-0' "$goldens_dir/good-mult-classic.slake-mult"; then
+      echo "error: G1 golden missing MULT-0" >&2
+      exit 1
+    fi
+    if ! grep -qF 'MULT-OMEGA' "$goldens_dir/good-single-value.slake-mult"; then
+      echo "error: G2 golden missing MULT-OMEGA" >&2
+      exit 1
+    fi
+    if ! grep -qF 'MULT-9' "$goldens_dir/bad-unknown-grade.slake-mult"; then
+      echo "error: B1 golden missing MULT-9" >&2
+      exit 1
+    fi
+    echo "subset-front: GREEN (M3 Mult subset language goldens accept/reject; Lake host remains; not S4; not PROVABLY/llvm)"
+
 # M1 Graph subset rebuild / self-application: M1 Graph package identity
 # -> re-emit/re-validate Graph unit package (measured self-application bar).
 # Not full freestanding dialect regenerate as sole success. Lake host remains.
@@ -5448,7 +6227,6 @@ mult-subset-rebuild-without-lake:
     echo "== mult-subset-rebuild-without-lake (M2 Mult measured step; no lake on hot path) =="
     echo "  input: S2 Mult package identity; prebuilt $prebuilt"
     echo "  output: re-emit/re-validate Mult unit package; dual evidence greps"
-    echo "  honest: product StillUsesLake/DependsOnLake remain; not S4; not PROVABLY/llvm"
     if [[ ! -f "$mod" ]]; then
       echo "error: missing $mod" >&2
       exit 1
@@ -5529,7 +6307,7 @@ mult-subset-rebuild-without-lake:
       echo "error: dependsOnLake must stay true (product host residual remains)" >&2
       exit 1
     fi
-    echo "mult-subset-rebuild-without-lake: GREEN (M2 Mult measured re-emit without lake on hot path; product Lake remains; not S4; not PROVABLY/llvm)"
+    echo "mult-subset-rebuild-without-lake: GREEN"
 
 # Mult freestanding deepen greps (ideal M2 Name B partial bar).
 # Measured Mult freestanding package surface dual-check: freestanding product
@@ -5555,8 +6333,7 @@ mult-subset-freestanding-deepen:
     mod="$lean_dir/MultFsDeepen.lean"
     echo "== mult-subset-freestanding-deepen (M2 Name B greps; freestanding Mult surface; no lake / no Mult rebuild prebuilt) =="
     echo "  dual: freestanding Mult product wire + Mult subset package + Lean MultFsDeepen pins"
-    echo "  honest: freestandingDeepenPartial true; greps independent of freestandingDriverComplete"
-    echo "  honest: Name A prebuilt path remains valid; host write path is just mult-subset-freestanding-write; not S4; not PROVABLY/llvm"
+    echo "  freestandingDeepenPartial: true"
     if [[ ! -f "$mod" ]]; then
       echo "error: missing $mod" >&2
       exit 1
@@ -5673,7 +6450,7 @@ mult-subset-freestanding-deepen:
       echo "error: Name A multSubsetRebuildWithoutLakeFinishedClaimed must stay true" >&2
       exit 1
     fi
-    echo "mult-subset-freestanding-deepen: GREEN (M2 Name B greps freestanding Mult surface dual-check; partial independent of freestandingDriverComplete; product Lake remains; not S4; not PROVABLY/llvm)"
+    echo "mult-subset-freestanding-deepen: GREEN"
 
 # Name B full: Mult package write via Path A host-cc freestanding Mult writer.
 # Mult unit package from MultSubsetEmit freestanding Mult SSOT (embedded in
@@ -5709,7 +6486,7 @@ mult-subset-freestanding-write:
     echo "== mult-subset-freestanding-write (Name B full Path A host-cc Mult package write) =="
     echo "  package builder: MultSubsetEmit freestanding Mult SSOT (embedded in tool C)"
     echo "  measured writer: $writer_bin (host-cc; outside .lake)"
-    echo "  honest: freestandingDriverComplete true; multFsWritePathReady true; product Lake remains"
+    echo "  freestandingDriverComplete: true; multFsWritePathReady: true"
     if [[ ! -f "$mod" ]]; then
       echo "error: missing $mod" >&2
       exit 1
@@ -5850,7 +6627,161 @@ mult-subset-freestanding-write:
         exit 1
       fi
     done
-    echo "mult-subset-freestanding-write: GREEN (Name B full Path A host-cc Mult package write; freestandingDriverComplete true; multFsWritePathReady true; Mult rebuild ELF not the writer; Lake Mult write ELF not measured writer; product Lake remains; not S4; not PROVABLY/llvm)"
+    echo "mult-subset-freestanding-write: GREEN"
+
+# M4 Name B: Path A freestanding product-wire dual-eq WRITE + INSTALL via host-cc.
+# Measured hot path (no lake):
+#   cc -o src/systems/bin/slake-product-wire-fs-write-cc (outside .lake)
+#   exec that bin only -- WRITE emit/slake_freestanding.{h,c} + INSTALL Out.
+# Bootstrap tool C once (not hot path):
+#   (cd src/systems && lake build slake-product-wire-fs-write-tool \
+#     && lake exe slake-product-wire-fs-write-tool -- <repo-root>)
+# Product StillUsesLake / DependsOnLake stay true until S4 / M6.
+# freestandingDriverComplete stays Mult-orthogonal (separate productWireFsWriterFinishedClaimed).
+# Greppable: product-wire-freestanding-write, slake-product-wire-fs-write-cc,
+# PRODUCT-WIRE-FS-WRITE-TOOL, productWireFsWriterFinishedClaimed,
+# productWireFsWriterNotLakeBuilt, productWireFsWriterReady.
+product-wire-freestanding-write:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    root="$(pwd)"
+    systems_dir="$root/src/systems"
+    lean_dir="$systems_dir/SystemsLean"
+    emit_dir="$systems_dir/emit"
+    bin_dir="$systems_dir/bin"
+    out_dir="$root/out/freestanding-c"
+    out_h="$emit_dir/slake_freestanding.h"
+    out_c="$emit_dir/slake_freestanding.c"
+    install_h="$out_dir/slake_freestanding.h"
+    install_c="$out_dir/slake_freestanding.c"
+    tool_c="$emit_dir/slake_product_wire_fs_write_tool.c"
+    tool_mod="$lean_dir/ProductWireWriteTool.lean"
+    writer_bin="$bin_dir/slake-product-wire-fs-write-cc"
+    lake_regen_bin="$systems_dir/.lake/build/bin/slake-freestanding-capable-regenerate"
+    mult_writer_bin="$bin_dir/slake-mult-fs-write-cc"
+    echo "== product-wire-freestanding-write (M4 Name B Path A host-cc freestanding WRITE+INSTALL) =="
+    echo "  measured writer: $writer_bin (host-cc; outside .lake)"
+    echo "  productWireFsWriterFinishedClaimed: true; freestandingDriverComplete: Mult-orthogonal"
+    if [[ ! -f "$tool_mod" ]]; then
+      echo "error: missing $tool_mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'productWireFsWriterFinishedClaimed' "$tool_mod"; then
+      echo "error: missing productWireFsWriterFinishedClaimed in $tool_mod" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def productWireFsWriterFinishedClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$tool_mod"; then
+      echo "error: productWireFsWriterFinishedClaimed must be true for M4 Name B finished" >&2
+      exit 1
+    fi
+    if ! grep -qF 'productWireFsWriterNotLakeBuilt' "$tool_mod"; then
+      echo "error: missing productWireFsWriterNotLakeBuilt in $tool_mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'productWireFsWriterReady' "$tool_mod"; then
+      echo "error: missing productWireFsWriterReady in $tool_mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'productWireFsWriterKeepsHostLake' "$tool_mod"; then
+      echo "error: missing productWireFsWriterKeepsHostLake honesty in $tool_mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'slake-product-wire-fs-write-cc' "$tool_mod"; then
+      echo "error: missing slake-product-wire-fs-write-cc cite in $tool_mod" >&2
+      exit 1
+    fi
+    if ! grep -qF 'product-wire-freestanding-write' "$tool_mod"; then
+      echo "error: missing product-wire-freestanding-write cite in $tool_mod" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def stillUsesLake[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$tool_mod"; then
+      echo "error: stillUsesLake must stay true (product host residual remains)" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def dependsOnLake[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$tool_mod"; then
+      echo "error: dependsOnLake must stay true (product host residual remains)" >&2
+      exit 1
+    fi
+    if [[ ! -f "$tool_c" ]]; then
+      echo "error: missing Lean-generated product-wire write tool C: $tool_c" >&2
+      echo "  bootstrap once (not hot path): (cd src/systems && lake build slake-product-wire-fs-write-tool && lake exe slake-product-wire-fs-write-tool -- $root)" >&2
+      echo "  then re-run: just product-wire-freestanding-write" >&2
+      exit 1
+    fi
+    if ! grep -qF 'SLAKE_PRODUCT_WIRE_FS_WRITE_TOOL_V0' "$tool_c"; then
+      echo "error: tool C missing SLAKE_PRODUCT_WIRE_FS_WRITE_TOOL_V0" >&2
+      exit 1
+    fi
+    if ! grep -qF 'PRODUCT-WIRE-FS-WRITE-TOOL' "$tool_c"; then
+      echo "error: tool C missing PRODUCT-WIRE-FS-WRITE-TOOL" >&2
+      exit 1
+    fi
+    if ! command -v cc >/dev/null 2>&1; then
+      echo "error: host cc not on PATH (required to build product-wire freestanding writer)" >&2
+      exit 1
+    fi
+    # Hot path: host-cc product-wire writer only. Do not call lake. Do not exec Lake regenerate ELF.
+    mkdir -p "$bin_dir"
+    echo "  hot path: host-cc freestanding product-wire writer (no lake; not CapableRegenerate ELF)"
+    cc -O2 -o "$writer_bin" "$tool_c"
+    if [[ ! -x "$writer_bin" ]]; then
+      echo "error: failed to build product-wire freestanding writer: $writer_bin" >&2
+      exit 1
+    fi
+    case "$writer_bin" in
+      */.lake/*)
+        echo "error: measured writer must not live under .lake: $writer_bin" >&2
+        exit 1
+        ;;
+    esac
+    if [[ "$writer_bin" == "$lake_regen_bin" ]]; then
+      echo "error: measured writer must not be Lake CapableRegenerate ELF" >&2
+      exit 1
+    fi
+    if [[ "$writer_bin" == "$mult_writer_bin" ]]; then
+      echo "error: Mult package writer must not be product-wire freestanding writer" >&2
+      exit 1
+    fi
+    "$writer_bin" "$root"
+    if [[ ! -f "$out_h" ]]; then
+      echo "error: missing freestanding header after product-wire write: $out_h" >&2
+      exit 1
+    fi
+    if [[ ! -f "$out_c" ]]; then
+      echo "error: missing freestanding source after product-wire write: $out_c" >&2
+      exit 1
+    fi
+    if [[ ! -f "$install_h" ]]; then
+      echo "error: missing Out install header after product-wire write: $install_h" >&2
+      exit 1
+    fi
+    if [[ ! -f "$install_c" ]]; then
+      echo "error: missing Out install source after product-wire write: $install_c" >&2
+      exit 1
+    fi
+    for tok in SLAKE_EMIT_FREESTANDING_C_V0 HOST-EMIT-MULT HOST-EMIT-LINEAR HOST-EMIT-SSOT; do
+      if ! grep -qF "$tok" "$out_h"; then
+        echo "error: $out_h missing greppable token $tok after write" >&2
+        exit 1
+      fi
+      if ! grep -qF "$tok" "$out_c"; then
+        echo "error: $out_c missing greppable token $tok after write" >&2
+        exit 1
+      fi
+      if ! grep -qF "$tok" "$install_h"; then
+        echo "error: $install_h missing greppable token $tok after install" >&2
+        exit 1
+      fi
+      if ! grep -qF "$tok" "$install_c"; then
+        echo "error: $install_c missing greppable token $tok after install" >&2
+        exit 1
+      fi
+    done
+    if ! grep -qE 'def productWireFsWriterReady[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=' "$tool_mod"; then
+      echo "error: productWireFsWriterReady missing after product-wire write (host bar)" >&2
+      exit 1
+    fi
+    echo "product-wire-freestanding-write: GREEN"
 
 # Pure Nix systems host presence (skeleton + unit-surface + SYSTEMS_LEAN_HOST +
 # tree-wide banned-jargon walk under src/systems). Live impure worktree eval.
