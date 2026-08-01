@@ -15,14 +15,14 @@ No bash-in-Nix. Emit generator (~2k lines) left for Wave C.
 
 | Path | Former role | Replacement |
 |------|-------------|-------------|
-| `script/out-freestanding-c.sh` | Emit + clean-install into `out/freestanding-c` | `just out-freestanding-c` recipe body |
+| `script/out-freestanding-c.sh` | Emit + clean-install into `out/freestanding-c` | `just build` recipe body |
 | `script/build-systems.sh` | Marker walk + compile-path invoke | `just build` -> `script/slake-compile-path.sh` (markers also pure Nix unit walk) |
 
 ### Thinned
 
 | Path | Before | After | Notes |
 |------|--------|-------|-------|
-| `src/systems/check.sh` | ~228 | ~99 | Process glue: optional Lake, compile-path, `just out-freestanding-c`, cc + behavioral tests |
+| `src/systems/check.sh` | ~228 | ~99 | Process glue: optional Lake, compile-path, `just build`, cc + behavioral tests |
 | `script/slake-compile-path.sh` | ~149 | ~149 | Kept; comments only (stage manifest still required) |
 
 ### Pure Nix retarget (live gates; HITL stage for flake)
@@ -37,7 +37,7 @@ No **new** `nix/` module paths -- only edits to existing emit-wire data and prog
 ### justfile
 
 - `just build` -- short recipe; fail closed if compile-path driver missing; honest not product C
-- `just out-freestanding-c` -- require README, run emit driver, clean-install `.c`/`.h`, honest not residual free / not PROVABLY
+- `just build` -- require README, run emit driver, clean-install `.c`/`.h`, honest not residual free / not PROVABLY
 
 ### Docs
 
@@ -61,7 +61,7 @@ just systems-emit-wire
 just idris-side
 just lean-side
 just build
-just out-freestanding-c
+just build
 bash src/systems/check.sh
 just check   # flake may WARN if related nix/ edits untracked -- live pure gates must green
 ```

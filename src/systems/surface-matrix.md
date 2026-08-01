@@ -6,8 +6,9 @@ HOST-SURFACE-MATRIX-THEOREM, matrixUnitReady_empty_true,
 matrixProgramReady_empty_false
 **Stage:** `SLAKE_SURFACE_MATRIX_V0` / `HOST-SURFACE-MATRIX` / `SURFACE-MATRIX`
 **Lean host:** `SystemsLean/SurfaceMatrix.lean` (matrixUnitReady / matrixProgramReady
-+ SURFACE-MATRIX-SMOKE + SURFACE-MATRIX-THEOREM / HOST-SURFACE-MATRIX-THEOREM;
-SpecProof.proofCompleteClaimed stays false)
+dialect) + `SystemsLean/SurfaceMatrixTheorems.lean` (SURFACE-MATRIX-SMOKE +
+SURFACE-MATRIX-THEOREM / HOST-SURFACE-MATRIX-THEOREM; same namespace; long-file split);
+SpecProof.proofCompleteClaimed stays false
 **Date evidence:** 2026-07-22 (P7 host-side surface matrix)
 
 ## Purpose
@@ -98,7 +99,7 @@ is **not** matrix program-ready (EMPTY-PROGRAM-FAIL-CLOSED; P3 residual lesson).
 
 `matrixSurfaceOk` is a constant canary: stage ids + three dual cites + host rows
 present-partial + open rows open. Behavioral checks: SURFACE-MATRIX-SMOKE Lake
-`example`s in `SurfaceMatrix.lean`.
+`example`s in `SurfaceMatrixTheorems.lean` (same namespace SurfaceMatrix).
 
 ---
 
@@ -115,7 +116,7 @@ present-partial + open rows open. Behavioral checks: SURFACE-MATRIX-SMOKE Lake
 
 ## Related
 
-- PARTIAL host inventory: `host-partial-inventory.md` (Mult..SpecProof; 34 modules; HOST-INVENTORY-CLOSE + HOST-PRODUCT-PATH readiness + HOST-PRODUCT-PATH-CLOSE structural ladder close + HOST-DUAL-RESIDUAL dual residual honesty + HOST-PROBE-WIRE probe-vs-wire honesty + HOST-SPEC-PROOF formal spec-proof separation; intentional PARTIAL carry)
+- PARTIAL host inventory: `host-partial-inventory.md` (Mult..SelfHostBody; 40 modules including EmitLinear + EmitErasure + EmitTypes + EmitProgram + EmitGraph + SelfHostBody; HOST-INVENTORY-CLOSE + HOST-PRODUCT-PATH readiness + HOST-PRODUCT-PATH-CLOSE structural ladder close + HOST-DUAL-RESIDUAL dual residual honesty + HOST-PROBE-WIRE probe-vs-wire honesty + HOST-SPEC-PROOF formal spec-proof separation + HOST-SELF-HOST-BODY + HOST-EMIT-TYPES + HOST-EMIT-PROGRAM + HOST-EMIT-GRAPH; intentional PARTIAL carry -- see inventory SSoT for live count)
 - Freestanding self-host acceptance: `self-host.md` (SH0; Mult kernel IR SH1;
   Mult host emit SH2; Mult closed-loop parity SH3; Linear freestanding path
   parity HOST-PARITY-LINEAR (`ParityLinear`); Types freestanding path parity

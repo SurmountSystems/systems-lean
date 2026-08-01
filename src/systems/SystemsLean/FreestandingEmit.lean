@@ -1,286 +1,80 @@
 /-
   SLAKE_EMIT_FREESTANDING_C_V0 -- Lean-owned freestanding product C emit writer.
   Side: classic Lean elaborator under src/systems/ (not freestanding C runtime).
-  Writes src/systems/emit/slake_freestanding.{h,c} from:
-    - emit/template_slake_freestanding.{h,c}.in (frozen wire templates)
-    - emit/host_emit_body_fragment.ssot.txt (HOST-EMIT-SSOT dialect)
-    - emit/host_emit_mult.ssot.txt (HOST-EMIT-MULT Mult product text)
-    - emit/host_emit_linear.ssot.txt (HOST-EMIT-LINEAR Linear product text)
-    - emit/host_emit_erasure.ssot.txt (HOST-EMIT-ERASURE Erasure product text)
-  Never writes out/freestanding-c/ (release copy is just out-freestanding-c).
+  Writes src/systems/emit/slake_freestanding.{h,c} from frozen templates and
+  host_emit_*.ssot.txt (Body + Banner + Mult..Apply). Never writes
+  out/freestanding-c/ (release copy is just build).
+
+  SSOT load helpers + Dual SSOT require helpers live in
+  SystemsLean.FreestandingEmitLoad (same namespace). Mult..Apply unit SSOT
+  loaders live in SystemsLean.FreestandingEmitLoadScaffold (same namespace).
+  This module owns renderHeader / renderSource / validateProduct / emitAtRoot / main.
 
   Spec (readable):
-  - Fail-closed load of body + Mult + Linear + Erasure SSOT keys/blocks.
-  - EMPTY_FRAGMENT must match empty-compose dialect; HEADER_* recompose it.
-  - Mult MULT_NAME_* and MULT_C_HEADER / MULT_C_BODY blocks required.
-  - Linear LINEAR_C_HEADER / LINEAR_C_BODY blocks required.
-  - Erasure ERASURE_C_HEADER / ERASURE_C_BODY blocks required.
-  - Templates embed Mult + Linear + Erasure via whole-line placeholders;
-    body put_str via SSOT keys.
-  - Stage honesty: not residual free; not PROVABLY; no product GC.
+  - DUAL-SSOT-EQUALITY: after load, each SSOT HEADER/BODY block must equal the
+    matching Lean *HeaderFragment / *BodyFragment (Banner + Mult..Out/Body).
+    Fail closed on drift (emit-time equality gate; pure Nix proves gate live).
+  - Fail-closed load via FreestandingEmitLoad (Body + Banner) and
+    FreestandingEmitLoadScaffold (Mult..Apply).
+  - Templates embed Banner + Mult..Apply + Body via whole-line placeholders;
+    body put_str dialect via SSOT keys after scaffolding embed.
+  - Stage honesty: product residual free claimed; not PROVABLY; no product GC.
 
   Intentional non-claims:
   - Not freestanding residual free. Not PROVABLY. Not full Slake self-host.
-  - Templates hold frozen bulk product wire (Types/IR/Emit APIs).
-  - Mult + Linear + Erasure + EMIT_BODY put_str dialect remain SSOT-owned
-    (not a second dialect). Erasure is mult-0 absence honesty on freestanding C
-    -- not a type system in C.
+  - Templates are thin shells; Mult..Body scaffolding remain SSOT-owned.
 
   Greppable: SYSTEMS_LEAN_HOST, SLAKE_EMIT_FREESTANDING_C_V0, HOST-EMIT-SSOT,
-  HOST-EMIT-MULT, HOST-EMIT-LINEAR, HOST-EMIT-ERASURE, NON-SSOT,
-  UNIT_TRANSLATION_V0, UNIT_DEEPEN_V1, RUNTIME-FS, not residual free,
-  UNIT_SURFACE host surface.
+  HOST-EMIT-BODY, HOST-EMIT-BANNER, HOST-EMIT-MULT, HOST-EMIT-LINEAR,
+  HOST-EMIT-ERASURE, HOST-EMIT-EXTRACT, HOST-EMIT-TYPES, HOST-EMIT-PROGRAM,
+  HOST-EMIT-GRAPH, HOST-EMIT-COMPOSE, HOST-EMIT-PLAN, HOST-EMIT-APPLY, NON-SSOT,
+  DUAL-SSOT-EQUALITY, dualSsotBlockEqual, requireDualSsotEqual, dualSsotEqualityLive,
+  BODY_C_HEADER, BODY_C_BODY, BANNER_C_HEADER, BANNER_C_BODY,
+  UNIT_TRANSLATION_V0, UNIT_DEEPEN_V1, RUNTIME-FS, product residual free,
+  UNIT_SURFACE host surface, FreestandingEmitLoad, FreestandingEmitLoadScaffold.
   Module: SystemsLean.FreestandingEmit
   Lake exe: slake-emit-freestanding-c
-  Red/green: just out-freestanding-c; just systems-emit-wire; cc probe via check.sh
+  Red/green: just build; just systems-emit-wire; cc probe via check.sh
   Module must stay ASCII.
   Not freestanding residual free. Not PROVABLY. Not freestanding emit residual free.
 -/
 
+import SystemsLean.FreestandingEmitLoad
+import SystemsLean.FreestandingEmitLoadScaffold
+import SystemsLean.EmitBanner
+import SystemsLean.EmitMult
+import SystemsLean.EmitLinear
+import SystemsLean.EmitErasure
+import SystemsLean.EmitExtract
+import SystemsLean.EmitExtractScaffold
+import SystemsLean.EmitTypes
+import SystemsLean.EmitTypesScaffold
+import SystemsLean.EmitProgram
+import SystemsLean.EmitProgramScaffold
+import SystemsLean.EmitGraph
+import SystemsLean.EmitGraphScaffold
+import SystemsLean.EmitCompose
+import SystemsLean.EmitComposeScaffold
+import SystemsLean.EmitPlan
+import SystemsLean.EmitPlanScaffold
+import SystemsLean.EmitApply
+import SystemsLean.EmitApplyScaffold
+import SystemsLean.EmitBody
+import SystemsLean.EmitBodyScaffold
+
 namespace SystemsLean.FreestandingEmit
 
-/-- Greppable freestanding emit stage id. -/
-def stageId : String := "SLAKE_EMIT_FREESTANDING_C_V0"
-
-/-- Expected empty-compose fragment (sans trailing newline; HOST-EMIT-SSOT). -/
-def expectedEmptyFragment : String := "/* EMIT_BODY_V0 RUNTIME-FS r=0 e=0 */"
-
-/-- True when s contains needle as a contiguous substring (empty needle => false). -/
-def containsStr (s needle : String) : Bool :=
-  if needle.isEmpty then false
-  else (s.splitOn needle).length > 1
-
-/-- Replace every occurrence of needle with repl (non-overlapping left-to-right). -/
-def replaceAll (hay needle repl : String) : String :=
-  if needle.isEmpty then hay
-  else String.intercalate repl (hay.splitOn needle)
-
-/-- KEY=value first match; none when missing. -/
-def ssotGet (content key : String) : Option String :=
-  let pref := key ++ "="
-  let rec go : List String -> Option String
-    | [] => none
-    | line :: rest =>
-      if line.startsWith pref then some (line.drop pref.length).copy
-      else go rest
-  go (content.splitOn "\n")
-
-/-- Multi-line block between "# NAME_BEGIN" and "# NAME_END" (markers excluded). -/
-def ssotBlock (content name : String) : Option String :=
-  let beginMark := "# " ++ name ++ "_BEGIN"
-  let endMark := "# " ++ name ++ "_END"
-  let rec go (grab : Bool) (acc : List String) : List String -> Option String
-    | [] =>
-      if grab || acc.isEmpty then none
-      else some (String.intercalate "\n" acc.reverse ++ "\n")
-    | line :: rest =>
-      if !grab && line == beginMark then go true acc rest
-      else if grab && line == endMark then
-        some (String.intercalate "\n" acc.reverse ++ "\n")
-      else if grab then go true (line :: acc) rest
-      else go false acc rest
-  go false [] (content.splitOn "\n")
-
-/-- Strip one trailing newline if present. -/
-def stripTrailingNl (s : String) : String :=
-  if s.endsWith "\n" then (s.dropEnd 1).copy else s
-
-/-- Replace any line containing placeholder with Mult block lines (bash embed parity). -/
-def embedPlaceholderLine (template placeholder content : String) : Option String :=
-  if !containsStr template placeholder then none
-  else
-    let contentLines := (stripTrailingNl content).splitOn "\n"
-    let rec go : List String -> List String
-      | [] => []
-      | line :: rest =>
-        if containsStr line placeholder then contentLines ++ go rest
-        else line :: go rest
-    some (String.intercalate "\n" (go (template.splitOn "\n")))
-
-/-- Fail with RED stage message to stderr. -/
-def red (msg : String) : IO Unit :=
-  IO.eprintln s!"RED {stageId}: {msg}"
-
-/-- Require path exists as a file. -/
-def requireFile (path : System.FilePath) (label : String) : IO Unit := do
-  unless (<- path.pathExists) do
-    red s!"{label} missing: {path}"
-    throw (IO.userError s!"{stageId}: missing {path}")
-
-/-- Require greppable token in content. -/
-def requireToken (content token label : String) : IO Unit := do
-  unless containsStr content token do
-    red s!"{label} missing token {token}"
-    throw (IO.userError s!"{stageId}: missing token {token}")
-
-/-- Body SSOT dialect keys. -/
-structure BodySsot where
-  emptyFragment : String
-  headerOpen : String
-  headerE : String
-  headerClose : String
-  tagOpen : String
-  tagMult : String
-  tagKind : String
-  tagClose : String
-  deriving Repr
-
-def loadBodySsot (path : System.FilePath) : IO BodySsot := do
-  requireFile path "HOST-EMIT-SSOT artifact"
-  let content <- IO.FS.readFile path
-  requireToken content "HOST-EMIT-SSOT" "HOST-EMIT-SSOT"
-  let get (k : String) : IO String := do
-    match ssotGet content k with
-    | some v => pure v
+def renderHeader (template : String) (banner : BannerSsot) (mult : MultSsot)
+    (linear : LinearSsot) (erasure : ErasureSsot) (extract : ExtractSsot)
+    (types : TypesSsot) (program : ProgramSsot) (graph : GraphSsot)
+    (compose : ComposeSsot) (plan : PlanSsot) (apply : ApplySsot)
+    (body : BodySsot) : IO String := do
+  let withBanner <- match embedPlaceholderLine template "__HOST_EMIT_BANNER_HEADER__" banner.headerBlock with
     | none =>
-      red s!"HOST-EMIT-SSOT missing key {k} in {path}"
-      throw (IO.userError s!"missing key {k}")
-  let empty <- get "EMPTY_FRAGMENT"
-  let hop <- get "HEADER_OPEN"
-  let he <- get "HEADER_E"
-  let hc <- get "HEADER_CLOSE"
-  let tagOpen <- get "TAG_OPEN"
-  let tagMult <- get "TAG_MULT"
-  let tagKind <- get "TAG_KIND"
-  let tagClose <- get "TAG_CLOSE"
-  if empty != expectedEmptyFragment then
-    red "EMPTY_FRAGMENT diverges from empty-compose SSOT"
-    IO.eprintln s!"  got: {empty}"
-    throw (IO.userError "EMPTY_FRAGMENT diverge")
-  if hop ++ "0" ++ he ++ "0" ++ hc != empty then
-    red "HEADER_* keys do not recompose EMPTY_FRAGMENT"
-    throw (IO.userError "HEADER recompose")
-  pure {
-    emptyFragment := empty
-    headerOpen := hop
-    headerE := he
-    headerClose := hc
-    tagOpen := tagOpen
-    tagMult := tagMult
-    tagKind := tagKind
-    tagClose := tagClose
-  }
-
-/-- Mult SSOT C blocks. -/
-structure MultSsot where
-  headerBlock : String
-  bodyBlock : String
-  deriving Repr
-
-def loadMultSsot (path : System.FilePath) : IO MultSsot := do
-  requireFile path "HOST-EMIT-MULT artifact"
-  let content <- IO.FS.readFile path
-  requireToken content "HOST-EMIT-MULT" "HOST-EMIT-MULT"
-  requireToken content "NON-SSOT" "HOST-EMIT-MULT"
-  for tok in (["MULT-0", "MULT-1", "MULT-OMEGA", "slake_mult_is_valid",
-               "FAIL-CLOSED-UNKNOWN-GRADE"] : List String) do
-    requireToken content tok "HOST-EMIT-MULT"
-  let get (k : String) : IO String := do
-    match ssotGet content k with
-    | some v => pure v
-    | none =>
-      red s!"HOST-EMIT-MULT missing key {k} in {path}"
-      throw (IO.userError s!"missing key {k}")
-  let n0 <- get "MULT_NAME_0"
-  let n1 <- get "MULT_NAME_1"
-  let nO <- get "MULT_NAME_OMEGA"
-  if n0 != "MULT-0" || n1 != "MULT-1" || nO != "MULT-OMEGA" then
-    red "HOST-EMIT-MULT MULT_NAME_* diverge from Mult.name"
-    IO.eprintln s!"  got: {n0} / {n1} / {nO}"
-    throw (IO.userError "MULT_NAME diverge")
-  let header <- match ssotBlock content "MULT_C_HEADER" with
-    | some b => pure b
-    | none =>
-      red s!"HOST-EMIT-MULT missing block MULT_C_HEADER in {path}"
-      throw (IO.userError "missing MULT_C_HEADER")
-  let body <- match ssotBlock content "MULT_C_BODY" with
-    | some b => pure b
-    | none =>
-      red s!"HOST-EMIT-MULT missing block MULT_C_BODY in {path}"
-      throw (IO.userError "missing MULT_C_BODY")
-  for tok in (["HOST-EMIT-MULT", "slake_mult_is_valid", "MULT-0", "MULT-1",
-               "MULT-OMEGA"] : List String) do
-    unless containsStr header tok do
-      red s!"Mult SSOT header block missing token {tok}"
-      throw (IO.userError s!"Mult header missing {tok}")
-    unless containsStr body tok do
-      red s!"Mult SSOT body block missing token {tok}"
-      throw (IO.userError s!"Mult body missing {tok}")
-  pure { headerBlock := header, bodyBlock := body }
-
-/-- Linear SSOT C blocks. -/
-structure LinearSsot where
-  headerBlock : String
-  bodyBlock : String
-  deriving Repr
-
-def loadLinearSsot (path : System.FilePath) : IO LinearSsot := do
-  requireFile path "HOST-EMIT-LINEAR artifact"
-  let content <- IO.FS.readFile path
-  requireToken content "HOST-EMIT-LINEAR" "HOST-EMIT-LINEAR"
-  requireToken content "NON-SSOT" "HOST-EMIT-LINEAR"
-  for tok in (["LINEAR-EXACT-ONCE", "CONSUME_TOKEN_HOST_V0", "JOIN-ALG",
-               "slake_linear_consume", "slake_consume_token_consume"] : List String) do
-    requireToken content tok "HOST-EMIT-LINEAR"
-  let header <- match ssotBlock content "LINEAR_C_HEADER" with
-    | some b => pure b
-    | none =>
-      red s!"HOST-EMIT-LINEAR missing block LINEAR_C_HEADER in {path}"
-      throw (IO.userError "missing LINEAR_C_HEADER")
-  let body <- match ssotBlock content "LINEAR_C_BODY" with
-    | some b => pure b
-    | none =>
-      red s!"HOST-EMIT-LINEAR missing block LINEAR_C_BODY in {path}"
-      throw (IO.userError "missing LINEAR_C_BODY")
-  for tok in (["HOST-EMIT-LINEAR", "slake_linear_consume", "slake_consume_token_consume",
-               "LINEAR-EXACT-ONCE", "CONSUME_TOKEN_HOST_V0"] : List String) do
-    unless containsStr header tok do
-      red s!"Linear SSOT header block missing token {tok}"
-      throw (IO.userError s!"Linear header missing {tok}")
-    unless containsStr body tok do
-      red s!"Linear SSOT body block missing token {tok}"
-      throw (IO.userError s!"Linear body missing {tok}")
-  pure { headerBlock := header, bodyBlock := body }
-
-/-- Erasure SSOT C blocks (mult-0 absence honesty on freestanding C). -/
-structure ErasureSsot where
-  headerBlock : String
-  bodyBlock : String
-  deriving Repr
-
-def loadErasureSsot (path : System.FilePath) : IO ErasureSsot := do
-  requireFile path "HOST-EMIT-ERASURE artifact"
-  let content <- IO.FS.readFile path
-  requireToken content "HOST-EMIT-ERASURE" "HOST-EMIT-ERASURE"
-  requireToken content "NON-SSOT" "HOST-EMIT-ERASURE"
-  for tok in (["ERASE-RULE-MULT-0", "ERASE-NO-RUNTIME", "slake_erased",
-               "slake_erased_mark", "slake_erasure_is_runtime_absent"] : List String) do
-    requireToken content tok "HOST-EMIT-ERASURE"
-  let header <- match ssotBlock content "ERASURE_C_HEADER" with
-    | some b => pure b
-    | none =>
-      red s!"HOST-EMIT-ERASURE missing block ERASURE_C_HEADER in {path}"
-      throw (IO.userError "missing ERASURE_C_HEADER")
-  let body <- match ssotBlock content "ERASURE_C_BODY" with
-    | some b => pure b
-    | none =>
-      red s!"HOST-EMIT-ERASURE missing block ERASURE_C_BODY in {path}"
-      throw (IO.userError "missing ERASURE_C_BODY")
-  for tok in (["HOST-EMIT-ERASURE", "slake_erased", "slake_erased_mark",
-               "slake_erasure_is_runtime_absent", "ERASE-RULE-MULT-0"] : List String) do
-    unless containsStr header tok do
-      red s!"Erasure SSOT header block missing token {tok}"
-      throw (IO.userError s!"Erasure header missing {tok}")
-  for tok in (["HOST-EMIT-ERASURE", "slake_erased_mark", "slake_erased_is_marked",
-               "slake_erasure_is_runtime_absent"] : List String) do
-    unless containsStr body tok do
-      red s!"Erasure SSOT body block missing token {tok}"
-      throw (IO.userError s!"Erasure body missing {tok}")
-  pure { headerBlock := header, bodyBlock := body }
-
-def renderHeader (template : String) (mult : MultSsot) (linear : LinearSsot)
-    (erasure : ErasureSsot) : IO String := do
-  let withMult <- match embedPlaceholderLine template "__HOST_EMIT_MULT_HEADER__" mult.headerBlock with
+      red "header template missing __HOST_EMIT_BANNER_HEADER__"
+      throw (IO.userError "missing banner header placeholder")
+    | some s => pure s
+  let withMult <- match embedPlaceholderLine withBanner "__HOST_EMIT_MULT_HEADER__" mult.headerBlock with
     | none =>
       red "header template missing __HOST_EMIT_MULT_HEADER__"
       throw (IO.userError "missing mult header placeholder")
@@ -290,11 +84,54 @@ def renderHeader (template : String) (mult : MultSsot) (linear : LinearSsot)
       red "header template missing __HOST_EMIT_LINEAR_HEADER__"
       throw (IO.userError "missing linear header placeholder")
     | some s => pure s
-  match embedPlaceholderLine withLinear "__HOST_EMIT_ERASURE_HEADER__" erasure.headerBlock with
+  let withErasure <- match embedPlaceholderLine withLinear "__HOST_EMIT_ERASURE_HEADER__" erasure.headerBlock with
+    | none =>
+      red "header template missing __HOST_EMIT_ERASURE_HEADER__"
+      throw (IO.userError "missing erasure header placeholder")
+    | some s => pure s
+  let withExtract <- match embedPlaceholderLine withErasure "__HOST_EMIT_EXTRACT_HEADER__" extract.headerBlock with
+    | none =>
+      red "header template missing __HOST_EMIT_EXTRACT_HEADER__"
+      throw (IO.userError "missing extract header placeholder")
+    | some s => pure s
+  let withTypes <- match embedPlaceholderLine withExtract "__HOST_EMIT_TYPES_HEADER__" types.headerBlock with
+    | none =>
+      red "header template missing __HOST_EMIT_TYPES_HEADER__"
+      throw (IO.userError "missing types header placeholder")
+    | some s => pure s
+  let withProgram <- match embedPlaceholderLine withTypes "__HOST_EMIT_PROGRAM_HEADER__" program.headerBlock with
+    | none =>
+      red "header template missing __HOST_EMIT_PROGRAM_HEADER__"
+      throw (IO.userError "missing program header placeholder")
+    | some s => pure s
+  let withGraph <- match embedPlaceholderLine withProgram "__HOST_EMIT_GRAPH_HEADER__" graph.headerBlock with
+    | none =>
+      red "header template missing __HOST_EMIT_GRAPH_HEADER__"
+      throw (IO.userError "missing graph header placeholder")
+    | some s => pure s
+  let withCompose <- match embedPlaceholderLine withGraph "__HOST_EMIT_COMPOSE_HEADER__" compose.headerBlock with
+    | none =>
+      red "header template missing __HOST_EMIT_COMPOSE_HEADER__"
+      throw (IO.userError "missing compose header placeholder")
+    | some s => pure s
+  let withPlan <- match embedPlaceholderLine withCompose "__HOST_EMIT_PLAN_HEADER__" plan.headerBlock with
+    | none =>
+      red "header template missing __HOST_EMIT_PLAN_HEADER__"
+      throw (IO.userError "missing plan header placeholder")
+    | some s => pure s
+  let withApply <- match embedPlaceholderLine withPlan "__HOST_EMIT_APPLY_HEADER__" apply.headerBlock with
+    | none =>
+      red "header template missing __HOST_EMIT_APPLY_HEADER__"
+      throw (IO.userError "missing apply header placeholder")
+    | some s => pure s
+  match embedPlaceholderLine withApply "__HOST_EMIT_BODY_HEADER__" body.headerBlock with
   | none =>
-    red "header template missing __HOST_EMIT_ERASURE_HEADER__"
-    throw (IO.userError "missing erasure header placeholder")
+    red "header template missing __HOST_EMIT_BODY_HEADER__"
+    throw (IO.userError "missing body header placeholder")
   | some s =>
+    if containsStr s "__HOST_EMIT_BANNER_" then
+      red "Banner SSOT placeholders remain after header embed"
+      throw (IO.userError "placeholder remain header banner")
     if containsStr s "__HOST_EMIT_MULT_" then
       red "Mult SSOT placeholders remain after header embed"
       throw (IO.userError "placeholder remain header mult")
@@ -304,11 +141,43 @@ def renderHeader (template : String) (mult : MultSsot) (linear : LinearSsot)
     if containsStr s "__HOST_EMIT_ERASURE_" then
       red "Erasure SSOT placeholders remain after header embed"
       throw (IO.userError "placeholder remain header erasure")
+    if containsStr s "__HOST_EMIT_EXTRACT_" then
+      red "Extract SSOT placeholders remain after header embed"
+      throw (IO.userError "placeholder remain header extract")
+    if containsStr s "__HOST_EMIT_TYPES_" then
+      red "Types SSOT placeholders remain after header embed"
+      throw (IO.userError "placeholder remain header types")
+    if containsStr s "__HOST_EMIT_PROGRAM_" then
+      red "Program SSOT placeholders remain after header embed"
+      throw (IO.userError "placeholder remain header program")
+    if containsStr s "__HOST_EMIT_GRAPH_" then
+      red "Graph SSOT placeholders remain after header embed"
+      throw (IO.userError "placeholder remain header graph")
+    if containsStr s "__HOST_EMIT_COMPOSE_" then
+      red "Compose SSOT placeholders remain after header embed"
+      throw (IO.userError "placeholder remain header compose")
+    if containsStr s "__HOST_EMIT_PLAN_" then
+      red "Plan SSOT placeholders remain after header embed"
+      throw (IO.userError "placeholder remain header plan")
+    if containsStr s "__HOST_EMIT_APPLY_" then
+      red "Apply SSOT placeholders remain after header embed"
+      throw (IO.userError "placeholder remain header apply")
+    if containsStr s "__HOST_EMIT_BODY_" then
+      red "Body SSOT placeholders remain after header embed"
+      throw (IO.userError "placeholder remain header body")
     pure s
 
-def renderSource (template : String) (body : BodySsot) (mult : MultSsot)
-    (linear : LinearSsot) (erasure : ErasureSsot) : IO String := do
-  let withMult <- match embedPlaceholderLine template "__HOST_EMIT_MULT_BODY__" mult.bodyBlock with
+def renderSource (template : String) (body : BodySsot) (banner : BannerSsot)
+    (mult : MultSsot) (linear : LinearSsot) (erasure : ErasureSsot)
+    (extract : ExtractSsot) (types : TypesSsot) (program : ProgramSsot)
+    (graph : GraphSsot) (compose : ComposeSsot) (plan : PlanSsot)
+    (apply : ApplySsot) : IO String := do
+  let withBanner <- match embedPlaceholderLine template "__HOST_EMIT_BANNER_BODY__" banner.bodyBlock with
+    | none =>
+      red "source template missing __HOST_EMIT_BANNER_BODY__"
+      throw (IO.userError "missing banner body placeholder")
+    | some s => pure s
+  let withMult <- match embedPlaceholderLine withBanner "__HOST_EMIT_MULT_BODY__" mult.bodyBlock with
     | none =>
       red "source template missing __HOST_EMIT_MULT_BODY__"
       throw (IO.userError "missing mult body placeholder")
@@ -323,7 +192,47 @@ def renderSource (template : String) (body : BodySsot) (mult : MultSsot)
       red "source template missing __HOST_EMIT_ERASURE_BODY__"
       throw (IO.userError "missing erasure body placeholder")
     | some s => pure s
-  let s := replaceAll withErasure "__SSOT_EMPTY_FRAGMENT__" body.emptyFragment
+  let withExtract <- match embedPlaceholderLine withErasure "__HOST_EMIT_EXTRACT_BODY__" extract.bodyBlock with
+    | none =>
+      red "source template missing __HOST_EMIT_EXTRACT_BODY__"
+      throw (IO.userError "missing extract body placeholder")
+    | some s => pure s
+  let withTypes <- match embedPlaceholderLine withExtract "__HOST_EMIT_TYPES_BODY__" types.bodyBlock with
+    | none =>
+      red "source template missing __HOST_EMIT_TYPES_BODY__"
+      throw (IO.userError "missing types body placeholder")
+    | some s => pure s
+  let withProgram <- match embedPlaceholderLine withTypes "__HOST_EMIT_PROGRAM_BODY__" program.bodyBlock with
+    | none =>
+      red "source template missing __HOST_EMIT_PROGRAM_BODY__"
+      throw (IO.userError "missing program body placeholder")
+    | some s => pure s
+  let withGraph <- match embedPlaceholderLine withProgram "__HOST_EMIT_GRAPH_BODY__" graph.bodyBlock with
+    | none =>
+      red "source template missing __HOST_EMIT_GRAPH_BODY__"
+      throw (IO.userError "missing graph body placeholder")
+    | some s => pure s
+  let withCompose <- match embedPlaceholderLine withGraph "__HOST_EMIT_COMPOSE_BODY__" compose.bodyBlock with
+    | none =>
+      red "source template missing __HOST_EMIT_COMPOSE_BODY__"
+      throw (IO.userError "missing compose body placeholder")
+    | some s => pure s
+  let withPlan <- match embedPlaceholderLine withCompose "__HOST_EMIT_PLAN_BODY__" plan.bodyBlock with
+    | none =>
+      red "source template missing __HOST_EMIT_PLAN_BODY__"
+      throw (IO.userError "missing plan body placeholder")
+    | some s => pure s
+  let withApply <- match embedPlaceholderLine withPlan "__HOST_EMIT_APPLY_BODY__" apply.bodyBlock with
+    | none =>
+      red "source template missing __HOST_EMIT_APPLY_BODY__"
+      throw (IO.userError "missing apply body placeholder")
+    | some s => pure s
+  let withBody <- match embedPlaceholderLine withApply "__HOST_EMIT_BODY_BODY__" body.bodyBlock with
+    | none =>
+      red "source template missing __HOST_EMIT_BODY_BODY__"
+      throw (IO.userError "missing body body placeholder")
+    | some s => pure s
+  let s := replaceAll withBody "__SSOT_EMPTY_FRAGMENT__" body.emptyFragment
   let s := replaceAll s "__SSOT_HEADER_OPEN__" body.headerOpen
   let s := replaceAll s "__SSOT_HEADER_E__" body.headerE
   let s := replaceAll s "__SSOT_HEADER_CLOSE__" body.headerClose
@@ -331,6 +240,9 @@ def renderSource (template : String) (body : BodySsot) (mult : MultSsot)
   let s := replaceAll s "__SSOT_TAG_MULT__" body.tagMult
   let s := replaceAll s "__SSOT_TAG_KIND__" body.tagKind
   let s := replaceAll s "__SSOT_TAG_CLOSE__" body.tagClose
+  if containsStr s "__HOST_EMIT_BANNER_" then
+    red "Banner SSOT placeholders remain after source embed"
+    throw (IO.userError "placeholder remain source banner")
   if containsStr s "__HOST_EMIT_MULT_" then
     red "Mult SSOT placeholders remain after source embed"
     throw (IO.userError "placeholder remain source mult")
@@ -340,6 +252,30 @@ def renderSource (template : String) (body : BodySsot) (mult : MultSsot)
   if containsStr s "__HOST_EMIT_ERASURE_" then
     red "Erasure SSOT placeholders remain after source embed"
     throw (IO.userError "placeholder remain source erasure")
+  if containsStr s "__HOST_EMIT_EXTRACT_" then
+    red "Extract SSOT placeholders remain after source embed"
+    throw (IO.userError "placeholder remain source extract")
+  if containsStr s "__HOST_EMIT_TYPES_" then
+    red "Types SSOT placeholders remain after source embed"
+    throw (IO.userError "placeholder remain source types")
+  if containsStr s "__HOST_EMIT_PROGRAM_" then
+    red "Program SSOT placeholders remain after source embed"
+    throw (IO.userError "placeholder remain source program")
+  if containsStr s "__HOST_EMIT_GRAPH_" then
+    red "Graph SSOT placeholders remain after source embed"
+    throw (IO.userError "placeholder remain source graph")
+  if containsStr s "__HOST_EMIT_COMPOSE_" then
+    red "Compose SSOT placeholders remain after source embed"
+    throw (IO.userError "placeholder remain source compose")
+  if containsStr s "__HOST_EMIT_PLAN_" then
+    red "Plan SSOT placeholders remain after source embed"
+    throw (IO.userError "placeholder remain source plan")
+  if containsStr s "__HOST_EMIT_APPLY_" then
+    red "Apply SSOT placeholders remain after source embed"
+    throw (IO.userError "placeholder remain source apply")
+  if containsStr s "__HOST_EMIT_BODY_" then
+    red "Body SSOT placeholders remain after source embed"
+    throw (IO.userError "placeholder remain source body")
   if containsStr s "__SSOT_" then
     red "body SSOT placeholders remain after source embed"
     throw (IO.userError "ssot placeholder remain")
@@ -350,15 +286,19 @@ def validateProduct (path : System.FilePath) (content : String) (isSource : Bool
     (body : BodySsot) : IO Unit := do
   for tok in ([
       "SLAKE_EMIT_FREESTANDING_C_V0", "UNIT_TRANSLATION_V0", "UNIT_DEEPEN_V1",
-      "HOST-EMIT-SSOT", "HOST-EMIT-MULT", "HOST-EMIT-LINEAR", "HOST-EMIT-ERASURE",
-      "RUNTIME-FS", "not residual free",
+      "HOST-EMIT-SSOT", "HOST-EMIT-BODY", "HOST-EMIT-BANNER", "HOST-EMIT-MULT",
+      "HOST-EMIT-LINEAR", "HOST-EMIT-ERASURE", "HOST-EMIT-EXTRACT",
+      "HOST-EMIT-TYPES", "HOST-EMIT-PROGRAM", "HOST-EMIT-GRAPH", "HOST-EMIT-COMPOSE",
+      "HOST-EMIT-PLAN", "HOST-EMIT-APPLY",
+      "RUNTIME-FS", "product residual free",
       "MULT-0", "MULT-1", "MULT-OMEGA", "slake_mult_is_valid",
       "EMIT_BODY_V0", "EMIT_PLAN_V0", "EMIT_APPLY_V0", "JOIN-ALG", "ConsumeToken",
       "LINEAR-EXACT-ONCE", "FAIL_CLOSED_CHECKER_V1", "CONSUME_TOKEN_HOST_V0",
       "ERASE-RULE-MULT-0", "slake_erased_mark", "slake_erasure_is_runtime_absent",
-      "TYPED_IR_V0", "IR_PROGRAM_V0", "IR_GRAPH_EDGES_V0", "HOST_COMPOSE_V0",
+      "TYPED_IR_V0", "slake_type_tag", "slake_ir_node", "COMMON-UNIVERSE",
+      "IR_PROGRAM_V0", "IR_GRAPH_EDGES_V0", "HOST_COMPOSE_V0",
       "SLAKE_IR_PROGRAM_CAP", "SLAKE_IR_EDGE_MAX", "SLAKE_EMIT_APPLY_CAP",
-      "SLAKE_EMIT_BODY_CAP"
+      "SLAKE_EMIT_BODY_CAP", "slake_emit_version", "slake_unit_translation_id"
     ] : List String) do
     requireToken content tok s!"{path}"
   if containsStr content "SLAKE_IR_EDGE_CAP" then
@@ -379,29 +319,99 @@ def validateProduct (path : System.FilePath) (content : String) (isSource : Bool
 def emitAtRoot (root : System.FilePath) : IO Unit := do
   let emitDir := root / "src" / "systems" / "emit"
   let bodyPath := emitDir / "host_emit_body_fragment.ssot.txt"
+  let bannerPath := emitDir / "host_emit_banner.ssot.txt"
   let multPath := emitDir / "host_emit_mult.ssot.txt"
   let linearPath := emitDir / "host_emit_linear.ssot.txt"
   let erasurePath := emitDir / "host_emit_erasure.ssot.txt"
+  let extractPath := emitDir / "host_emit_extract.ssot.txt"
+  let typesPath := emitDir / "host_emit_types.ssot.txt"
+  let programPath := emitDir / "host_emit_program.ssot.txt"
+  let graphPath := emitDir / "host_emit_graph.ssot.txt"
+  let composePath := emitDir / "host_emit_compose.ssot.txt"
+  let planPath := emitDir / "host_emit_plan.ssot.txt"
+  let applyPath := emitDir / "host_emit_apply.ssot.txt"
   let tmplH := emitDir / "template_slake_freestanding.h.in"
   let tmplC := emitDir / "template_slake_freestanding.c.in"
   let outH := emitDir / "slake_freestanding.h"
   let outC := emitDir / "slake_freestanding.c"
 
   IO.println s!"== {stageId}: freestanding emit path V0 (Lean FreestandingEmit) =="
-  IO.println "  not residual free; not freestanding residual free"
+  IO.println "  product residual free claimed; host elaborator residual remains"
   IO.println "  not PROVABLY; no product GC; not Lean managed runtime"
   IO.println "  never writes out/freestanding-c/ (release surface is separate)"
 
   let body <- loadBodySsot bodyPath
+  let banner <- loadBannerSsot bannerPath
   let mult <- loadMultSsot multPath
   let linear <- loadLinearSsot linearPath
   let erasure <- loadErasureSsot erasurePath
+  let extract <- loadExtractSsot extractPath
+  let types <- loadTypesSsot typesPath
+  let program <- loadProgramSsot programPath
+  let graph <- loadGraphSsot graphPath
+  let compose <- loadComposeSsot composePath
+  let plan <- loadPlanSsot planPath
+  let apply <- loadApplySsot applyPath
+  -- DUAL-SSOT-EQUALITY: durable host_emit_*.ssot.txt HEADER/BODY == Lean fragments.
+  -- Fail closed on drift (Banner + Mult..Out/Body). Embed still uses SSOT files only.
+  unless dualSsotEqualityLive do
+    red s!"{dualSsotEqualityGateId}: dualSsotEqualityLive pin false"
+    throw (IO.userError s!"{dualSsotEqualityGateId}: live pin")
+  requireDualSsotEqual "Banner HEADER" banner.headerBlock
+    SystemsLean.EmitBanner.bannerHeaderFragment
+  requireDualSsotEqual "Banner BODY" banner.bodyBlock
+    SystemsLean.EmitBanner.bannerBodyFragment
+  requireDualSsotEqual "Mult HEADER" mult.headerBlock
+    SystemsLean.EmitMult.multHeaderFragment
+  requireDualSsotEqual "Mult BODY" mult.bodyBlock
+    SystemsLean.EmitMult.multBodyFragment
+  requireDualSsotEqual "Linear HEADER" linear.headerBlock
+    SystemsLean.EmitLinear.linearHeaderFragment
+  requireDualSsotEqual "Linear BODY" linear.bodyBlock
+    SystemsLean.EmitLinear.linearBodyFragment
+  requireDualSsotEqual "Erasure HEADER" erasure.headerBlock
+    SystemsLean.EmitErasure.erasureHeaderFragment
+  requireDualSsotEqual "Erasure BODY" erasure.bodyBlock
+    SystemsLean.EmitErasure.erasureBodyFragment
+  requireDualSsotEqual "Extract HEADER" extract.headerBlock
+    SystemsLean.EmitExtract.extractHeaderFragment
+  requireDualSsotEqual "Extract BODY" extract.bodyBlock
+    SystemsLean.EmitExtract.extractBodyFragment
+  requireDualSsotEqual "Types HEADER" types.headerBlock
+    SystemsLean.EmitTypes.typesHeaderFragment
+  requireDualSsotEqual "Types BODY" types.bodyBlock
+    SystemsLean.EmitTypes.typesBodyFragment
+  requireDualSsotEqual "Program HEADER" program.headerBlock
+    SystemsLean.EmitProgram.programHeaderFragment
+  requireDualSsotEqual "Program BODY" program.bodyBlock
+    SystemsLean.EmitProgram.programBodyFragment
+  requireDualSsotEqual "Graph HEADER" graph.headerBlock
+    SystemsLean.EmitGraph.graphHeaderFragment
+  requireDualSsotEqual "Graph BODY" graph.bodyBlock
+    SystemsLean.EmitGraph.graphBodyFragment
+  requireDualSsotEqual "Compose HEADER" compose.headerBlock
+    SystemsLean.EmitCompose.composeHeaderFragment
+  requireDualSsotEqual "Compose BODY" compose.bodyBlock
+    SystemsLean.EmitCompose.composeBodyFragment
+  requireDualSsotEqual "Plan HEADER" plan.headerBlock
+    SystemsLean.EmitPlan.planHeaderFragment
+  requireDualSsotEqual "Plan BODY" plan.bodyBlock
+    SystemsLean.EmitPlan.planBodyFragment
+  requireDualSsotEqual "Apply HEADER" apply.headerBlock
+    SystemsLean.EmitApply.applyHeaderFragment
+  requireDualSsotEqual "Apply BODY" apply.bodyBlock
+    SystemsLean.EmitApply.applyBodyFragment
+  requireDualSsotEqual "Body HEADER" body.headerBlock
+    SystemsLean.EmitBody.bodyHeaderFragment
+  requireDualSsotEqual "Body BODY" body.bodyBlock
+    SystemsLean.EmitBody.bodyBodyFragment
+  IO.println s!"  {dualSsotEqualityGateId}: Banner + Mult..Out HEADER/BODY match Lean fragments"
   requireFile tmplH "header template"
   requireFile tmplC "source template"
   let th <- IO.FS.readFile tmplH
   let tc <- IO.FS.readFile tmplC
-  let header <- renderHeader th mult linear erasure
-  let source <- renderSource tc body mult linear erasure
+  let header <- renderHeader th banner mult linear erasure extract types program graph compose plan apply body
+  let source <- renderSource tc body banner mult linear erasure extract types program graph compose plan apply
   IO.FS.createDirAll emitDir
   IO.FS.writeFile outH header
   IO.FS.writeFile outC source
@@ -412,8 +422,8 @@ def emitAtRoot (root : System.FilePath) : IO Unit := do
   IO.println s!"GREEN {stageId}: wrote freestanding emit surface under {emitDir}/"
   IO.println s!"  wrote: {outH}"
   IO.println s!"  wrote: {outC}"
-  IO.println "  not residual free; not PROVABLY; no product GC; not Lean managed runtime"
-  IO.println "  release copy via just out-freestanding-c (not this stage)"
+  IO.println "  product residual free claimed; not PROVABLY; no product GC; not Lean managed runtime"
+  IO.println "  release copy via just build (not this stage)"
 
 /-- Drop lake/exe separators so root path is first real arg. -/
 def filterArgs : List String -> List String
@@ -436,6 +446,5 @@ def main (args : List String) : IO UInt32 := do
 
 end SystemsLean.FreestandingEmit
 
-/-- Lake / lean --run entry: forward argv. -/
-def main (args : List String) : IO UInt32 :=
-  SystemsLean.FreestandingEmit.main args
+-- Lake exe root is FreestandingEmitMain (thin main module). Top-level main lives
+-- there so other host modules may import FreestandingEmit and declare their own main.

@@ -125,8 +125,8 @@ Intended compile path (design only -- not claimed implemented):
 | Min mult host notes / checks | MULT-0 / MULT-1 / MULT-OMEGA greppable in `src/systems/mult.md` |
 | Freestanding unit surface | **Done (abstract):** five modules `UNIT_SURFACE`; still not residual free |
 | Unit deepen + first translation | **Done (UNIT_DEEPEN_V1):** abstract contracts + C APIs (`slake_mult_is_valid`, `slake_linear_consume`, `slake_erasure_is_runtime_absent`); still not residual free |
-| Real compile path (structure) | **Done:** `SLAKE_COMPILE_PATH_V0` via `script/slake-compile-path.sh`; still not product C |
-| Real emit + `out/freestanding-c` | **Done (V0 + UNIT_DEEPEN_V1 body):** `SLAKE_EMIT_FREESTANDING_C_V0` via `script/slake-emit-freestanding-c.sh`; first unit translation; not residual free |
+| Real compile path (structure) | **Done:** host `SLAKE_COMPILE_PATH_V1` / `HOST-COMPILE-PATH` (`CompilePath.lean`); V0 shell stamp deleted; static pure Nix; still not product C |
+| Real emit + `out/freestanding-c` | **Done (V0 + UNIT_DEEPEN_V1 body):** `SLAKE_EMIT_FREESTANDING_C_V0` via Lean `SystemsLean.FreestandingEmit` + `just build` (bash emit driver deleted Wave C); first unit translation |
 | Typed IR product surface | **Done (TYPED_IR_V0):** single-node `slake_ir_node` kind/mult pairing + fail-closed compose; still not residual free |
 | ordered IR program | **Done (IR_PROGRAM_V0):** ordered multi-node `slake_ir_program` (`SLAKE_IR_PROGRAM_CAP` 8) + collective well-typed/fail-closed (empty NOT well-typed; full push -2); still not residual free |
 | IR graph edges | **Done (IR_GRAPH_EDGES_V0):** `slake_ir_graph` shell + directed index pairs (`SLAKE_IR_EDGE_MAX` 16); empty graph OK; not full CFG/SSA; still not residual free |
@@ -134,7 +134,7 @@ Intended compile path (design only -- not claimed implemented):
 | Emit plan | **Done (EMIT_PLAN_V0):** `slake_emit_plan` readiness inventory from checked host compose (node/edge/runtime/erased counts); not CFG/SSA; still not residual free |
 | Emit apply | **Done (EMIT_APPLY_V0):** `slake_emit_apply` fixed mult/kind tag buffer from checked host compose (`SLAKE_EMIT_APPLY_CAP` 32); not full C body emit; not CFG/SSA; still not residual free |
 | Emit body | **Done (EMIT_BODY_V0):** `slake_emit_body` fixed freestanding C body fragment from checked host compose via plan+apply (`SLAKE_EMIT_BODY_CAP` 256); not full module emit; not CFG/SSA; still not residual free |
-| `just build` / `out/freestanding-c` | Build = compile-path structure; release = `just out-freestanding-c` (emit install) |
+| `just build` / `out/freestanding-c` | Build = compile-path structure; release = `just build` (emit install) |
 
 No second dual example is required on the Idris or Lean sides for the skeleton.
 
@@ -162,7 +162,7 @@ This note does **not** claim:
 | ConsumeToken dual (JOIN-ALG) | side `examples/ConsumeToken.*` + both JOIN.md |
 | Greppable edges | `doc/divergence.md` (EDGE-* / ERASE-* / RUNTIME-* / MULT-* / JOIN-ALG) |
 | This IR sketch | `doc/shared-ir-sketch.md` |
-| Emit V0 surface | `script/slake-emit-freestanding-c.sh` (`SLAKE_EMIT_FREESTANDING_C_V0`); `out/freestanding-c/*.c` |
+| Emit V0 surface | Lean `SystemsLean.FreestandingEmit` (`SLAKE_EMIT_FREESTANDING_C_V0`); `just build`; `out/freestanding-c/*.c` |
 | UNIT_DEEPEN_V1 + first translation | `src/systems/*.{slake,md}` markers; C APIs in emit/ |
 | TYPED_IR_V0 + IR_PROGRAM_V0 + IR_GRAPH_EDGES_V0 | single-node + multi-node ordered program node list + edge slots in emit; Types unit map |
 | HOST_COMPOSE_V0 | host+graph fail-closed extract compose in emit; Extract/Linear/Types unit map |
@@ -174,8 +174,9 @@ This note does **not** claim:
 only as needed (full freestanding C module codegen of arbitrary IR still residual);
 no residual free forge; no llvm-ir; quality over speed.
 
-Compile-path evidence: `script/slake-compile-path.sh` stage id `SLAKE_COMPILE_PATH_V0`;
-wired from `just build`; check fails closed if driver missing. Emit evidence:
-`script/slake-emit-freestanding-c.sh` stage id `SLAKE_EMIT_FREESTANDING_C_V0`; `just out-freestanding-c`
-install; UNIT_DEEPEN_V1 first unit translation + IR_PROGRAM_V0 + IR_GRAPH_EDGES_V0
-+ HOST_COMPOSE_V0 + EMIT_PLAN_V0 + EMIT_APPLY_V0 + EMIT_BODY_V0 landed.
+Compile-path evidence: host `SystemsLean/CompilePath.lean` (`SLAKE_COMPILE_PATH_V1` / `HOST-COMPILE-PATH`); retired V0 shell stamp deleted;
+static pure Nix (`just systems-emit-wire` / `just systems-host`); product path
+`just build`. Emit evidence: Lean `SystemsLean.FreestandingEmit` stage id
+`SLAKE_EMIT_FREESTANDING_C_V0`; `just build` install; UNIT_DEEPEN_V1 first unit
+translation + IR_PROGRAM_V0 + IR_GRAPH_EDGES_V0 + HOST_COMPOSE_V0 + EMIT_PLAN_V0
++ EMIT_APPLY_V0 + EMIT_BODY_V0 landed. Bash emit / compile-path drivers deleted.

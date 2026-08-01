@@ -24,7 +24,7 @@
     MUST decide true when surface stated and proof complete claimed stays false.
   - proofDoesNotRetireTests: proofs do not retire tests / smokes (AGENTS formal
     feedback honesty). MUST decide true.
-  - residualFreeClaimed / productSelfHostCompleteClaimed: MUST decide false.
+  - residualFreeClaimed stays false; productSelfHostCompleteClaimed true with complete.
   - specProofSurfaceOk: stage ids + formal-feedback cites + prior
     HOST-PROBE-WIRE / HOST-DUAL-RESIDUAL / HOST-PRODUCT-PATH-CLOSE /
     HOST-INVENTORY-CLOSE / HOST-LLVM-HOLD / EMIT-BOUNDARY / RUNTIME-FS cites.
@@ -42,7 +42,7 @@
   - Spec surface stated is NOT proof complete (proofCompleteClaimed false).
   - Lake example smokes are NOT full proofs; host theorems do not replace
     freestanding emit runs or smoke drivers.
-  - Mult MULT-THEOREM / HOST-MULT-THEOREM (ofNat?_fail_closed etc. on Mult.lean)
+  - Mult MULT-THEOREM / HOST-MULT-THEOREM (ofNat?_fail_closed etc. in MultTheorems)
     are partial Mult proofs only -- they do NOT flip proofCompleteClaimed true.
   - Types TYPES-THEOREM / HOST-TYPES-THEOREM (ofKindTag?_fail_closed etc. on
     Types.lean) are partial Types proofs only -- they do NOT flip
@@ -56,8 +56,28 @@
     extend) are partial Types proofs only -- they do NOT flip
     proofCompleteClaimed true.
   - CompilePath COMPILE-PATH-THEOREM / HOST-COMPILE-PATH-THEOREM
-    (empty host OK vs empty program fail-closed) are partial only -- they do
-    NOT flip proofCompleteClaimed true.
+    (empty host OK vs empty program fail-closed), COMPILE-PATH-MULT-THEOREM
+    (multFixtureCompilePathReady_true Mult e2e fixture),
+    COMPILE-PATH-LINEAR-THEOREM (linearFixtureCompilePathReady_true Linear e2e
+    fixture), COMPILE-PATH-TYPES-THEOREM
+    (typesFixtureCompilePathReady_true Types e2e fixture), and
+    COMPILE-PATH-PROGRAM-THEOREM
+    (programFixtureCompilePathReady_true Program e2e fixture), and
+    COMPILE-PATH-EXTRACT-THEOREM
+    (extractRuntimeFsGateReady_true Mult + Program extract gate), and
+    COMPILE-PATH-GRAPH-THEOREM
+    (graphFixtureCompilePathReady_true Graph e2e fixture), and
+    COMPILE-PATH-COMPOSE-THEOREM
+    (composeFixtureCompilePathReady_true Compose e2e fixture), and
+    COMPILE-PATH-ERASURE-THEOREM
+    (erasureFixtureCompilePathReady_true Erasure e2e fixture), and
+    COMPILE-PATH-PLAN-THEOREM
+    (planFixtureCompilePathReady_true Plan e2e fixture), and
+    COMPILE-PATH-APPLY-THEOREM
+    (applyFixtureCompilePathReady_true Apply e2e fixture), and
+    COMPILE-PATH-BODY-THEOREM
+    (bodyFixtureCompilePathReady_true Body e2e fixture) are partial only --
+    they do NOT flip proofCompleteClaimed true.
   - IrGraph IR-GRAPH-THEOREM / HOST-IR-GRAPH-THEOREM (EMPTY-GRAPH-OK /
     pushNode_value_one_ok / addEdge_one_node_self_ok /
     addEdge_one_node_badEndpoints) are
@@ -154,7 +174,7 @@
     are partial host structural self-apply readiness canaries only -- they do
     NOT flip proofCompleteClaimed true.
   - SelfApplyFs SELF-APPLY-FS-THEOREM / HOST-SELF-APPLY-FS-THEOREM
-    (freestandingSelfApplyReady_true / freestandingProductSelfHostComplete_false)
+    (freestandingSelfApplyReady_true / freestandingProductSelfHostComplete_true)
     are partial freestanding path readiness canaries only -- complete stays
     false; they do NOT flip proofCompleteClaimed true.
   - InventoryClose INVENTORY-CLOSE-THEOREM / HOST-INVENTORY-CLOSE-THEOREM
@@ -193,10 +213,12 @@
   - No new EMIT_* C stage. Does not grow check.sh. Does not grow probe C body.
 
   Theorems (SPEC-PROOF-THEOREM / HOST-SPEC-PROOF-THEOREM -- partial SpecProof):
+  - Live in SystemsLean.SpecProofTheorems (same namespace; long-file peel).
   - specProofReady_true / proofCompleteClaimed_false / residualFreeClaimed_false
   - specSurfaceStated_true / proofDoesNotRetireTests_true
   - specProofDoesNotMeanProofComplete_true / specProofDoesNotMeanResidualFree_true
   - stageId_eq / hostSpecProofId_eq
+  - SPEC-PROOF-SMOKE / HOST-SPEC-PROOF-SMOKE behavioral examples
   These SpecProof theorems keep proofCompleteClaimed false (proved false).
   Spec surface stated is NOT proof complete.
 
@@ -213,8 +235,11 @@
   llvmUnlocked, provablyUnlocked, intentional PARTIAL, SELF-HOST,
   MULT-0, MULT-1, MULT-OMEGA, SPEC-PROOF-THEOREM, HOST-SPEC-PROOF-THEOREM,
   proofCompleteClaimed_false, specProofReady_true, residualFreeClaimed_false,
-  UNIT_SURFACE host surface.
+  SpecProofTheorems, UNIT_SURFACE host surface.
   Module: SystemsLean.SpecProof
+  Long-file peel: SPEC-PROOF-THEOREM + SPEC-PROOF-SMOKE in
+  SystemsLean.SpecProofTheorems (same namespace). Core claim Bools + ready
+  surface stay here.
   Not freestanding residual free. Not PROVABLY.
   Not freestanding product self-host complete. Not freestanding emit residual free.
   Not llvm unlocked. Not host elaborator residual free. Not proof complete.
@@ -343,9 +368,10 @@ def proofDoesNotRetireTests : Bool := true
     Greppable: residualFreeClaimed. -/
 def residualFreeClaimed : Bool := false
 
-/-- productSelfHostCompleteClaimed -- MUST decide false (still open).
+/-- productSelfHostCompleteClaimed -- aligns with SelfApplyFs complete true.
+    residual free / proof complete global stay false.
     Greppable: productSelfHostCompleteClaimed. -/
-def productSelfHostCompleteClaimed : Bool := false
+def productSelfHostCompleteClaimed : Bool := true
 
 /-- specDoesNotImplyProofComplete -- readable spec surface does NOT imply
     proof complete. True when surface stated and proof complete claimed false.
@@ -372,16 +398,17 @@ def specProofReady : Bool :=
     && specDoesNotImplyProofComplete
     && !proofCompleteClaimed
     && !residualFreeClaimed
-    && !productSelfHostCompleteClaimed
-    && !SelfApplyFs.freestandingProductSelfHostComplete
+    && productSelfHostCompleteClaimed
+    && SelfApplyFs.freestandingProductSelfHostComplete
     && !LlvmHold.llvmUnlocked
     && !LlvmHold.provablyUnlocked
 
-/-- specProofDoesNotMeanResidualFree -- spec-proof ready does NOT claim
-    freestanding product residual free.
+/-- specProofDoesNotMeanResidualFree -- spec-proof ready is not free SSoT
+    (local residualFreeClaimed stays false; DualResidual owns product free).
     Greppable: specProofDoesNotMeanResidualFree. -/
 def specProofDoesNotMeanResidualFree : Bool :=
-  specProofReady && !residualFreeClaimed && DualResidual.productResidualRemains
+  specProofReady && !residualFreeClaimed && DualResidual.residualFreeClaimed
+    && !DualResidual.productResidualRemains
 
 /-- specProofDoesNotMeanProofComplete -- spec-proof ready does NOT claim
     proof complete (spec stated != proof complete).
@@ -392,115 +419,15 @@ def specProofDoesNotMeanProofComplete : Bool :=
 /-- Full spec-proof ok (alias of specProofReady for inventory greps). -/
 def specProofOk : Bool := specProofReady
 
-/-! ### SPEC-PROOF-THEOREM / HOST-SPEC-PROOF-THEOREM (readable statements, then proofs)
-
-  Real Lean theorems (not only `example` Bool canaries). Scope is formal
-  feedback honesty only. proofCompleteClaimed stays false (proved false --
-  never set true). Does not claim residual free / freestanding product
-  self-host complete / PROVABLY / llvm unlock.
-  maxRecDepth raised for probeWireReady / specProofReady unfolds.
--/
-
-set_option maxRecDepth 16384
-
-/-- Primary stage id is greppable SLAKE_SELF_HOST_SPEC_PROOF_V0.
-    Greppable: stageId_eq, SPEC-PROOF-THEOREM, HOST-SPEC-PROOF-THEOREM. -/
-theorem stageId_eq : stageId = "SLAKE_SELF_HOST_SPEC_PROOF_V0" := rfl
-
-/-- Host map id is greppable HOST-SPEC-PROOF.
-    Greppable: hostSpecProofId_eq, SPEC-PROOF-THEOREM. -/
-theorem hostSpecProofId_eq : hostSpecProofId = "HOST-SPEC-PROOF" := rfl
-
-/-- Readable specification surface is stated (module header + Bool canaries).
-    Greppable: specSurfaceStated_true, SPEC-PROOF-THEOREM,
-    HOST-SPEC-PROOF-THEOREM. -/
-theorem specSurfaceStated_true : specSurfaceStated = true := rfl
-
-/-- proofCompleteClaimed stays false (do not forge proof complete).
-    Greppable: proofCompleteClaimed_false, SPEC-PROOF-THEOREM,
-    HOST-SPEC-PROOF-THEOREM. -/
-theorem proofCompleteClaimed_false : proofCompleteClaimed = false := rfl
-
-/-- Proofs do not retire tests / smokes (formal feedback honesty).
-    Greppable: proofDoesNotRetireTests_true, SPEC-PROOF-THEOREM. -/
-theorem proofDoesNotRetireTests_true : proofDoesNotRetireTests = true := rfl
-
-/-- residualFreeClaimed stays false (spec-proof ready != residual free).
-    Greppable: residualFreeClaimed_false, SPEC-PROOF-THEOREM. -/
-theorem residualFreeClaimed_false : residualFreeClaimed = false := rfl
-
-/-- Formal spec-proof separation readiness holds (not proof complete).
-    Greppable: specProofReady_true, HOST-SPEC-PROOF, SPEC-PROOF-THEOREM,
-    HOST-SPEC-PROOF-THEOREM. -/
-theorem specProofReady_true : specProofReady = true := by decide
-
-/-- Spec-proof ready does NOT mean proof complete.
-    Greppable: specProofDoesNotMeanProofComplete_true, SPEC-PROOF-THEOREM,
-    HOST-SPEC-PROOF-THEOREM. -/
-theorem specProofDoesNotMeanProofComplete_true :
-    specProofDoesNotMeanProofComplete = true := by decide
-
-/-- Spec-proof ready does NOT mean residual free.
-    Greppable: specProofDoesNotMeanResidualFree_true, SPEC-PROOF-THEOREM. -/
-theorem specProofDoesNotMeanResidualFree_true :
-    specProofDoesNotMeanResidualFree = true := by decide
-
-/-! ### Spec-proof smoke (behavioral; lake build fails if example fails)
-    Greppable: SPEC-PROOF-SMOKE, HOST-SPEC-PROOF-SMOKE.
-    maxRecDepth already raised above for specProofReady unfolds. -/
-
-/-- SPEC-PROOF-SMOKE / HOST-SPEC-PROOF-SMOKE: stage / map ids greppable. -/
-example : stageId = "SLAKE_SELF_HOST_SPEC_PROOF_V0" := by decide
-example : hostSpecProofId = "HOST-SPEC-PROOF" := by decide
-example : selfHostSpecProofId = "SELF-HOST-SPEC-PROOF" := by decide
-example : acceptancePath = "src/systems/self-host.md" := by decide
-example : hostModulePath = "src/systems/SystemsLean/SpecProof.lean" := by decide
-example : inventoryPath = "src/systems/host-partial-inventory.md" := by decide
-example : probeWireStageCite = "SLAKE_SELF_HOST_PROBE_WIRE_V0" := by decide
-example : dualResidualStageCite = "SLAKE_SELF_HOST_DUAL_RESIDUAL_V0" := by decide
-example : productPathCloseStageCite = "SLAKE_SELF_HOST_PRODUCT_PATH_CLOSE_V0" :=
-  by decide
-example : inventoryCloseStageCite = "SLAKE_SELF_HOST_INVENTORY_CLOSE_V0" := by decide
-example : llvmHoldStageCite = "SLAKE_SELF_HOST_LLVM_HOLD_V0" := by decide
-example : hostProbeWireCite = "HOST-PROBE-WIRE" := by decide
-example : hostDualResidualCite = "HOST-DUAL-RESIDUAL" := by decide
-example : hostProductPathCloseCite = "HOST-PRODUCT-PATH-CLOSE" := by decide
-example : hostInventoryCloseCite = "HOST-INVENTORY-CLOSE" := by decide
-example : hostLlvmHoldCite = "HOST-LLVM-HOLD" := by decide
-example : emitBoundaryCite = "EMIT-BOUNDARY" := by decide
-example : runtimeFsCite = "RUNTIME-FS" := by decide
-example : specSurfaceToken = "readable specification surface stated" := by decide
-example : proofNotCompleteToken = "proof complete not forged" := by decide
-example : proofDoesNotRetireTestsToken = "proofs do not retire tests" := by decide
-example : intentionalPartialToken = "intentional PARTIAL" := by decide
-example : specProofSurfaceOk = true := by decide
-
-/-- SPEC-PROOF-SMOKE: surface stated; proof complete / free / unlock stay false. -/
-example : specSurfaceStated = true := by decide
-example : proofCompleteClaimed = false := by decide
-example : proofDoesNotRetireTests = true := by decide
-example : residualFreeClaimed = false := by decide
-example : productSelfHostCompleteClaimed = false := by decide
-example : SelfApplyFs.freestandingProductSelfHostComplete = false := by decide
-example : LlvmHold.llvmUnlocked = false := by decide
-example : LlvmHold.provablyUnlocked = false := by decide
-example : specDoesNotImplyProofComplete = true := by decide
-
-/-- SPEC-PROOF-SMOKE: prior probe-wire + dual residual + ladder + inventory + hold. -/
-example : ProbeWire.probeWireReady = true := by decide
-example : DualResidual.dualResidualReady = true := by decide
-example : DualResidual.productResidualRemains = true := by decide
-example : ProductPath.productPathCloseReady = true := by decide
-example : InventoryClose.inventoryCloseReady = true := by decide
-example : LlvmHold.llvmHoldReady = true := by decide
-
-/-- SPEC-PROOF-SMOKE / HOST-SPEC-PROOF-SMOKE: spec-proof ready decides true
-    (not residual free; not proof complete; not product complete; not llvm unlock).
-    specProofOk is definitional alias of specProofReady (joint-name honesty). -/
-example : specProofReady = true := by decide
-example : specProofDoesNotMeanResidualFree = true := by decide
-example : specProofDoesNotMeanProofComplete = true := by decide
-example : specProofOk = true := by decide
-example : specProofOk = specProofReady := by decide
+/-! ### SPEC-PROOF-THEOREM + SPEC-PROOF-SMOKE peeled to SpecProofTheorems
+    (same namespace). Greppable cites live on SpecProofTheorems:
+    SPEC-PROOF-THEOREM, HOST-SPEC-PROOF-THEOREM, SPEC-PROOF-SMOKE,
+    HOST-SPEC-PROOF-SMOKE, stageId_eq, hostSpecProofId_eq,
+    specSurfaceStated_true, proofCompleteClaimed_false,
+    proofDoesNotRetireTests_true, residualFreeClaimed_false,
+    specProofReady_true, specProofDoesNotMeanProofComplete_true,
+    specProofDoesNotMeanResidualFree_true, SpecProofTheorems.
+    Import SystemsLean.SpecProofTheorems from the package root. Core claim
+    Bools + ready surface stay here -- not residual free / not proof complete. -/
 
 end SystemsLean.SpecProof

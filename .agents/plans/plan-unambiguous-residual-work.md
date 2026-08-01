@@ -1,11 +1,13 @@
 # Plan: Unambiguous residual work (plain names, short loops)
 
-ASCII only. Plan skill artifact. **No product implementation until the human
-clearly approves in chat** (e.g. Approve / execute / go). Host modal dismiss is
-not approval.
+ASCII only. Plan skill artifact. Residual **schema** (plain Names, short loops).
+**Product claim order** lives in `.agents/plans/plan-close-six-claims.md` (six
+claims A-F, tracks, lean4 skill, recommended first Name). Use both: this file
+for how residual items are written; plan-close-six-claims for what to build next
+when the human opens Open.
 
-After approval, copy to workspace:
-`.agents/plans/plan-unambiguous-residual-work.md`
+**No product implementation until the human clearly approves in chat** (e.g.
+Approve / execute / go). Host modal dismiss is not approval.
 
 ---
 
@@ -191,7 +193,7 @@ approval before first implement.
 - **Done when (first slice -- propose refine):** documented list of which
   product headers/bodies Lean owns vs still template; at least one additional
   non-Mult product surface owned the same way as Mult/body SSOT; `just
-  out-freestanding-c` still green; no new residual-only C stage name mill;
+  just build` still green; no new residual-only C stage name mill;
   residual free still false.
 - **Out of scope:** llvm; PROVABLY; claiming full self-host; growing probe C
   as product.

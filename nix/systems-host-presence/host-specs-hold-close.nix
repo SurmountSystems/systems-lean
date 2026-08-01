@@ -1,0 +1,826 @@
+# SPDX-License-Identifier: Unlicense
+# Hold-close host ladder cold token specs (LlvmHold .. SelfHostBody).
+# LlvmHold + InventoryClose sit after SelfApplyFs tip and before ProductPath.
+# DualResidual .. SelfHostBody sit after ProductPath dual-pin.
+# NOT tip SelfApplyFs or ProductPath dual-pin rows (those stay inline in specs.nix).
+# Cold slice. Imported by ./specs.nix thin join. No bash.
+{
+  # After SelfApplyFs tip, before ProductPath.
+  hostSpecsHoldCloseEarly = [
+    {
+      # llvm / PROVABLY hold gate (SH6 held, documented -- not unlock).
+      # Long-file split: theorems + smoke live in LlvmHoldTheorems (same namespace).
+      # Fail-closed pins: unlock/complete defs must remain := false (not name-only).
+      rel = "src/systems/SystemsLean/LlvmHold.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "SLAKE_SELF_HOST_LLVM_HOLD_V0"
+        "HOST-LLVM-HOLD"
+        "SELF-HOST-LLVM-HOLD"
+        "HOST-PROVABLY-HOLD"
+        "SELF-HOST"
+        "llvmHoldReady"
+        "sh6HoldReady"
+        "llvmUnlocked"
+        "provablyUnlocked"
+        "freestandingProductSelfHostComplete"
+        "selfApplyDoesNotUnlockLlvm"
+        "holdHonestyOk"
+        "llvmHoldOk"
+        "SystemsLean.LlvmHold"
+        "LlvmHoldTheorems"
+        "LLVM-HOLD-SMOKE"
+        "HOST-LLVM-HOLD-SMOKE"
+        "HOST-SELF-APPLY"
+        "selfApplyReady"
+        "src/systems/self-host.md"
+        "src/systems/SystemsLean/LlvmHold.lean"
+        "out/llvm-ir"
+        "UNIT_SURFACE"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+        "Not freestanding emit residual free"
+        "Not llvm unlocked"
+        # Hold-contract pins (presence fail-closed without Lake): defs on parent.
+        "def llvmUnlocked : Bool := false"
+        "def provablyUnlocked : Bool := false"
+        "def freestandingProductSelfHostComplete : Bool := false"
+        "LLVM-HOLD-THEOREM"
+        "HOST-LLVM-HOLD-THEOREM"
+        "llvmHoldReady_true"
+        "llvmUnlocked_false"
+        "provablyUnlocked_false"
+        "sh6HoldReady_eq_llvmHoldReady"
+      ];
+      anyGroups = [
+        [
+          "llvmHoldSurfaceOk"
+          "holdHonestyOk"
+        ]
+      ];
+    }
+    {
+      # LlvmHoldTheorems: LLVM-HOLD-THEOREM + HOST-LLVM-HOLD-THEOREM + smoke
+      # (same namespace LlvmHold; long-file split).
+      rel = "src/systems/SystemsLean/LlvmHoldTheorems.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "LlvmHoldTheorems"
+        "SystemsLean.LlvmHoldTheorems"
+        "import SystemsLean.LlvmHold"
+        "LLVM-HOLD-THEOREM"
+        "HOST-LLVM-HOLD-THEOREM"
+        "LLVM-HOLD-SMOKE"
+        "HOST-LLVM-HOLD-SMOKE"
+        "example"
+        "llvmHoldReady_true"
+        "llvmUnlocked_false"
+        "provablyUnlocked_false"
+        "freestandingProductSelfHostComplete_false"
+        "selfApplyDoesNotUnlockLlvm_true"
+        "sh6HoldReady_eq_llvmHoldReady"
+        "stageId_eq"
+        "hostLlvmHoldId_eq"
+        # Structural readiness: real theorem forms (AND, not OR anyGroup).
+        "theorem llvmHoldReady_true"
+        "theorem llvmUnlocked_false"
+        "theorem provablyUnlocked_false"
+        "theorem sh6HoldReady_eq_llvmHoldReady"
+        "example : llvmUnlocked = false"
+        "example : provablyUnlocked = false"
+        "example : freestandingProductSelfHostComplete = false"
+        "example : llvmHoldReady = true"
+        "example : sh6HoldReady = true"
+        "UNIT_SURFACE"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+        "Not freestanding emit residual free"
+        "Not llvm unlocked"
+      ];
+    }
+    {
+      # Host inventory close readiness (after Mult..Emit parity + SelfApplyFs + SH6 hold).
+      # Long-file split: theorems + smoke live in InventoryCloseTheorems (same namespace).
+      # Fail-closed pins: residual free stays false; complete true after claim B.
+      # Structural compose pins: readiness must fold freestandingSelfApplyReady +
+      # llvmHoldReady (name tokens alone can survive if conjuncts are dropped).
+      rel = "src/systems/SystemsLean/InventoryClose.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "SLAKE_SELF_HOST_INVENTORY_CLOSE_V0"
+        "HOST-INVENTORY-CLOSE"
+        "SELF-HOST-INVENTORY-CLOSE"
+        "SELF-HOST"
+        "inventoryCloseReady"
+        "inventoryCloseSurfaceOk"
+        "inventoryPartialCarryHonest"
+        "inventoryCloseDoesNotMeanResidualFree"
+        "residualFreeClaimed"
+        "productSelfHostCompleteClaimed"
+        "inventoryCloseOk"
+        "SystemsLean.InventoryClose"
+        "InventoryCloseTheorems"
+        "INVENTORY-CLOSE-SMOKE"
+        "HOST-INVENTORY-CLOSE-SMOKE"
+        "HOST-SELF-APPLY-FS"
+        "HOST-LLVM-HOLD"
+        "CLOSABLE-MISS-COUNT-0"
+        "HOST-PARTIAL-INVENTORY"
+        "intentional PARTIAL"
+        "freestandingSelfApplyReady"
+        "llvmHoldReady"
+        "freestandingProductSelfHostComplete"
+        "llvmUnlocked"
+        "provablyUnlocked"
+        "import SystemsLean.SelfApplyFs"
+        "import SystemsLean.LlvmHold"
+        "src/systems/self-host.md"
+        "src/systems/host-partial-inventory.md"
+        "src/systems/SystemsLean/InventoryClose.lean"
+        "UNIT_SURFACE"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+        "Not freestanding product"
+        "Not freestanding emit residual free"
+        "Not llvm unlocked"
+        # Claim pins (presence fail-closed without Lake): defs on parent.
+        "def residualFreeClaimed : Bool := false"
+        "def productSelfHostCompleteClaimed : Bool := true"
+        # Structural compose pins: readiness must fold FS self-apply + llvm hold.
+        "SelfApplyFs.freestandingSelfApplyReady"
+        "LlvmHold.llvmHoldReady"
+        "&& inventoryCloseSurfaceOk"
+        "&& inventoryPartialCarryHonest"
+        "&& SelfApplyFs.freestandingProductSelfHostComplete"
+        "&& !LlvmHold.llvmUnlocked"
+        "&& !LlvmHold.provablyUnlocked"
+        "INVENTORY-CLOSE-THEOREM"
+        "HOST-INVENTORY-CLOSE-THEOREM"
+        "inventoryCloseReady_true"
+        "residualFreeClaimed_false"
+        "inventoryCloseDoesNotMeanResidualFree_true"
+      ];
+      anyGroups = [
+        [
+          "inventoryCloseSurfaceOk"
+          "inventoryPartialCarryHonest"
+          "inventoryCloseReady"
+        ]
+      ];
+    }
+    {
+      # InventoryCloseTheorems: INVENTORY-CLOSE-THEOREM + INVENTORY-CLOSE-SMOKE
+      # (same namespace InventoryClose; long-file split).
+      rel = "src/systems/SystemsLean/InventoryCloseTheorems.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "InventoryCloseTheorems"
+        "SystemsLean.InventoryCloseTheorems"
+        "import SystemsLean.InventoryClose"
+        "INVENTORY-CLOSE-THEOREM"
+        "HOST-INVENTORY-CLOSE-THEOREM"
+        "INVENTORY-CLOSE-SMOKE"
+        "HOST-INVENTORY-CLOSE-SMOKE"
+        "example"
+        "inventoryCloseReady_true"
+        "residualFreeClaimed_false"
+        "productSelfHostCompleteClaimed_true"
+        "inventoryPartialCarryHonest_true"
+        "inventoryCloseDoesNotMeanResidualFree_true"
+        "stageId_eq"
+        "hostInventoryCloseId_eq"
+        # Structural readiness: real theorem forms (AND, not OR anyGroup).
+        "theorem inventoryCloseReady_true"
+        "theorem residualFreeClaimed_false"
+        "theorem inventoryCloseDoesNotMeanResidualFree_true"
+        "example : residualFreeClaimed = false"
+        "example : productSelfHostCompleteClaimed = true"
+        "example : inventoryCloseReady = true"
+        "example : inventoryCloseDoesNotMeanResidualFree = true"
+        "example : inventoryPartialCarryHonest = true"
+        "UNIT_SURFACE"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+        "Not freestanding product"
+        "Not freestanding emit residual free"
+        "Not llvm unlocked"
+      ];
+    }
+  ];
+
+  # After ProductPath dual-pin close.
+  hostSpecsHoldCloseLate = [
+    {
+      # Dual residual honesty (host elaborator residual vs product residual)
+      # after HOST-PRODUCT-PATH-CLOSE. Fail-closed pins: product residual free
+      # claimed; host elaborator residual remains; host free not forged;
+      # llvm/PROVABLY stay false; complete true.
+      # Structural compose pins: dualResidualReady must fold productPathCloseReady
+      # + surface + surfacesDistinct (name tokens alone can survive if dropped).
+      # Long-file peel: theorems + smoke live in DualResidualTheorems (same namespace).
+      rel = "src/systems/SystemsLean/DualResidual.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "SLAKE_SELF_HOST_DUAL_RESIDUAL_V0"
+        "HOST-DUAL-RESIDUAL"
+        "SELF-HOST-DUAL-RESIDUAL"
+        "SELF-HOST"
+        "dualResidualReady"
+        "dualResidualSurfaceOk"
+        "dualResidualSurfacesDistinct"
+        "dualResidualDoesNotForgeHostFree"
+        "hostElaboratorResidualRemains"
+        "productResidualRemains"
+        "hostElaboratorResidualFreeClaimed"
+        "residualFreeClaimed"
+        "productSelfHostCompleteClaimed"
+        "dualResidualOk"
+        "SystemsLean.DualResidual"
+        "DualResidualTheorems"
+        "DUAL-RESIDUAL-SMOKE"
+        "HOST-DUAL-RESIDUAL-SMOKE"
+        "HOST-PRODUCT-PATH-CLOSE"
+        "HOST-INVENTORY-CLOSE"
+        "HOST-LLVM-HOLD"
+        "HOST-RESIDUAL"
+        "PRODUCT-WIRE-RESIDUAL"
+        "EMIT-BOUNDARY"
+        "RUNTIME-FS"
+        "RUNTIME-CLASSIC"
+        "productPathCloseReady"
+        "inventoryCloseReady"
+        "llvmHoldReady"
+        "intentional PARTIAL"
+        "host elaborator residual remains"
+        "product residual free"
+        "freestandingProductSelfHostComplete"
+        "llvmUnlocked"
+        "provablyUnlocked"
+        "import SystemsLean.ProductPath"
+        "import SystemsLean.InventoryClose"
+        "import SystemsLean.SelfApplyFs"
+        "import SystemsLean.LlvmHold"
+        "src/systems/self-host.md"
+        "src/systems/host-partial-inventory.md"
+        "src/systems/SystemsLean/DualResidual.lean"
+        "UNIT_SURFACE"
+        "Product residual free claimed"
+        "Not PROVABLY"
+        "Not freestanding emit residual free alone"
+        "Not llvm unlocked"
+        "Not host elaborator residual free"
+        # Claim pins (presence fail-closed without Lake): defs on parent.
+        "def hostElaboratorResidualRemains : Bool := true"
+        "def productResidualRemains : Bool := false"
+        "def hostElaboratorResidualFreeClaimed : Bool := false"
+        "def residualFreeClaimed : Bool := true"
+        "def productSelfHostCompleteClaimed : Bool := true"
+        "PRODUCT-RESIDUAL-FREE-MEASURE"
+        "SELF-HOST-RESIDUAL-FREE-MEASURE"
+        "SLAKE_PRODUCT_RESIDUAL_FREE_MEASURE_V0"
+        "productResidualFreeMeasureCited"
+        "residualFreeMeasureAgreesFree"
+        "nix/systems-emit-wire/residual-free-measure.nix"
+        # Structural compose pins: readiness must fold product path close +
+        # dual residual honesty canaries (&& -prefixed where conjuncts must hold).
+        "ProductPath.productPathCloseReady"
+        "&& dualResidualSurfaceOk"
+        "&& dualResidualSurfacesDistinct"
+        "&& hostElaboratorResidualRemains"
+        "&& !productResidualRemains"
+        "&& productResidualFreeMeasureCited"
+        "&& residualFreeMeasureAgreesFree"
+        "&& !hostElaboratorResidualFreeClaimed"
+        "&& residualFreeClaimed"
+        "&& productSelfHostCompleteClaimed"
+        "&& SelfApplyFs.freestandingProductSelfHostComplete"
+        "&& !LlvmHold.llvmUnlocked"
+        "&& !LlvmHold.provablyUnlocked"
+        "DUAL-RESIDUAL-THEOREM"
+        "HOST-DUAL-RESIDUAL-THEOREM"
+        "dualResidualReady_true"
+        "hostElaboratorResidualRemains_true"
+        "productResidualRemains_false"
+        "residualFreeClaimed_true"
+        "productResidualFreeMeasureCited_true"
+        "residualFreeMeasureAgreesFree_true"
+        "dualResidualOk_eq_ready"
+      ];
+      anyGroups = [
+        [
+          "dualResidualSurfaceOk"
+          "dualResidualSurfacesDistinct"
+          "dualResidualReady"
+          "hostElaboratorResidualRemains"
+          "productResidualRemains"
+        ]
+      ];
+    }
+    {
+      # DualResidualTheorems: DUAL-RESIDUAL-THEOREM + DUAL-RESIDUAL-SMOKE peel
+      # (same namespace DualResidual).
+      rel = "src/systems/SystemsLean/DualResidualTheorems.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "DualResidualTheorems"
+        "SystemsLean.DualResidualTheorems"
+        "import SystemsLean.DualResidual"
+        "DUAL-RESIDUAL-THEOREM"
+        "HOST-DUAL-RESIDUAL-THEOREM"
+        "DUAL-RESIDUAL-SMOKE"
+        "HOST-DUAL-RESIDUAL-SMOKE"
+        "example"
+        "dualResidualReady_true"
+        "hostElaboratorResidualRemains_true"
+        "productResidualRemains_false"
+        "residualFreeClaimed_true"
+        "productResidualFreeMeasureCited_true"
+        "residualFreeMeasureAgreesFree_true"
+        "dualResidualDoesNotForgeHostFree_true"
+        "dualResidualOk_eq_ready"
+        "theorem dualResidualReady_true"
+        "theorem hostElaboratorResidualRemains_true"
+        "theorem productResidualRemains_false"
+        "theorem residualFreeClaimed_true"
+        "theorem dualResidualOk_eq_ready"
+        "example : hostElaboratorResidualRemains = true"
+        "example : productResidualRemains = false"
+        "example : hostElaboratorResidualFreeClaimed = false"
+        "example : residualFreeClaimed = true"
+        "example : productSelfHostCompleteClaimed = true"
+        "example : productResidualFreeMeasureCited = true"
+        "example : residualFreeMeasureAgreesFree = true"
+        "example : dualResidualReady = true"
+        "example : dualResidualDoesNotForgeHostFree = true"
+        "example : dualResidualSurfacesDistinct = true"
+        "example : dualResidualOk = dualResidualReady"
+        "UNIT_SURFACE"
+        "Product residual free claimed"
+        "Not PROVABLY"
+        "Not freestanding emit residual free alone"
+        "Not llvm unlocked"
+        "Not host elaborator residual free"
+        "Not proof complete"
+      ];
+    }
+    {
+      # Probe-vs-wire honesty (hosted behavioral probe smoke debt vs product
+      # freestanding wire) after HOST-DUAL-RESIDUAL. Fail-closed pins: residual
+      # free / complete / unlock claims stay false; probe is smoke debt not wire.
+      # Structural compose pins: probeWireReady must fold dualResidualReady +
+      # surface + surfacesDistinct (name tokens alone can survive if dropped).
+      # Long-file peel: theorems + smoke live in ProbeWireTheorems (same namespace).
+      rel = "src/systems/SystemsLean/ProbeWire.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "SLAKE_SELF_HOST_PROBE_WIRE_V0"
+        "HOST-PROBE-WIRE"
+        "SELF-HOST-PROBE-WIRE"
+        "SELF-HOST"
+        "probeWireReady"
+        "probeWireSurfaceOk"
+        "probeWireSurfacesDistinct"
+        "probeWireDoesNotMeanResidualFree"
+        "probeWireDoesNotMeanProductComplete"
+        "behavioralProbeIsSmokeDebt"
+        "behavioralProbeIsNotProductWire"
+        "productWireIsEmitPath"
+        "probeDoesNotReplaceProductWire"
+        "residualFreeClaimed"
+        "productSelfHostCompleteClaimed"
+        "probeWireOk"
+        "SystemsLean.ProbeWire"
+        "ProbeWireTheorems"
+        "PROBE-WIRE-SMOKE"
+        "HOST-PROBE-WIRE-SMOKE"
+        "HOST-DUAL-RESIDUAL"
+        "HOST-PRODUCT-PATH-CLOSE"
+        "HOST-INVENTORY-CLOSE"
+        "HOST-LLVM-HOLD"
+        "EMIT-BOUNDARY"
+        "RUNTIME-FS"
+        "dualResidualReady"
+        "productPathCloseReady"
+        "inventoryCloseReady"
+        "llvmHoldReady"
+        "intentional PARTIAL"
+        "hosted behavioral probe is smoke debt"
+        "product freestanding wire"
+        "freestandingProductSelfHostComplete"
+        "llvmUnlocked"
+        "provablyUnlocked"
+        "import SystemsLean.DualResidual"
+        "import SystemsLean.ProductPath"
+        "import SystemsLean.InventoryClose"
+        "import SystemsLean.SelfApplyFs"
+        "import SystemsLean.LlvmHold"
+        "src/systems/self-host.md"
+        "src/systems/host-partial-inventory.md"
+        "src/systems/smoke/slake_behavioral_probe.c"
+        "src/systems/emit/"
+        "out/freestanding-c/"
+        "src/systems/SystemsLean/ProbeWire.lean"
+        "UNIT_SURFACE"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+        "Not freestanding product"
+        "Not freestanding emit residual free"
+        "Not llvm unlocked"
+        "Not host elaborator residual free"
+        # Claim pins (presence fail-closed without Lake): defs on parent.
+        "def behavioralProbeIsSmokeDebt : Bool := true"
+        "def behavioralProbeIsNotProductWire : Bool := true"
+        "def productWireIsEmitPath : Bool := true"
+        "def probeDoesNotReplaceProductWire : Bool := true"
+        "def residualFreeClaimed : Bool := false"
+        "def productSelfHostCompleteClaimed : Bool := true"
+        # Structural compose pins: readiness must fold dual residual +
+        # probe-vs-wire honesty canaries (&& -prefixed where conjuncts must hold).
+        "DualResidual.dualResidualReady"
+        "&& probeWireSurfaceOk"
+        "&& probeWireSurfacesDistinct"
+        "&& behavioralProbeIsSmokeDebt"
+        "&& behavioralProbeIsNotProductWire"
+        "&& productWireIsEmitPath"
+        "&& probeDoesNotReplaceProductWire"
+        "&& !residualFreeClaimed"
+        "&& productSelfHostCompleteClaimed"
+        "&& SelfApplyFs.freestandingProductSelfHostComplete"
+        "&& !LlvmHold.llvmUnlocked"
+        "&& !LlvmHold.provablyUnlocked"
+        "PROBE-WIRE-THEOREM"
+        "HOST-PROBE-WIRE-THEOREM"
+        "probeWireReady_true"
+        "behavioralProbeIsSmokeDebt_true"
+        "residualFreeClaimed_false"
+      ];
+      anyGroups = [
+        [
+          "probeWireSurfaceOk"
+          "probeWireSurfacesDistinct"
+          "probeWireReady"
+          "behavioralProbeIsSmokeDebt"
+          "behavioralProbeIsNotProductWire"
+        ]
+      ];
+    }
+    {
+      # ProbeWireTheorems: PROBE-WIRE-THEOREM + PROBE-WIRE-SMOKE peel
+      # (same namespace ProbeWire).
+      rel = "src/systems/SystemsLean/ProbeWireTheorems.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "ProbeWireTheorems"
+        "SystemsLean.ProbeWireTheorems"
+        "import SystemsLean.ProbeWire"
+        "PROBE-WIRE-THEOREM"
+        "HOST-PROBE-WIRE-THEOREM"
+        "PROBE-WIRE-SMOKE"
+        "HOST-PROBE-WIRE-SMOKE"
+        "example"
+        "probeWireReady_true"
+        "behavioralProbeIsSmokeDebt_true"
+        "behavioralProbeIsNotProductWire_true"
+        "productWireIsEmitPath_true"
+        "residualFreeClaimed_false"
+        "probeWireDoesNotMeanResidualFree_true"
+        "stageId_eq"
+        "hostProbeWireId_eq"
+        "theorem probeWireReady_true"
+        "theorem behavioralProbeIsSmokeDebt_true"
+        "theorem residualFreeClaimed_false"
+        "example : behavioralProbeIsSmokeDebt = true"
+        "example : behavioralProbeIsNotProductWire = true"
+        "example : productWireIsEmitPath = true"
+        "example : probeDoesNotReplaceProductWire = true"
+        "example : residualFreeClaimed = false"
+        "example : productSelfHostCompleteClaimed = true"
+        "example : probeWireReady = true"
+        "example : probeWireDoesNotMeanResidualFree = true"
+        "example : probeWireDoesNotMeanProductComplete = true"
+        "example : probeWireSurfacesDistinct = true"
+        "example : probeWireOk = probeWireReady"
+        "UNIT_SURFACE"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+        "Not freestanding product"
+        "Not freestanding emit residual free"
+        "Not llvm unlocked"
+        "Not host elaborator residual free"
+        "Not proof complete"
+      ];
+    }
+    {
+      # Formal spec-proof separation honesty after HOST-PROBE-WIRE. Fail-closed
+      # pins: residual free / complete / unlock / proof-complete claims stay
+      # false; readable specs stated; proofs do not retire tests/smokes.
+      # Structural compose pins: specProofReady must fold probeWireReady +
+      # surface + stated surface + proofDoesNotRetireTests (name tokens alone
+      # can survive if dropped).
+      # Long-file peel: theorems + smoke live in SpecProofTheorems (same namespace).
+      rel = "src/systems/SystemsLean/SpecProof.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "SLAKE_SELF_HOST_SPEC_PROOF_V0"
+        "HOST-SPEC-PROOF"
+        "SELF-HOST-SPEC-PROOF"
+        "SELF-HOST"
+        "specProofReady"
+        "specProofSurfaceOk"
+        "specSurfaceStated"
+        "proofCompleteClaimed"
+        "specDoesNotImplyProofComplete"
+        "proofDoesNotRetireTests"
+        "specProofDoesNotMeanResidualFree"
+        "specProofDoesNotMeanProofComplete"
+        "residualFreeClaimed"
+        "productSelfHostCompleteClaimed"
+        "specProofOk"
+        "SystemsLean.SpecProof"
+        "SpecProofTheorems"
+        "SPEC-PROOF-SMOKE"
+        "HOST-SPEC-PROOF-SMOKE"
+        "HOST-PROBE-WIRE"
+        "HOST-DUAL-RESIDUAL"
+        "HOST-PRODUCT-PATH-CLOSE"
+        "HOST-INVENTORY-CLOSE"
+        "HOST-LLVM-HOLD"
+        "EMIT-BOUNDARY"
+        "RUNTIME-FS"
+        "probeWireReady"
+        "dualResidualReady"
+        "productPathCloseReady"
+        "inventoryCloseReady"
+        "llvmHoldReady"
+        "intentional PARTIAL"
+        "readable specification surface stated"
+        "proof complete not forged"
+        "proofs do not retire tests"
+        "freestandingProductSelfHostComplete"
+        "llvmUnlocked"
+        "provablyUnlocked"
+        "import SystemsLean.ProbeWire"
+        "import SystemsLean.DualResidual"
+        "import SystemsLean.ProductPath"
+        "import SystemsLean.InventoryClose"
+        "import SystemsLean.SelfApplyFs"
+        "import SystemsLean.LlvmHold"
+        "src/systems/self-host.md"
+        "src/systems/host-partial-inventory.md"
+        "src/systems/SystemsLean/SpecProof.lean"
+        "UNIT_SURFACE"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+        "Not freestanding product"
+        "Not freestanding emit residual free"
+        "Not llvm unlocked"
+        "Not host elaborator residual free"
+        "Not proof complete"
+        # Claim pins (presence fail-closed without Lake): defs on parent.
+        "def specSurfaceStated : Bool := true"
+        "def proofCompleteClaimed : Bool := false"
+        "def proofDoesNotRetireTests : Bool := true"
+        "def residualFreeClaimed : Bool := false"
+        "def productSelfHostCompleteClaimed : Bool := true"
+        # Structural compose pins: readiness must fold probe-wire +
+        # formal feedback honesty canaries (&& -prefixed where conjuncts must hold).
+        "ProbeWire.probeWireReady"
+        "&& specProofSurfaceOk"
+        "&& specSurfaceStated"
+        "&& proofDoesNotRetireTests"
+        "&& specDoesNotImplyProofComplete"
+        "&& !proofCompleteClaimed"
+        "&& !residualFreeClaimed"
+        "&& productSelfHostCompleteClaimed"
+        "&& SelfApplyFs.freestandingProductSelfHostComplete"
+        "&& !LlvmHold.llvmUnlocked"
+        "&& !LlvmHold.provablyUnlocked"
+        "SPEC-PROOF-THEOREM"
+        "HOST-SPEC-PROOF-THEOREM"
+        "specProofReady_true"
+        "proofCompleteClaimed_false"
+        "residualFreeClaimed_false"
+        "specSurfaceStated_true"
+        "proofDoesNotRetireTests_true"
+      ];
+      anyGroups = [
+        [
+          "specProofSurfaceOk"
+          "specSurfaceStated"
+          "specProofReady"
+          "proofDoesNotRetireTests"
+          "specDoesNotImplyProofComplete"
+        ]
+      ];
+    }
+    {
+      # SpecProofTheorems: SPEC-PROOF-THEOREM + SPEC-PROOF-SMOKE peel (same namespace).
+      rel = "src/systems/SystemsLean/SpecProofTheorems.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "SpecProofTheorems"
+        "SystemsLean.SpecProofTheorems"
+        "import SystemsLean.SpecProof"
+        "SPEC-PROOF-THEOREM"
+        "HOST-SPEC-PROOF-THEOREM"
+        "SPEC-PROOF-SMOKE"
+        "HOST-SPEC-PROOF-SMOKE"
+        "example"
+        "specProofReady_true"
+        "proofCompleteClaimed_false"
+        "residualFreeClaimed_false"
+        "specSurfaceStated_true"
+        "proofDoesNotRetireTests_true"
+        "specProofDoesNotMeanProofComplete_true"
+        "specProofDoesNotMeanResidualFree_true"
+        "theorem specProofReady_true"
+        "theorem proofCompleteClaimed_false"
+        "theorem residualFreeClaimed_false"
+        "theorem specSurfaceStated_true"
+        "theorem proofDoesNotRetireTests_true"
+        "example : specSurfaceStated = true"
+        "example : proofCompleteClaimed = false"
+        "example : proofDoesNotRetireTests = true"
+        "example : residualFreeClaimed = false"
+        "example : productSelfHostCompleteClaimed = true"
+        "example : specProofReady = true"
+        "example : specProofDoesNotMeanResidualFree = true"
+        "example : specProofDoesNotMeanProofComplete = true"
+        "example : specDoesNotImplyProofComplete = true"
+        "example : specProofOk = specProofReady"
+        "UNIT_SURFACE"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+        "Not proof complete"
+      ];
+    }
+
+    {
+      # HOST-SELF-HOST-BODY: defined freestanding compile step (acceptance first).
+      # Composes host-owned Mult + Linear emit readiness + freestanding emit
+      # stage cite; freestandingProductSelfHostComplete true (claim B) and
+      # residual free stay false. Not a Mult..Emit ProductPath / SelfApply
+      # readiness re-list.
+      # Long-file peel: theorems + smoke live in SelfHostBodyTheorems (same namespace).
+      rel = "src/systems/SystemsLean/SelfHostBody.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "SLAKE_SELF_HOST_BODY_V0"
+        "HOST-SELF-HOST-BODY"
+        "SELF-HOST-BODY"
+        "SELF-HOST"
+        "selfHostBodyReady"
+        "selfHostBodySurfaceOk"
+        "residualFreeClaimed"
+        "productSelfHostCompleteClaimed"
+        "freestandingProductSelfHostComplete"
+        "selfHostBodyDoesNotComplete"
+        "selfHostBodyDoesNotMeanResidualFree"
+        "selfHostBodyOk"
+        "SystemsLean.SelfHostBody"
+        "SelfHostBodyTheorems"
+        "SELF-HOST-BODY-SMOKE"
+        "HOST-SELF-HOST-BODY-SMOKE"
+        "HOST-EMIT-MULT"
+        "HOST-EMIT-LINEAR"
+        "HOST-EMIT-ERASURE"
+        "HOST-EMIT-EXTRACT"
+        "HOST-EMIT-TYPES"
+        "HOST-EMIT-PROGRAM"
+        "HOST-EMIT-GRAPH"
+        "HOST-EMIT-COMPOSE"
+        "HOST-EMIT-PLAN"
+        "HOST-EMIT-APPLY"
+        "HOST-EMIT-BODY"
+        "HOST-EMIT-SSOT"
+        "SLAKE_EMIT_FREESTANDING_C_V0"
+        "emitMultReady"
+        "emitLinearReady"
+        "emitErasureReady"
+        "emitExtractReady"
+        "emitTypesReady"
+        "emitProgramReady"
+        "emitGraphReady"
+        "emitComposeReady"
+        "emitPlanReady"
+        "emitApplyReady"
+        "emitBodyReady"
+        "intentional PARTIAL"
+        "defined freestanding compile step"
+        "freestandingProductSelfHostComplete"
+        "llvmUnlocked"
+        "provablyUnlocked"
+        "import SystemsLean.EmitMult"
+        "import SystemsLean.EmitLinear"
+        "import SystemsLean.EmitErasure"
+        "import SystemsLean.EmitExtract"
+        "import SystemsLean.EmitTypes"
+        "import SystemsLean.EmitProgram"
+        "import SystemsLean.EmitGraph"
+        "import SystemsLean.EmitCompose"
+        "import SystemsLean.EmitPlan"
+        "import SystemsLean.EmitApply"
+        "import SystemsLean.EmitBody"
+        "import SystemsLean.SelfApplyFs"
+        "import SystemsLean.LlvmHold"
+        "import SystemsLean.DualResidual"
+        "src/systems/self-host.md"
+        "src/systems/host-partial-inventory.md"
+        "src/systems/SystemsLean/SelfHostBody.lean"
+        "src/systems/SystemsLean/FreestandingEmit.lean"
+        "slake-emit-freestanding-c"
+        "out/freestanding-c/"
+        "UNIT_SURFACE"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+        "Not freestanding product"
+        "Not freestanding emit residual free"
+        "Not llvm unlocked"
+        "Not host elaborator residual free"
+        "Not proof complete"
+        # Claim pins (presence fail-closed without Lake): defs on parent.
+        "def residualFreeClaimed : Bool := false"
+        "def productSelfHostCompleteClaimed : Bool := true"
+        # Structural compose pins: body path must fold Mult + Linear + Erasure +
+        # Extract + Types + Program + Graph + Compose + Plan + Apply + Body emit.
+        # Complete flag once via SelfApplyFs (local freestandingProductSelfHostComplete
+        # is alias; not double-fold theater).
+        "EmitMult.emitMultReady"
+        "EmitLinear.emitLinearReady"
+        "EmitErasure.emitErasureReady"
+        "EmitExtract.emitExtractReady"
+        "EmitTypes.emitTypesReady"
+        "EmitProgram.emitProgramReady"
+        "EmitGraph.emitGraphReady"
+        "EmitCompose.emitComposeReady"
+        "EmitPlan.emitPlanReady"
+        "EmitApply.emitApplyReady"
+        "EmitBody.emitBodyReady"
+        "&& selfHostBodySurfaceOk"
+        "&& (freestandingEmitStageCite == \"SLAKE_EMIT_FREESTANDING_C_V0\")"
+        "&& !residualFreeClaimed"
+        "&& productSelfHostCompleteClaimed"
+        "&& SelfApplyFs.freestandingProductSelfHostComplete"
+        "&& !LlvmHold.llvmUnlocked"
+        "&& !LlvmHold.provablyUnlocked"
+        "SELF-HOST-BODY-THEOREM"
+        "HOST-SELF-HOST-BODY-THEOREM"
+        "selfHostBodyReady_true"
+        "freestandingProductSelfHostComplete_true"
+        "residualFreeClaimed_false"
+        "selfHostBodyOk_eq_ready"
+      ];
+      anyGroups = [
+        [
+          "selfHostBodySurfaceOk"
+          "selfHostBodyReady"
+          "emitMultReady"
+          "emitLinearReady"
+          "emitErasureReady"
+          "emitTypesReady"
+          "emitProgramReady"
+          "selfHostBodyDoesNotComplete"
+        ]
+      ];
+    }
+    {
+      # SelfHostBodyTheorems: SELF-HOST-BODY-THEOREM + SELF-HOST-BODY-SMOKE peel
+      # (same namespace).
+      rel = "src/systems/SystemsLean/SelfHostBodyTheorems.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "SelfHostBodyTheorems"
+        "SystemsLean.SelfHostBodyTheorems"
+        "import SystemsLean.SelfHostBody"
+        "SELF-HOST-BODY-THEOREM"
+        "HOST-SELF-HOST-BODY-THEOREM"
+        "SELF-HOST-BODY-SMOKE"
+        "HOST-SELF-HOST-BODY-SMOKE"
+        "example"
+        "selfHostBodyReady_true"
+        "freestandingProductSelfHostComplete_true"
+        "residualFreeClaimed_false"
+        "selfHostBodyOk_eq_ready"
+        "selfHostBodyDoesNotComplete_false"
+        "selfHostBodyDoesNotMeanResidualFree_true"
+        "theorem selfHostBodyReady_true"
+        "theorem freestandingProductSelfHostComplete_true"
+        "theorem residualFreeClaimed_false"
+        "theorem selfHostBodyOk_eq_ready"
+        "theorem selfHostBodyDoesNotComplete_false"
+        "theorem selfHostBodyDoesNotMeanResidualFree_true"
+        "example : residualFreeClaimed = false"
+        "example : productSelfHostCompleteClaimed = true"
+        "example : freestandingProductSelfHostComplete = true"
+        "example : selfHostBodyReady = true"
+        "example : selfHostBodyDoesNotComplete = false"
+        "example : selfHostBodyDoesNotMeanResidualFree = true"
+        "example : selfHostBodyOk = selfHostBodyReady"
+        "UNIT_SURFACE"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+        "Not proof complete"
+      ];
+    }
+  ];
+}

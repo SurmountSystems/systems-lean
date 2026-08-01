@@ -8,13 +8,14 @@ Global rules in `~/.grok/AGENTS.md` still apply (subagents, multi-chat, GPG). Th
 
 ## Discovery after compaction (read order)
 
-1. **This file** (`AGENTS.md`) -- policy, **Three languages only**, **Document slices so they survive compaction**, **Repository structure**, **Nix tooling**
+1. **This file** (`AGENTS.md`) -- policy, **Three languages only**, **Project agent skills**, **Document slices so they survive compaction**, **Repository structure**, **Nix tooling**
 2. `doc/SESSION-HANDOFF.md` -- Status + **Decisions and discovery** table + three-languages reseed
 3. `RESIDUAL.md` (join board) + `RESIDUAL-systems.md` (Systems Open/Done/**Decisions**) + `WATCHER.md` (next action only)
 4. `doc/goals.md` and `doc/vocabulary.md` if goals or terms (including tooling terms) are unclear
 5. `doc/architecture.md` / `doc/divergence.md` for technical framing
 6. Entry maps when touching refs: `doc/idris-entry.md`, `doc/lean-entry.md`, `doc/compcert-entry.md`, `doc/rust-entry.md`
 7. Workspace READMEs: `src/idris2/`, `src/lean4/`, `src/systems/` -- Systems also: **`src/systems/emit/host-owned-emit.md`** (freestanding C ownership SSoT)
+8. **Project skills:** `.agents/skills/` (symlinks) + submodule bodies under `skills/` -- see **Project agent skills** below
 
 Do **not** re-map the whole universe in parent context if handoff + residual already answer.
 Do **not** re-derive product ownership or Open-queue rules from chat when the tables above already state them.
@@ -23,12 +24,95 @@ Do **not** re-derive product ownership or Open-queue rules from chat when the ta
 
 ---
 
+## Project agent skills (discoverability)
+
+Project-specific coding-agent skills ship **in this repository** so every clone discovers them without a global install.
+
+| Layer | Path | Role |
+|-------|------|------|
+| **Discovery root** | `.agents/skills/` | What hosts walk (Grok, Cursor, OpenCode, and similar). Symlinks only + small README. |
+| **Skill bodies (submodules)** | `skills/<pack>/` | Read-only upstream skill packs (git submodules). Not product Lean/Idris/Nix. |
+| **Ephemeral plans** | `.agents/plans/` | Implement plans -- **not** skills. |
+| **Operator skills (host)** | `~/.agents/skills` (and Grok `~/.grok/skills`) | Machine-local; not product git. |
+
+### Current packs
+
+| Skill name | Symlink | Submodule body | Upstream |
+|------------|---------|----------------|----------|
+| **lean4** | `.agents/skills/lean4` -> `../../skills/lean4-skills/plugins/lean4/skills/lean4` | `skills/lean4-skills` | [cameronfreer/lean4-skills](https://github.com/cameronfreer/lean4-skills) |
+
+Inventory prose: `skills/README.md`, `.agents/skills/README.md`. Lean entry pointer: `doc/lean-entry.md`.
+
+### How agents should load them
+
+1. Prefer the **project** skill when editing `.lean` under this tree (prove / formalize / review / golf workflows from the lean4 skill).
+2. Read `SKILL.md` via the discovery path (`.agents/skills/lean4/SKILL.md`); do not invent a second copy under the repo root.
+3. Optional helper binaries (sorry analyzer, search wrappers): put `skills/lean4-skills/plugins/lean4/bin` on `PATH` for the session. Not required for skill-body discovery.
+4. Clone/update: `git submodule update --init --recursive skills/lean4-skills`.
+
+### When to reach for lean4 tools (planned / residual work)
+
+Use the project **lean4** skill as the default **host Lean** workbench whenever a residual Name, implement plan under `.agents/plans/`, or human task is mainly about **Lean sources, proofs, or Lake builds** under `src/systems/`, `src/lean4/`, or related host modules. Do **not** invent Open Names just to exercise the skill. Prefer freestanding product surface growth over pure theorem theater (see **Systems / Slake residual must grow Lean**).
+
+| Task shape (examples) | Reach for | How (host-agnostic) |
+|-----------------------|-----------|---------------------|
+| New host module / API surface with stubs or `sorry` | **draft** then **prove** (or **formalize** if claim + proof together) | "Use lean4 skill: draft skeletons for X, then guided prove" |
+| Long unattended sorry-fill with a budget | **autoprove** | "Use lean4 skill: autoprove with max cycles / wall budget; stop when stuck" |
+| Human wants to refute a bad claim, not prove it | **disprove** | Guided counterexample / negation search; do not rewrite the original theorem header |
+| Lake / elaborator errors, timeouts, instance soup | **doctor** + skill error refs | Diagnose environment, then compilation-errors / instance patterns |
+| Quality pass before calling a residual Name done | **review** (read-only) | After green `lake` / gates; review does not replace `just check` |
+| Proof works but is heavy or unreadable | **refactor** then optional **golf** | Only after correctness; keep freestanding claims honest |
+| Safe progress checkpoint (build + axiom scan) | **checkpoint** | **No agent `git commit`** -- report status; human signs commits |
+| Learning mathlib / Lean idioms for a dual or host proof | **learn** | Prefer skill pathways over ad-hoc web thrash |
+| Stuck mid-slice on a hard goal | **prove** cycle (plan / work / replan) | Use LSP tools when available; scripts via `skills/lean4-skills/plugins/lean4/bin` |
+
+**Map to this repo's workstreams** (not an Open queue -- guidance only):
+
+| Workstream | Paths | lean4 skill role |
+|------------|-------|------------------|
+| **Systems / Slake host** | `src/systems/**/*.lean` | Primary: draft/prove host theorems, fix Lake, review before Done when, doctor on build breaks. Product wire still comes from emit / freestanding C ownership docs -- skill does not replace emit SSOT. |
+| **Lean-side dual** | `src/lean4/**/*.lean` | Primary: dual examples, correspondence proofs, mathlib leverage, review/golf. |
+| **Idris-side dual** | `src/idris2/` | **Not** a lean4-skill target. Use Idris tools; skill only if you are temporarily in Lean duals. |
+| **Nix gates / hygiene / just** | `nix/`, `justfile` | **Not** lean4 skill. Pure Nix + project policy. |
+| **Emit / freestanding C product wire** | `emit/`, `out/freestanding-c/` | Skill helps **host Lean** that owns SSOT text and emit drivers; do not hand-author product C "with the skill." |
+| **Plans under `.agents/plans/`** | implement slices | When Done when mentions Lake, theorems, or `.lean` paths, load lean4 skill at slice start; still follow residual Name / Out of scope. |
+
+**Typical residual slice loop (host Lean):**
+
+1. Read residual **Name / Goal / Done when / Out of scope / Paths** (or the plan phase).
+2. Load `.agents/skills/lean4/SKILL.md` if any primary path is `.lean` or Lake.
+3. Prefer red/green project gates first (`just systems-host`, focused Lake, `just check` as appropriate).
+4. Use skill workflows for declaration/proof work; use project gates for "done."
+5. Document slice outcomes in residual / handoff / ownership maps as usual.
+
+**Do not use lean4 skill as a substitute for:** inventing residual, growing shell/C product work, forging freestanding/PROVABLY claims, agent commits, or pure Nix policy mills.
+
+### Policy overrides (this project wins)
+
+Upstream skill packs may suggest commits, global installs, or Python helpers. **This repository's `AGENTS.md` still applies:**
+
+- Agents **never** run `git commit` / `git push` (human-signed commits only).
+- Novel product work stays **Idris 2 / Lean 4 / pure Nix** under `src/` and `nix/`. Submodule Python/shell under `skills/` is **upstream tooling**, not a license to add project Python.
+- Do **not** edit `skills/*` as product. Bump the submodule pin; send fixes upstream.
+- Freestanding honesty: classic Lean ahead-of-time and mathlib workflows are **not** freestanding product wire. Skill use for host Lean proofs is fine; do not sell it as `out/freestanding-c` residual free.
+
+### Not under `ref/`
+
+`ref/` is **language/compiler** upstream only (Idris 2, Lean 4, CompCert, Rust). Agent skill packs live under `skills/` so isolation maps stay honest.
+
+### Hygiene / line-count honesty
+
+`skills/` is excluded from novel source hygiene and honest `scc` (same idea as `ref/`). See `nix/novel-source.nix` and `just progress-scc`.
+
+---
+
 ## Isolation (hard rule)
 
 **Default: work only in this repository.** This repo **is** Systems Lean.
 
 - Implement the Systems Lean language and the **Slake compiler** **here**.
-- Use `ref/*` as **read-only** upstream references.
+- Use `ref/*` as **read-only** upstream language/compiler references.
+- Use `skills/*` as **read-only** upstream agent skill packs (see **Project agent skills**).
 - Do **not** open other trees for routine residual, "sync," or implementation.
 - Leave isolation **only** when the human says we are **absolutely desperate** for a specific off-repo solution.
 
@@ -82,7 +166,7 @@ In the era of machine intelligence, large labeled piles of shell/C are a **choic
 |----|--------|
 | **Pay down** scheduled-deletion items until the file is gone or reduced to thin process glue | Call permanent product wire / behavioral tests / thin just orchestration "debt" forever |
 | Give every removable surface an **owner language** (Lean or pure Nix) and an **exit criterion** | Freeze banners without a delete path |
-| Measure novel `scc` with honest excludes (`ref/`, `.lake/`, `.cache/`) | Inflate C counts with classic Lean ahead-of-time intermediate representation under `.lake` |
+| Measure novel `scc` with honest excludes (`ref/`, `skills/`, `.lake/`, `.cache/`) | Inflate C counts with classic Lean ahead-of-time intermediate representation under `.lake` or vendored skill packs |
 | Keep **product wire**, **behavioral tests**, and **process glue** as honest permanent roles when they belong | Grow shell or hand-written product C and call it residual progress |
 
 **Word "debt":** reserve it for **scheduled deletion** (must leave the tree or shrink to process glue). Prefer role names for everything else: **product wire**, **behavioral tests**, **process glue**, **tool config**.
@@ -104,12 +188,14 @@ Plan (waves): `.agents/plans/plan-paydown-shell-c-surfaces.md`.
 | `script/slake-emit-freestanding-c.sh` | gone | **Met (Wave C):** deleted; Lean `SystemsLean.FreestandingEmit` + templates write `slake_freestanding.{c,h}` from SSOT | Lean (`SystemsLean` emit) |
 | `src/idris2/check.sh` static presence | ~30 glue | **Met (Wave A):** static mill in `nix/idris-side-presence/` (`just idris-side`); shell is optional `idris2 --check` only | pure Nix + thin glue |
 | `src/lean4/check.sh` static presence | ~70 glue | **Met (Wave A):** static mill in `nix/lean-side-presence/` (`just lean-side`); shell is optional Lake only | pure Nix + thin glue |
-| `script/build-systems.sh` | gone | **Met (Wave B):** deleted; `just build` calls `script/slake-compile-path.sh` | just + compile-path driver |
-| `script/out-freestanding-c.sh` | gone | **Met (Wave B):** deleted; body is `just out-freestanding-c` (Wave C: Lean emit + copy) | just + Lean emit |
-| `script/slake-compile-path.sh` | ~51 stamp | **Met (thin stamp):** static UNIT_SURFACE greps removed (pure Nix `systems-emit-wire` unit walk + host presence); shell is process-glue stamp for `just build` / emit preflight only; may delete later if stamp unneeded | process glue + pure Nix |
-| Fat body of `src/systems/check.sh` | ~100 glue | **Met (Wave B):** process glue only (Lake + drivers + cc tests); static mills pure Nix | just + pure Nix gates |
+| `script/build-systems.sh` | gone | **Met (Wave B):** deleted; product path is root `just build` (not a stamp-only recipe) | just product wire |
+| `script/out-freestanding-c.sh` | gone | **Met (Wave B):** deleted; former `just out-freestanding-c` recipe **retired** into `just build` (Wave C Lean emit + install) | just + Lean emit |
+| `script/slake-compile-path.sh` | gone | **Met (delete stamp):** shell stamp deleted; static unit walk + host presence pure Nix (`systems-emit-wire` / `systems-host`); host deepen `SLAKE_COMPILE_PATH_V1` / `HOST-COMPILE-PATH` in `SystemsLean/CompilePath.lean`; greppable retired id `SLAKE_COMPILE_PATH_V0` remains in `justfile` honesty only | pure Nix + Lean host |
+| Fat body of `src/systems/check.sh` | ~100 glue | **Met (Wave B):** process glue only (Lake + `just build` + cc tests); static mills pure Nix; no compile-path shell | just + pure Nix gates |
 
-**Emit shell deleted (Wave C).** Do not restore `script/slake-emit-freestanding-c.sh`. Product wire comes from Lean `SystemsLean.FreestandingEmit` + emit templates + SSOT.
+**Emit shell deleted (Wave C).** Do not restore `script/slake-emit-freestanding-c.sh`. Product wire comes from Lean emit / freestanding-capable path + emit templates + SSOT.
+
+**Compile-path stamp shell deleted.** Do not restore `script/slake-compile-path.sh`. Static compile-path / unit walk is pure Nix (`just systems-emit-wire` / `just systems-host`); host deepen is `SystemsLean/CompilePath.lean`.
 
 ### Permanent roles (not "debt")
 
@@ -117,7 +203,7 @@ Plan (waves): `.agents/plans/plan-paydown-shell-c-surfaces.md`.
 |------|-------|------|
 | **Product wire** | `src/systems/emit/*.{c,h}`, `out/freestanding-c/*` | Generated freestanding C. Publish via git subtree / tarball. Do not hand-author features in C. |
 | **Behavioral tests** | `src/systems/smoke/slake_behavioral_probe.c` | Hosted product-contract tests linked against the wire. Do not grow as Systems Lean body. Prefer shrinking only when Lean theorems **duplicate** a live `cc` contract with evidence. |
-| **Process glue** | Thin just recipes; optional elaborator/`cc` one-liners; tiny `script/git-hooks/*` | Orchestration that must invoke external binaries. Keep tiny. Not a place for algorithms. |
+| **Process glue** | Thin just recipes; optional elaborator/`cc` one-liners; tiny `script/git-hooks/pre-commit` (calls `just pre-commit` / `just check`) | Orchestration that must invoke external binaries. Keep tiny. Not a place for algorithms. Install optional local hook: `ln -sf ../../script/git-hooks/pre-commit .git/hooks/pre-commit` from repo root (or copy). Prefer `just check` / flake checks as the real gate surface. |
 | **Host emit SSOT text** | `src/systems/emit/host_emit_*.ssot.txt` | Lean-owned fragments; not shell dialect. |
 | **Tool config** | `lakefile.toml`, `lake-manifest.json`, CI YAML | Config only. |
 | **Prose** | `doc/`, residuals, plans, README | Humans and agents; min useful. |
@@ -128,12 +214,12 @@ Plan (waves): `.agents/plans/plan-paydown-shell-c-surfaces.md`.
 
 When `scc` counts Shell, C, headers, config, or plain text beyond Lean / Idris / Nix, those are **non-product surfaces**: scheduled deletion, permanent roles above, tool config, or prose -- **not** a fourth novel implementation language. Full policy SSoT is this section; terms in `doc/vocabulary.md`.
 
-**Honest novel `scc` excludes:** `ref/`, `.git/`, `.lake/`, `.cache/` (and similar build junk). Classic Lean ahead-of-time intermediate representation under `.lake` is **not** freestanding product C.
+**Honest novel `scc` excludes:** `ref/`, `skills/`, `.git/`, `.lake/`, `.cache/` (and similar build junk). Classic Lean ahead-of-time intermediate representation under `.lake` is **not** freestanding product C. Agent skill submodules under `skills/` are not novel product either.
 
 | Surface | Paths (examples) | Classification |
 |---------|------------------|----------------|
-| **Shell (scheduled deletion)** | none open for static mills (dual/static paid Wave A; compile-path greps paid thin-stamp) | Must leave if any mill returns |
-| **Shell (process glue)** | `src/systems/check.sh`, `script/slake-compile-path.sh` (stamp), dual optional elaborators, `script/git-hooks/*` | Keep tiny; no static greps |
+| **Shell (scheduled deletion)** | none open (dual/static paid Wave A; compile-path greps paid; compile-path stamp shell deleted) | Must leave if any mill returns |
+| **Shell (process glue)** | `src/systems/check.sh`, dual optional elaborators, `script/git-hooks/pre-commit` | Keep tiny; no static greps |
 | **C (product wire)** | `src/systems/emit/slake_freestanding.c`, `out/freestanding-c/` | Generated; permanent role |
 | **C Header** | `*.h` beside emit | Same wire |
 | **C (behavioral tests)** | `src/systems/smoke/slake_behavioral_probe.c` | Tests; not product body |
@@ -150,13 +236,13 @@ Hand-written product **C is forbidden** as an implementation language for System
 
 | Kind | Paths | Git / authoring rule |
 |------|-------|----------------------|
-| **Generator outputs (product wire)** | `src/systems/emit/*.{c,h}` (from emit driver), `out/freestanding-c/*.{c,h}` | Tracked as **dogfood / release surface** only. Refresh via `just out-freestanding-c` (and the emit driver). Do **not** author features by hand under `out/` or treat emit C as Systems Lean source. |
+| **Generator outputs (product wire)** | `src/systems/emit/*.{c,h}` (from emit driver), `out/freestanding-c/*.{c,h}` | Tracked as **dogfood / release surface** only. Refresh via `just build` (and the emit driver). Do **not** author features by hand under `out/` or treat emit C as Systems Lean source. |
 | **README under out** | `out/freestanding-c/README.md` | Human prose for consumers; may be edited. |
 | **Host emit SSOT text** | `src/systems/emit/host_emit_*.ssot.txt` | Lean-owned fragments; not free-form product C. |
 | **Behavioral tests** | `src/systems/smoke/slake_behavioral_probe.c` | Hosted product-contract tests only; shrink only when Lean covers the live contract; never grow as product body. |
 | **Classic Lean AOT IR** | `.lake/build/ir/*.c` (and similar under Lake build trees) | **Not** freestanding product. Managed-runtime AOT IR only. Stay **gitignored / untracked**. Never ship as `out/freestanding-c`. |
 
-**Release:** publish `out/freestanding-c/` via **git subtree** (or tarball) after green `just build` + `just out-freestanding-c` + `just check`. Consumers should not need `ref/*` or the full host. Detail: `out/freestanding-c/README.md`.
+**Release:** publish `out/freestanding-c/` via **git subtree** (or tarball) after green `just build` + `just check`. Consumers should not need `ref/*` or the full host. Detail: `out/freestanding-c/README.md`.
 
 ### Nix architecture for LLM (large language model) attention and compaction
 
@@ -210,6 +296,12 @@ Write **thoughtful, concise, natural language**. This is not a jargon dump or ac
 - **Wire:** when you mean the freestanding product release surface, say **product wire** (or unpack once: "product wire -- the emitted freestanding C under emit/ and out/freestanding-c"). Do not use bare "wire" as if the reader already knows. Do not confuse with flake **wire-up** (connecting Nix attributes). Canonical: `doc/vocabulary.md` (**Wire / product wire**).
 - **Model:** when you mean a Lean or formal representation of contracts or IR, say **host model**, **structural model**, or **representation** -- **never** bare "model" if it could read as an AI/ML model. Canonical: `doc/vocabulary.md` (**Model (host / formal)**).
 - **Banned naming jargon:** do **not** use **spine** (or "program spine", stage ids like `IR_PROGRAM_*`) for intermediate-representation structure. Say what it is in plain English: **ordered IR program**, **node list**, **program nodes**, **graph edges**. Existing greppable stage ids that already ship the word may be renamed in a deliberate honesty slice; never mint new `*SPINE*` names.
+- **Banned process jargon -- module-split slang (hard ban, all surfaces):** do **not** use the old residual verb for "extract a role module from a long file" (fruit-metaphor stem and its `-ed` / `-ing` forms; also `re-` + stem). That is nonsense internal slang.
+  - **Surfaces (all living agent surfaces):** chat replies; **session-board todo titles and content** (new items **and** every upsert -- never mint or re-title with the slang); subagent task descriptions; implement prompts and queued `/implement` text; residual Open Names and living Open/Done status lines; WATCHER fences; SESSION-HANDOFF active/next lines; active plans under `.agents/plans/`; research notes written going forward. Not only gated markdown.
+  - **Preferred words:** **long-file split**, **module split**, **seam**, **Theorems helper**, **Scaffold helper**, **extract into a role module**, **theorem/smoke move into `*Theorems`**, **scaffold split**. Residual Open Names use **long-file split**.
+  - **Historical UI noise:** completed session-board titles may still show the old slang in the host UI. **Do not** bulk-rewrite hundreds of completed todos. When writing **new** board items or upserting living ones, use preferred words only. Historical research path stems under `doc/dev/research/` that still embed the old stem may stay until a deliberate rename; do not mint new path stems with that slang. Living residual Open/next/WATCHER/handoff/active-plan lines must stay clean (scrub on sight if any slip back).
+  - **Gate:** banned tokens live only in `nix/professional-tone.nix` (novel `*.md` automatic fail); do **not** re-list the banned spellings in markdown or the tone gate self-fails.
+  - **Agents must not echo** that slang even when a stale user prompt, old todo title, or `/tmp` join basename still uses it -- rephrase to **long-file split** / **module split** immediately.
 - **Do not say "pin" / "pinning"** for saving a rule into a file. That is agent-internal jargon.
 - When you put a preference or process rule into a durable file, say **documented** (and name the file). Do not use vague fillers like bare **"written"** / "wrote it down" with no object -- say **documented in `AGENTS.md`** (or residual / watcher / the named doc). Prefer "documented" or "recorded in policy" over "pinned."
 - The human may be terser; **agents must not** mirror unexplained shorthand.
@@ -236,6 +328,53 @@ Write **thoughtful, concise, natural language**. This is not a jargon dump or ac
 - Greppable honesty tokens when gates exist (e.g. `SYSTEMS_LEAN_HOST`, `MULT-0`) -- durable product/host surface, not plan choreography
 
 **Naming:** name things for what they are (algorithms, roles, release surfaces). Thoughtful names; no thesaurus farms or wave packing. No metaphor names (`spine`, fashion brands) when a structural name exists.
+
+### Product Lean names (hard rule -- operator 2026-07-30; identifiers 2026-07-30)
+
+Hunter rejected the claim-B ladder **name farm**. That includes both **file basenames**
+and **Lean / gate identifiers**. Names like
+`ProductPathFreestandingPerformDualEqualityWriteCapableGap.lean` and defs like
+`productPathFreestandingCapableStepContractFullSatisfied` are **bad product names**:
+they pack residual step history into the path or symbol, need a decoder ring, and
+fight tab-complete and reseed. Shortening only files while leaving kitchen-sink
+claim-bools is **not** the fix.
+
+| Do | Do not |
+|----|--------|
+| Name the **role** in short English for **modules and new defs** (`CapableWrite`, `DualEqWrite`, `OfficialPath`, `stepContractFull`, `ownershipClaimed`) | Stack every adjective from residual history into one CamelCase / camelCase sentence |
+| Prefer a small directory or short basename a tired reader can parse | Mint `ProductPathFreestandingPerformDualEqualityWriteX.lean` for the next B-step |
+| Prefer short living-tip SSoT bools when flipping a claim (`stepContractFull`, not a 50-char stack) | Mint or extend `productPathFreestandingCapableStepContract*` kitchen-sink defs as the living tip |
+| Keep greppable honesty tokens **inside** the file / pure Nix when gates need them | Put stage ids (`B36`, `CAPABLE-GAP`, plan tracks) in **file names** or permanent API basenames |
+| When renaming, surgical `rg` find + hand edit per site (subagents OK for disjoint scopes); green gates | Bulk find-and-replace; drive-by mass rename of the whole historical ladder mid-slice |
+
+**Stop rule for new modules under `src/systems/SystemsLean/`:** do **not** add
+another `ProductPathFreestandingPerform*` or `ProductPathFreestandingCapable*`
+filename. Existing long **filenames** may stay until a named rename residual; they
+are scheduled cleanup, not a template. Next new product-path modules use short
+role names (optionally under a short prefix or folder such as `ProductPath/`).
+
+**Stop rule for new / living-tip identifiers:** do **not** mint another
+`productPathFreestandingCapable*` or `productPathFreestandingPerform*` kitchen-sink
+def as the claim-bool SSoT. When a residual **flips** a living tip (Full, complete,
+etc.), **rename the SSoT to a short role name** in that same slice (surgical hand
+edits via `rg` inventory). Historical land-time modules may keep long local pins
+until a deliberate rename residual; living tip in `SelfApplyFs` should read like a
+product API, not residual archaeology.
+
+**Exemplars (short):** modules `OfficialRetire`, `PerformClaimed`, `OwnershipClaimed`;
+prefer living tip bools in the same spirit (`performClaimed` / `ownershipClaimed` /
+`stepContractFull` style -- exact spellings chosen for greppable gates when
+renamed).
+
+**Surgical edits only:** use `rg` to **find** import, lakefile, just, pure Nix,
+and Lean sites; change each site **by hand**. Large sets may fan out to subagents
+with disjoint scopes -- still hand edits per site, never mass `sed -i` / bulk
+`replace_all` across the tree. Same spirit as global "Edits -- no bulk
+find-and-replace."
+
+**Residual / implement choreography** (`Partial B37`, close-path step tokens) stays
+in residual, `WATCHER.md`, and greppable *string* tokens -- not in module basenames
+or permanent claim-bool API names.
 
 ### Stage-id density (human prose vs greppable honesty)
 
@@ -266,6 +405,8 @@ Every open Systems residual item is a named accomplishment:
 **Focus:** bootstrap freestanding **Slake** under `src/systems/` (Lean host + freestanding emit toward `out/freestanding-c`). Prefer product surface growth over host canary theorems.
 
 **Autonomy (walk-away loops):** when Open has Name + checkable Done when, chain short implement loops via `WATCHER.md` without inventing work and without waiting for re-confirmation of non-claims already documented. When Done when is not checkable, **BLOCKED** with one concrete need. Cap concurrent subagents (~1 implementer + ~1 reviewer at effort 1; raise only with clean disjoint scopes). Parent stays thin; subagents own depth (fresh context, no compaction of child work).
+
+**Plan defaults are residual work (hard ban on false park):** if a durable plan under `.agents/plans/` (or residual Open) already names the next residual with **checkable Done when**, agents **must** open that Name in `RESIDUAL-systems.md` and implement. **Do not** empty Open, write **done-for-now**, or park with "wait for the human to Open the next Name" while a plan default still has a checkable next phase (e.g. plan-close-six-claims Track 3 B, Phase 2 A). **Do not** park between sequential planned phases when the next phase Done when is already checkable -- open the next Name or leave remaining Done when on the current Name and put `/implement` in `WATCHER.md`. Empty-Open **done-for-now** is only honest when **no** plan (and no Open queue) still names a checkable next residual. Still do not invent unrelated Names or forge free/complete/PROVABLY/llvm.
 
 **Do not put everything in one file.** Split modules, docs, and checks by responsibility. Prefer a small clear file over a kitchen-sink blob. New work uses the **three languages only** rule: Idris 2, Lean 4 (including Slake / Systems Lean), or pure Nix under `nix/` -- never a new Python or shell mill.
 
@@ -307,6 +448,38 @@ If a process correction matters, **document it in this file** or a named durable
 - Process corrections: document in this file or a named durable doc in the same turn.
 - Do not invent residual from research unless asked.
 
+### README min useful (hard rule)
+
+Product and workspace **README** files are short **maps + links**, not residual ledgers.
+
+| Do | Do not |
+|----|--------|
+| What the tree is, layout by **role**, short living tip (3-5 lines or link to `doc/SESSION-HANDOFF.md`) | Paste residual Open / Done when, full module essays, greppable token walls |
+| Point to SSoT companions (`self-host.md`, `host-owned-emit.md`, `host-partial-inventory.md`, residual, plans, research) | Re-dump B-ladder / claim-step history (B2..B40), SH stage essays, unit translation maps |
+| Short command list (`just build`, `just check`, focused recipes) | Annotate every recipe with partial residual stage ids |
+| Keep pure Nix presence tokens only when a gate **requires** them (minimal cite) | Grow README so gates force archaeology; prefer gate specs on Lean/Nix/SSOT files |
+
+**`src/systems/README.md` target:** roughly **40-100** lines. Prefer **delete** over relocating novels into another README. Ownership truth has one home: `emit/host-owned-emit.md`. Self-host claims: `self-host.md`. Module count: `host-partial-inventory.md`. Living Open: residual + handoff + `WATCHER.md` (not README).
+
+**Root `README.md`:** north star + read-first + structure + tooling + license. Living tip at most a few lines or status entirely via handoff. No WATCHER `/implement` body. No S0-S5 bootstrap essay.
+
+**`out/freestanding-c/README.md`:** consumer install + honesty (generated-only, free vs host residual). Not residual archaeology.
+
+Do **not** bulk-rewrite historical research under `doc/dev/research/` for this rule.
+
+### File extensions (hard rule)
+
+Every novel prose, config, and source file gets a **real extension** (`.md`, `.lean`, `.idr`, `.nix`, `.toml`, `.c`, `.h`, `.txt`, ...).
+
+| Intentional exceptions (tool-required basenames) | Never invent |
+|--------------------------------------------------|--------------|
+| `justfile` | Extensionless agent notes or joins under the repo |
+| `lean-toolchain` (elan pin files) | Extensionless licenses (use **`UNLICENSE.md`**) |
+| Git hook names (`pre-commit`, ...) under `script/git-hooks/` | Plans without `.md` under `.agents/plans/` |
+| Upstream/`ref/` and skill-submodule conventions we do not own | Bare `LICENSE` / `COPYING` renames of our dedication |
+
+If an accidental extensionless novel file appears, **rename or delete** with care (do not break tool-required basenames).
+
 ### Document slices so they survive compaction (hard rule)
 
 Chat memory dies. **Every durable implement slice and every material decision** must land on disk in the same turn, in places agents reseed first -- not only in the reply.
@@ -316,14 +489,14 @@ After a Systems / Slake slice (or any residual that changes product claims, owne
 1. **Residual ledger** -- `RESIDUAL-systems.md` Done archive (capability + primary paths) and Open queue (or done-for-now). Coordinator join: `RESIDUAL.md` Systems Open table when status changes.
 2. **Next action** -- `WATCHER.md` fenced block + same text as the reply final section.
 3. **Reseed status** -- `doc/SESSION-HANDOFF.md` Active product residual / Next / module count when they change.
-4. **Ownership / product decisions** -- if freestanding C text ownership or "what is still template" changes: update `src/systems/emit/host-owned-emit.md` and the matching rows in `src/systems/README.md` (lead table + C emit product wire bullets).
+4. **Ownership / product decisions** -- if freestanding C text ownership or "what is still template" changes: update `src/systems/emit/host-owned-emit.md` (SSoT). Keep `src/systems/README.md` as a short map + link only; do not re-paste ownership essays into the README.
 5. **Self-host / join map** -- when emit readiness or dual product cites change: `src/systems/self-host.md`, `src/systems/join-map.md` as needed; inventory companion `src/systems/host-partial-inventory.md` for module count and HOST-EMIT-* closed gaps.
 6. **Gates** -- pure Nix presence (`nix/systems-host-presence/`, `nix/systems-emit-wire/`) when new modules or SSOT artifacts appear.
 7. **Terms** -- new durable product terms go in `doc/vocabulary.md` (Unicode allowlist) when agents will re-use them after compaction.
 
 **Prominence:** put the one-line status and "where to look next" in `SESSION-HANDOFF.md` and residual Open/Done; put the detailed map in the named companion (e.g. `host-owned-emit.md`), not only in module headers. Do not bury decisions only inside long greppable token soup.
 
-**Do not** leave "we decided X" only in chat. **Do not** invent Open Names to fill emptiness -- document done-for-now and wait for the human to name the next residual.
+**Do not** leave "we decided X" only in chat. **Do not** invent Open Names to fill emptiness when **neither** Open nor a durable plan names a checkable next residual -- then document done-for-now. When a plan already names the next checkable residual, **open that Name and implement** (see **Clear plan defaults** under residual implement loop); do **not** wait for a human "Open" ceremony.
 
 ### Learn preferences on every instruction (hard rule)
 
@@ -354,9 +527,15 @@ Hunter's environment can **auto-run** residual implement instructions when they 
 When you finish a planned slice:
 
 1. If residual work is **clear and needs no human input**, write the next implement prompt into `WATCHER.md` using the residual **Name / Goal / Done when / Out of scope / Paths / Gates** shape **and** end the reply with that prompt so the harness can continue. Prefer freestanding Slake bootstrap Open Names over inventing theorem canaries.
-2. If **blocked or ambiguous**, put a short blocked note in `WATCHER.md` (what is unclear); do not invent fake work. The blocked fence and the reply final section must **not** contain the implement slash-command token (even as "do not auto-run ..." prose) -- the harness will re-queue it as a new implement pass.
-3. Never use the loop to race git, forge freestanding/PROVABLY claims, or start deferred tracks (e.g. `out/llvm-ir` before self-host).
-4. Keep `RESIDUAL.md` as the join board (Open Names); `RESIDUAL-systems.md` as Systems detail; `WATCHER.md` as only the **next action**.
+2. **Always** put a next implement prompt in the reply final section when the next residual Name is already clear (plan default with checkable Done when, or Open queue non-empty). Use the full `/implement --effort N ...` form the harness expects when work remains. Do not end only with DONE-FOR-NOW prose if plan/residual already names the next clear slice.
+3. **Clear plan defaults count as residual work (hard rule):** when Open is empty but a durable plan (e.g. `.agents/plans/plan-close-six-claims.md`) names a residual with checkable Done when -- first residual **or** the next sequential planned phase after a partial slice -- a `/implement` residual loop **opens that Name** in `RESIDUAL-systems.md` (or keeps remaining Done when on the current Name) and implements it. That is not "inventing Open Names" for theorem canaries -- it is executing the planned product program.
+   - **Banned:** park and wait for the human to "Open" residual Names when a durable plan already names the next residual with checkable Done when.
+   - **Banned:** empty Open + BLOCKED done-for-now between sequential planned phases while the plan still has a next checkable phase (e.g. Track 3 B after evidence partial, Phase 2 A after Phase 1).
+   - **Required:** open next Name **or** leave remaining Done when on the current Name, and put `/implement` in `WATCHER.md` + reply final section.
+   - **Still forbidden:** invent unrelated Names; forge free/complete/PROVABLY/llvm; start deferred tracks the plan holds.
+4. If **blocked or ambiguous** (no plan default and no checkable Done when), put a short blocked note in `WATCHER.md` (what is unclear); do not invent fake work. The blocked fence and the reply final section must **not** contain the implement slash-command token (even as "do not auto-run ..." prose) -- the harness will re-queue it as a new implement pass.
+5. Never use the loop to race git, forge freestanding/PROVABLY claims, or start deferred tracks (e.g. `out/llvm-ir` before self-host).
+6. Keep `RESIDUAL.md` as the join board (Open Names); `RESIDUAL-systems.md` as Systems detail; `WATCHER.md` as only the **next action**.
 
 ### Forks (Idris side / Lean side / Systems / Coordinator)
 
@@ -387,7 +566,7 @@ The **watcher** session is separate (see Multi-chat roles).
 
 **Single freestanding emit stage id:** product C emit is **`SLAKE_EMIT_FREESTANDING_C_V0`**
 (Lean `SystemsLean.FreestandingEmit` / lake exe `slake-emit-freestanding-c`,
-`src/systems/emit/`, `just out-freestanding-c`). Bash emit driver is **gone** (Wave C).
+`src/systems/emit/`, `just build`). Bash emit driver is **gone** (Wave C).
 Do not land a second competing emit stage id in the same tree without retiring the other.
 Concurrent sessions must not delete shared tooling under `script/` while another
 session is mid-slice.
@@ -405,6 +584,54 @@ session is mid-slice.
 7. **No product garbage collection.** Memory safety from linear/affine types and checks.
 8. **Reference counting** on freestanding paths only if proven unavoidable; see `src/systems/README.md`.
 9. **Multiplicities:** only minimum 0 / 1 / omega for freestanding Slake in `src/systems/`.
+
+### Product Lean edits and claim-bool proof (hard rule -- 2026-07-30)
+
+RCA: `doc/dev/research/selfapplyfs-rebuild-failure-2026-07-30.md`. Plan:
+`.agents/plans/plan-selfapplyfs-rca-prevention.md`.
+
+1. **No `/tmp` full-file rebuild of product Lean.** Never rebuild a product
+   `.lean` by writing a full reconstructed copy from `/tmp` (or outside the
+   tree) and copying it over the live path. Surgical in-place edits only. If the
+   file is too large for safe in-place work, **stop** and open a **split**
+   residual; do **not** stitch sections with cut marks.
+2. **Long files (>1000 lines on disk) are residual.** Address with coherent
+   seams (dual-pin thin onto home modules, smoke/theorem module splits, pure Nix data slices),
+   not naive half-file cuts. Prefer gate-first dual-pin migration for SelfApplyFs
+   tip shrink. Plan: `.agents/plans/plan-long-file-refactor.md`. Serialize tip
+   writers (short-name rename vs dual-pin thin). On screw-up (red lake, cycle,
+   stitch risk): **STOP**; do **not** `git revert` / undo; leave the tree for
+   the human.
+3. **Stitch / merge markers forbidden in product sources.** Lines that are agent
+   cut marks (`==== ... ====` after leading whitespace) or git merge conflict
+   markers (`<<<<<<<` / `>>>>>>>` prefix, or exact `=======`) must not land in
+   novel product sources. Pure Nix `nix/source-hygiene.nix` (via `just hygiene`)
+   bans stitch marks on `*.lean` and merge markers on all novel text.
+4. **Claim-bool flips need host elaborator proof while bootstrapping.** Flips of
+   living claim bools (complete, free, ownership claimed, perform claimed,
+   Full / `stepContractFull`, and similar SSoT tips): **Done when** includes a
+   real elaborator check of the host Lean, not greps alone. **Today** that means
+   a **lake build** (and claim exe when one exists) when `lake` is on PATH.
+   Grep / dual-pin recipes alone are **not** enough for APPROVE or full GREEN on
+   a claim flip. Primary example: `just freestanding-self-host-complete` runs
+   greps then mandatory `lake build` / `lake exe slake-freestanding-self-host-complete`
+   (exit 1 if lake missing).
+5. **Lake is only needed once to bootstrap Slake -- not the freestanding end
+   state.** Classic Lean **Lake** elaborates the **host** Systems Lean / Slake
+   sources for that bootstrap. Product goal is freestanding Slake and runtimeless
+   C on the product wire (`out/freestanding-c`). After Slake is bootstrapped,
+   Lake is not a forever product dependency and not part of the product claim
+   story. Honest pins (`DependsOnLake`, `StillUsesLake`, bootstrap remains) stay
+   true until a freestanding path actually retires them -- do **not** forge those
+   false early. Do **not** sell mandatory lake-on-claim-flip as "Slake always
+   needs Lake forever." It is host verification **during the one-time
+   bootstrap**. Once the freestanding product path is the real proof surface,
+   claim proof moves with that path and Lake drops out. Until then: lake on
+   PATH => use it for claim flips.
+6. **Implementer summaries:** do **not** mark GREEN on claim flips without the
+   lake command and exit 0 (while Lake is still the host elaborator), or an
+   explicit **BLOCKED: lake missing** (and then residual is **not** closed).
+   Parent and reviewer **reject** grep-only claim-flip GREEN.
 
 ## Feedback loops: tests and proofs
 
@@ -514,19 +741,23 @@ Keep this map current when dirs move. README has a short tree; **this section is
 +-- out/
 |   +-- freestanding-c/       # Runtimeless freestanding product C (release)
 |   +-- llvm-ir/              # LLVM IR / Rust-native link (deferred until self-host)
-+-- ref/                      # Upstream ONLY (read-only submodules)
++-- ref/                      # Language/compiler upstream ONLY (read-only submodules)
 |   +-- Idris2/
 |   +-- lean4/
 |   +-- CompCert/
 |   +-- rust/
++-- skills/                   # Agent skill pack submodules (read-only; not product)
+|   +-- lean4-skills/         # cameronfreer/lean4-skills (Lean prove/formalize workflows)
 +-- doc/                      # Goals, vocabulary, architecture, divergence, entry maps, research/
 +-- nix/                      # Pure Nix tooling modules (progress, source-hygiene, professional-tone)
-+-- script/                   # Scheduled deletion / process glue only (pay down; port to Lean/Nix)
++-- script/                   # Process glue only (optional git-hooks); no mills
 +-- .github/workflows/        # CI == just check
 +-- justfile
 +-- flake.nix / flake.lock
 +-- AGENTS.md / README.md / RESIDUAL.md / LICENSES.md / UNLICENSE.md
-+-- .agents/plans/            # Plans (ephemeral relative to product)
++-- .agents/
+|   +-- plans/                # Plans (ephemeral relative to product)
+|   +-- skills/               # Project skill discovery (symlinks into skills/)
 ```
 
 | Path | Write? | Role |
@@ -534,14 +765,16 @@ Keep this map current when dirs move. README has a short tree; **this section is
 | `src/idris2/` | yes | Idris side novel work; never edit `ref/Idris2` as product |
 | `src/lean4/` | yes | Lean side novel work; never edit `ref/lean4` as product |
 | `src/systems/` | yes | Freestanding product + Slake; min mults; no product GC (garbage collection) |
-| `out/freestanding-c/` | emit | Runtimeless freestanding C (`just out-freestanding-c`) |
+| `out/freestanding-c/` | emit | Runtimeless freestanding C (product wire via `just build`) |
 | `out/llvm-ir/` | deferred | LLVM IR for Rust-native link; after self-hosted Systems Lean / Slake |
-| `ref/*` | no | Upstream references only |
+| `ref/*` | no | Language/compiler upstream references only |
+| `skills/*` | no | Agent skill pack submodules (read-only); discovery via `.agents/skills/` |
+| `.agents/skills/` | symlink | Project skill root for hosts; bodies under `skills/` |
 | `doc/` | yes | Durable design / policy prose (min tokens) |
 | `nix/` | yes | Small pure flake modules (hygiene, progress, novel-source) |
-| `script/` | pay down | Scheduled deletion / process glue only -- never a template for new tools |
+| `script/` | process glue only | Optional git-hooks; scheduled deletion inventory empty (none open) -- never a template for new tools |
 
-**Commands vs trees:** `just build` -> `src/systems/`. `just out-freestanding-c` -> `out/freestanding-c/`. `just out-llvm-ir` reserved (deferred). `just check` -> full suite.
+**Commands vs trees:** `just build` -> product freestanding wire (emit under `src/systems/emit/` + release under `out/freestanding-c/`). `just check` -> `just build` first, then pure gates + workspace scripts (no second full regenerate; `SYSTEMS_PRODUCT_WIRE_FRESH=1`). `just out-llvm-ir` reserved (deferred). No `out-freestanding-c` just recipe (retired; former stamp-only `build` deleted).
 
 ## Nix tooling (under three languages only)
 
@@ -563,7 +796,7 @@ Terms (plain English); full glossary in `doc/vocabulary.md`:
 | **ripgrep (`rg`)** | Default code search in the flake **devShell** (`pkgs.ripgrep`). Agents and humans search with `rg`, not ad-hoc `grep` mills. Pure Nix checks still must not shell out to ripgrep for policy algorithms. |
 | **elan** | Lean toolchain manager in the flake **devShell**. Install the pin from `src/systems/lean-toolchain` / `src/lean4/lean-toolchain` (`leanprover/lean4:v4.32.0`). Do not default to lagged `pkgs.lean4` as the elaborator. Workspace checks skip Lake when the pin is not installed (no surprise network download). |
 | **idris2 (devShell)** | Idris 2 elaborator package in the flake **devShell** for bridge-side checks. Residual `src/idris2/check.sh` still skips when the binary is absent. |
-| **Novel source** | Our tree -- not `ref/`, not `.git/`, not caches. |
+| **Novel source** | Our tree -- not `ref/`, not `skills/` (agent skill submodules), not `.git/`, not caches. |
 | **Source hygiene** | Novel text is printable ASCII (plus tab/newline) except a small allowlist; no trailing spaces/tabs. |
 | **Professional tone** | Novel `*.md` only (v1): short banned-token list in pure Nix; no profanity / demeaning slurs in project markdown. |
 | **Progress meters** | Evidence-weighted bars in `doc/PROGRESS.md` (not a calendar guess). |
@@ -643,10 +876,11 @@ nix/
   systems-host-presence/      # skeleton + unit-surface + SYSTEMS_LEAN_HOST + tree-wide jargon
     default.nix               # pure eval: { ok, violations, summary }
     specs.nix                 # required paths + token tables
-  systems-emit-wire/          # compile/emit drivers, UNIT_DEEPEN, emit stages, unit walk, probe path
-    default.nix               # pure eval: { ok, violations, summary }
+  systems-emit-wire/          # compile/emit drivers, UNIT_DEEPEN, emit stages, unit walk, probe path, claim A residual free measure
+    default.nix               # pure eval: { ok, violations, summary, residualFreeMeasureGreen, ... }
     specs.nix                 # thin join of data slices below
     emit-product.nix          # drivers + emit product APIs/stages + optional release + smoke probe path
+    residual-free-measure.nix # PRODUCT-RESIDUAL-FREE-MEASURE forbidden managed residual + honesty (claim A)
     unit-deepen.nix           # UNIT_DEEPEN_V1 units + companions
     unit-walk.nix             # dynamic SKELETON|UNIT_SURFACE walk + skip dirs
   idris-side-presence/        # dual Idris static presence (Wave A; was check.sh mill)
@@ -713,13 +947,14 @@ Later: real builds and tests as defined in residual -- not vibes.
 
 - Divert Systems Lean work to other residual mills by default
 - Treat Idris RefC or classic Lean AOT as freestanding
-- Edit `ref/*` as product
+- Edit `ref/*` or `skills/*` as product
 - Use ephemeral wave-speak as permanent product vocabulary
 - Forge residual / PROVABLY / host residual_free claims
 - Bypass GPG signing
 - Implement novel work in any language other than **Idris 2**, **Lean 4**, or **pure Nix flakes** (see Three languages only)
 - Grow freestanding **C** or **shell** as Systems / Slake residual "progress" (see No new C or shell product work)
-- Add or restore project Python (`*.py`)
+- Add or restore project Python (`*.py`) -- upstream helpers under `skills/` do not license novel project Python
 - Add or grow shell/bash mills; restore deleted mills (`progress.py`, `check-source-hygiene.*`, `check-all.sh`, `watch-forks.sh`)
 - Smuggle tool logic through bash-in-Nix / shell-in-Nix / Python-in-Nix or flake apps that are only shell farms
 - Grow kitchen-sink `flake.nix`, mega `nix/` modules, or multi-thousand-line `check.sh` / emit shell instead of Lean or pure Nix
+- Hide project skills only under host home dirs when the pack is already a repo submodule -- keep discovery under `.agents/skills/`

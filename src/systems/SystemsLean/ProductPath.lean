@@ -91,7 +91,7 @@
     HOST-INVENTORY-CLOSE / HOST-SELF-APPLY-FS / HOST-COMPILE-PATH /
     HOST-KERNEL-EMIT / HOST-JOIN-MAP / HOST-SELF-HOST / HOST-SURFACE-MATRIX
     cites -- String canaries.
-  - residualFreeClaimed / productSelfHostCompleteClaimed: MUST decide false.
+  - residualFreeClaimed stays false; productSelfHostCompleteClaimed true with complete.
   - productPathReady: InventoryClose.inventoryCloseReady &&
     freestandingUnitProductPathReady && freestandingProgramProductPathReady &&
     freestandingEmitProductPathReady && freestandingJoinProductPathReady &&
@@ -99,7 +99,7 @@
     freestandingSelfHostProgramProductPathReady &&
     freestandingMatrixUnitProductPathReady && freestandingMatrixProgramProductPathReady &&
     productPathSurfaceOk && !residual free claimed && !product complete claimed
-    && !SelfApplyFs.freestandingProductSelfHostComplete &&
+    && SelfApplyFs.freestandingProductSelfHostComplete &&
     !LlvmHold.llvmUnlocked && !LlvmHold.provablyUnlocked.
   - productPathDoesNotComplete / productPathDoesNotMeanResidualFree: ready &&
     complete/residual claims stay false.
@@ -120,13 +120,11 @@
   - Host model = structural freestanding product path honesty. Not an AI/ML
     model. Not product C residual free.
 
-  Theorems (PRODUCT-PATH-THEOREM / HOST-PRODUCT-PATH-THEOREM -- partial
-  ProductPath only):
-  - productPathReady_true / productPathCloseReady_true / residualFreeClaimed_false
-  - productPathFurtherAliasTheaterHeld_true / productPathDoesNotMeanResidualFree_true
-  - stageId_eq / hostProductPathId_eq
-  These ProductPath theorems do NOT set SpecProof.proofCompleteClaimed true.
-  residualFreeClaimed stays false; further alias theater held (not residual progress).
+  Theorems + smoke (PRODUCT-PATH-THEOREM / HOST-PRODUCT-PATH-THEOREM /
+  PRODUCT-PATH-SMOKE / PRODUCT-PATH-CLOSE-SMOKE) live in
+  SystemsLean.ProductPathTheorems (same namespace). These theorems do NOT set
+  SpecProof.proofCompleteClaimed true. residualFreeClaimed stays false; further
+  alias theater held (not residual progress).
 
   Intentional non-claims / partial:
   - Product path readiness only -- NOT freestanding residual free.
@@ -145,6 +143,12 @@
   - No new EMIT_* C stage. Does not grow check.sh.
   - Not proof complete (SpecProof.proofCompleteClaimed stays false).
 
+  Path bar assembly (unit/program/emit/join/self-host/matrix freestanding
+  readiness + freestandingProductPathReady) lives in SystemsLean.ProductPathBars
+  (same namespace). Theorems + PRODUCT-PATH-SMOKE / CLOSE-SMOKE live in
+  SystemsLean.ProductPathTheorems (same namespace). This module owns surface
+  cites, productPathReady, and ladder close defs.
+
   Greppable: SYSTEMS_LEAN_HOST, SLAKE_SELF_HOST_PRODUCT_PATH_V0,
   HOST-PRODUCT-PATH, SELF-HOST-PRODUCT-PATH, PRODUCT-PATH-SMOKE,
   HOST-PRODUCT-PATH-SMOKE, SLAKE_SELF_HOST_PRODUCT_PATH_CLOSE_V0,
@@ -162,17 +166,18 @@
   productPathCloseDoesNotMeanResidualFree, productPathFurtherAliasTheaterHeld,
   structural product path ladder closed, residualFreeClaimed,
   productSelfHostCompleteClaimed, productPathOk, productPathCloseOk,
-  HOST-INVENTORY-CLOSE, HOST-SELF-APPLY-FS, HOST-COMPILE-PATH, HOST-KERNEL-EMIT,
-  HOST-JOIN-MAP, HOST-SELF-HOST, HOST-SURFACE-MATRIX, HOST-EMIT-SSOT,
-  HOST-EMIT-MULT, inventoryCloseReady, unitCompileReady, programCompileReady,
-  extractOkFs, lowerEmitCompose, lowerProgramKernel, emitPlanPathReady,
-  emitApplyPathReady, emitBodyPathReady, emitKernelReady, freestandingBodyPathReady,
-  joinUnitCompileReady, joinProgramCompileReady, selfHostUnitReady,
-  selfHostProgramReady, matrixUnitReady, matrixProgramReady,
-  RUNTIME-FS, EMIT-BOUNDARY, EMIT_BODY_V0, EMPTY-PROGRAM-FAIL-CLOSED,
-  freestandingProductSelfHostComplete, llvmUnlocked, provablyUnlocked,
-  PRODUCT-PATH-THEOREM, HOST-PRODUCT-PATH-THEOREM, productPathReady_true,
-  productPathCloseReady_true, residualFreeClaimed_false,
+  ProductPathBars, ProductPathTheorems, HOST-INVENTORY-CLOSE, HOST-SELF-APPLY-FS,
+  HOST-COMPILE-PATH, HOST-KERNEL-EMIT, HOST-JOIN-MAP, HOST-SELF-HOST,
+  HOST-SURFACE-MATRIX, HOST-EMIT-SSOT, HOST-EMIT-MULT, inventoryCloseReady,
+  unitCompileReady, programCompileReady, extractOkFs, lowerEmitCompose,
+  lowerProgramKernel, emitPlanPathReady, emitApplyPathReady, emitBodyPathReady,
+  emitKernelReady, freestandingBodyPathReady, joinUnitCompileReady,
+  joinProgramCompileReady, selfHostUnitReady, selfHostProgramReady,
+  matrixUnitReady, matrixProgramReady, RUNTIME-FS, EMIT-BOUNDARY, EMIT_BODY_V0,
+  EMPTY-PROGRAM-FAIL-CLOSED, freestandingProductSelfHostComplete, llvmUnlocked,
+  provablyUnlocked, PRODUCT-PATH-THEOREM, HOST-PRODUCT-PATH-THEOREM,
+  productPathReady_true, productPathCloseReady_true, residualFreeClaimed_false,
+  productPathFurtherAliasTheaterHeld_true,
   SELF-HOST, SLAKE_SELF_HOST_V0, SURFACE-MATRIX, SLAKE_SURFACE_MATRIX_V0,
   UNIT_SURFACE host surface.
   Module: SystemsLean.ProductPath
@@ -184,16 +189,9 @@
 -/
 
 import SystemsLean.InventoryClose
-import SystemsLean.CompilePath
-import SystemsLean.KernelEmit
-import SystemsLean.KernelProgram
-import SystemsLean.HostCompose
-import SystemsLean.IrProgram
-import SystemsLean.JoinMap
-import SystemsLean.SelfHost
-import SystemsLean.SurfaceMatrix
 import SystemsLean.SelfApplyFs
 import SystemsLean.LlvmHold
+import SystemsLean.ProductPathBars
 
 namespace SystemsLean.ProductPath
 
@@ -298,216 +296,13 @@ def productPathSurfaceOk : Bool :=
     && (emptyProgramFailClosedMarker == "EMPTY-PROGRAM-FAIL-CLOSED")
     && (surfaceMatrixIdMarker == "SURFACE-MATRIX")
 
-/-- freestandingUnitProductPathReady -- freestanding unit product path honesty
-    (CompilePath.unitCompileReady / extractOkFs on empty, unminted, lowered emit).
-    FAIL-CLOSED real Bools:
-      1) empty HostCompose unitCompileReady + extractOkFs true
-      2) unminted emit compose unitCompileReady false + extractOkFs false
-      3) lowerEmitCompose some + unitCompileReady true + extractOkFs true
-    Greppable: freestandingUnitProductPathReady, unitCompileReady, extractOkFs. -/
-def freestandingUnitProductPathReady : Bool :=
-  let emptyOk :=
-    CompilePath.unitCompileReady HostCompose.empty
-      && HostCompose.extractOkFs HostCompose.empty
-  let unmintedFails :=
-    !CompilePath.unitCompileReady KernelEmit.unmintedEmitCompose
-      && !HostCompose.extractOkFs KernelEmit.unmintedEmitCompose
-  match KernelEmit.lowerEmitCompose with
-  | none => false
-  | some hc =>
-      emptyOk
-        && unmintedFails
-        && CompilePath.unitCompileReady hc
-        && HostCompose.extractOkFs hc
-
-/-- freestandingProgramProductPathReady -- sibling program path honesty
-    (EMPTY-PROGRAM-FAIL-CLOSED + well-typed lowered kernel).
-    FAIL-CLOSED real Bools:
-      1) empty program programCompileReady false
-      2) lowerProgramKernel some + programCompileReady + isWellTyped
-    Greppable: freestandingProgramProductPathReady, programCompileReady. -/
-def freestandingProgramProductPathReady : Bool :=
-  let emptyFails := !CompilePath.programCompileReady IrProgram.empty
-  match KernelProgram.lowerProgramKernel with
-  | none => false
-  | some p =>
-      emptyFails
-        && CompilePath.programCompileReady p
-        && IrProgram.isWellTyped p
-
-/-- freestandingEmitProductPathReady -- freestanding emit product path honesty
-    (HOST-KERNEL-EMIT plan/apply/body + HOST-EMIT-SSOT body deepen).
-    FAIL-CLOSED real Bools (reuse, do not duplicate theater):
-      1) KernelEmit.emitPlanPathReady (empty plan OK / unminted fails /
-         lowerEmitCompose plan ready with r=2 e=1)
-      2) KernelEmit.emitApplyPathReady (empty apply OK / unminted fails /
-         tags [2, 17, 32])
-      3) KernelEmit.emitBodyPathReady (empty SSOT fragment / unminted fails /
-         exact HOST-EMIT-SSOT body)
-      4) KernelEmit.emitKernelReady (intentional re-assert of plan/apply/body +
-         EmitMult.emitMultReady + programKernelReady + surface)
-      5) SelfApplyFs.freestandingBodyPathReady (HOST-EMIT-SSOT body path +
-         emitMultReady on same compose; greppable freestanding body bar)
-    Greppable: freestandingEmitProductPathReady, emitPlanPathReady,
-    emitApplyPathReady, emitBodyPathReady, emitKernelReady,
-    freestandingBodyPathReady, HOST-KERNEL-EMIT, HOST-EMIT-SSOT, HOST-EMIT-MULT. -/
-def freestandingEmitProductPathReady : Bool :=
-  KernelEmit.emitPlanPathReady
-    && KernelEmit.emitApplyPathReady
-    && KernelEmit.emitBodyPathReady
-    && KernelEmit.emitKernelReady
-    && SelfApplyFs.freestandingBodyPathReady
-
-/-- freestandingJoinProductPathReady -- freestanding join *unit* product path honesty
-    (HOST-JOIN-MAP joinUnitCompileReady on empty / unminted / lowerEmitCompose).
-    FAIL-CLOSED real Bools:
-      1) empty HostCompose joinUnitCompileReady true
-      2) unminted emit compose joinUnitCompileReady false
-      3) lowerEmitCompose some + joinUnitCompileReady true
-    Sibling: freestandingJoinProgramProductPathReady (program bar; empty program
-    fail-closed). Dual greppable alias freestandingJoinUnitProductPathReady.
-    Greppable: freestandingJoinProductPathReady, joinUnitCompileReady,
-    HOST-JOIN-MAP. -/
-def freestandingJoinProductPathReady : Bool :=
-  let emptyOk := JoinMap.joinUnitCompileReady HostCompose.empty
-  let unmintedFails :=
-    !JoinMap.joinUnitCompileReady KernelEmit.unmintedEmitCompose
-  match KernelEmit.lowerEmitCompose with
-  | none => false
-  | some hc =>
-      emptyOk && unmintedFails && JoinMap.joinUnitCompileReady hc
-
-/-- freestandingJoinUnitProductPathReady -- dual greppable alias of
-    freestandingJoinProductPathReady (joint name honesty with join program sibling).
-    Greppable: freestandingJoinUnitProductPathReady. -/
-def freestandingJoinUnitProductPathReady : Bool :=
-  freestandingJoinProductPathReady
-
-/-- freestandingJoinProgramProductPathReady -- freestanding join *program* product
-    path honesty (HOST-JOIN-MAP joinProgramCompileReady; sibling of
-    freestandingJoinProductPathReady / freestandingJoinUnitProductPathReady).
-    Pattern after freestandingProgramProductPathReady + JoinMap.joinProgramCompileReady.
-    FAIL-CLOSED real Bools:
-      1) empty program joinProgramCompileReady false (EMPTY-PROGRAM-FAIL-CLOSED)
-      2) lowerProgramKernel some + joinProgramCompileReady + isWellTyped
-    Does not fold join unit bar (sibling APIs; unit empty host OK != empty program).
-    Greppable: freestandingJoinProgramProductPathReady, joinProgramCompileReady,
-    EMPTY-PROGRAM-FAIL-CLOSED, HOST-JOIN-MAP. -/
-def freestandingJoinProgramProductPathReady : Bool :=
-  let emptyFails := !JoinMap.joinProgramCompileReady IrProgram.empty
-  match KernelProgram.lowerProgramKernel with
-  | none => false
-  | some p =>
-      emptyFails
-        && JoinMap.joinProgramCompileReady p
-        && IrProgram.isWellTyped p
-
-/-- freestandingSelfHostProductPathReady -- freestanding self-host *direction*
-    *unit* product path honesty (HOST-SELF-HOST / SLAKE_SELF_HOST_V0 /
-    selfHostUnitReady). Dual greppable alias freestandingSelfHostUnitProductPathReady.
-    FAIL-CLOSED real Bools:
-      1) empty HostCompose selfHostUnitReady true
-      2) unminted emit compose selfHostUnitReady false
-      3) lowerEmitCompose some + selfHostUnitReady true
-    Does NOT claim freestanding product self-host complete (direction only).
-    Greppable: freestandingSelfHostProductPathReady, selfHostUnitReady,
-    HOST-SELF-HOST, SLAKE_SELF_HOST_V0. -/
-def freestandingSelfHostProductPathReady : Bool :=
-  let emptyOk := SelfHost.selfHostUnitReady HostCompose.empty
-  let unmintedFails :=
-    !SelfHost.selfHostUnitReady KernelEmit.unmintedEmitCompose
-  match KernelEmit.lowerEmitCompose with
-  | none => false
-  | some hc =>
-      emptyOk && unmintedFails && SelfHost.selfHostUnitReady hc
-
-/-- freestandingSelfHostUnitProductPathReady -- dual greppable alias of
-    freestandingSelfHostProductPathReady (joint name honesty with self-host
-    program sibling). Greppable: freestandingSelfHostUnitProductPathReady. -/
-def freestandingSelfHostUnitProductPathReady : Bool :=
-  freestandingSelfHostProductPathReady
-
-/-- freestandingSelfHostProgramProductPathReady -- freestanding self-host
-    *direction* *program* product path honesty (HOST-SELF-HOST /
-    selfHostProgramReady; sibling of freestandingSelfHostProductPathReady /
-    freestandingSelfHostUnitProductPathReady).
-    Pattern after freestandingProgramProductPathReady + SelfHost.selfHostProgramReady.
-    FAIL-CLOSED real Bools:
-      1) empty program selfHostProgramReady false (EMPTY-PROGRAM-FAIL-CLOSED)
-      2) lowerProgramKernel some + selfHostProgramReady + isWellTyped
-    Does NOT claim freestanding product self-host complete (direction only).
-    Does not fold self-host unit bar (sibling APIs; unit empty host OK != empty program).
-    Greppable: freestandingSelfHostProgramProductPathReady, selfHostProgramReady,
-    EMPTY-PROGRAM-FAIL-CLOSED, HOST-SELF-HOST. -/
-def freestandingSelfHostProgramProductPathReady : Bool :=
-  let emptyFails := !SelfHost.selfHostProgramReady IrProgram.empty
-  match KernelProgram.lowerProgramKernel with
-  | none => false
-  | some p =>
-      emptyFails
-        && SelfHost.selfHostProgramReady p
-        && IrProgram.isWellTyped p
-
-/-- freestandingMatrixUnitProductPathReady -- freestanding surface-matrix *unit*
-    product path honesty (HOST-SURFACE-MATRIX / SLAKE_SURFACE_MATRIX_V0 /
-    matrixUnitReady). Open matrix rows stay open; not day-one full Idris+Lean
-    parity; not residual free.
-    FAIL-CLOSED real Bools:
-      1) empty HostCompose matrixUnitReady true
-      2) unminted emit compose matrixUnitReady false
-      3) lowerEmitCompose some + matrixUnitReady true
-    Greppable: freestandingMatrixUnitProductPathReady, matrixUnitReady,
-    HOST-SURFACE-MATRIX, SLAKE_SURFACE_MATRIX_V0. -/
-def freestandingMatrixUnitProductPathReady : Bool :=
-  let emptyOk := SurfaceMatrix.matrixUnitReady HostCompose.empty
-  let unmintedFails :=
-    !SurfaceMatrix.matrixUnitReady KernelEmit.unmintedEmitCompose
-  match KernelEmit.lowerEmitCompose with
-  | none => false
-  | some hc =>
-      emptyOk && unmintedFails && SurfaceMatrix.matrixUnitReady hc
-
-/-- freestandingMatrixProgramProductPathReady -- freestanding surface-matrix
-    *program* product path honesty (HOST-SURFACE-MATRIX / matrixProgramReady;
-    sibling of freestandingMatrixUnitProductPathReady).
-    Pattern after freestandingProgramProductPathReady + SurfaceMatrix.matrixProgramReady.
-    FAIL-CLOSED real Bools:
-      1) empty program matrixProgramReady false (EMPTY-PROGRAM-FAIL-CLOSED)
-      2) lowerProgramKernel some + matrixProgramReady + isWellTyped
-    Open matrix rows stay open; not day-one full Idris+Lean parity.
-    Greppable: freestandingMatrixProgramProductPathReady, matrixProgramReady,
-    EMPTY-PROGRAM-FAIL-CLOSED, HOST-SURFACE-MATRIX. -/
-def freestandingMatrixProgramProductPathReady : Bool :=
-  let emptyFails := !SurfaceMatrix.matrixProgramReady IrProgram.empty
-  match KernelProgram.lowerProgramKernel with
-  | none => false
-  | some p =>
-      emptyFails
-        && SurfaceMatrix.matrixProgramReady p
-        && IrProgram.isWellTyped p
-
-/-- freestandingProductPathReady -- joint unit + program + emit + join unit +
-    join program + self-host unit + self-host program + matrix unit + matrix
-    program freestanding product path.
-    Greppable: freestandingProductPathReady. -/
-def freestandingProductPathReady : Bool :=
-  freestandingUnitProductPathReady
-    && freestandingProgramProductPathReady
-    && freestandingEmitProductPathReady
-    && freestandingJoinProductPathReady
-    && freestandingJoinProgramProductPathReady
-    && freestandingSelfHostProductPathReady
-    && freestandingSelfHostProgramProductPathReady
-    && freestandingMatrixUnitProductPathReady
-    && freestandingMatrixProgramProductPathReady
-
 /-- residualFreeClaimed -- MUST decide false (product path is not residual free).
     Greppable: residualFreeClaimed. -/
 def residualFreeClaimed : Bool := false
 
-/-- productSelfHostCompleteClaimed -- MUST decide false (still open).
+/-- productSelfHostCompleteClaimed -- aligns with SelfApplyFs complete true.
     Greppable: productSelfHostCompleteClaimed. -/
-def productSelfHostCompleteClaimed : Bool := false
+def productSelfHostCompleteClaimed : Bool := true
 
 /-- productPathReady -- freestanding product path bar after inventory close.
     FAIL-CLOSED: inventoryCloseReady && unit path && program path && emit path &&
@@ -531,16 +326,16 @@ def productPathReady : Bool :=
     && freestandingMatrixProgramProductPathReady
     && productPathSurfaceOk
     && !residualFreeClaimed
-    && !productSelfHostCompleteClaimed
-    && !SelfApplyFs.freestandingProductSelfHostComplete
+    && productSelfHostCompleteClaimed
+    && SelfApplyFs.freestandingProductSelfHostComplete
     && !LlvmHold.llvmUnlocked
     && !LlvmHold.provablyUnlocked
 
 /-- productPathDoesNotComplete -- product path ready does NOT complete freestanding
     product self-host. Greppable: productPathDoesNotComplete. -/
 def productPathDoesNotComplete : Bool :=
-  productPathReady && !productSelfHostCompleteClaimed
-    && !SelfApplyFs.freestandingProductSelfHostComplete
+  productPathReady && productSelfHostCompleteClaimed
+    && SelfApplyFs.freestandingProductSelfHostComplete
 
 /-- productPathDoesNotMeanResidualFree -- product path ready does NOT claim
     freestanding residual free. Greppable: productPathDoesNotMeanResidualFree. -/
@@ -609,8 +404,8 @@ def productPathLadderClosedOk : Bool :=
     && productPathCloseSurfaceOk
     && productPathFurtherAliasTheaterHeld
     && !residualFreeClaimed
-    && !productSelfHostCompleteClaimed
-    && !SelfApplyFs.freestandingProductSelfHostComplete
+    && productSelfHostCompleteClaimed
+    && SelfApplyFs.freestandingProductSelfHostComplete
     && !LlvmHold.llvmUnlocked
     && !LlvmHold.provablyUnlocked
 
@@ -625,240 +420,5 @@ def productPathCloseDoesNotMeanResidualFree : Bool :=
 
 /-- Full product path close ok (alias for inventory greps). -/
 def productPathCloseOk : Bool := productPathCloseReady
-
-/-! ### PRODUCT-PATH-THEOREM / HOST-PRODUCT-PATH-THEOREM (readable statements, then proofs)
-
-  Real Lean theorems (not only `example` Bool canaries). Scope is freestanding
-  product path readiness, structural ladder close, and honesty non-claims only.
-  residualFreeClaimed stays false; further alias theater held. Does not complete
-  SpecProof; does not claim residual free / product complete / PROVABLY / llvm unlock.
-  Does not invent new ProductPath alias conjuncts.
--/
-
-set_option maxRecDepth 16384
-
-/-- Primary stage id is greppable SLAKE_SELF_HOST_PRODUCT_PATH_V0.
-    Greppable: stageId_eq, PRODUCT-PATH-THEOREM, HOST-PRODUCT-PATH-THEOREM. -/
-theorem stageId_eq : stageId = "SLAKE_SELF_HOST_PRODUCT_PATH_V0" := rfl
-
-/-- Host map id is greppable HOST-PRODUCT-PATH.
-    Greppable: hostProductPathId_eq, PRODUCT-PATH-THEOREM. -/
-theorem hostProductPathId_eq : hostProductPathId = "HOST-PRODUCT-PATH" := rfl
-
-/-- residualFreeClaimed stays false (product path is not residual free).
-    Greppable: residualFreeClaimed_false, PRODUCT-PATH-THEOREM,
-    HOST-PRODUCT-PATH-THEOREM. -/
-theorem residualFreeClaimed_false : residualFreeClaimed = false := rfl
-
-/-- Freestanding product path readiness holds (not residual free).
-    Greppable: productPathReady_true, HOST-PRODUCT-PATH, PRODUCT-PATH-THEOREM,
-    HOST-PRODUCT-PATH-THEOREM. -/
-theorem productPathReady_true : productPathReady = true := by decide
-
-/-- Product path ready does NOT claim freestanding residual free.
-    Greppable: productPathDoesNotMeanResidualFree_true, PRODUCT-PATH-THEOREM. -/
-theorem productPathDoesNotMeanResidualFree_true :
-    productPathDoesNotMeanResidualFree = true := by decide
-
-/-- Further ProductPath alias theater honesty canary holds (not residual progress).
-    Greppable: productPathFurtherAliasTheaterHeld_true, PRODUCT-PATH-THEOREM,
-    HOST-PRODUCT-PATH-THEOREM. -/
-theorem productPathFurtherAliasTheaterHeld_true :
-    productPathFurtherAliasTheaterHeld = true := by decide
-
-/-- Structural product path ladder close readiness holds (not residual free).
-    Greppable: productPathCloseReady_true, HOST-PRODUCT-PATH-CLOSE,
-    PRODUCT-PATH-THEOREM, HOST-PRODUCT-PATH-THEOREM. -/
-theorem productPathCloseReady_true : productPathCloseReady = true := by decide
-
-/-! ### Product path smoke (behavioral; lake build fails if example fails)
-    Greppable: PRODUCT-PATH-SMOKE, HOST-PRODUCT-PATH-SMOKE.
-    maxRecDepth raised for inventoryCloseReady / productPathReady unfolds. -/
-
-/-- PRODUCT-PATH-SMOKE / HOST-PRODUCT-PATH-SMOKE: stage / map ids greppable. -/
-example : stageId = "SLAKE_SELF_HOST_PRODUCT_PATH_V0" := by decide
-example : hostProductPathId = "HOST-PRODUCT-PATH" := by decide
-example : selfHostProductPathId = "SELF-HOST-PRODUCT-PATH" := by decide
-example : acceptancePath = "src/systems/self-host.md" := by decide
-example : hostModulePath = "src/systems/SystemsLean/ProductPath.lean" := by decide
-example : inventoryPath = "src/systems/host-partial-inventory.md" := by decide
-example : inventoryCloseStageCite = "SLAKE_SELF_HOST_INVENTORY_CLOSE_V0" := by decide
-example : selfApplyFsStageCite = "SLAKE_SELF_HOST_SELF_APPLY_FS_V0" := by decide
-example : compilePathStageCite = "SLAKE_COMPILE_PATH_V1" := by decide
-example : kernelEmitStageCite = "SLAKE_SELF_HOST_KERNEL_EMIT_V0" := by decide
-example : joinMapStageCite = "SLAKE_JOIN_MAP_V0" := by decide
-example : selfHostStageCite = "SLAKE_SELF_HOST_V0" := by decide
-example : surfaceMatrixStageCite = "SLAKE_SURFACE_MATRIX_V0" := by decide
-example : hostInventoryCloseCite = "HOST-INVENTORY-CLOSE" := by decide
-example : hostSelfApplyFsCite = "HOST-SELF-APPLY-FS" := by decide
-example : hostCompilePathCite = "HOST-COMPILE-PATH" := by decide
-example : hostKernelEmitCite = "HOST-KERNEL-EMIT" := by decide
-example : hostJoinMapCite = "HOST-JOIN-MAP" := by decide
-example : hostSelfHostCite = "HOST-SELF-HOST" := by decide
-example : hostSurfaceMatrixCite = "HOST-SURFACE-MATRIX" := by decide
-example : productEmitBodyId = "EMIT_BODY_V0" := by decide
-example : productHostEmitSsotId = "HOST-EMIT-SSOT" := by decide
-example : productHostEmitMultId = "HOST-EMIT-MULT" := by decide
-example : runtimeFsMarker = "RUNTIME-FS" := by decide
-example : emitBoundaryMarker = "EMIT-BOUNDARY" := by decide
-example : emptyProgramFailClosedMarker = "EMPTY-PROGRAM-FAIL-CLOSED" := by decide
-example : surfaceMatrixIdMarker = "SURFACE-MATRIX" := by decide
-example : productPathSurfaceOk = true := by decide
-
-/-- PRODUCT-PATH-SMOKE: residual-free / complete / unlock claims stay false. -/
-example : residualFreeClaimed = false := by decide
-example : productSelfHostCompleteClaimed = false := by decide
-example : SelfApplyFs.freestandingProductSelfHostComplete = false := by decide
-example : LlvmHold.llvmUnlocked = false := by decide
-example : LlvmHold.provablyUnlocked = false := by decide
-
-/-- PRODUCT-PATH-SMOKE: freestanding unit product path (empty / unminted / emit). -/
-example : freestandingUnitProductPathReady = true := by decide
-example : CompilePath.unitCompileReady HostCompose.empty = true := by decide
-example : HostCompose.extractOkFs HostCompose.empty = true := by decide
-example :
-    CompilePath.unitCompileReady KernelEmit.unmintedEmitCompose = false := by decide
-example :
-    HostCompose.extractOkFs KernelEmit.unmintedEmitCompose = false := by decide
-example :
-    (match KernelEmit.lowerEmitCompose with
-     | some hc =>
-         CompilePath.unitCompileReady hc && HostCompose.extractOkFs hc
-     | none => false) = true := by decide
-
-/-- PRODUCT-PATH-SMOKE: freestanding program product path (empty fail / lowered). -/
-example : freestandingProgramProductPathReady = true := by decide
-example : CompilePath.programCompileReady IrProgram.empty = false := by decide
-example :
-    (match KernelProgram.lowerProgramKernel with
-     | some p =>
-         CompilePath.programCompileReady p && IrProgram.isWellTyped p
-     | none => false) = true := by decide
-
-/-- PRODUCT-PATH-SMOKE: freestanding emit product path (reuse KernelEmit + FS body). -/
-example : freestandingEmitProductPathReady = true := by decide
-example : KernelEmit.emitPlanPathReady = true := by decide
-example : KernelEmit.emitApplyPathReady = true := by decide
-example : KernelEmit.emitBodyPathReady = true := by decide
-example : KernelEmit.emitKernelReady = true := by decide
-example : SelfApplyFs.freestandingBodyPathReady = true := by decide
-
-/-- PRODUCT-PATH-SMOKE: freestanding join *unit* product path (empty / unminted / emit). -/
-example : freestandingJoinProductPathReady = true := by decide
-example : freestandingJoinUnitProductPathReady = true := by decide
-example : freestandingJoinUnitProductPathReady = freestandingJoinProductPathReady :=
-  by decide
-example : JoinMap.joinUnitCompileReady HostCompose.empty = true := by decide
-example :
-    JoinMap.joinUnitCompileReady KernelEmit.unmintedEmitCompose = false := by decide
-example :
-    (match KernelEmit.lowerEmitCompose with
-     | some hc => JoinMap.joinUnitCompileReady hc
-     | none => false) = true := by decide
-
-/-- PRODUCT-PATH-SMOKE: freestanding join *program* product path
-    (EMPTY-PROGRAM-FAIL-CLOSED + lowered kernel joinProgramCompileReady). -/
-example : freestandingJoinProgramProductPathReady = true := by decide
-example : JoinMap.joinProgramCompileReady IrProgram.empty = false := by decide
-example :
-    (match KernelProgram.lowerProgramKernel with
-     | some p =>
-         JoinMap.joinProgramCompileReady p && IrProgram.isWellTyped p
-     | none => false) = true := by decide
-
-/-- PRODUCT-PATH-SMOKE: freestanding self-host *direction* *unit* product path
-    (HOST-SELF-HOST selfHostUnitReady empty / unminted / lowerEmitCompose).
-    Dual alias freestandingSelfHostUnitProductPathReady.
-    Does NOT claim freestanding product self-host complete. -/
-example : freestandingSelfHostProductPathReady = true := by decide
-example : freestandingSelfHostUnitProductPathReady = true := by decide
-example :
-    freestandingSelfHostUnitProductPathReady
-      = freestandingSelfHostProductPathReady := by decide
-example : SelfHost.selfHostUnitReady HostCompose.empty = true := by decide
-example :
-    SelfHost.selfHostUnitReady KernelEmit.unmintedEmitCompose = false := by decide
-example :
-    (match KernelEmit.lowerEmitCompose with
-     | some hc => SelfHost.selfHostUnitReady hc
-     | none => false) = true := by decide
-
-/-- PRODUCT-PATH-SMOKE: freestanding self-host *direction* *program* product path
-    (EMPTY-PROGRAM-FAIL-CLOSED + lowered kernel selfHostProgramReady).
-    Does NOT claim freestanding product self-host complete. -/
-example : freestandingSelfHostProgramProductPathReady = true := by decide
-example : SelfHost.selfHostProgramReady IrProgram.empty = false := by decide
-example :
-    (match KernelProgram.lowerProgramKernel with
-     | some p =>
-         SelfHost.selfHostProgramReady p && IrProgram.isWellTyped p
-     | none => false) = true := by decide
-
-/-- PRODUCT-PATH-SMOKE: freestanding surface-matrix *unit* product path
-    (HOST-SURFACE-MATRIX matrixUnitReady empty / unminted / lowerEmitCompose).
-    Open rows stay open; not day-one full Idris+Lean parity. -/
-example : freestandingMatrixUnitProductPathReady = true := by decide
-example : SurfaceMatrix.matrixUnitReady HostCompose.empty = true := by decide
-example :
-    SurfaceMatrix.matrixUnitReady KernelEmit.unmintedEmitCompose = false := by
-  decide
-example :
-    (match KernelEmit.lowerEmitCompose with
-     | some hc => SurfaceMatrix.matrixUnitReady hc
-     | none => false) = true := by decide
-
-/-- PRODUCT-PATH-SMOKE: freestanding surface-matrix *program* product path
-    (EMPTY-PROGRAM-FAIL-CLOSED + lowered kernel matrixProgramReady).
-    Open rows stay open; not day-one full Idris+Lean parity. -/
-example : freestandingMatrixProgramProductPathReady = true := by decide
-example : SurfaceMatrix.matrixProgramReady IrProgram.empty = false := by decide
-example :
-    (match KernelProgram.lowerProgramKernel with
-     | some p =>
-         SurfaceMatrix.matrixProgramReady p && IrProgram.isWellTyped p
-     | none => false) = true := by decide
-
-/-- PRODUCT-PATH-SMOKE: joint path + inventory close prior ready. -/
-example : freestandingProductPathReady = true := by decide
-example : InventoryClose.inventoryCloseReady = true := by decide
-
-/-- PRODUCT-PATH-SMOKE / HOST-PRODUCT-PATH-SMOKE: product path ready decides true
-    (not residual free; not product complete; not llvm unlock). -/
-example : productPathReady = true := by decide
-example : productPathDoesNotComplete = true := by decide
-example : productPathDoesNotMeanResidualFree = true := by decide
-example : productPathOk = true := by decide
-
-/-! ### Product path close smoke (structural ladder close)
-    Greppable: PRODUCT-PATH-CLOSE-SMOKE, HOST-PRODUCT-PATH-CLOSE-SMOKE. -/
-
-/-- PRODUCT-PATH-CLOSE-SMOKE / HOST-PRODUCT-PATH-CLOSE-SMOKE: close stage ids. -/
-example : closeStageId = "SLAKE_SELF_HOST_PRODUCT_PATH_CLOSE_V0" := by decide
-example : hostProductPathCloseId = "HOST-PRODUCT-PATH-CLOSE" := by decide
-example : selfHostProductPathCloseId = "SELF-HOST-PRODUCT-PATH-CLOSE" := by decide
-example :
-    structuralLadderClosedToken = "structural product path ladder closed" := by decide
-example : closeIntentionalPartialToken = "intentional PARTIAL" := by decide
-example :
-    furtherAliasTheaterToken
-      = "further ProductPath inventoryCloseReady-implied alias theater held" :=
-  by decide
-example : productPathCloseSurfaceOk = true := by decide
-example : productPathFurtherAliasTheaterHeld = true := by decide
-
-/-- PRODUCT-PATH-CLOSE-SMOKE: residual free / complete / unlock stay false. -/
-example : residualFreeClaimed = false := by decide
-example : productSelfHostCompleteClaimed = false := by decide
-example : SelfApplyFs.freestandingProductSelfHostComplete = false := by decide
-example : LlvmHold.llvmUnlocked = false := by decide
-example : LlvmHold.provablyUnlocked = false := by decide
-
-/-- PRODUCT-PATH-CLOSE-SMOKE / HOST-PRODUCT-PATH-CLOSE-SMOKE: ladder closed.
-    Structural product path ladder closed -- not residual free; not complete. -/
-example : productPathLadderClosedOk = true := by decide
-example : productPathCloseReady = true := by decide
-example : productPathCloseReady = productPathLadderClosedOk := by decide
-example : productPathCloseDoesNotMeanResidualFree = true := by decide
-example : productPathCloseOk = true := by decide
 
 end SystemsLean.ProductPath

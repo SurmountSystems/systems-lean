@@ -29,8 +29,9 @@ HOST-PRODUCT-PATH freestandingEmitProductPathReady reuses KernelEmit plan/apply/
 **SH4 emit kernel:** `SystemsLean/KernelEmit.lean` (**SELF-HOST-KERNEL-EMIT** /
 **HOST-KERNEL-EMIT** / `SLAKE_SELF_HOST_KERNEL_EMIT_V0`) composes EmitPlan /
 EmitApply / EmitBody + Mult emit over program kernel (KERNEL-EMIT-SMOKE); no new
-EMIT_* C residual stage; product wire bulk still frozen at EMIT_BODY_V0 except
-HOST-EMIT-SSOT + HOST-EMIT-MULT.
+EMIT_* C residual stage; product wire stage id remains **EMIT_BODY_V0** (map only);
+host-owned Mult..Body product text is HOST-EMIT-SSOT + HOST-EMIT-BODY + Mult..Apply
+(ownership map `emit/host-owned-emit.md`).
 **Emit freestanding path parity:** `SystemsLean/ParityEmit.lean`
 (**HOST-PARITY-EMIT** / **SELF-HOST-PARITY-EMIT** /
 `SLAKE_SELF_HOST_PARITY_EMIT_V0`) Mult+Linear+Types+Program+Emit freestanding
@@ -272,8 +273,8 @@ this checker via `slake_consume_token_check_fail_closed`),
 **EMIT_PLAN_V0** (`slake_emit_plan_from_compose` readiness inventory),
 **EMIT_APPLY_V0** (`slake_emit_apply_from_compose` fixed tag buffer), and
 **EMIT_BODY_V0** (`slake_emit_body_from_compose` fixed C body fragment);
-`just out-freestanding-c` copies into release.
-Structure compile path stays separate (`SLAKE_COMPILE_PATH_V0`).
+`just build` copies into release.
+Structure compile path is host `SLAKE_COMPILE_PATH_V1` / pure Nix (V0 shell stamp deleted).
 
 ## Non-claims
 

@@ -1,0 +1,129 @@
+# HOST-EMIT-APPLY -- emit apply freestanding C product text (durable host artifact)
+# SSoT owner: SystemsLean.EmitApply (src/systems/SystemsLean/EmitApply.lean)
+#   applyHeaderFragment + applyBodyFragment
+# Lean FreestandingEmit embeds emit apply product text from this artifact (no second dialect).
+# APPLY_C_HEADER / APPLY_C_BODY blocks must match applyHeaderFragment / applyBodyFragment.
+# Product API: slake_emit_apply + from_compose + is_valid; SLAKE_EMIT_APPLY_CAP 32.
+# Product wire stage id EMIT_APPLY_V0 remains on the wire (map only).
+# Host stage ids only: HOST-EMIT-APPLY / SELF-HOST-EMIT-APPLY / SLAKE_SELF_HOST_EMIT_APPLY_V0.
+# Fixed tag buffer only; not full C body emit; not residual free.
+# Do not mint EMIT_APPLY residual C stage ladder as freestanding residual progress.
+HOST-EMIT-APPLY
+NON-SSOT
+SELF-HOST-EMIT-APPLY
+SLAKE_SELF_HOST_EMIT_APPLY_V0
+EMIT_APPLY_V0
+# APPLY_C_HEADER_BEGIN
+/* ---- EMIT_APPLY_V0 -- apply plan tags into fixed buffer (not residual free).
+ * Serialisation of live node mult/kind tags from a checked host compose.
+ * Not full product C body codegen; not CFG/SSA; not residual free; no product GC.
+ * Greppable: EMIT_APPLY_V0, EMIT_PLAN_V0, HOST_COMPOSE_V0, RUNTIME-FS
+ *
+ * Tag packing (one byte per live program node, order = program node order):
+ *   tag = (uint8_t)(((unsigned)mult & 0xFu) << 4 | ((unsigned)kind & 0xFu))
+ * Mult codes (high nibble): MULT_0=0, MULT_1=1, MULT_OMEGA=2 (enum slake_mult).
+ * Kind codes (low nibble): VALUE=0, LINEAR=1, ERASED=2 (enum slake_ir_kind).
+ *
+ * Capacity honesty: SLAKE_EMIT_APPLY_CAP (32) is defensive headroom above
+ * SLAKE_IR_PROGRAM_CAP (8). Honest compose mutators (push_node) cannot grow
+ * live node count past PROGRAM_CAP, so the apply overflow branch is unreachable
+ * via public APIs today; retained for poisoned prog.count and future program growth.
+ * APPLY_CAP is not a claim that apply supports 32 live nodes while the program
+ * still caps at 8.
+ * HOST-EMIT-APPLY: dialect from SystemsLean.EmitApply + host_emit_apply.ssot.txt
+ * (Lean FreestandingEmit embeds this emit apply product text).
+ */
+#define SLAKE_EMIT_APPLY_CAP 32
+
+typedef struct slake_emit_apply {
+  uint8_t tags[SLAKE_EMIT_APPLY_CAP]; /* packed: mult high nibble, kind low */
+  uint8_t count; /* number of tags written */
+  uint8_t valid; /* 1 after successful apply */
+} slake_emit_apply;
+
+const char *slake_emit_apply_id(void); /* exact "EMIT_APPLY_V0" */
+
+/* Apply from host compose: requires compose check_fail_closed OK.
+ * Walks live program nodes in order; for each node writes one tag byte.
+ * 0 ok; -1 null out or null/invalid/ill-typed compose or check fails or
+ * count would exceed SLAKE_EMIT_APPLY_CAP (defensive; see CAP honesty above --
+ * live count is bounded by SLAKE_IR_PROGRAM_CAP via honest mutators).
+ * On failure if out non-null: set valid=0 and count=0 (tags left unspecified).
+ * Empty well-typed ready compose (0 nodes) is OK: count=0, valid=1.
+ * Greppable: EMIT_APPLY_V0, EMIT_PLAN_V0, HOST_COMPOSE_V0, RUNTIME-FS
+ * Honesty: not residual free; not full C body emit; not CFG/SSA.
+ */
+int slake_emit_apply_from_compose(const slake_host_compose *hc,
+    slake_emit_apply *out);
+
+/* Thin: 1 if non-null and valid; else 0 */
+int slake_emit_apply_is_valid(const slake_emit_apply *a);
+# APPLY_C_HEADER_END
+# APPLY_C_BODY_BEGIN
+/* ---- EMIT_APPLY_V0 (apply plan tags from host compose; not residual free) ----
+ * Serialisation of live node mult/kind into a fixed buffer. Not full C body emit.
+ * Greppable: EMIT_APPLY_V0, EMIT_PLAN_V0, HOST_COMPOSE_V0, RUNTIME-FS.
+ * Tag: high nibble = mult (0/1/2), low nibble = kind (0/1/2).
+ * CAP honesty: APPLY_CAP 32 is defensive headroom above PROGRAM_CAP 8;
+ * overflow branch unreachable via honest push_node (see header comment).
+ * HOST-EMIT-APPLY: dialect from SystemsLean.EmitApply + host_emit_apply.ssot.txt
+ * (Lean FreestandingEmit embeds this emit apply product text).
+ */
+
+const char *slake_emit_apply_id(void)
+{
+  return "EMIT_APPLY_V0";
+}
+
+int slake_emit_apply_from_compose(const slake_host_compose *hc,
+    slake_emit_apply *out)
+{
+  uint8_t i;
+  uint8_t n;
+
+  if (out == 0) {
+    return -1;
+  }
+  /* Fail closed: clear count/valid before further checks. */
+  out->count = 0;
+  out->valid = 0;
+
+  if (hc == 0 || hc->valid == 0) {
+    return -1;
+  }
+  if (slake_host_compose_is_well_typed(hc) != 1) {
+    return -1;
+  }
+  if (slake_host_compose_check_fail_closed(hc) != (int)SLAKE_EXTRACT_OK) {
+    return -1;
+  }
+
+  n = hc->graph.prog.count;
+  /* Defensive: APPLY_CAP (32) > PROGRAM_CAP (8); honest mutators cannot hit this. */
+  if (n > (uint8_t)SLAKE_EMIT_APPLY_CAP) {
+    return -1;
+  }
+
+  for (i = 0; i < n; i++) {
+    enum slake_mult mult;
+    enum slake_ir_kind kind;
+    mult = hc->graph.prog.nodes[i].mult;
+    kind = hc->graph.prog.nodes[i].kind;
+    /* Pack: mult high nibble, kind low nibble (codes match enums 0/1/2). */
+    out->tags[i] = (uint8_t)((((unsigned)mult & 0xFu) << 4)
+        | ((unsigned)kind & 0xFu));
+  }
+
+  out->count = n;
+  out->valid = 1;
+  return 0;
+}
+
+int slake_emit_apply_is_valid(const slake_emit_apply *a)
+{
+  if (a == 0 || a->valid == 0) {
+    return 0;
+  }
+  return 1;
+}
+# APPLY_C_BODY_END

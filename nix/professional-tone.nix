@@ -7,10 +7,10 @@
 # substring, so technical words like "class" / "pass" are not hit by short
 # list entries). Does not scan Lean, C, shell, or other extensions in v1.
 #
-# Skips: .git, ref/, .cache, .lake, __pycache__, result*, flake.lock-style
+# Skips: .git, ref/, skills/, .cache, .lake, __pycache__, result*, flake.lock-style
 # non-md (only *.md are collected). Prefer root = novelSource from
-# novel-source.nix so ref/ is already filtered; local skipDir is defense in
-# depth when root is a worktree path.
+# novel-source.nix so ref/ and skills/ are already filtered; local skipDir is
+# defense in depth when root is a worktree path.
 #
 #   import ./professional-tone.nix { inherit lib; root = novelSource; }
 #   -> { ok, violations, summary, files, bannedWords }
@@ -21,7 +21,10 @@
 let
   # Short professional-repo list. Edit here only; keep narrow to limit
   # false positives. Whole-token match (see normalizeLine). Not an essay
-  # dictionary -- clear profanity and common demeaning slurs.
+  # dictionary -- clear profanity, demeaning slurs, and banned process jargon
+  # (operator 2026-07-31: fruit-metaphor residual verb + -ed/-ing is banned
+  # nonsense slang -- use split / module split / long-file split in all prose.
+  # Tokens listed below so the gate matches; do not re-list them in novel *.md.)
   bannedWords = [
     "fuck"
     "fucking"
@@ -48,12 +51,17 @@ let
     "faggot"
     "retard"
     "retarded"
+    # fruit-metaphor residual slang (operator ban 2026-07-31; keep tokens here only)
+    "peel"
+    "peeled"
+    "peeling"
   ];
 
   skipDir =
     name:
     name == ".git"
     || name == "ref"
+    || name == "skills"
     || name == ".cache"
     || name == ".lake"
     || name == "__pycache__"

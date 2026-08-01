@@ -44,7 +44,7 @@ Idris 2 and Lean 4 both inhabit dependent type theory, but they do not share one
 2. **Superset surface (phased).** Cover the *useful cores* of both languages with progressive gates. Day-one full upstream parity is not required and not claimed.
 3. **Minimum multiplicities only.** Quantitative Type Theory grades **0 / 1 / omega** -- only what freestanding Slake needs; no multiplicity zoo.
 4. **Linear/affine memory safety.** Safety on the product wire comes from ownership discipline and checks, **not** garbage collection.
-5. **Runtimeless freestanding C first.** Primary release surface `out/freestanding-c`. Dual residual honesty (product vs host elaborator).
+5. **Runtimeless freestanding C first.** Primary release surface `out/freestanding-c`. Dual residual honesty (product vs host elaborator): product residual free may be claimed while host Lake residual remains.
 6. **CompCert path.** C sealable with CompCert when PROVABLY is earned with a real resolved `ccomp`.
 7. **LLVM / Rust path (later).** After self-host; layout-compatible link without classic foreign-function glue as the design bar -- not claimed early.
 8. **Three languages only.** Novel work is **Idris 2** (`src/idris2/`), **Lean 4** including Systems Lean / Slake (`src/lean4/`, `src/systems/`), or **pure modern Nix flakes** (`nix/`, thin `flake.nix`) designed as small modules for large language model attention limits. No project Python. No growing shell/bash mills. No bash/shell/Python smuggled inside Nix. Freestanding C is product *emit*, not a fourth source language. `just` is thin orchestration only. Full rule: `AGENTS.md` (Three languages only); terms: `doc/vocabulary.md`.
@@ -60,6 +60,23 @@ Idris 2 and Lean 4 both inhabit dependent type theory, but they do not share one
 3. Complete read-only references: `ref/Idris2`, `ref/lean4`.
 4. Isolation: all product work happens here unless a human explicitly escalates out of isolation.
 
+## Living product goal (after free + complete foundation)
+
+**Bootstrap Slake** with classic Lean **Lake** as the temporary host elaborator:
+
+| Stage | Meaning |
+|-------|---------|
+| **S0** (done) | Host foundation: free product wire + claim B writer path under Lake |
+| **S1** (next) | First named compiler surface (defined Mult unit input, checkable path) |
+| **S2-S3** | Emit subset; measured freestanding self-application of that subset |
+| **S4** | Retire Lake from product path only with evidence (never forge early) |
+
+Missing freestanding binary does **not** block bootstrap -- that is how bootstrap
+starts. Free and complete are foundation, not "Slake bootstrapped." Held tracks
+(PROVABLY, LLVM) do not auto-start. Plan:
+`.agents/plans/plan-residual-free-freestanding.md` Step 5; inventory
+`doc/dev/research/slake-first-compiler-surface-inventory-2026-08-01.md`.
+
 ---
 
 ## Honesty ladder
@@ -68,8 +85,8 @@ Idris 2 and Lean 4 both inhabit dependent type theory, but they do not share one
 |-------|----------------|
 | QTT multiplicities supported | Binder mult + use-check + tests |
 | Linear resources safe on product wire | Affine/use checks + residual gates |
-| Freestanding product | No Lean managed-runtime residual on product nm/IR |
-| GC-free / residual_free host elaborator | Measured residual; **never forge** |
+| Freestanding product / product residual free | No managed Lean / GC residual on product release wire + honesty agreement (claim A); dual residual: host elaborator residual separate |
+| GC-free / residual_free host elaborator | Separate from product free; measured residual; **never forge** Lake-gone while Lake elaborates host |
 | CompCert PROVABLY | Resolved real `ccomp` + full product matrix |
 | Rust interop without classic FFI | Concrete ABI/embed design + tests |
 | Superset of Idris 2 and Lean 4 | Explicit surface matrix + progressive gates |

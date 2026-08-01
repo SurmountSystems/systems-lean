@@ -35,11 +35,30 @@
   Partial theorems on EmitApply != host proof complete != residual free.
   Does not invent a second emit dialect; does not grow product C.
 
+  Host-owned freestanding product C scaffolding (HOST-EMIT-APPLY):
+  - Scaffolding text + emitApplyReady live in SystemsLean.EmitApplyScaffold
+    (same namespace; long-file peel). Greppable: applyHeaderFragment,
+    applyBodyFragment, emitApplyReady, SLAKE_SELF_HOST_EMIT_APPLY_V0.
+  - Lean owns freestanding emit apply product C scaffolding
+    (slake_emit_apply + SLAKE_EMIT_APPLY_CAP + from_compose + is_valid) via
+    scaffold fragments + durable SSOT.
+  - Durable artifact: src/systems/emit/host_emit_apply.ssot.txt
+    (APPLY_C_HEADER / APPLY_C_BODY blocks match applyHeaderFragment /
+    applyBodyFragment).
+  - FreestandingEmit embeds apply scaffolding from the durable SSOT; it must
+    not invent a second emit apply dialect.
+  - EMIT_APPLY_V0 / slake_emit_apply greppable on wire (map only).
+  - emitApplyReady: surface + honesty piece equality (scaffold).
+  - No new EMIT_APPLY residual C stage ladder (host stage ids only).
+  - Contiguous emit apply after Plan on product wire (depends on plan).
+
   Intentional non-claims / partial parity:
-  - PARTIAL vs full C EMIT_APPLY_V0: host uses List Nat tags (no fixed C array,
+  - PARTIAL vs full C EMIT_APPLY_V0 host model: host uses List Nat tags (no fixed C array,
     no null pointers, no exact -1 return codes).
   - APPLY_CAP is not a claim that apply supports 32 live nodes while the program
     still caps at 8.
+  - PARTIAL: emit apply product C text SSoT only; not full product module emit;
+    not compiler self-application; body bulk stays template (HOST-EMIT-SSOT keys only).
   - Not freestanding residual free. Not product C residual free.
   - Not PROVABLY. Not freestanding emit residual free.
   - Not proof complete (SpecProof.proofCompleteClaimed stays false).
@@ -51,8 +70,14 @@
   EMIT-APPLY-THEOREM, HOST-EMIT-APPLY-THEOREM, applyCap_eq_32, applyOk_empty_true,
   applyOk_linear_without_mint_false, packTag_linear,
   applyFromCompose_mult1_minted_tags, applyFromCompose_linear_and_erased_order,
-  applyIsValid_count_tags_desync_false
+  applyIsValid_count_tags_desync_false,
+  SLAKE_SELF_HOST_EMIT_APPLY_V0, HOST-EMIT-APPLY, SELF-HOST-EMIT-APPLY,
+  applyHeaderFragment, applyBodyFragment, emitApplyReady, NON-SSOT,
+  EMIT-APPLY-PRODUCT-SMOKE, HOST-EMIT-APPLY-SMOKE, EmitApplyScaffold,
+  applySsotArtifactPath, theorem emitApplyReady_true,
   UNIT_SURFACE host surface. Module: SystemsLean.EmitApply
+  Long-file peel: HOST-EMIT-APPLY scaffolding in SystemsLean.EmitApplyScaffold
+  (same namespace). Core dialect + theorems stay here.
   Red/green: just systems-host (nix/systems-host-presence/; flake checks.systems-host-presence); lake build when toolchain installed.
   Module must stay ASCII.
 -/
@@ -60,6 +85,7 @@
 import SystemsLean.Mult
 import SystemsLean.Types
 import SystemsLean.HostCompose
+import SystemsLean.EmitApplyScaffold
 
 namespace SystemsLean.EmitApply
 
@@ -383,5 +409,15 @@ example :
 example :
     (let a : Apply := { tags := [17, 2], count := 1, valid := true }
      !applyIsValid a) = true := by decide
+
+/-! ### HOST-EMIT-APPLY scaffolding peeled to EmitApplyScaffold (same namespace)
+    Greppable cites (defs live on EmitApplyScaffold): HOST-EMIT-APPLY,
+    SELF-HOST-EMIT-APPLY, SLAKE_SELF_HOST_EMIT_APPLY_V0, applyHeaderFragment,
+    applyBodyFragment, emitApplyReady, emitApplyOk, applyHeaderHonestyOk,
+    applyBodyHonestyOk, emitApplySurfaceOk, EMIT-APPLY-PRODUCT-SMOKE,
+    HOST-EMIT-APPLY-SMOKE, EmitApplyScaffold, theorem emitApplyReady_true,
+    NON-SSOT, src/systems/emit/host_emit_apply.ssot.txt.
+    Import SystemsLean.EmitApplyScaffold above. Product-text ownership only --
+    not residual free / not complete. -/
 
 end SystemsLean.EmitApply

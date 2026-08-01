@@ -1,5 +1,9 @@
 /* SPDX-License-Identifier: Unlicense */
-/* SLAKE_EMIT_FREESTANDING_C_V0 -- freestanding C definitions.
+/* SLAKE_EMIT_FREESTANDING_C_V0 template shell -- Mult..Body + banner via placeholders. */
+#include "slake_freestanding.h"
+
+/* ---- Banner / version / unit_translation (HOST-EMIT-BANNER) ----
+ * SLAKE_EMIT_FREESTANDING_C_V0 -- freestanding C definitions.
  * UNIT_TRANSLATION_V0 -- first real unit translation of UNIT_SURFACE modules.
  * UNIT_DEEPEN_V1 -- deepened mult/linear/erasure/extract contract map.
  * FAIL_CLOSED_CHECKER_V1 -- composed fail-closed checker + extract path.
@@ -19,17 +23,33 @@
  * host_emit_linear.ssot.txt (Lean freestanding emit embeds HOST-EMIT-LINEAR text).
  * HOST-EMIT-ERASURE -- Erasure product text from SystemsLean.EmitErasure +
  * host_emit_erasure.ssot.txt (Lean freestanding emit embeds HOST-EMIT-ERASURE text).
+ * HOST-EMIT-EXTRACT -- Extract + FAIL_CLOSED product text from SystemsLean.EmitExtract +
+ * host_emit_extract.ssot.txt (Lean freestanding emit embeds HOST-EMIT-EXTRACT text).
+ * HOST-EMIT-TYPES -- Types/TYPED_IR product text from SystemsLean.EmitTypes +
+ * host_emit_types.ssot.txt (Lean freestanding emit embeds HOST-EMIT-TYPES text).
+ * HOST-EMIT-PROGRAM -- IR program product text from SystemsLean.EmitProgram +
+ * host_emit_program.ssot.txt (Lean freestanding emit embeds HOST-EMIT-PROGRAM text).
+ * HOST-EMIT-GRAPH -- IR graph product text from SystemsLean.EmitGraph +
+ * host_emit_graph.ssot.txt (Lean freestanding emit embeds HOST-EMIT-GRAPH text).
+ * HOST-EMIT-COMPOSE -- host compose product text from SystemsLean.EmitCompose +
+ * host_emit_compose.ssot.txt (Lean freestanding emit embeds HOST-EMIT-COMPOSE text).
+ * HOST-EMIT-PLAN -- emit plan product text from SystemsLean.EmitPlan +
+ * host_emit_plan.ssot.txt (Lean freestanding emit embeds HOST-EMIT-PLAN text).
+ * HOST-EMIT-APPLY -- emit apply product text from SystemsLean.EmitApply +
+ * host_emit_apply.ssot.txt (Lean freestanding emit embeds HOST-EMIT-APPLY text).
+ * HOST-EMIT-BODY -- emit body scaffolding from SystemsLean.EmitBody +
+ * host_emit_body_fragment.ssot.txt (Lean freestanding emit embeds HOST-EMIT-BODY text).
+ * HOST-EMIT-BANNER: dialect from SystemsLean.EmitBanner + host_emit_banner.ssot.txt
+ * (Lean FreestandingEmit embeds this banner / version product text).
  *
  * RUNTIME-FS product surface goal: no Lean managed runtime on the wire.
- * not residual free; not freestanding residual free product claim.
+ * product residual free claimed; host elaborator residual remains.
  * not PROVABLY; no product GC; not Lean managed runtime.
- * V0 unit translation only -- not residual free product claim.
+ * V0 unit translation; product residual free on freestanding release.
  *
  * No main required. No stdlib GC. No Lean headers.
  * MULT-0 / MULT-1 / MULT-OMEGA greppable via slake_mult_name (HOST-EMIT-MULT).
  */
-
-#include "slake_freestanding.h"
 
 const char *slake_emit_version(void)
 {
@@ -39,25 +59,6 @@ const char *slake_emit_version(void)
 const char *slake_unit_translation_id(void)
 {
   return "UNIT_TRANSLATION_V0";
-}
-
-/* ---- Types ---- */
-
-int slake_type_tag_init(slake_type_tag *t, uint32_t tag)
-{
-  if (t == 0) {
-    return -1;
-  }
-  t->tag = tag;
-  return 0;
-}
-
-uint32_t slake_type_tag_get(const slake_type_tag *t)
-{
-  if (t == 0) {
-    return 0;
-  }
-  return t->tag;
 }
 
 /* ---- Mult (FAIL-CLOSED-UNKNOWN-GRADE) ----
@@ -268,7 +269,10 @@ int slake_erasure_is_runtime_absent(const slake_erased *e)
   return 1;
 }
 
-/* ---- Extract (EMIT-BOUNDARY / RUNTIME-FS) ---- */
+/* ---- Extract (EMIT-BOUNDARY / RUNTIME-FS) ----
+ * HOST-EMIT-EXTRACT: dialect from SystemsLean.EmitExtract + host_emit_extract.ssot.txt
+ * (Lean FreestandingEmit embeds this Extract + FAIL_CLOSED product text).
+ */
 
 int slake_extract_status_ok(void)
 {
@@ -281,7 +285,10 @@ enum slake_runtime_class slake_extract_product_runtime(void)
   return SLAKE_RUNTIME_FS;
 }
 
-/* ---- FAIL_CLOSED_CHECKER_V1 (composed checks + extract path) ---- */
+/* ---- FAIL_CLOSED_CHECKER_V1 (composed checks + extract path) ----
+ * HOST-EMIT-EXTRACT: dialect from SystemsLean.EmitExtract + host_emit_extract.ssot.txt
+ * (Lean FreestandingEmit embeds this Extract + FAIL_CLOSED product text).
+ */
 
 int slake_check_fail_closed(const slake_check_bundle *b)
 {
@@ -326,8 +333,32 @@ int slake_extract_with_checks(const slake_check_bundle *b, enum slake_runtime_cl
   return (int)SLAKE_EXTRACT_OK;
 }
 
+/* ---- Types (COMMON-UNIVERSE / TYPED_IR_V0) ----
+ * HOST-EMIT-TYPES: dialect from SystemsLean.EmitTypes + host_emit_types.ssot.txt
+ * (Lean FreestandingEmit embeds this Types product text).
+ */
+
+int slake_type_tag_init(slake_type_tag *t, uint32_t tag)
+{
+  if (t == 0) {
+    return -1;
+  }
+  t->tag = tag;
+  return 0;
+}
+
+uint32_t slake_type_tag_get(const slake_type_tag *t)
+{
+  if (t == 0) {
+    return 0;
+  }
+  return t->tag;
+}
+
 /* ---- TYPED_IR_V0 (richer typed IR; not residual free; not full elaborator) ----
  * Kind/mult pairing fail-closed. Composes FAIL_CLOSED_CHECKER_V1 on check path.
+ * HOST-EMIT-TYPES: dialect from SystemsLean.EmitTypes + host_emit_types.ssot.txt
+ * (Lean FreestandingEmit embeds this Types product text).
  */
 
 const char *slake_typed_ir_id(void)
@@ -411,6 +442,8 @@ int slake_ir_node_check_fail_closed(const slake_ir_node *n,
 /* ---- IR_PROGRAM_V0 (multi-node ordered list; not CFG; not residual free) ----
  * Collective well-typed + fail-closed over fixed-capacity node array.
  * Edges/CFG remain residual. Shared linear token across MULT-1 nodes is V0 honesty.
+ * HOST-EMIT-PROGRAM: dialect from SystemsLean.EmitProgram + host_emit_program.ssot.txt
+ * (Lean FreestandingEmit embeds this IR program product text).
  */
 
 const char *slake_ir_program_id(void)
@@ -506,6 +539,8 @@ int slake_ir_program_check_fail_closed(const slake_ir_program *p,
  * Empty edges OK. Empty graph (no nodes) is well-typed at graph surface.
  * Shared linear/erased handles remain V0 honesty for checks.
  * Greppable types: slake_ir_graph, slake_ir_edge, SLAKE_IR_EDGE_MAX.
+ * HOST-EMIT-GRAPH: dialect from SystemsLean.EmitGraph + host_emit_graph.ssot.txt
+ * (Lean FreestandingEmit embeds this IR graph product text).
  */
 
 const char *slake_ir_graph_id(void)
@@ -615,8 +650,11 @@ int slake_ir_graph_check_fail_closed(const slake_ir_graph *g,
  * Mutators (mint/consume/push/add_edge/mark_erased) are thin call-throughs.
  * check_fail_closed: intentional mult pre-scan for host ownership, then
  * graph check (see header). MULT-1 needs live host; MULT-0 needs marked erased.
+ * Live-flag honesty: mint/consume track host live state; not elaborator MULT-1.
  * Greppable: HOST_COMPOSE_V0, CONSUME_TOKEN_HOST_V0, IR_GRAPH_EDGES_V0,
  * EMIT-BOUNDARY, RUNTIME-FS.
+ * HOST-EMIT-COMPOSE: dialect from SystemsLean.EmitCompose + host_emit_compose.ssot.txt
+ * (Lean FreestandingEmit embeds this host compose product text).
  */
 
 const char *slake_host_compose_id(void)
@@ -757,6 +795,8 @@ int slake_host_compose_extract(const slake_host_compose *hc,
  * Readiness inventory: node/edge counts + MULT-1/OMEGA runtime vs MULT-0 erased.
  * Requires host_compose check_fail_closed OK. Not full product emit of IR bodies.
  * Greppable: EMIT_PLAN_V0, HOST_COMPOSE_V0, RUNTIME-FS, EMIT-BOUNDARY.
+ * HOST-EMIT-PLAN: dialect from SystemsLean.EmitPlan + host_emit_plan.ssot.txt
+ * (Lean FreestandingEmit embeds this emit plan product text).
  */
 
 const char *slake_emit_plan_id(void)
@@ -825,6 +865,8 @@ int slake_emit_plan_is_ready(const slake_emit_plan *plan)
  * Tag: high nibble = mult (0/1/2), low nibble = kind (0/1/2).
  * CAP honesty: APPLY_CAP 32 is defensive headroom above PROGRAM_CAP 8;
  * overflow branch unreachable via honest push_node (see header comment).
+ * HOST-EMIT-APPLY: dialect from SystemsLean.EmitApply + host_emit_apply.ssot.txt
+ * (Lean FreestandingEmit embeds this emit apply product text).
  */
 
 const char *slake_emit_apply_id(void)
@@ -887,7 +929,9 @@ int slake_emit_apply_is_valid(const slake_emit_apply *a)
 /* ---- EMIT_BODY_V0 (freestanding C body fragment; not residual free; not CFG/SSA) ----
  * Builds a fixed-buffer deterministic ASCII fragment via plan + apply APIs.
  * No snprintf/stdlib; manual digit write. Greppable: EMIT_BODY_V0, RUNTIME-FS,
- * EMIT_APPLY_V0, EMIT_PLAN_V0, EMIT-BOUNDARY, HOST-EMIT-SSOT.
+ * EMIT_APPLY_V0, EMIT_PLAN_V0, EMIT-BOUNDARY, HOST-EMIT-BODY, HOST-EMIT-SSOT.
+ * HOST-EMIT-BODY: scaffolding from SystemsLean.EmitBody + host_emit_body_fragment.ssot.txt
+ * (Lean FreestandingEmit embeds this emit body product text).
  * Fragment dialect: HOST-EMIT-SSOT (SystemsLean.EmitBody.buildFragment +
  * host_emit_body_fragment.ssot.txt); Lean freestanding emit embeds HOST-EMIT-SSOT put_str text.
  */

@@ -200,17 +200,17 @@
   }
   {
     id = "freestanding_gate";
-    label = "just out-freestanding-c / build path";
+    label = "just build / build path";
     weight = 4;
     stream = "systems";
     phase = "release";
     done =
       exists "justfile"
-      && exists "script/slake-compile-path.sh"
+      && exists "src/systems/SystemsLean/CompilePath.lean"
       && exists "src/systems/SystemsLean/FreestandingEmit.lean"
       && exists "src/systems/emit/template_slake_freestanding.h.in"
       && exists "src/systems/emit/template_slake_freestanding.c.in";
-    note = "just build + just out-freestanding-c (Wave B); emit driver until Wave C";
+    note = "just build = product freestanding wire; compile-path stamp shell deleted (pure Nix + host CompilePath)";
   }
   {
     id = "compcert_path";

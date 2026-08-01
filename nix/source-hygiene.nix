@@ -1,11 +1,13 @@
 # SPDX-License-Identifier: Unlicense
 # Pure Nix source hygiene: printable ASCII (tab/LF/CR + 0x20-0x7E) outside
-# allowlist; no trailing whitespace on any novel text path.
+# allowlist; no trailing whitespace on any novel text path; no stitch/merge
+# conflict marker lines in product sources (agent cut marks and git markers).
 #
 #   import ./source-hygiene.nix { inherit lib; root = novelSource; }
 #   -> { ok, violations, summary }
 #
 # No bash, no ripgrep, no Python. Flake checks force-eval this module.
+# Stitch/merge RCA: doc/dev/research/selfapplyfs-rebuild-failure-2026-07-30.md
 { lib, root }:
 let
   # Unicode allowed here; trailing whitespace still forbidden.
@@ -19,6 +21,7 @@ let
     name:
     name == ".git"
     || name == "ref"
+    || name == "skills"
     || name == ".cache"
     || name == ".lake"
     || name == "__pycache__"
@@ -37,6 +40,23 @@ let
   );
 
   isAllowedChar = c: builtins.hasAttr c allowed;
+
+  # Leading whitespace only (spaces/tabs). Pure; no lib.trim dependency.
+  stripLeadingWs =
+    s:
+    if s == "" then
+      s
+    else if lib.hasPrefix " " s || lib.hasPrefix "\t" s then
+      stripLeadingWs (builtins.substring 1 (builtins.stringLength s - 1) s)
+    else
+      s;
+
+  # Agent cut marks (==== section ===) and git merge conflict markers.
+  # Stitch ban applies to *.lean (product Lean). Merge markers banned on all novel text.
+  isMergeConflictMarker =
+    t: lib.hasPrefix "<<<<<<<" t || lib.hasPrefix ">>>>>>>" t || t == "=======";
+
+  isStitchMarker = t: lib.hasPrefix "====" t;
 
   collectFiles =
     dir: rel:
@@ -72,6 +92,14 @@ let
           lib.filter (c: !(isAllowedChar c)) (lib.stringToCharacters content);
       lines = lib.splitString "\n" content;
       trailing = lib.filter (l: lib.hasSuffix " " l || lib.hasSuffix "\t" l) lines;
+      isLean = lib.hasSuffix ".lean" rel;
+      markerHits = lib.filter (
+        l:
+        let
+          t = stripLeadingWs l;
+        in
+        isMergeConflictMarker t || (isLean && isStitchMarker t)
+      ) lines;
       msgs =
         (if badChars == [ ] then [ ] else [ "${rel}: non-ASCII outside allowlist" ])
         ++ (
@@ -79,6 +107,14 @@ let
             [ ]
           else
             [ "${rel}: trailing whitespace (${toString (builtins.length trailing)} line(s))" ]
+        )
+        ++ (
+          if markerHits == [ ] then
+            [ ]
+          else
+            [
+              "${rel}: stitch/merge marker line (forbidden in product sources; ${toString (builtins.length markerHits)} line(s))"
+            ]
         );
     in
     msgs;
@@ -94,7 +130,7 @@ let
     if n > maxShow then "\n... and ${toString (n - maxShow)} more" else "";
   summary =
     if ok then
-      "source-hygiene OK (${toString (builtins.length files)} files; ASCII except allowlist; no trailing whitespace)"
+      "source-hygiene OK (${toString (builtins.length files)} files; ASCII except allowlist; no trailing whitespace; no stitch/merge markers)"
     else
       "source-hygiene FAILED:\n" + lib.concatStringsSep "\n" shown + more;
 in

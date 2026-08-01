@@ -37,10 +37,29 @@
   Partial theorems on EmitPlan != host proof complete != residual free.
   Does not invent a second emit dialect; does not grow product C.
 
+  Host-owned freestanding product C scaffolding (HOST-EMIT-PLAN):
+  - Scaffolding text + emitPlanReady live in SystemsLean.EmitPlanScaffold
+    (same namespace; long-file peel). Greppable: planHeaderFragment,
+    planBodyFragment, emitPlanReady, SLAKE_SELF_HOST_EMIT_PLAN_V0.
+  - Lean owns freestanding emit plan product C scaffolding
+    (slake_emit_plan + from_compose + is_ready) via scaffold fragments +
+    durable SSOT.
+  - Durable artifact: src/systems/emit/host_emit_plan.ssot.txt
+    (PLAN_C_HEADER / PLAN_C_BODY blocks match planHeaderFragment /
+    planBodyFragment).
+  - FreestandingEmit embeds plan scaffolding from the durable SSOT; it must
+    not invent a second emit plan dialect.
+  - EMIT_PLAN_V0 / slake_emit_plan greppable on wire (map only).
+  - emitPlanReady: surface + honesty piece equality (scaffold).
+  - No new EMIT_PLAN residual C stage ladder (host stage ids only).
+  - Contiguous emit plan after Compose on product wire (depends on compose).
+
   Intentional non-claims / partial parity:
-  - PARTIAL vs full C EMIT_PLAN_V0: host does not model null pointers,
+  - PARTIAL vs full C EMIT_PLAN_V0 host model: host does not model null pointers,
     uint8 wire widths, or exact C return-code tables (codes -1); uses Plan
     with valid/ready Bools instead of out-pointer mutation.
+  - PARTIAL: emit plan product C text SSoT only; not full product module emit;
+    not compiler self-application; apply bulk is HOST-EMIT-APPLY.
   - Not freestanding residual free. Not product C residual free.
   - Not PROVABLY. Not freestanding emit residual free.
   - Not product C body emit. Not full CFG/SSA. Not residual free.
@@ -53,8 +72,14 @@
   EMIT-PLAN-THEOREM, HOST-EMIT-PLAN-THEOREM, planOk_empty_true,
   planFromCompose_empty_counts_zero, isReady_empty_plan,
   planOk_mult1_unminted_false, planOk_mult1_minted_true,
-  planFromCompose_two_values_edge, planFromCompose_linear_and_erased
+  planFromCompose_two_values_edge, planFromCompose_linear_and_erased,
+  SLAKE_SELF_HOST_EMIT_PLAN_V0, HOST-EMIT-PLAN, SELF-HOST-EMIT-PLAN,
+  planHeaderFragment, planBodyFragment, emitPlanReady, NON-SSOT,
+  EMIT-PLAN-PRODUCT-SMOKE, HOST-EMIT-PLAN-SMOKE, EmitPlanScaffold,
+  planSsotArtifactPath, theorem emitPlanReady_true,
   UNIT_SURFACE host surface. Module: SystemsLean.EmitPlan
+  Long-file peel: HOST-EMIT-PLAN scaffolding in SystemsLean.EmitPlanScaffold
+  (same namespace). Core dialect + theorems stay here.
   Red/green: just systems-host (nix/systems-host-presence/; flake checks.systems-host-presence); lake build when toolchain installed.
   Module must stay ASCII.
 -/
@@ -62,6 +87,7 @@
 import SystemsLean.Mult
 import SystemsLean.Types
 import SystemsLean.HostCompose
+import SystemsLean.EmitPlanScaffold
 
 namespace SystemsLean.EmitPlan
 
@@ -384,5 +410,15 @@ example :
     (let p := planFromCompose smokeLinearAndErased
      isReady p && p.nodeCount == 2 && p.runtimeNodes == 1 && p.erasedNodes == 1
        && p.runtimeNodes + p.erasedNodes == p.nodeCount) = true := by decide
+
+/-! ### HOST-EMIT-PLAN scaffolding peeled to EmitPlanScaffold (same namespace)
+    Greppable cites (defs live on EmitPlanScaffold): HOST-EMIT-PLAN,
+    SELF-HOST-EMIT-PLAN, SLAKE_SELF_HOST_EMIT_PLAN_V0, planHeaderFragment,
+    planBodyFragment, emitPlanReady, emitPlanOk, planHeaderHonestyOk,
+    planBodyHonestyOk, emitPlanSurfaceOk, EMIT-PLAN-PRODUCT-SMOKE,
+    HOST-EMIT-PLAN-SMOKE, EmitPlanScaffold, theorem emitPlanReady_true,
+    NON-SSOT, src/systems/emit/host_emit_plan.ssot.txt.
+    Import SystemsLean.EmitPlanScaffold above. Product-text ownership only --
+    not residual free / not complete. -/
 
 end SystemsLean.EmitPlan

@@ -1,59 +1,16 @@
-# Watcher (residual implement loop)
+# WATCHER.md -- next residual implement action only
 
-**What this is:** the greppable place Hunter's environment and agents use for the next autonomous implement pass.
+Contract: the watcher session (separate from Systems / Slake implement) reads the
+fenced block and may auto-continue. Keep this file short. Detail lives in
+`RESIDUAL-systems.md` and `doc/SESSION-HANDOFF.md`.
 
-**Not jargon:** a **watcher** here means "the fixed file + chat ending that always holds the next implement instructions," so a harness can pick them up without rereading the whole conversation.
+<!-- WATCHER_BEGIN -->
+DONE-FOR-NOW
 
-## Contract
-
-1. After every durable implement slice, agents **must** update the fenced block below (`WATCHER_BEGIN` / `WATCHER_END`) with the next implement prompt for remaining work (Name / Goal / Done when / Out of scope / Paths / Gates).
-2. The **same** prompt text must appear as the **final section** of the agent's chat reply (so auto-continue can run it).
-3. If blocked or ambiguous, set the block to a short **blocked** note (what is unclear) -- do not invent fake work. The fenced body must not contain the implement slash-command token (even as "do not auto-run ...") or the harness will re-queue it.
-4. Scope stays in this repository. Git remains human-owned unless asked. No deferred tracks (`out/llvm-ir` before self-host).
-5. Prefer freestanding Slake bootstrap Open Names from `RESIDUAL-systems.md`. Chain autonomously when Done when is checkable.
-
-**Sessions:** this file is for the **watcher session** (auto-continue harness). Systems / Slake
-implement work is a **different session** (`doc/fork-systems.md`, `RESIDUAL-systems.md`).
-Do not treat the watcher session as the Slake implementor by default.
-
-**Owner of next action:** after Systems residual slices, `WATCHER_BEGIN` holds the same
-Systems next implement prompt as `RESIDUAL-systems.md` **Next residual implement prompt**
-(reconcile if another session rewrote WATCHER for a different plan). Soft-concerns /
-plan steps that are not Systems residual must not silently displace Systems next
-without an explicit human pivot.
-
-Validation the next pass should run when applicable:
-
-```bash
-just systems-host
-just systems-emit-wire
-just hygiene
-./src/systems/check.sh
-just check
-```
-
-Policy detail: `AGENTS.md` (residual implement loop, living residual work items,
-subagent token efficiency).
-
----
-
-WATCHER_BEGIN
-```
-DONE-FOR-NOW (Open queue empty)
-
-Host owns freestanding erasure C complete:
-- EmitErasure.lean + host_emit_erasure.ssot.txt + FreestandingEmit embed
-- Templates use __HOST_EMIT_ERASURE_{HEADER,BODY}__
-- SelfHostBody folds emitErasureReady
-- Ownership map host-owned-emit.md; pure Nix presence/emit-wire
-
-Still false / deferred (do not forge):
-- residual free
-- freestanding product self-host complete
-- proof complete
-- PROVABLY
-- llvm IR emit / CompCert product seal
-
-Do not invent Open Names. Human names next residual when ready.
-```
-WATCHER_END
+Bootstrap S0-S3 done (2026-08-01). S3 Mult subset rebuild / self-application
+measured (`MultSubsetRebuild` / `just mult-subset-rebuild`; Lake host remains).
+Open empty. S4 Lake retire deferred (never forge StillUsesLake / DependsOnLake
+false without elaborator proof). Step 4 proof / PROVABLY / LLVM held. Living tip:
+complete true; free true; host residual remains. Do not invent Open Names. Do not
+auto-start held tracks.
+<!-- WATCHER_END -->

@@ -31,9 +31,13 @@
     KernelEmit.emitKernelReady && selfApplySurfaceOk.
   - Host model = structural readiness compose. Not an AI/ML model. Not product C.
 
-  Theorems (SELF-APPLY-THEOREM / HOST-SELF-APPLY-THEOREM -- partial SelfApply):
-  - selfApplyReady_true / kernelRebuildsKernel_true / selfApplySurfaceOk_true
-  - stageId_eq / hostSelfApplyId_eq / selfApplyOk_true / selfApplyOk_eq_ready
+  Theorems + smoke live in SystemsLean.SelfApplyTheorems (same namespace;
+  long-file split):
+  SELF-APPLY-THEOREM / HOST-SELF-APPLY-THEOREM /
+  SELF-APPLY-SMOKE / HOST-SELF-APPLY-SMOKE --
+  selfApplyReady_true / kernelRebuildsKernel_true / selfApplySurfaceOk_true /
+  stageId_eq / hostSelfApplyId_eq / selfApplyOk_true / selfApplyOk_eq_ready.
+  Core claim Bools + selfApplyReady stay here.
   These SelfApply theorems do NOT set SpecProof.proofCompleteClaimed true.
   Host structural self-apply readiness != freestanding product self-host complete.
   selfApplyOk is a definitional alias of selfApplyReady (joint-name honesty only;
@@ -58,8 +62,10 @@
   emitKernelReady, SELF-APPLY-THEOREM, HOST-SELF-APPLY-THEOREM,
   selfApplyReady_true, kernelRebuildsKernel_true, selfApplySurfaceOk_true,
   selfApplyOk_true, selfApplyOk_eq_ready, stageId_eq, hostSelfApplyId_eq,
-  SELF-HOST, MULT-0, MULT-1, MULT-OMEGA, JOIN-ALG, ConsumeToken,
-  UNIT_SURFACE host surface. Module: SystemsLean.SelfApply
+  SelfApplyTheorems, SELF-HOST, MULT-0, MULT-1, MULT-OMEGA, JOIN-ALG,
+  ConsumeToken, UNIT_SURFACE host surface. Module: SystemsLean.SelfApply
+  Long-file split: SELF-APPLY-THEOREM / SELF-APPLY-SMOKE in
+  SystemsLean.SelfApplyTheorems (same namespace). Core readiness stays here.
   Not freestanding emit. Not freestanding residual free. Not PROVABLY.
   Not freestanding emit residual free.
   Red/green: just systems-host; lake build when toolchain installed.
@@ -167,89 +173,15 @@ def selfApplyReady : Bool :=
     Greppable: selfApplyOk, selfApplyReady. -/
 def selfApplyOk : Bool := selfApplyReady
 
-/-! ### SELF-APPLY-THEOREM / HOST-SELF-APPLY-THEOREM (readable statements, then proofs)
-
-  Real Lean theorems (not only `example` Bool canaries). Scope is host structural
-  self-application readiness (Mult closed loop + Linear + Types + Program + Emit
-  kernel) only. Does not complete SpecProof; does not claim residual free /
-  freestanding product self-host complete / PROVABLY / llvm unlock.
--/
-
-set_option maxRecDepth 16384
-
-/-- Primary stage id is greppable SLAKE_SELF_HOST_SELF_APPLY_V0.
-    Greppable: stageId_eq, SELF-APPLY-THEOREM, HOST-SELF-APPLY-THEOREM. -/
-theorem stageId_eq : stageId = "SLAKE_SELF_HOST_SELF_APPLY_V0" := rfl
-
-/-- Host map id is greppable HOST-SELF-APPLY.
-    Greppable: hostSelfApplyId_eq, SELF-APPLY-THEOREM. -/
-theorem hostSelfApplyId_eq : hostSelfApplyId = "HOST-SELF-APPLY" := rfl
-
-/-- Surface canary holds (stage / path / prior ladder cites).
-    Greppable: selfApplySurfaceOk_true, SELF-APPLY-THEOREM,
-    HOST-SELF-APPLY-THEOREM. -/
-theorem selfApplySurfaceOk_true : selfApplySurfaceOk = true := by decide
-
-/-- Mult + Linear + Types + Program + Emit kernel sides ready (host sense).
-    Greppable: kernelRebuildsKernel_true, SELF-APPLY-THEOREM,
-    HOST-SELF-APPLY-THEOREM. -/
-theorem kernelRebuildsKernel_true : kernelRebuildsKernel = true := by decide
-
-/-- SH5 partial self-application readiness holds.
-    Greppable: selfApplyReady_true, HOST-SELF-APPLY, SELF-APPLY-THEOREM,
-    HOST-SELF-APPLY-THEOREM. -/
-theorem selfApplyReady_true : selfApplyReady = true := by decide
-
-/-- Full SH5 partial inventory ok holds (alias of selfApplyReady).
-    Greppable: selfApplyOk_true, SELF-APPLY-THEOREM. -/
-theorem selfApplyOk_true : selfApplyOk = true := by decide
-
-/-- Joint-name honesty: selfApplyOk is definitional alias of selfApplyReady
-    (not a stronger gate). Greppable: selfApplyOk_eq_ready, SELF-APPLY-THEOREM,
-    HOST-SELF-APPLY-THEOREM. -/
-theorem selfApplyOk_eq_ready : selfApplyOk = selfApplyReady := rfl
-
-/-! ### Self-application smoke (behavioral; lake build fails if an example fails)
-    Greppable: SELF-APPLY-SMOKE, HOST-SELF-APPLY-SMOKE.
-    maxRecDepth raised for multParityReady / emitKernelReady / selfApplyReady
-    String.beq unfolds. -/
-
-/-- SELF-APPLY-SMOKE / HOST-SELF-APPLY-SMOKE: stage / map ids greppable. -/
-example : stageId = "SLAKE_SELF_HOST_SELF_APPLY_V0" := by decide
-example : hostSelfApplyId = "HOST-SELF-APPLY" := by decide
-example : selfHostSelfApplyId = "SELF-HOST-SELF-APPLY" := by decide
-example : acceptancePath = "src/systems/self-host.md" := by decide
-example : hostModulePath = "src/systems/SystemsLean/SelfApply.lean" := by decide
-example : multParityStageCite = "SLAKE_SELF_HOST_PARITY_MULT_V0" := by decide
-example : linearKernelStageCite = "SLAKE_SELF_HOST_KERNEL_LINEAR_V0" := by decide
-example : typesKernelStageCite = "SLAKE_SELF_HOST_KERNEL_TYPES_V0" := by decide
-example : programKernelStageCite = "SLAKE_SELF_HOST_KERNEL_PROGRAM_V0" := by decide
-example : emitKernelStageCite = "SLAKE_SELF_HOST_KERNEL_EMIT_V0" := by decide
-example : selfApplySurfaceOk = true := by decide
-
-/-- SELF-APPLY-SMOKE: Mult closed-loop side ready (SH3 compose). -/
-example : multKernelSideReady = true := by decide
-example : ParityMult.multParityReady = true := by decide
-
-/-- SELF-APPLY-SMOKE: Linear kernel side ready (SH4 compose). -/
-example : linearKernelSideReady = true := by decide
-example : KernelLinear.linearKernelReady = true := by decide
-
-/-- SELF-APPLY-SMOKE: Types kernel side ready (SH4 growth compose). -/
-example : typesKernelSideReady = true := by decide
-example : KernelTypes.typesKernelReady = true := by decide
-
-/-- SELF-APPLY-SMOKE: Program kernel side ready (SH4 remainder compose). -/
-example : programKernelSideReady = true := by decide
-example : KernelProgram.programKernelReady = true := by decide
-
-/-- SELF-APPLY-SMOKE: Emit / codegen kernel side ready (SH4 remainder compose). -/
-example : emitKernelSideReady = true := by decide
-example : KernelEmit.emitKernelReady = true := by decide
-
-/-- SELF-APPLY-SMOKE / HOST-SELF-APPLY-SMOKE: kernel rebuilds kernel (host sense). -/
-example : kernelRebuildsKernel = true := by decide
-example : selfApplyReady = true := by decide
-example : selfApplyOk = true := by decide
+/-! ### SELF-APPLY-THEOREM + SELF-APPLY-SMOKE split to SelfApplyTheorems
+    (same namespace). Greppable cites live on SelfApplyTheorems:
+    SELF-APPLY-THEOREM, HOST-SELF-APPLY-THEOREM, SELF-APPLY-SMOKE,
+    HOST-SELF-APPLY-SMOKE, stageId_eq, hostSelfApplyId_eq,
+    selfApplySurfaceOk_true, kernelRebuildsKernel_true, selfApplyReady_true,
+    selfApplyOk_true, selfApplyOk_eq_ready, SelfApplyTheorems.
+    Import SystemsLean.SelfApplyTheorems from the package root. Core claim
+    Bools + ready surface stay here -- host structural self-apply readiness only;
+    free claims stay false; freestanding product complete is SelfApplyFs tip;
+    not llvm / PROVABLY unlock. -/
 
 end SystemsLean.SelfApply

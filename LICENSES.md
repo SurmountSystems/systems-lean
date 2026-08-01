@@ -16,10 +16,10 @@ That sentence is the project's **attitude** toward exclusive IP theatre. The **l
 
 | In scope (Unlicense / public domain dedication) | Out of scope |
 |--------------------------------------------------|--------------|
-| Files **authored in this repo** outside `ref/` (e.g. `AGENTS.md`, `doc/**`, `README.md`, `RESIDUAL.md`, root config we add, future `src/` we write) | Everything under `ref/` (upstream, **read-only** submodules) |
-| Our own edits to files that live **outside** `ref/` | Copies or verbatim extracts of upstream that you may drop elsewhere -- those keep **their** licenses |
+| Files **authored in this repo** outside `ref/` and `skills/` (e.g. `AGENTS.md`, `doc/**`, `README.md`, `RESIDUAL.md`, root config we add, future `src/` we write) | Everything under `ref/` and `skills/` (upstream, **read-only** submodules) |
+| Our own edits to files that live **outside** `ref/` and `skills/` | Copies or verbatim extracts of upstream that you may drop elsewhere -- those keep **their** licenses |
 
-If you vendor or copy code **from** a `ref/` tree into product sources later, that copy keeps the **upstream** license obligations unless the upstream license and the law allow otherwise. Do not pretend submodule code is Unlicense just because it sits next to our docs.
+If you vendor or copy code **from** a `ref/` or `skills/` tree into product sources later, that copy keeps the **upstream** license obligations unless the upstream license and the law allow otherwise. Do not pretend submodule code is Unlicense just because it sits next to our docs.
 
 ### SPDX for our novel crates, modules, and packages
 
@@ -34,11 +34,11 @@ Any **novel work we author** in this repository -- Rust crates, Lean modules/pac
 | Nix package | `meta.license = lib.licenses.unlicense;` (or equivalent SPDX/`Unlicense` mapping in that nixpkgs revision) |
 | Generic source file | Optional file header: `SPDX-License-Identifier: Unlicense` |
 
-Do **not** put `Unlicense` on files that are copies or substantial extracts of upstream under `ref/` (or other third-party code). Those keep their upstream SPDX / license text.
+Do **not** put `Unlicense` on files that are copies or substantial extracts of upstream under `ref/` or `skills/` (or other third-party code). Those keep their upstream SPDX / license text.
 
 ---
 
-## Referenced projects (`ref/`)
+## Referenced projects (`ref/` and `skills/`)
 
 These are **git submodules**. Their licenses are whatever their upstreams say. We track them here for honesty; the authoritative text is always inside each submodule.
 
@@ -48,6 +48,7 @@ These are **git submodules**. Their licenses are whatever their upstreams say. W
 | `ref/lean4` | Lean 4 | [leanprover/lean4](https://github.com/leanprover/lean4) | **Apache License 2.0**. Files: `ref/lean4/LICENSE`, `ref/lean4/LICENSES` (third-party inventory) |
 | `ref/CompCert` | CompCert verified compiler | [AbsInt/CompCert](https://github.com/AbsInt/CompCert) | **Non-free for commercial use** by default: **INRIA Non-Commercial License Agreement** and/or AbsInt commercial agreement. Some `lib/` files dual-licensed INRIA-NC + **LGPL-2.1-or-later**. File: `ref/CompCert/LICENSE`. **Not** public domain; **not** Unlicense. Building/shipping product C through `ccomp` has **real license constraints** -- read upstream before commercial use. |
 | `ref/rust` | Rust (rustc + std + tools) | [rust-lang/rust](https://github.com/rust-lang/rust) | **Dual-licensed Apache-2.0 OR MIT** for the main project (`LICENSE-APACHE`, `LICENSE-MIT`). The monorepo also vendors many third-party components under additional terms (`ref/rust/LICENSES/`, crate-level notices). |
+| `skills/lean4-skills` | Lean 4 agent skills | [cameronfreer/lean4-skills](https://github.com/cameronfreer/lean4-skills) | **MIT**. File: `skills/lean4-skills/LICENSE`. Agent skill pack (not language/compiler product). Discovery: `.agents/skills/lean4`. |
 
 ### CompCert special note
 
@@ -72,6 +73,7 @@ When adding a submodule or bumping a pin:
 | `ref/lean4` | `Apache-2.0` (+ third parties per `LICENSES`) |
 | `ref/CompCert` | Proprietary / INRIA-NC (+ LGPL-2.1-or-later for some `lib/` files) |
 | `ref/rust` | `Apache-2.0 OR MIT` (+ many vendored licenses) |
+| `skills/lean4-skills` | `MIT` |
 
 SPDX labels above are **convenience only**. Upstream files win.
 

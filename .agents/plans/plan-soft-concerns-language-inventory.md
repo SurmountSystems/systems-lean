@@ -219,7 +219,7 @@ Careful edits (rg to locate outdated claims, e.g. README "flake apps"):
    - Tracked files under `src/systems/emit/` and `out/freestanding-c/` are
      **generator outputs** (plus README prose under out/).
    - **Release:** publish `out/freestanding-c/` via **git subtree** (or tarball)
-     after green `just build` + `just out-freestanding-c` + `just check`.
+     after green `just build` + `just build` + `just check`.
    - Do not treat `out/` as a place to author features by hand.
    - Lake `.lake/build/ir/*.c` is **classic Lean AOT IR**, not freestanding
      product; stay gitignored / untracked.

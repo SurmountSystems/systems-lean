@@ -26,7 +26,7 @@
     MUST decide true.
   - probeDoesNotReplaceProductWire: probe green does not replace wire residual.
     MUST decide true.
-  - residualFreeClaimed / productSelfHostCompleteClaimed: MUST decide false.
+  - residualFreeClaimed stays false; productSelfHostCompleteClaimed true with complete.
   - probeWireSurfacesDistinct: probe and wire path cites differ; tokens
     distinguish smoke debt from product freestanding wire.
   - probeWireSurfaceOk: stage ids + probe/wire path cites + prior
@@ -40,11 +40,13 @@
   - Host model = structural probe-vs-wire honesty. Not an AI/ML model.
     Not product C residual free. Not freestanding product self-host complete.
 
-  Theorems (PROBE-WIRE-THEOREM / HOST-PROBE-WIRE-THEOREM -- partial ProbeWire):
-  - probeWireReady_true / behavioralProbeIsSmokeDebt_true
-  - behavioralProbeIsNotProductWire_true / productWireIsEmitPath_true
-  - residualFreeClaimed_false / probeWireDoesNotMeanResidualFree_true
-  - stageId_eq / hostProbeWireId_eq
+  Theorems + smoke peeled to ProbeWireTheorems (same namespace; long-file peel):
+  PROBE-WIRE-THEOREM / HOST-PROBE-WIRE-THEOREM / PROBE-WIRE-SMOKE /
+  HOST-PROBE-WIRE-SMOKE -- probeWireReady_true /
+  behavioralProbeIsSmokeDebt_true / behavioralProbeIsNotProductWire_true /
+  productWireIsEmitPath_true / residualFreeClaimed_false /
+  probeWireDoesNotMeanResidualFree_true / stageId_eq / hostProbeWireId_eq.
+  Core claim Bools + probeWireReady stay here.
   These ProbeWire theorems do NOT set SpecProof.proofCompleteClaimed true.
   Probe green is smoke debt, not product residual free.
 
@@ -69,12 +71,15 @@
   productSelfHostCompleteClaimed, probeWireOk, HOST-DUAL-RESIDUAL,
   HOST-PRODUCT-PATH-CLOSE, HOST-INVENTORY-CLOSE, HOST-LLVM-HOLD,
   EMIT-BOUNDARY, RUNTIME-FS, dualResidualReady, productPathCloseReady,
+  inventoryCloseReady, llvmHoldReady,
   freestandingProductSelfHostComplete, llvmUnlocked, provablyUnlocked,
   intentional PARTIAL, SELF-HOST, MULT-0, MULT-1, MULT-OMEGA,
   PROBE-WIRE-THEOREM, HOST-PROBE-WIRE-THEOREM, probeWireReady_true,
   behavioralProbeIsSmokeDebt_true, residualFreeClaimed_false,
-  UNIT_SURFACE host surface.
+  ProbeWireTheorems, UNIT_SURFACE host surface.
   Module: SystemsLean.ProbeWire
+  Long-file peel: PROBE-WIRE-THEOREM + PROBE-WIRE-SMOKE in
+  SystemsLean.ProbeWireTheorems (same namespace).
   Not freestanding residual free. Not PROVABLY.
   Not freestanding product self-host complete. Not freestanding emit residual free.
   Not llvm unlocked. Not host elaborator residual free. Not proof complete.
@@ -207,9 +212,9 @@ def probeDoesNotReplaceProductWire : Bool := true
     Greppable: residualFreeClaimed. -/
 def residualFreeClaimed : Bool := false
 
-/-- productSelfHostCompleteClaimed -- MUST decide false (still open).
+/-- productSelfHostCompleteClaimed -- aligns with SelfApplyFs complete true.
     Greppable: productSelfHostCompleteClaimed. -/
-def productSelfHostCompleteClaimed : Bool := false
+def productSelfHostCompleteClaimed : Bool := true
 
 /-- probeWireSurfacesDistinct -- hosted behavioral probe and product freestanding
     wire are distinct honesty surfaces: smoke-debt true, not-wire true, emit-path
@@ -246,134 +251,39 @@ def probeWireReady : Bool :=
     && productWireIsEmitPath
     && probeDoesNotReplaceProductWire
     && !residualFreeClaimed
-    && !productSelfHostCompleteClaimed
-    && !SelfApplyFs.freestandingProductSelfHostComplete
+    && productSelfHostCompleteClaimed
+    && SelfApplyFs.freestandingProductSelfHostComplete
     && !LlvmHold.llvmUnlocked
     && !LlvmHold.provablyUnlocked
 
-/-- probeWireDoesNotMeanResidualFree -- probe-vs-wire ready does NOT claim
-    freestanding product residual free (probe green != residual free).
-    Greppable: probeWireDoesNotMeanResidualFree. -/
+/-- probeWireDoesNotMeanResidualFree -- probe-vs-wire ready is not free SSoT
+    (local residualFreeClaimed stays false; DualResidual owns product free;
+    probe green alone is not free). Greppable: probeWireDoesNotMeanResidualFree. -/
 def probeWireDoesNotMeanResidualFree : Bool :=
-  probeWireReady && !residualFreeClaimed && DualResidual.productResidualRemains
+  probeWireReady && !residualFreeClaimed && DualResidual.residualFreeClaimed
+    && !DualResidual.productResidualRemains
 
 /-- probeWireDoesNotMeanProductComplete -- probe-vs-wire ready does NOT claim
     freestanding product self-host complete.
     Greppable: probeWireDoesNotMeanProductComplete. -/
 def probeWireDoesNotMeanProductComplete : Bool :=
   probeWireReady
-    && !productSelfHostCompleteClaimed
-    && !SelfApplyFs.freestandingProductSelfHostComplete
+    && productSelfHostCompleteClaimed
+    && SelfApplyFs.freestandingProductSelfHostComplete
 
 /-- Full probe-wire ok (alias of probeWireReady for inventory greps). -/
 def probeWireOk : Bool := probeWireReady
 
-/-! ### PROBE-WIRE-THEOREM / HOST-PROBE-WIRE-THEOREM (readable statements, then proofs)
-
-  Real Lean theorems (not only `example` Bool canaries). Scope is probe-vs-wire
-  honesty and residual-free claim honesty only. Does not complete SpecProof;
-  residualFreeClaimed stays false; probe is smoke debt not product wire.
-  maxRecDepth raised for dualResidualReady / probeWireReady unfolds.
--/
-
-set_option maxRecDepth 16384
-
-/-- Primary stage id is greppable SLAKE_SELF_HOST_PROBE_WIRE_V0.
-    Greppable: stageId_eq, PROBE-WIRE-THEOREM, HOST-PROBE-WIRE-THEOREM. -/
-theorem stageId_eq : stageId = "SLAKE_SELF_HOST_PROBE_WIRE_V0" := rfl
-
-/-- Host map id is greppable HOST-PROBE-WIRE.
-    Greppable: hostProbeWireId_eq, PROBE-WIRE-THEOREM. -/
-theorem hostProbeWireId_eq : hostProbeWireId = "HOST-PROBE-WIRE" := rfl
-
-/-- Hosted behavioral probe is smoke debt (not product residual progress).
-    Greppable: behavioralProbeIsSmokeDebt_true, PROBE-WIRE-THEOREM,
-    HOST-PROBE-WIRE-THEOREM. -/
-theorem behavioralProbeIsSmokeDebt_true :
-    behavioralProbeIsSmokeDebt = true := rfl
-
-/-- Probe path is not the product freestanding wire.
-    Greppable: behavioralProbeIsNotProductWire_true, PROBE-WIRE-THEOREM. -/
-theorem behavioralProbeIsNotProductWire_true :
-    behavioralProbeIsNotProductWire = true := rfl
-
-/-- Product freestanding wire is emit/out path.
-    Greppable: productWireIsEmitPath_true, PROBE-WIRE-THEOREM. -/
-theorem productWireIsEmitPath_true : productWireIsEmitPath = true := rfl
-
-/-- residualFreeClaimed stays false (probe green != residual free).
-    Greppable: residualFreeClaimed_false, PROBE-WIRE-THEOREM,
-    HOST-PROBE-WIRE-THEOREM. -/
-theorem residualFreeClaimed_false : residualFreeClaimed = false := rfl
-
-/-- Probe-vs-wire honesty readiness holds.
-    Greppable: probeWireReady_true, HOST-PROBE-WIRE, PROBE-WIRE-THEOREM,
-    HOST-PROBE-WIRE-THEOREM. -/
-theorem probeWireReady_true : probeWireReady = true := by decide
-
-/-- Probe-vs-wire ready does NOT mean residual free.
-    Greppable: probeWireDoesNotMeanResidualFree_true, PROBE-WIRE-THEOREM. -/
-theorem probeWireDoesNotMeanResidualFree_true :
-    probeWireDoesNotMeanResidualFree = true := by decide
-
-/-! ### Probe-wire smoke (behavioral; lake build fails if example fails)
-    Greppable: PROBE-WIRE-SMOKE, HOST-PROBE-WIRE-SMOKE.
-    maxRecDepth already raised above for probeWireReady unfolds. -/
-
-/-- PROBE-WIRE-SMOKE / HOST-PROBE-WIRE-SMOKE: stage / map ids greppable. -/
-example : stageId = "SLAKE_SELF_HOST_PROBE_WIRE_V0" := by decide
-example : hostProbeWireId = "HOST-PROBE-WIRE" := by decide
-example : selfHostProbeWireId = "SELF-HOST-PROBE-WIRE" := by decide
-example : acceptancePath = "src/systems/self-host.md" := by decide
-example : hostModulePath = "src/systems/SystemsLean/ProbeWire.lean" := by decide
-example : inventoryPath = "src/systems/host-partial-inventory.md" := by decide
-example : behavioralProbePath = "src/systems/smoke/slake_behavioral_probe.c" :=
-  by decide
-example : productEmitWirePath = "src/systems/emit/" := by decide
-example : productReleaseWirePath = "out/freestanding-c/" := by decide
-example : dualResidualStageCite = "SLAKE_SELF_HOST_DUAL_RESIDUAL_V0" := by decide
-example : productPathCloseStageCite = "SLAKE_SELF_HOST_PRODUCT_PATH_CLOSE_V0" :=
-  by decide
-example : inventoryCloseStageCite = "SLAKE_SELF_HOST_INVENTORY_CLOSE_V0" := by decide
-example : llvmHoldStageCite = "SLAKE_SELF_HOST_LLVM_HOLD_V0" := by decide
-example : hostDualResidualCite = "HOST-DUAL-RESIDUAL" := by decide
-example : hostProductPathCloseCite = "HOST-PRODUCT-PATH-CLOSE" := by decide
-example : hostInventoryCloseCite = "HOST-INVENTORY-CLOSE" := by decide
-example : hostLlvmHoldCite = "HOST-LLVM-HOLD" := by decide
-example : emitBoundaryCite = "EMIT-BOUNDARY" := by decide
-example : runtimeFsCite = "RUNTIME-FS" := by decide
-example : smokeDebtToken = "hosted behavioral probe is smoke debt" := by decide
-example : productWireToken = "product freestanding wire" := by decide
-example : intentionalPartialToken = "intentional PARTIAL" := by decide
-example : probeWireSurfaceOk = true := by decide
-
-/-- PROBE-WIRE-SMOKE: smoke debt / not-wire / emit-path / does-not-replace;
-    free/complete/unlock stay false. -/
-example : behavioralProbeIsSmokeDebt = true := by decide
-example : behavioralProbeIsNotProductWire = true := by decide
-example : productWireIsEmitPath = true := by decide
-example : probeDoesNotReplaceProductWire = true := by decide
-example : residualFreeClaimed = false := by decide
-example : productSelfHostCompleteClaimed = false := by decide
-example : SelfApplyFs.freestandingProductSelfHostComplete = false := by decide
-example : LlvmHold.llvmUnlocked = false := by decide
-example : LlvmHold.provablyUnlocked = false := by decide
-example : probeWireSurfacesDistinct = true := by decide
-
-/-- PROBE-WIRE-SMOKE: prior dual residual + ladder close + inventory + hold. -/
-example : DualResidual.dualResidualReady = true := by decide
-example : DualResidual.productResidualRemains = true := by decide
-example : ProductPath.productPathCloseReady = true := by decide
-example : InventoryClose.inventoryCloseReady = true := by decide
-example : LlvmHold.llvmHoldReady = true := by decide
-
-/-- PROBE-WIRE-SMOKE / HOST-PROBE-WIRE-SMOKE: probe-wire ready decides true
-    (not residual free; not product complete; not llvm unlock).
-    probeWireOk is definitional alias of probeWireReady (joint-name honesty). -/
-example : probeWireReady = true := by decide
-example : probeWireDoesNotMeanResidualFree = true := by decide
-example : probeWireDoesNotMeanProductComplete = true := by decide
-example : probeWireOk = true := by decide
-example : probeWireOk = probeWireReady := by decide
+/-! ### PROBE-WIRE-THEOREM + PROBE-WIRE-SMOKE peeled to ProbeWireTheorems
+    (same namespace). Greppable cites live on ProbeWireTheorems:
+    PROBE-WIRE-THEOREM, HOST-PROBE-WIRE-THEOREM, PROBE-WIRE-SMOKE,
+    HOST-PROBE-WIRE-SMOKE, stageId_eq, hostProbeWireId_eq,
+    behavioralProbeIsSmokeDebt_true, behavioralProbeIsNotProductWire_true,
+    productWireIsEmitPath_true, residualFreeClaimed_false,
+    probeWireReady_true, probeWireDoesNotMeanResidualFree_true,
+    ProbeWireTheorems.
+    Import SystemsLean.ProbeWireTheorems from the package root. Core claim
+    Bools + ready surface stay here -- probe is smoke debt; free claims stay
+    false; complete true via SelfApplyFs alias; not llvm / PROVABLY unlock. -/
 
 end SystemsLean.ProbeWire

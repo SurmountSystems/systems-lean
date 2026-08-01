@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: Unlicense
-# Process glue: optional Lake + compile-path + just out-freestanding-c + cc tests.
-# Static mills: just systems-host / just systems-emit-wire (pure Nix). Solo run is
-# incomplete without those. Behavioral tests: smoke/slake_behavioral_probe.c.
-# No new EMIT_* stages. Not residual free / not PROVABLY.
+# Process glue: optional Lake + just build (product wire) + cc tests.
+# Static mills: just systems-host / just systems-emit-wire (pure Nix), including
+# compile-path / unit walk (SLAKE_COMPILE_PATH_V0 shell stamp deleted;
+# HOST-COMPILE-PATH / SLAKE_COMPILE_PATH_V1 live in SystemsLean/CompilePath.lean).
+# Solo run is incomplete without pure Nix gates. Behavioral tests:
+# smoke/slake_behavioral_probe.c.
+# When SYSTEMS_PRODUCT_WIRE_FRESH=1 (set by just check after just build), skip a
+# second full product regenerate. No new EMIT_* stages. Not residual free / not PROVABLY.
 # Plan: .agents/plans/plan-paydown-shell-c-surfaces.md (Wave B).
 set -euo pipefail
 root=$(cd "$(dirname "$0")/../.." && pwd)
@@ -48,17 +52,20 @@ if [[ "$run_lake" -eq 1 ]]; then
   else echo "ok lake build"; fi
 fi
 
-echo "== compile-path (SLAKE_COMPILE_PATH_V0) =="
-if [[ ! -f script/slake-compile-path.sh ]]; then
-  echo "RED: missing script/slake-compile-path.sh" >&2; fail=1
-elif ! bash script/slake-compile-path.sh; then
-  echo "RED: compile-path non-zero" >&2; fail=1
-else echo "ok compile-path GREEN"; fi
+echo "== compile-path (SLAKE_COMPILE_PATH_V0 retired; static pure Nix) =="
+echo "  SLAKE_COMPILE_PATH_V0 shell stamp deleted; not product C"
+echo "  static: just systems-emit-wire (unit walk) + just systems-host"
+echo "  host: SLAKE_COMPILE_PATH_V1 / HOST-COMPILE-PATH (SystemsLean/CompilePath.lean)"
+if [[ ! -f "$here/SystemsLean/CompilePath.lean" ]]; then
+  echo "RED: missing $here/SystemsLean/CompilePath.lean" >&2; fail=1
+else echo "ok compile-path host module present (static mills pure Nix)"; fi
 
-echo "== emit + out (SLAKE_EMIT_FREESTANDING_C_V0 via just out-freestanding-c) =="
-if ! just out-freestanding-c; then
-  echo "RED: just out-freestanding-c non-zero" >&2; fail=1
-else echo "ok out-freestanding-c GREEN"; fi
+echo "== emit + out (SLAKE_EMIT_FREESTANDING_C_V0 via just build) =="
+if [[ "${SYSTEMS_PRODUCT_WIRE_FRESH:-}" == "1" ]]; then
+  echo "ok product wire already fresh from just check/build (SYSTEMS_PRODUCT_WIRE_FRESH=1; skip regenerate)"
+elif ! just build; then
+  echo "RED: just build non-zero" >&2; fail=1
+else echo "ok just build GREEN"; fi
 if [[ ! -f "$emit_c" || ! -f "$emit_h" ]]; then
   echo "RED: emit product missing" >&2; fail=1
 else echo "ok emit product .c/.h"; fi

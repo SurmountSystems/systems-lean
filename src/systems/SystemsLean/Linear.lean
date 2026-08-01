@@ -14,14 +14,36 @@
   - JOIN-ALG ConsumeToken is the dual algorithm on Idris side / Lean side.
   - Classic Lean cannot enforce multiplicity 1; names and module docs are the
     contract until freestanding checks and product wire enforce exact-once.
+  - Freestanding Mult grades only: MULT-0 (erased / polyId), MULT-1 (exact-once
+    Token contract + HostCompose live-flag), MULT-OMEGA (shareNat unrestricted).
+  - Affine (at most once / discard without use) is NOT first-class here.
+
+  Linear axioms (LINEAR-AXIOMS-REMAIN -- honest limits):
+  - Token : Type -- abstract once-use resource; no concrete model.
+  - mkToken : Nat -> Token -- mint; no runtime code for axioms.
+  - consume : Token -> Nat -- use once by contract; elaborator will not reject
+    double application of consume to the same proof-relevant Token value.
+  Why axioms (not opaque): opaque constants over abstract Token need a Nonempty
+  instance that would force a fake model. Axioms keep contracts abstract.
+  What IS proven elsewhere (not by eliminating these axioms):
+  - LinearTheorems: shareNat_* (MULT-OMEGA), polyId_* (MULT-0), roundTrip_eq
+    (JOIN-ALG compose shape), mult-class honesty pins, axiom inventory pins.
+  - HostCompose: live-flag mint/consume fail-closed (double consume, double mint,
+    mint id 0 reject, spent scrub) -- LINEAR-EXACT-ONCE model, not elaborator.
+  - KernelLinear / CompilePath Linear / EmitLinear / JoinMap host-use pins.
+  What is NOT proven:
+  - Elaborator MULT-1 / LINEAR-EXACT-ONCE on Token (Idris LinearCheck class).
+  - Affine as product ABI. residual free. SpecProof complete. PROVABLY. llvm.
 
   Theorems (LINEAR-THEOREM / HOST-LINEAR-THEOREM -- honest limited only):
-  - shareNat_eq: shareNat n = n + n (unrestricted Mult-omega class sketch).
-  - shareNat_zero / shareNat_succ: concrete Nat cases of shareNat_eq.
-  - polyId_id: polyId x = x (erased-parameter sketch identity).
-  - roundTrip_eq: roundTrip n is definitionally consume (mkToken n).
+  - Live in SystemsLean.LinearTheorems (same namespace; long-file split).
+  - shareNat_eq / shareNat_zero / shareNat_succ / shareNat_reuse (MULT-OMEGA).
+  - polyId_id / polyId_compose / polyId_nat (MULT-0 erased-parameter sketch).
+  - roundTrip_eq (JOIN-ALG mint+consume composition shape).
+  - mult0ClassId_eq / mult1ClassId_eq / multOmegaClassId_eq / linearExactOnceId_eq.
+  - linearAxiomsRemainId_eq / linearAxiomInventoryOk_true / affineNotFirstClassId_eq.
   JOIN-ALG ConsumeToken remains dual-cite honesty; Token/mkToken/consume axioms
-  stay axioms. These do NOT claim MULT-1 / LINEAR-EXACT-ONCE enforcement.
+  stay axioms. These do NOT claim MULT-1 / LINEAR-EXACT-ONCE elaborator enforcement.
   These Linear theorems do NOT set SpecProof.proofCompleteClaimed true.
   Partial theorems on Linear != host proof complete != residual free.
 
@@ -40,10 +62,15 @@
   - Not freestanding emit residual free.
   - Not proof complete (SpecProof.proofCompleteClaimed stays false).
 
-  Greppable: SYSTEMS_LEAN_HOST, JOIN-ALG, ConsumeToken, MULT-1, LINEAR-EXACT-ONCE,
-  LINEAR-THEOREM, HOST-LINEAR-THEOREM, shareNat_eq, shareNat_zero, shareNat_succ,
-  polyId_id, roundTrip_eq
+  Greppable: SYSTEMS_LEAN_HOST, JOIN-ALG, ConsumeToken, MULT-0, MULT-1, MULT-OMEGA,
+  LINEAR-EXACT-ONCE, LINEAR-AXIOMS-REMAIN, LINEAR-THEOREM, HOST-LINEAR-THEOREM,
+  shareNat_eq, shareNat_zero, shareNat_succ, shareNat_reuse, polyId_id,
+  polyId_compose, polyId_nat, roundTrip_eq, mult0ClassId_eq, mult1ClassId_eq,
+  multOmegaClassId_eq, linearExactOnceId_eq, linearAxiomsRemainId_eq,
+  linearAxiomInventoryOk_true, affineNotFirstClassId_eq, LinearTheorems
   UNIT_SURFACE host surface. Module: SystemsLean.Linear
+  Long-file split: LINEAR-THEOREM + HOST-LINEAR-THEOREM in
+  SystemsLean.LinearTheorems (same namespace). Core Linear dialect stays here.
   linear resource contract; exact-once fail closed by contract only here.
   Red/green: just systems-host (nix/systems-host-presence/; flake checks.systems-host-presence); lake build when toolchain installed.
   Module must stay ASCII.
@@ -55,19 +82,23 @@ namespace SystemsLean.Linear
 def shareNat (n : Nat) : Nat := n + n
 
 /-- Abstract once-use resource. Freestanding map: MULT-1 / LINEAR-EXACT-ONCE.
-    Classic Lean does not enforce exact-once use. -/
+    Classic Lean does not enforce exact-once use.
+    LINEAR-AXIOMS-REMAIN: stays axiom (no Nonempty Token model). -/
 axiom Token : Type
 
 /-- Mint a token from unrestricted data (MULT-OMEGA in, Token out).
-    JOIN-ALG ConsumeToken mkToken shape. -/
+    JOIN-ALG ConsumeToken mkToken shape.
+    LINEAR-AXIOMS-REMAIN: stays axiom. -/
 axiom mkToken : Nat -> Token
 
 /--
   consume t -- use the token once (contract); return payload.
   Classic Lean does not reject double application of consume to the same
   proof-relevant value the way Idris LinearCheck would; freestanding product
-  wire and later host checks will.
+  wire and later host checks will. HostCompose live-flag models fail-closed
+  double consume for the concrete host handle (not this abstract Token).
   JOIN-ALG ConsumeToken consume shape.
+  LINEAR-AXIOMS-REMAIN: stays axiom.
 -/
 axiom consume : Token -> Nat
 
@@ -82,37 +113,42 @@ noncomputable def roundTrip (n : Nat) : Nat := consume (mkToken n)
     Not identical to Idris `{0 a : Type}` (see ERASE-PROP / EDGE-PROP). -/
 def polyId {a : Type} (x : a) : a := x
 
-/-! ### LINEAR-THEOREM / HOST-LINEAR-THEOREM (readable statements, then proofs)
+/-! ### Mult grade class + honesty pins (freestanding 0/1/omega; not affine)
 
-  Honest limited surface theorems only. JOIN-ALG ConsumeToken dual-cite honesty
-  remains; Token / mkToken / consume stay axioms. Does NOT claim MULT-1 /
-  LINEAR-EXACT-ONCE enforcement (classic Lean cannot). Does not complete
-  SpecProof; does not claim residual free / freestanding product self-host
-  complete / PROVABLY.
+  String pins map Linear sketches to Mult grades. Mult inductive lives in
+  Mult.lean; these are greppable contract surface ids only.
 -/
 
-/-- Unrestricted share sketch is n + n.
-    Greppable: shareNat_eq, LINEAR-THEOREM, HOST-LINEAR-THEOREM. -/
-theorem shareNat_eq (n : Nat) : shareNat n = n + n := rfl
+/-- MULT-0 erased / runtime-absent class id (polyId sketch). -/
+def mult0ClassId : String := "MULT-0"
 
-/-- shareNat at zero is zero (greppable base case of shareNat_eq; not deeper
-    algebra than the general lemma). Future Linear depth prefers HostCompose
-    live-flag contracts over more shareNat rephrases.
-    Greppable: shareNat_zero, LINEAR-THEOREM, HOST-LINEAR-THEOREM. -/
-theorem shareNat_zero : shareNat 0 = 0 := rfl
+/-- MULT-1 use-once / linear class id (Token / mkToken / consume contract). -/
+def mult1ClassId : String := "MULT-1"
 
-/-- shareNat at succ is (n+1)+(n+1) (greppable succ case of shareNat_eq).
-    Greppable: shareNat_succ, LINEAR-THEOREM, HOST-LINEAR-THEOREM. -/
-theorem shareNat_succ (n : Nat) : shareNat (n + 1) = (n + 1) + (n + 1) := rfl
+/-- MULT-OMEGA unrestricted class id (shareNat sketch). -/
+def multOmegaClassId : String := "MULT-OMEGA"
 
-/-- Erased-parameter identity sketch is the identity.
-    Greppable: polyId_id, LINEAR-THEOREM, HOST-LINEAR-THEOREM. -/
-theorem polyId_id {a : Type} (x : a) : polyId x = x := rfl
+/-- LINEAR-EXACT-ONCE contract id (primary freestanding memory-safety story). -/
+def linearExactOnceId : String := "LINEAR-EXACT-ONCE"
 
-/-- roundTrip is definitionally consume (mkToken n) (JOIN-ALG compose shape).
-    Not a MULT-1 enforcement theorem; axioms remain axioms.
-    Greppable: roundTrip_eq, JOIN-ALG, LINEAR-THEOREM, HOST-LINEAR-THEOREM. -/
-theorem roundTrip_eq (n : Nat) :
-    roundTrip n = consume (mkToken n) := rfl
+/-- Honest residual: Token / mkToken / consume remain axioms on classic Lean. -/
+def linearAxiomsRemainId : String := "LINEAR-AXIOMS-REMAIN"
+
+/-- Affine is not first-class on freestanding product wire (exact-once primary). -/
+def affineNotFirstClassId : String := "AFFINE-NOT-FIRST-CLASS"
+
+/-- Inventory pin: Mult 0/1/omega ids + exact-once + axioms remain + affine not
+    first-class. Greppable: linearAxiomInventoryOk, LINEAR-AXIOMS-REMAIN. -/
+def linearAxiomInventoryOk : Bool :=
+  (mult0ClassId == "MULT-0")
+    && (mult1ClassId == "MULT-1")
+    && (multOmegaClassId == "MULT-OMEGA")
+    && (linearExactOnceId == "LINEAR-EXACT-ONCE")
+    && (linearAxiomsRemainId == "LINEAR-AXIOMS-REMAIN")
+    && (affineNotFirstClassId == "AFFINE-NOT-FIRST-CLASS")
+
+/- Theorems live in SystemsLean.LinearTheorems
+   (same namespace SystemsLean.Linear; long-file split). Parent keeps
+   Linear dialect only -- do not import LinearTheorems here (import cycle). -/
 
 end SystemsLean.Linear

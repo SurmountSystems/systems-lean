@@ -10,7 +10,9 @@ The freestanding compiler product of this project is **Slake**.
 
 **Slake** is a compiler written in **Systems Lean**. Focus: freestanding **runtimeless** C (`out/freestanding-c`) with memory safety from **linear types**, **no garbage collection** on the product wire, and only the **minimum** Quantitative Type Theory multiplicities (0 / 1 / omega) needed for that path.
 
-Meet-in-the-middle Idris 2 and Lean 4 correspondence feeds Slake -- sides live under `src/idris2/` and `src/lean4/`. LLVM intermediate representation for Rust-native link is **deferred** until self-host (`out/llvm-ir`).
+**Living tip:** freestanding product self-host **complete** and product residual **free** are both **true**; host still uses classic Lean Lake. Free is not "Lake is gone," not proof complete, not PROVABLY, not LLVM. Bootstrap status and Open residual: [doc/SESSION-HANDOFF.md](doc/SESSION-HANDOFF.md), [RESIDUAL-systems.md](RESIDUAL-systems.md). LLVM IR for Rust-native link stays **deferred** (`out/llvm-ir`).
+
+Meet-in-the-middle Idris 2 and Lean 4 correspondence feeds Slake -- sides live under `src/idris2/` and `src/lean4/`.
 
 **Three languages only** for novel work: **Idris 2**, **Lean 4** (including Systems Lean / Slake), and **pure Nix flakes** (small modules under `nix/`, not bash-in-Nix). No project Python; shell under `script/` is migration debt to shrink. Freestanding C is **generated product wire** (emit / out), not a fourth source language. Thin **`just`** orchestrates only. Policy and language inventory: [AGENTS.md](AGENTS.md), terms: [doc/vocabulary.md](doc/vocabulary.md), goals: [doc/goals.md](doc/goals.md). Spec and proof stay separated; red/green tests stay required.
 
@@ -22,8 +24,9 @@ Meet-in-the-middle Idris 2 and Lean 4 correspondence feeds Slake -- sides live u
 | [doc/vocabulary.md](doc/vocabulary.md) | Stable terms (project = Systems Lean; Slake = **compiler**; tooling terms) |
 | [doc/architecture.md](doc/architecture.md) | Meet-in-the-middle sketch |
 | [doc/divergence.md](doc/divergence.md) | Honest differences and trusted computing bases |
-| [AGENTS.md](AGENTS.md) | Agent hygiene, isolation, pure Nix tooling, language inventory (SSoT -- single source of truth) |
+| [AGENTS.md](AGENTS.md) | Agent hygiene, isolation, **project skills**, pure Nix tooling, language inventory (SSoT -- single source of truth) |
 | [RESIDUAL.md](RESIDUAL.md) | Living open work for **this** project |
+| [`.agents/skills/`](.agents/skills/) | Project skill discovery (symlinks; hosts walk this path) |
 
 ## References (read-only)
 
@@ -34,9 +37,19 @@ Meet-in-the-middle Idris 2 and Lean 4 correspondence feeds Slake -- sides live u
 | `ref/CompCert` | [AbsInt CompCert](https://github.com/AbsInt/CompCert) | `ccomp` source for CompCert-oriented C path |
 | `ref/rust` | [rust-lang/rust](https://github.com/rust-lang/rust) | Type layout / ABI + LLVM codegen reference (not llvm-project alone) |
 
-Do not treat `ref/` as product source. Systems Lean language work and the Slake compiler live in this repository when implementation begins.
+Do not treat `ref/` as product source. Systems Lean language work and the Slake compiler live in this repository.
 
 Entry maps: `doc/idris-entry.md`, `doc/lean-entry.md`, `doc/compcert-entry.md`, `doc/rust-entry.md`.
+
+## Project agent skills
+
+Lean 4 coding-agent workflows ship as a **project skill** (no global install required for discovery):
+
+| Skill | Discovery path | Body (submodule) |
+|-------|----------------|------------------|
+| **lean4** | `.agents/skills/lean4` | `skills/lean4-skills` ([cameronfreer/lean4-skills](https://github.com/cameronfreer/lean4-skills)) |
+
+After clone: `git submodule update --init --recursive skills/lean4-skills`. Policy, overrides, and **when to use** for residual/plans: [AGENTS.md](AGENTS.md) (**Project agent skills**). Inventory: [skills/README.md](skills/README.md). Lean entry map: [doc/lean-entry.md](doc/lean-entry.md).
 
 ## Isolation
 
@@ -53,20 +66,22 @@ Work **here**. This repository **is** Systems Lean. Do not default to other tree
 +-- out/
 |   +-- freestanding-c/  # Generated freestanding product wire (release; not hand-authored)
 |   +-- llvm-ir/         # LLVM IR for Rust-native link (deferred post self-host)
-+-- ref/                 # Upstream read-only submodules (Idris2, lean4, CompCert, rust)
++-- ref/                 # Language/compiler upstream (Idris2, lean4, CompCert, rust)
++-- skills/              # Agent skill pack submodules (lean4-skills; not product)
++-- .agents/skills/      # Project skill discovery (symlinks into skills/)
 +-- doc/                 # Goals, vocabulary, architecture, entry maps
 +-- nix/                 # Pure Nix tooling modules (hygiene, progress, host/emit gates)
-+-- script/              # Shell migration debt only (build/emit/check + thin git-hooks); shrink
-+-- justfile             # thin orchestration: check | build | out-freestanding-c (default: list)
++-- script/              # Process glue only (optional git-hooks/pre-commit -> just check); no mills
++-- justfile             # thin orchestration: check | build (product wire; default: list)
 +-- flake.nix            # Thin wire-up: checks / packages / devShell (no shell-farm apps)
-+-- AGENTS.md            # Agent policy + detailed tree map + language surface inventory (SSoT)
++-- AGENTS.md            # Agent policy + skills + tree map + language inventory (SSoT)
 +-- RESIDUAL.md          # Living open work
 ```
 
-Full evolving map: [AGENTS.md](AGENTS.md). Product code never under `ref/`.
-Language inventory and freestanding C git policy: [AGENTS.md](AGENTS.md) (**Three languages only** — single source of truth; do not fork a second inventory here). Terms: [doc/vocabulary.md](doc/vocabulary.md).
+Full evolving map: [AGENTS.md](AGENTS.md). Product code never under `ref/` or `skills/`.
+Language inventory and freestanding C git policy: [AGENTS.md](AGENTS.md) (**Three languages only** -- single source of truth; do not fork a second inventory here). Terms: [doc/vocabulary.md](doc/vocabulary.md).
 Forks: [doc/fork-idris.md](doc/fork-idris.md), [doc/fork-lean.md](doc/fork-lean.md). Coordinator: [doc/fork-coordinator.md](doc/fork-coordinator.md).
-Next autonomous implement instructions: [WATCHER.md](WATCHER.md) (`WATCHER_BEGIN` ... `WATCHER_END`).
+Agent residual loop (not a product map): [WATCHER.md](WATCHER.md).
 
 ## Tooling
 
@@ -78,9 +93,8 @@ just              # list
 just check        # CI-identical full suite
 just progress     # pure Nix meters -> doc/PROGRESS.md
 just watch        # every 300s: progress-scc + hygiene (just loop)
-just build        # freestanding src/systems/
-just out-freestanding-c  # release freestanding C (generated wire)
-just out-llvm-ir         # deferred (see out/llvm-ir/README.md)
+just build        # product freestanding wire (emit + out/freestanding-c)
+just out-llvm-ir  # deferred (see out/llvm-ir/README.md)
 ```
 
 Lean elaborator pin is `leanprover/lean4:v4.32.0` (`src/systems/lean-toolchain`, `src/lean4/lean-toolchain`).
@@ -92,12 +106,11 @@ ASCII map: [doc/ascii-symbol-map.md](doc/ascii-symbol-map.md). Policy and langua
 
 ## License
 
-- **Our work** (everything we commit outside `ref/`): [The Unlicense](UNLICENSE.md) -- public domain dedication. See [LICENSES.md](LICENSES.md).
+- **Our work** (everything we commit outside `ref/` and `skills/`): [The Unlicense](UNLICENSE.md) -- public domain dedication. See [LICENSES.md](LICENSES.md).
 - **Author:** Hunter "cryptoquick" Beast.
 - **SPDX for our crates / modules / packages:** `Unlicense` (Cargo, Lake, Idris, Nix metadata, optional file headers). Details in [LICENSES.md](LICENSES.md).
-- **Submodules under `ref/`:** keep their own licenses (Idris 2 BSD-style, Lean 4 Apache-2.0, CompCert non-commercial/AbsInt, Rust Apache-2.0 OR MIT, ...). Tracked in [LICENSES.md](LICENSES.md).
+- **Submodules under `ref/` and `skills/`:** keep their own licenses (Idris 2 BSD-style, Lean 4 Apache-2.0, CompCert non-commercial/AbsInt, Rust Apache-2.0 OR MIT, lean4-skills MIT, ...). Tracked in [LICENSES.md](LICENSES.md).
 
 ## Status
 
-Foundation: goals, vocabulary, architecture, agent hygiene, and upstream submodules (Idris2, Lean4, CompCert, rust).
-Hard correspondence / Slake design work is **on hold** so a forked research or implementor chat can own it -- see [RESIDUAL.md](RESIDUAL.md) and [doc/SESSION-HANDOFF.md](doc/SESSION-HANDOFF.md).
+Active Systems / Slake residual and living tip: [doc/SESSION-HANDOFF.md](doc/SESSION-HANDOFF.md) and [RESIDUAL.md](RESIDUAL.md). Foundation docs and upstream submodules are in place; product work is under `src/systems/`.

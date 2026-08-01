@@ -38,7 +38,8 @@
     bodyOk_omega_true / bodyFromCompose_linear_and_erased
   These EmitBody theorems do NOT set SpecProof.proofCompleteClaimed true.
   Partial theorems on EmitBody != host proof complete != residual free.
-  Does not invent a second fragment dialect; does not grow product C.
+  Does not invent a second fragment dialect; does not grow product C beyond
+  HOST-EMIT-BODY scaffolding ownership.
 
   Intentional non-claims / partial parity:
   - PARTIAL vs full C EMIT_BODY_V0: host uses String + Nat inventory (no fixed
@@ -56,14 +57,37 @@
   it must not invent a second fragment header format.
   PARTIAL: host String inventory vs freestanding C fixed char buf remains.
 
+  Host-owned freestanding product C scaffolding (HOST-EMIT-BODY):
+  - Scaffolding text + emitBodyReady live in SystemsLean.EmitBodyScaffold
+    (same namespace; long-file peel). Greppable: bodyHeaderFragment,
+    bodyBodyFragment, emitBodyReady, SLAKE_SELF_HOST_EMIT_BODY_V0.
+  - Lean owns freestanding emit body product C scaffolding
+    (slake_emit_body + SLAKE_EMIT_BODY_CAP + put_char / put_u8 / from_compose +
+    is_valid) via scaffold fragments + durable SSOT.
+  - Durable artifact: src/systems/emit/host_emit_body_fragment.ssot.txt
+    (BODY_C_HEADER / BODY_C_BODY blocks match bodyHeaderFragment /
+    bodyBodyFragment; dialect keys stay HOST-EMIT-SSOT).
+  - FreestandingEmit embeds body scaffolding from the durable SSOT, then
+    substitutes __SSOT_*__ dialect keys; it must not invent a second body.
+  - EMIT_BODY_V0 / slake_emit_body greppable on wire (map only).
+  - emitBodyReady: surface + honesty piece equality (scaffold).
+  - No new EMIT_BODY residual C stage ladder (host stage ids only).
+  - Contiguous emit body after Apply on product wire (depends on plan/apply).
+
   Greppable: SYSTEMS_LEAN_HOST, EMIT-BODY, EMIT_BODY_V0, BODY_CAP,
   SLAKE_EMIT_BODY_CAP, RUNTIME-FS, EMIT-BOUNDARY, FAIL-CLOSED, HOST-COMPOSE,
   EMIT-PLAN, EMIT-APPLY, slake_emit_body, bodyFromCompose, fromCompose,
   bodyIsValid, buildFragment, HOST-EMIT-SSOT, emptyComposeFragmentSsot,
   EMIT-BODY-THEOREM, HOST-EMIT-BODY-THEOREM, bodyCap_eq_256,
   emptyComposeFragmentSsot_eq, bodyOk_empty_true, bodyOk_mult1_unminted_false,
-  bodyOk_mult1_minted_true, bodyFromCompose_linear_and_erased
+  bodyOk_mult1_minted_true, bodyFromCompose_linear_and_erased,
+  SLAKE_SELF_HOST_EMIT_BODY_V0, HOST-EMIT-BODY, SELF-HOST-EMIT-BODY,
+  bodyHeaderFragment, bodyBodyFragment, emitBodyReady, NON-SSOT,
+  EMIT-BODY-PRODUCT-SMOKE, HOST-EMIT-BODY-SMOKE, EmitBodyScaffold,
+  bodySsotArtifactPath, theorem emitBodyReady_true,
   UNIT_SURFACE host surface. Module: SystemsLean.EmitBody
+  Long-file peel: HOST-EMIT-BODY scaffolding in SystemsLean.EmitBodyScaffold
+  (same namespace). Core dialect + theorems stay here.
   Red/green: just systems-host (nix/systems-host-presence/; flake checks.systems-host-presence); lake build when toolchain installed.
   Module must stay ASCII.
 -/
@@ -73,6 +97,7 @@ import SystemsLean.Types
 import SystemsLean.HostCompose
 import SystemsLean.EmitPlan
 import SystemsLean.EmitApply
+import SystemsLean.EmitBodyScaffold
 
 namespace SystemsLean.EmitBody
 
@@ -440,5 +465,16 @@ example :
        && b.buf ==
          "/* EMIT_BODY_V0 RUNTIME-FS r=1 e=1 */\n/* t0 mult=1 kind=1 */\n/* t1 mult=0 kind=2 */\n")
       = true := by decide
+
+
+/-! ### HOST-EMIT-BODY scaffolding peeled to EmitBodyScaffold (same namespace)
+    Greppable cites (defs live on EmitBodyScaffold): HOST-EMIT-BODY,
+    SELF-HOST-EMIT-BODY, SLAKE_SELF_HOST_EMIT_BODY_V0, bodyHeaderFragment,
+    bodyBodyFragment, emitBodyReady, emitBodyOk, bodyHeaderHonestyOk,
+    bodyScaffoldHonestyOk, emitBodySurfaceOk, EMIT-BODY-PRODUCT-SMOKE,
+    HOST-EMIT-BODY-SMOKE, EmitBodyScaffold, theorem emitBodyReady_true,
+    NON-SSOT, src/systems/emit/host_emit_body_fragment.ssot.txt.
+    Import SystemsLean.EmitBodyScaffold above. Product-text ownership only --
+    not residual free / not complete. -/
 
 end SystemsLean.EmitBody

@@ -17,7 +17,9 @@ You are the Systems / Slake implement fork for the Systems Lean project (checkou
 ## Role and cwd
 - Own novel freestanding work under src/systems/ only (plus RESIDUAL-systems.md; light notes under doc/research/ only if pure systems analysis).
 - Stay within the current working directory tree of this repo. Do not leave isolation for external residual mills unless the human says they are desperate for a specific off-repo fix.
-- Read-only upstream: ref/* (Idris2, lean4, CompCert, rust). Do not edit ref/* as product.
+- Read-only upstream: ref/* (Idris2, lean4, CompCert, rust) and skills/* (agent skill packs). Do not edit ref/* or skills/* as product.
+- Project Lean skill: .agents/skills/lean4 -- load for host .lean residual (draft/prove/review/doctor). Map: AGENTS.md When to reach for lean4 tools.
+- Skill helps host theorems and Lake; it does not invent Open Names, hand-author freestanding C, or replace just systems-host / systems-emit-wire / check.
 - You may **read** src/idris2/, src/lean4/, doc/shared-ir-sketch.md, doc/divergence.md for the map; do not rewrite dual product sources.
 - Do NOT race Idris-side or Lean-side dual residual. Do not invent a second dual example.
 - Coordinator session (if present) owns RESIDUAL.md join board and fork-guidance-*.md. Watcher session owns auto-continue from WATCHER.md. This session owns Systems / Slake residual.
@@ -83,14 +85,22 @@ Authoritative ledger: `RESIDUAL-systems.md` (this list is a paste prompt snapsho
    ERASURE host-owned product text; ownership map `emit/host-owned-emit.md`; never
    residual free; no EMIT_MODULE reintroduction; no new EMIT_* residual C stages.
 2. **Done (partial):** SYSTEMS_LEAN_HOST Mult..SelfHostBody (see host-partial-inventory.md);
-   SelfHostBody folds emitMultReady && emitLinearReady && emitErasureReady; complete/free false.
-3. **Open:** empty (done-for-now). Do **not** invent Open Names. Human names next residual.
-4. Template bulk still open as future *named* residual only (not invented): Extract,
-   Types/IR/compose/emit plan-apply bulk per ownership map -- only when human names them.
-5. Do not touch out/llvm-ir or CompCert PROVABLY until residual and evidence allow.
-6. Every durable slice: update residual + WATCHER + SESSION-HANDOFF + ownership/README as
+   SelfHostBody folds Mult..Out emit readiness; claim B freestanding product self-host
+   complete **true**; product residual free **false**; Lake host still used.
+   Host theorem mill under current surface is **exhausted** (not residual re-open).
+3. **Open:** **Residual free bar inventory** (plan Step 1). Trust residual /
+   `WATCHER.md` over this paste after compaction. Do **not** invent unrelated Names.
+4. **Living product program:** `.agents/plans/plan-residual-free-freestanding.md`
+   (residual free + linear freestanding). Historical six-claims snapshot:
+   `.agents/plans/plan-close-six-claims.md` (section 0 living tip wins). Residual
+   schema: `plan-unambiguous-residual-work.md`.
+5. **Living tip:** complete true; free false; Lake host remains; long-file campaign
+   parked hygiene; free claim only when free bar + honesty modules agree.
+6. Do not touch out/llvm-ir or CompCert PROVABLY until residual and evidence allow.
+7. Every durable slice: update residual + WATCHER + SESSION-HANDOFF + ownership/README as
    needed (AGENTS.md **Document slices so they survive compaction**); gates:
    systems-host / systems-emit-wire / hygiene / src/systems/check.sh / just check.
+   Host Lean slices: load `.agents/skills/lean4` (draft/prove/review/doctor).
 
 ## Implement loop design (run this mode)
 
@@ -115,7 +125,7 @@ Great, what do we need to work on next to manifest that consideration along with
 ## Validation (run yourself)
 just build
 ./src/systems/check.sh
-just out-freestanding-c
+just build
 just check
 just hygiene
 Update RESIDUAL-systems.md. Re-read doc/fork-guidance-systems.md each loop. Coordinator owns RESIDUAL.md join board and meters.

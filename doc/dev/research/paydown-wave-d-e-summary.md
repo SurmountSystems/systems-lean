@@ -10,7 +10,7 @@ Plan: `.agents/plans/plan-paydown-shell-c-surfaces.md` Waves D and E.
 
 - Hardened `out/freestanding-c/README.md` with concrete **git subtree** and
   **tarball** consumer publish steps.
-- Added `just export-freestanding-c` (depends on `out-freestanding-c`): writes
+- Added `just export-freestanding-c` (depends on `just build`): writes
   `.cache/systems-lean-freestanding-c-<UTC>.tar.gz` from `out/freestanding-c`.
 - Default remains: monorepo tracks dogfood product wire for local red/green;
   optional later untrack is documented, not forced.

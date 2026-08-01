@@ -1,0 +1,157 @@
+# HOST-EMIT-BANNER -- freestanding C banner / version / unit_translation (durable host artifact)
+# SSoT owner: SystemsLean.EmitBanner (src/systems/SystemsLean/EmitBanner.lean)
+#   bannerHeaderFragment + bannerBodyFragment + emitVersionString / unitTranslationId
+# Lean FreestandingEmit embeds banner product text from this artifact (no second dialect).
+# BANNER_C_HEADER / BANNER_C_BODY blocks must match bannerHeaderFragment / bannerBodyFragment.
+# Product API: slake_emit_version, slake_unit_translation_id.
+# Host stage ids only: HOST-EMIT-BANNER / SELF-HOST-EMIT-BANNER / SLAKE_SELF_HOST_EMIT_BANNER_V0.
+# Do not mint a residual C stage ladder for banner as freestanding residual progress.
+HOST-EMIT-BANNER
+NON-SSOT
+SELF-HOST-EMIT-BANNER
+SLAKE_SELF_HOST_EMIT_BANNER_V0
+UNIT_TRANSLATION_V0
+SLAKE_EMIT_FREESTANDING_C_V0
+# BANNER_C_HEADER_BEGIN
+/* ---- Banner / version / unit_translation (HOST-EMIT-BANNER) ----
+ * SLAKE_EMIT_FREESTANDING_C_V0 -- freestanding C header API.
+ * UNIT_TRANSLATION_V0 -- first real unit translation of UNIT_SURFACE modules.
+ * UNIT_DEEPEN_V1 -- deepened mult/linear/erasure/extract contract map.
+ * FAIL_CLOSED_CHECKER_V1 -- composed fail-closed checker + extract path.
+ * CONSUME_TOKEN_HOST_V0 -- freestanding JOIN-ALG ConsumeToken-class host shape.
+ * TYPED_IR_V0 -- richer typed IR surface behind checker/host.
+ * IR_PROGRAM_V0 -- multi-node ordered IR program (ordered list; not CFG).
+ * IR_GRAPH_EDGES_V0 -- graph edges over ordered IR program (node index endpoints).
+ * HOST_COMPOSE_V0 -- freestanding host + IR graph composition (not residual free).
+ * EMIT_PLAN_V0 -- emit plan from host compose (not residual free; not CFG/SSA).
+ * EMIT_APPLY_V0 -- apply plan tags into fixed buffer (not residual free; not full C body).
+ * EMIT_BODY_V0 -- freestanding C body fragment (not residual free; not CFG/SSA).
+ * HOST-EMIT-SSOT -- fragment dialect from SystemsLean.EmitBody + host_emit_body_fragment.ssot.txt
+ * (Lean freestanding emit embeds HOST-EMIT-SSOT dialect (no second format)).
+ * HOST-EMIT-MULT -- Mult product text from SystemsLean.EmitMult + host_emit_mult.ssot.txt
+ * (Lean freestanding emit embeds HOST-EMIT-MULT Mult product text).
+ * HOST-EMIT-LINEAR -- Linear/ConsumeToken product text from SystemsLean.EmitLinear +
+ * host_emit_linear.ssot.txt (Lean freestanding emit embeds HOST-EMIT-LINEAR text).
+ * HOST-EMIT-ERASURE -- Erasure product text from SystemsLean.EmitErasure +
+ * host_emit_erasure.ssot.txt (Lean freestanding emit embeds HOST-EMIT-ERASURE text).
+ * HOST-EMIT-EXTRACT -- Extract + FAIL_CLOSED product text from SystemsLean.EmitExtract +
+ * host_emit_extract.ssot.txt (Lean freestanding emit embeds HOST-EMIT-EXTRACT text).
+ * HOST-EMIT-TYPES -- Types/TYPED_IR product text from SystemsLean.EmitTypes +
+ * host_emit_types.ssot.txt (Lean freestanding emit embeds HOST-EMIT-TYPES text).
+ * HOST-EMIT-PROGRAM -- IR program product text from SystemsLean.EmitProgram +
+ * host_emit_program.ssot.txt (Lean freestanding emit embeds HOST-EMIT-PROGRAM text).
+ * HOST-EMIT-GRAPH -- IR graph product text from SystemsLean.EmitGraph +
+ * host_emit_graph.ssot.txt (Lean freestanding emit embeds HOST-EMIT-GRAPH text).
+ * HOST-EMIT-COMPOSE -- host compose product text from SystemsLean.EmitCompose +
+ * host_emit_compose.ssot.txt (Lean freestanding emit embeds HOST-EMIT-COMPOSE text).
+ * HOST-EMIT-PLAN -- emit plan product text from SystemsLean.EmitPlan +
+ * host_emit_plan.ssot.txt (Lean freestanding emit embeds HOST-EMIT-PLAN text).
+ * HOST-EMIT-APPLY -- emit apply product text from SystemsLean.EmitApply +
+ * host_emit_apply.ssot.txt (Lean freestanding emit embeds HOST-EMIT-APPLY text).
+ * HOST-EMIT-BODY -- emit body scaffolding from SystemsLean.EmitBody +
+ * host_emit_body_fragment.ssot.txt (Lean freestanding emit embeds HOST-EMIT-BODY text).
+ * HOST-EMIT-BANNER: dialect from SystemsLean.EmitBanner + host_emit_banner.ssot.txt
+ * (Lean FreestandingEmit embeds this banner / version product text).
+ *
+ * RUNTIME-FS product surface goal: no Lean managed runtime on the wire.
+ * product residual free claimed; host elaborator residual remains.
+ * not PROVABLY; no product GC; not Lean managed runtime.
+ * V0 unit translation; product residual free on freestanding release.
+ *
+ * Unit map (UNIT_SURFACE -> C surface):
+ *   Mult.slake    -> enum slake_mult + slake_mult_is_valid (FAIL-CLOSED-UNKNOWN-GRADE; HOST-EMIT-MULT)
+ *   Linear.slake  -> slake_linear_token + slake_linear_consume (LINEAR-EXACT-ONCE)
+ *                   + slake_consume_token host (CONSUME_TOKEN_HOST_V0 / JOIN-ALG)
+ *                   + host_compose mint path (HOST_COMPOSE_V0)
+ *   Erasure.slake -> slake_erased + slake_erasure_is_runtime_absent (ERASE-RULE-MULT-0)
+ *   Extract.slake -> slake_extract_status + runtime class (EMIT-BOUNDARY / RUNTIME-FS)
+ *                   + slake_check_fail_closed / slake_extract_with_checks
+ *                   + slake_host_compose extract (HOST_COMPOSE_V0)
+ *                   + slake_emit_plan from compose (EMIT_PLAN_V0)
+ *                   + slake_emit_apply from compose (EMIT_APPLY_V0)
+ *                   + slake_emit_body from compose (EMIT_BODY_V0; HOST-EMIT-SSOT dialect)
+ *   Types.slake   -> slake_type_tag (COMMON-UNIVERSE tag only)
+ *                   + slake_ir_node typed IR (TYPED_IR_V0; not full elaborator)
+ *                   + slake_ir_program multi-node ordered program (IR_PROGRAM_V0)
+ *                   + slake_ir_graph edges over program nodes (IR_GRAPH_EDGES_V0)
+ *
+ * Multiplicity grades (min freestanding set; greppable):
+ *   MULT-0    -- erased / compile-time only (no runtime residual when erased)
+ *   MULT-1    -- linear / exact-once resource (JOIN-ALG ConsumeToken host V0)
+ *   MULT-OMEGA -- unrestricted runtime value
+ * No multiplicity zoo beyond these three.
+ *
+ * Smoke: prefer freestanding-friendly compile. Headers use stdint.h only.
+ * Honest smoke flags (compiler freestanding stdint is available on gcc/clang):
+ *   cc -c -std=c11 -ffreestanding -nostdlib -I. slake_freestanding.c
+ * If a target lacks freestanding stdint, fall back to:
+ *   cc -c -std=c11 -I. slake_freestanding.c
+ * (still no Lean headers; still no product GC.)
+ */
+
+/* Emit stage version symbol (greppable product surface). */
+const char *slake_emit_version(void);
+
+/* Unit translation id string (greppable UNIT_TRANSLATION_V0). */
+const char *slake_unit_translation_id(void);
+# BANNER_C_HEADER_END
+# BANNER_C_BODY_BEGIN
+/* ---- Banner / version / unit_translation (HOST-EMIT-BANNER) ----
+ * SLAKE_EMIT_FREESTANDING_C_V0 -- freestanding C definitions.
+ * UNIT_TRANSLATION_V0 -- first real unit translation of UNIT_SURFACE modules.
+ * UNIT_DEEPEN_V1 -- deepened mult/linear/erasure/extract contract map.
+ * FAIL_CLOSED_CHECKER_V1 -- composed fail-closed checker + extract path.
+ * CONSUME_TOKEN_HOST_V0 -- freestanding JOIN-ALG ConsumeToken-class host shape.
+ * TYPED_IR_V0 -- richer typed IR surface behind checker/host.
+ * IR_PROGRAM_V0 -- multi-node ordered IR program (ordered list; not CFG).
+ * IR_GRAPH_EDGES_V0 -- graph edges over ordered IR program (node index endpoints).
+ * HOST_COMPOSE_V0 -- freestanding host + IR graph composition (not residual free).
+ * EMIT_PLAN_V0 -- emit plan from host compose (not residual free; not CFG/SSA).
+ * EMIT_APPLY_V0 -- apply plan tags into fixed buffer (not residual free; not full C body).
+ * EMIT_BODY_V0 -- freestanding C body fragment (not residual free; not CFG/SSA).
+ * HOST-EMIT-SSOT -- fragment dialect from SystemsLean.EmitBody + host_emit_body_fragment.ssot.txt
+ * (Lean freestanding emit embeds HOST-EMIT-SSOT dialect (no second format)).
+ * HOST-EMIT-MULT -- Mult product text from SystemsLean.EmitMult + host_emit_mult.ssot.txt
+ * (Lean freestanding emit embeds HOST-EMIT-MULT Mult product text).
+ * HOST-EMIT-LINEAR -- Linear/ConsumeToken product text from SystemsLean.EmitLinear +
+ * host_emit_linear.ssot.txt (Lean freestanding emit embeds HOST-EMIT-LINEAR text).
+ * HOST-EMIT-ERASURE -- Erasure product text from SystemsLean.EmitErasure +
+ * host_emit_erasure.ssot.txt (Lean freestanding emit embeds HOST-EMIT-ERASURE text).
+ * HOST-EMIT-EXTRACT -- Extract + FAIL_CLOSED product text from SystemsLean.EmitExtract +
+ * host_emit_extract.ssot.txt (Lean freestanding emit embeds HOST-EMIT-EXTRACT text).
+ * HOST-EMIT-TYPES -- Types/TYPED_IR product text from SystemsLean.EmitTypes +
+ * host_emit_types.ssot.txt (Lean freestanding emit embeds HOST-EMIT-TYPES text).
+ * HOST-EMIT-PROGRAM -- IR program product text from SystemsLean.EmitProgram +
+ * host_emit_program.ssot.txt (Lean freestanding emit embeds HOST-EMIT-PROGRAM text).
+ * HOST-EMIT-GRAPH -- IR graph product text from SystemsLean.EmitGraph +
+ * host_emit_graph.ssot.txt (Lean freestanding emit embeds HOST-EMIT-GRAPH text).
+ * HOST-EMIT-COMPOSE -- host compose product text from SystemsLean.EmitCompose +
+ * host_emit_compose.ssot.txt (Lean freestanding emit embeds HOST-EMIT-COMPOSE text).
+ * HOST-EMIT-PLAN -- emit plan product text from SystemsLean.EmitPlan +
+ * host_emit_plan.ssot.txt (Lean freestanding emit embeds HOST-EMIT-PLAN text).
+ * HOST-EMIT-APPLY -- emit apply product text from SystemsLean.EmitApply +
+ * host_emit_apply.ssot.txt (Lean freestanding emit embeds HOST-EMIT-APPLY text).
+ * HOST-EMIT-BODY -- emit body scaffolding from SystemsLean.EmitBody +
+ * host_emit_body_fragment.ssot.txt (Lean freestanding emit embeds HOST-EMIT-BODY text).
+ * HOST-EMIT-BANNER: dialect from SystemsLean.EmitBanner + host_emit_banner.ssot.txt
+ * (Lean FreestandingEmit embeds this banner / version product text).
+ *
+ * RUNTIME-FS product surface goal: no Lean managed runtime on the wire.
+ * product residual free claimed; host elaborator residual remains.
+ * not PROVABLY; no product GC; not Lean managed runtime.
+ * V0 unit translation; product residual free on freestanding release.
+ *
+ * No main required. No stdlib GC. No Lean headers.
+ * MULT-0 / MULT-1 / MULT-OMEGA greppable via slake_mult_name (HOST-EMIT-MULT).
+ */
+
+const char *slake_emit_version(void)
+{
+  return "SLAKE_EMIT_FREESTANDING_C_V0+UNIT_DEEPEN_V1+FAIL_CLOSED_CHECKER_V1+CONSUME_TOKEN_HOST_V0+TYPED_IR_V0+IR_PROGRAM_V0+IR_GRAPH_EDGES_V0+HOST_COMPOSE_V0+EMIT_PLAN_V0+EMIT_APPLY_V0+EMIT_BODY_V0";
+}
+
+const char *slake_unit_translation_id(void)
+{
+  return "UNIT_TRANSLATION_V0";
+}
+# BANNER_C_BODY_END

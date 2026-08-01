@@ -22,13 +22,26 @@ Stable terms for **Systems Lean**. Prefer plain English. Do not invent fashion n
 | **Linear / affine** | Exact-once or at-most-once resource discipline on product-relevant values |
 | **Freestanding** | Closed subset + fail-closed codegen + **no** managed Lean object runtime on the product wire (see **wire** below) |
 | **Host** | Full Lean-style toolchain (tactics, proofs, managed runtime) used for proofs and tooling only |
-| **Wire / product wire** | The **release surface** Slake emits for consumers -- mainly freestanding C under `emit/` and `out/freestanding-c/`. Not electrical jargon; not "network wire." When we say contracts on the wire, we mean the emitted product, not the host elaborator. Distinct from **flake wire-up** (connecting Nix modules in `flake.nix`) |
+| **Wire / product wire** | The freestanding C **dialect** Slake emits for consumers. **Out-first:** the named **product / release surface** is `out/freestanding-c/`; `src/systems/emit/` is the **host freestanding workspace** (SSOT + templates + generator dogfood), not a peer product home. Not electrical jargon; not "network wire." When we say contracts on the wire, we mean the emitted product, not the host elaborator. Distinct from **flake wire-up** (connecting Nix modules in `flake.nix`) |
+| **Out (release) / product Out** | Consumer install surface under `out/freestanding-c/` (generated freestanding C + consumer README). Prefer this path in residual evidence and publish (subtree / tarball). Distinct from residual emit stage **Out** (Body / `EMIT_BODY_V0`) |
+| **Host freestanding workspace** | `src/systems/emit/`: durable `host_emit_*.ssot.txt`, templates, and generator-written dogfood `slake_freestanding.{h,c}`. FreestandingEmit writes here only; `just build` copies to product Out |
 | **Model (host / formal)** | A **structural or formal representation** of grades, IR, checks, or contracts in Lean (or in docs). **Not** a machine-learning or AI model. Prefer "host representation," "contract surface," or "structural model" when ambiguity is possible |
-| **Dual residual honesty** | Product residual and host elaborator residual are independent; never forge either; never conflate them |
+| **Dual residual honesty** | Product residual and host elaborator residual are independent; never forge either; never conflate them. Living tip: product residual free may be **true** while host elaborator residual **remains** (Lake still elaborates Systems Lean) |
+| **Product residual free (claim A)** | Freestanding release under `out/freestanding-c` has no managed Lean / GC residual **and** DualResidual / wire honesty agree residual is gone. Not host elaborator free; not proof complete; not PROVABLY; not LLVM unlock |
+| **Freestanding product self-host complete (claim B)** | Writer-path self-host evidence bar closed (Full / ownership / perform / dual-eq write). Not residual free alone; not Lake gone |
+| **Bootstrap (Slake)** | Grow Slake from Lake-hosted host foundation toward freestanding self-application. Missing freestanding binary is **start**, not a blocker |
+| **Bootstrap S0** | Host foundation: Lake elaborates Systems Lean; product residual free; claim B writer path true. **Done** as of 2026-08-01 |
+| **Bootstrap S1** | First named Slake compiler surface: defined tiny input (Mult unit), checkable translate/check path -- not only regenerate freestanding C API dialect. **Done** (`FirstSurface` / `just first-surface`) |
+| **Bootstrap S2** | Slake emits freestanding C (or unit package) for that subset with residual free still honest. **Done** (`MultSubsetEmit` / `just mult-subset-emit`) |
+| **Bootstrap S3** | Measured rebuild / self-application of named freestanding Mult subset (Lake-hosted bar). **Done** (`MultSubsetRebuild` / `just mult-subset-rebuild`). Without-Lake finished deepen still later |
+| **Bootstrap S4** | Retire Lake from product path: DependsOnLake / StillUsesLake false only with elaborator proof -- never forge early. **Deferred** after S3 |
+| **First compiler surface** | S1 product name: short modules prefer `FirstSurface` / `SlakeCompile`; not kitchen-sink ProductPath* basenames |
 | **CompCert path** | Emit C suitable for CompCert (`ccomp`) when PROVABLY is earned with a real resolved compiler |
 | **LLVM path** | Emit LLVM IR for efficient embed and Rust-ecosystem interop |
 | **Rust without classic FFI** | Design bar: happy path is layout-compatible / IR-level interop, not hand-written `extern "C"` glue as the default story |
-| **ref/** | Read-only upstream submodules (`ref/Idris2`, `ref/lean4`, `ref/CompCert`, `ref/rust`) -- not product source |
+| **ref/** | Read-only **language/compiler** upstream submodules (`ref/Idris2`, `ref/lean4`, `ref/CompCert`, `ref/rust`) -- not product source |
+| **skills/** | Read-only **agent skill pack** submodules (e.g. `skills/lean4-skills`) -- not product source; not under `ref/` |
+| **Project skill / `.agents/skills/`** | Discovery root hosts walk for project-local skills. Symlinks into `skills/<pack>/...`. Policy and **when to use** map: `AGENTS.md` (**Project agent skills**). Example: `lean4` skill for prove/formalize/review on host Lean residual -- not for inventing residual, Nix mills, or hand-authored freestanding C |
 | **CompCert / ccomp** | Verified C compiler reference; product C path may target it; PROVABLY only with real resolved evidence |
 | **Rust layout reference** | `ref/rust` (rustc_abi / codegen) defines layout-compatible interop; LLVM IR alone is not enough |
 | **iso** | Optional **directory / checkout nickname** only (e.g. path `.../iso`). Not the product name. Prefer **Systems Lean** in prose |
@@ -40,8 +53,12 @@ Stable terms for **Systems Lean**. Prefer plain English. Do not invent fashion n
 | **RC necessity** | Freestanding RC (reference counting) only if proven unavoidable vs linear/affine/arena design |
 | **Host-owned freestanding emit** | Lean modules + durable `emit/host_emit_*.ssot.txt` own selected freestanding C product text; `FreestandingEmit` embeds into templates. Ownership map SSoT: `src/systems/emit/host-owned-emit.md`. Stage ids `HOST-EMIT-*` only -- do not mint residual C ladders (`EMIT_MULT_V0`, `EMIT_ERASURE_V0`, ...) as freestanding residual progress |
 | **HOST-EMIT-ERASURE** | Host-owned mult-0 **absence honesty** on freestanding C (`slake_erased` + mark / is_marked / is_runtime_absent). **Not** elaborator types or a type system written in C. Pair: `EmitErasure.lean` + `host_emit_erasure.ssot.txt` |
+| **Out** (emit stage residual name) | Residual / plan short name for the last Mult..* freestanding emit stage (CAP-256 buffer scaffolding after Plan/Apply). Maps to frozen product wire **`EMIT_BODY_V0`** / host `EmitBody` / HOST-EMIT-BODY -- **not** the whole product and **not** product Out (release). Distinct from **Out (release)**. Not residual schema **Out of scope**. Detail: `emit/host-owned-emit.md` naming map |
+| **Out stage vs product Out** | **Out stage** = emit residual name for Body/`EMIT_BODY_V0`. **Product Out** = release under `out/freestanding-c/`. Do not mash these |
+| **Defined freestanding compile step** | Host pin that Mult..Out host-owned emit readiness + freestanding emit stage path exist and are gated (`SelfHostBody` / `selfHostBodyReady` historically). Prefer this prose over bare "self-host body." **Not** freestanding product self-host complete (claim B) |
+| **Self-host step readiness** | Same as defined freestanding compile step: readiness fold only. Complete and residual free are separate claim bars (both may be true while Lake host remains) |
 | **MULT-0 / erased** | Quantitative Type Theory (QTT) grade 0: compile-time only; no runtime payload. Product wire may carry a zero-payload **marker** that claims runtime absence after mark -- that is erasure honesty, not "types live in freestanding C" |
-| **Open Name** | Living residual work item title in `RESIDUAL-systems.md` (plain English, 2-6 words). Agents do not invent Open Names when the queue is empty; the human names the next residual |
+| **Open Name** | Living residual work item title in `RESIDUAL-systems.md` (plain English, 2-6 words). Agents do not invent Open Names when neither Open nor a durable plan names a checkable next residual. Clear plan defaults **are** residual work: open the planned Name (do not park waiting for a human "Open") |
 
 ---
 
@@ -78,18 +95,19 @@ Policy and mistake history: `AGENTS.md` (Three languages only + Nix tooling).
 | **Process glue** | Thin orchestration that must invoke external binaries (`lake`, `cc`, `just` hooks). Not algorithms. Keep tiny |
 | **Behavioral tests** | Hosted product-contract C under `src/systems/smoke/` (e.g. `slake_behavioral_probe.c`). Not freestanding product source and not residual "progress" to grow. Prefer role name over "smoke debt" |
 | **Emit SSOT / host emit SSOT fragment** | Lean-owned plain-text fragments under `src/systems/emit/host_emit_*.ssot.txt` (and matching Lean modules) that define emit dialect/product C text. Bash emit driver (while it exists) is **NON-SSOT**: it must embed these, not invent a second dialect |
-| **Subtree release surface** (freestanding subtree release) | Publish `out/freestanding-c/` to consumers via **git subtree** (or tarball) after green `just build` + `just out-freestanding-c` + `just check`. Tracked C there is generator output, not hand-authored product. See `out/freestanding-c/README.md` and `AGENTS.md` freestanding / ahead-of-time (AOT) C git policy |
+| **Subtree release surface** (freestanding subtree release) | Publish `out/freestanding-c/` to consumers via **git subtree** (or tarball) after green `just build` + `just check`. Tracked C there is generator output, not hand-authored product. See `out/freestanding-c/README.md` and `AGENTS.md` freestanding / ahead-of-time (AOT) C git policy |
 | **Non-product surface** | Any scc-visible language path that is not Idris / Lean / pure Nix novel work: scheduled deletion, permanent role, tool config, or prose. Full table: `AGENTS.md` |
 | **just / justfile** | Thin task runner (`just check`, `just progress`). Orchestration only |
 | **Orchestration** | Gluing steps: write `doc/PROGRESS.md`, sleep between watch cycles, invoke remaining process-glue scripts |
 | **elan** | Lean toolchain manager in the flake **devShell**. Install the pin from `src/systems/lean-toolchain` / `src/lean4/lean-toolchain` (`leanprover/lean4:v4.32.0`). Do not default to lagged `pkgs.lean4` as the elaborator. Workspace checks skip Lake when the pin is not installed (no surprise network download). |
+| **Lake (bootstrap elaborator)** | Classic Lean **Lake** package tool. **Only needed once to bootstrap Slake:** elaborates **host** Systems Lean / Slake sources during that bootstrap. Not the freestanding product end state and not a forever product dependency on the wire. Claim-flip recipes may require lake on PATH as **host verification during the one-time bootstrap**; product goal remains freestanding Slake + runtimeless C (`out/freestanding-c`). Honest pins like `DependsOnLake` stay true until a freestanding path retires them. Policy: `AGENTS.md` (Product Lean edits and claim-bool proof). |
 | **idris2 (devShell)** | Idris 2 elaborator package in the flake **devShell** for bridge-side checks. Residual `src/idris2/check.sh` still skips when the binary is absent. |
 | **ripgrep (`rg`)** | Default code search in the flake **devShell**. Agents and humans search with `rg`. Pure Nix checks must not shell out to ripgrep for policy algorithms. |
 | **Source hygiene** | Gate: novel text ASCII-clean (allowlist exceptions), no trailing whitespace. Pure Nix: `nix/source-hygiene.nix` |
 | **Professional tone** | Gate: novel `*.md` only (v1) -- short banned-token list (profanity / demeaning slurs); case-insensitive whole-token match. Pure Nix: `nix/professional-tone.nix`. Live `just professional-tone` or folded into `just hygiene`; flake check `professional-tone` after human stages. Does not scan Lean / C / shell in v1. Keep the concrete token list out of markdown so the glossary does not self-fail. |
 | **Progress meters** | Evidence-weighted report `doc/PROGRESS.md` from pure Nix `nix/progress/` |
-| **Novel source** | Our editable tree -- excludes upstream `ref/`, git metadata, caches |
-| **scc** | External line-count tool for optional appendix (`just progress-scc`). Honest novel counts exclude `ref/`, `.lake/`, `.cache/` (and `.git/`) so classic Lean ahead-of-time intermediate representation does not inflate freestanding C |
+| **Novel source** | Our editable tree -- excludes upstream `ref/`, agent skill submodules `skills/`, git metadata, caches |
+| **scc** | External line-count tool for optional appendix (`just progress-scc`). Honest novel counts exclude `ref/`, `skills/`, `.lake/`, `.cache/` (and `.git/`) so classic Lean ahead-of-time intermediate representation and vendored skill packs do not inflate freestanding C |
 | **LLM-friendly modules** | Small, single-concern files with stable names so large language model agents stay within attention limits after compaction |
 
 ---
@@ -100,7 +118,7 @@ Policy and mistake history: `AGENTS.md` (Three languages only + Nix tooling).
 |------|----------------------------------|
 | Idris **RefC** | Generated C **plus** a reference-counting runtime |
 | Classic Lean **AOT** | Native code that still expects the managed Lean runtime |
-| **Freestanding** (Systems Lean product goal) | **No** Lean managed runtime on the product wire; host tools may still use one until earned residual_free |
+| **Freestanding** (Systems Lean product goal) | **No** Lean managed runtime on the product wire; product residual free may be claimed while host tools still use classic Lake elaborator residual |
 
 ---
 

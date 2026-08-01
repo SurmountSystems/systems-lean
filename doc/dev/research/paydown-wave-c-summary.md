@@ -25,7 +25,7 @@ Delete `script/slake-emit-freestanding-c.sh` (~2071 lines). Product wire
    - EMPTY_FRAGMENT recompose + Mult name/block honesty
    - Substitute templates; write only under `src/systems/emit/`
    - Never write `out/freestanding-c/`
-4. `just out-freestanding-c`: compile-path structure bar, then
+4. `just build`: compile-path structure bar, then
    `lake build` + `lake exe slake-emit-freestanding-c`, then copy
    product `.c`/`.h` to release.
 5. pure Nix emit-wire requires Lean module + templates; stops requiring bash.
@@ -39,7 +39,7 @@ Delete `script/slake-emit-freestanding-c.sh` (~2071 lines). Product wire
 | `src/systems/emit/template_slake_freestanding.h.in` | Header template | ~573 |
 | `src/systems/emit/template_slake_freestanding.c.in` | Source template | ~1031 |
 | `src/systems/lakefile.toml` | lake exe `slake-emit-freestanding-c` | + |
-| `justfile` | out-freestanding-c -> Lean | edit |
+| `justfile` | just build -> Lean | edit |
 | `nix/systems-emit-wire/emit-product.nix` | require Lean + templates | edit |
 | `nix/progress/milestones.nix` | emit milestone paths | edit |
 | `nix/systems-host-presence/specs.nix` | FreestandingEmit path | edit |
@@ -61,7 +61,7 @@ Delete `script/slake-emit-freestanding-c.sh` (~2071 lines). Product wire
 ## Gates (ran at implement)
 
 ```text
-just out-freestanding-c
+just build
 just systems-emit-wire
 just systems-host
 just hygiene

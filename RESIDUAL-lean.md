@@ -6,6 +6,11 @@
 
 Fork prompt: `doc/fork-lean.md`. Re-read `doc/fork-guidance-lean.md` every implement loop.
 
+**Host Lean tooling:** for Open items (or deferred work the human unblocks) that
+are mainly `.lean` / Lake proofs under `src/lean4/`, load project skill
+`.agents/skills/lean4` and follow `AGENTS.md` **When to reach for lean4 tools**
+(draft/prove/review/doctor/learn). Do not invent residual for the skill.
+
 **Status vocabulary:** `open` | `in progress` | `done` | `blocked` | `wontfix`
 
 **Language:** say **Idris side** / **Lean side** / **bridge half** / **fork**. Follow `AGENTS.md` banned-jargon list.

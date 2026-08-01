@@ -1,0 +1,1040 @@
+# SPDX-License-Identifier: Unlicense
+# Early host ladder Mult .. FreestandingEmit structural host token specs.
+# Cold slice (not dual-pin tip). Imported by ./specs.nix thin join. No bash.
+{
+hostSpecsCore = [
+    {
+      # Mult dialect: Mult / name / isValid / ofNat? / isValidTag. Theorems
+      # split to MultTheorems (same namespace). Header keeps MULT-THEOREM name list.
+      rel = "src/systems/SystemsLean/Mult.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "MULT-0"
+        "MULT-1"
+        "MULT-OMEGA"
+        "FAIL-CLOSED-UNKNOWN-GRADE"
+        "MULT-THEOREM"
+        "HOST-MULT-THEOREM"
+        "ofNat?_fail_closed"
+        "isValidTag_fail_closed"
+        "ofNat?_zero"
+        "ofNat?_one"
+        "ofNat?_two"
+        "isValid_true"
+        "isValidTag_eq_ofNat?_isSome"
+        "name_mult0"
+        "name_mult1"
+        "name_multOmega"
+        "ofNat?_some_implies_isValidTag"
+        "ofNat?_name_zero"
+        "ofNat?_name_one"
+        "ofNat?_name_two"
+        "ofNat?_name_fail_closed"
+        "MultTheorems"
+        "SystemsLean.Mult"
+      ];
+      anyGroups = [
+        [
+          "isValid"
+          "multIsValid"
+        ]
+      ];
+    }
+    {
+      # MultTheorems: MULT-THEOREM + HOST-MULT-THEOREM long-file split
+      # (same namespace SystemsLean.Mult).
+      rel = "src/systems/SystemsLean/MultTheorems.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "MultTheorems"
+        "SystemsLean.MultTheorems"
+        "import SystemsLean.Mult"
+        "MULT-THEOREM"
+        "HOST-MULT-THEOREM"
+        "FAIL-CLOSED-UNKNOWN-GRADE"
+        "ofNat?_fail_closed"
+        "isValidTag_fail_closed"
+        "ofNat?_zero"
+        "ofNat?_one"
+        "ofNat?_two"
+        "isValid_true"
+        "isValidTag_eq_ofNat?_isSome"
+        "name_mult0"
+        "name_mult1"
+        "name_multOmega"
+        "ofNat?_some_implies_isValidTag"
+        "ofNat?_name_zero"
+        "ofNat?_name_one"
+        "ofNat?_name_two"
+        "ofNat?_name_fail_closed"
+        # Structural readiness: real theorem forms (AND, not OR anyGroup).
+        "theorem ofNat?_fail_closed"
+        "theorem isValidTag_fail_closed"
+        "theorem name_mult0"
+        "theorem ofNat?_some_implies_isValidTag"
+        "theorem ofNat?_name_zero"
+        "theorem ofNat?_name_one"
+        "theorem ofNat?_name_two"
+        "theorem ofNat?_name_fail_closed"
+        "SystemsLean.Mult"
+        "UNIT_SURFACE"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+      ];
+    }
+    {
+      # Linear dialect: Token / mkToken / consume / roundTrip / shareNat / polyId.
+      # Theorems split to LinearTheorems (same namespace). Header keeps
+      # LINEAR-THEOREM name list.
+      rel = "src/systems/SystemsLean/Linear.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "JOIN-ALG"
+        "ConsumeToken"
+        "MULT-1"
+        "LINEAR-EXACT-ONCE"
+        "LINEAR-THEOREM"
+        "HOST-LINEAR-THEOREM"
+        "shareNat_eq"
+        "shareNat_zero"
+        "shareNat_succ"
+        "polyId_id"
+        "roundTrip_eq"
+        "LinearTheorems"
+        "SystemsLean.Linear"
+      ];
+    }
+    {
+      # LinearTheorems: LINEAR-THEOREM + HOST-LINEAR-THEOREM long-file split
+      # (same namespace SystemsLean.Linear).
+      rel = "src/systems/SystemsLean/LinearTheorems.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "LinearTheorems"
+        "SystemsLean.LinearTheorems"
+        "import SystemsLean.Linear"
+        "JOIN-ALG"
+        "ConsumeToken"
+        "MULT-1"
+        "LINEAR-EXACT-ONCE"
+        "LINEAR-THEOREM"
+        "HOST-LINEAR-THEOREM"
+        "shareNat_eq"
+        "shareNat_zero"
+        "shareNat_succ"
+        "polyId_id"
+        "roundTrip_eq"
+        # Structural readiness: real theorem forms (AND, not OR anyGroup).
+        "theorem shareNat_eq"
+        "theorem shareNat_zero"
+        "theorem shareNat_succ"
+        "theorem polyId_id"
+        "theorem roundTrip_eq"
+        "SystemsLean.Linear"
+        "UNIT_SURFACE"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+      ];
+    }
+    {
+      # Types dialect: TypeTag / NodeKind / IrNode / mkNode?. Theorems split to
+      # TypesTheorems (same namespace). Header keeps TYPES-THEOREM name list.
+      rel = "src/systems/SystemsLean/Types.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "COMMON-UNIVERSE"
+        "HOST-RESIDUAL"
+        "PRODUCT-WIRE-RESIDUAL"
+        "FAIL-CLOSED-UNKNOWN-KIND"
+        "TYPES-THEOREM"
+        "HOST-TYPES-THEOREM"
+        "ofKindTag?_fail_closed"
+        "isValidKindTag_fail_closed"
+        "ofKindTag?_zero"
+        "ofKindTag?_one"
+        "ofKindTag?_two"
+        "isValidKindTag_eq_ofKindTag?_isSome"
+        "isValidKindTag_zero"
+        "isValidKindTag_one"
+        "isValidKindTag_two"
+        "kindMultOk_value_omega"
+        "kindMultOk_linear_one"
+        "kindMultOk_erased_zero"
+        "kindMultOk_value_not_one"
+        "kindMultOk_value_not_zero"
+        "kindMultOk_linear_not_omega"
+        "kindMultOk_linear_not_zero"
+        "kindMultOk_erased_not_omega"
+        "kindMultOk_erased_not_one"
+        "mkNode?_mismatch_none"
+        "expectedMult_value"
+        "expectedMult_linear"
+        "expectedMult_erased"
+        "isWellTyped_eq_kindMultOk"
+        "mkNode?_ok"
+        "mkNodeFromTags?_unknown_mult"
+        "mkNodeFromTags?_unknown_kind"
+        "mkNodeFromTags?_value_omega_some"
+        "mkNodeFromTags?_linear_one_some"
+        "mkNodeFromTags?_erased_zero_some"
+        "TypesTheorems"
+        "SystemsLean.Types"
+      ];
+      anyGroups = [
+        [
+          "kindMultOk"
+          "isWellTyped"
+        ]
+      ];
+    }
+    {
+      # TypesTheorems: TYPES-THEOREM + HOST-TYPES-THEOREM long-file split
+      # (same namespace SystemsLean.Types).
+      rel = "src/systems/SystemsLean/TypesTheorems.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "TypesTheorems"
+        "SystemsLean.TypesTheorems"
+        "import SystemsLean.Types"
+        "TYPES-THEOREM"
+        "HOST-TYPES-THEOREM"
+        "ofKindTag?_fail_closed"
+        "isValidKindTag_fail_closed"
+        "ofKindTag?_zero"
+        "ofKindTag?_one"
+        "ofKindTag?_two"
+        "isValidKindTag_eq_ofKindTag?_isSome"
+        "kindMultOk_value_omega"
+        "kindMultOk_linear_one"
+        "kindMultOk_erased_zero"
+        "kindMultOk_value_not_one"
+        "mkNode?_mismatch_none"
+        "expectedMult_value"
+        "isWellTyped_eq_kindMultOk"
+        "mkNode?_ok"
+        "mkNodeFromTags?_unknown_mult"
+        "mkNodeFromTags?_unknown_kind"
+        "mkNodeFromTags?_value_omega_some"
+        # Structural readiness: real theorem forms (AND, not OR anyGroup).
+        "theorem ofKindTag?_fail_closed"
+        "theorem isValidKindTag_fail_closed"
+        "theorem kindMultOk_value_not_one"
+        "theorem mkNode?_mismatch_none"
+        "theorem mkNode?_ok"
+        "theorem expectedMult_value"
+        "theorem isWellTyped_eq_kindMultOk"
+        "theorem mkNodeFromTags?_unknown_mult"
+        "SystemsLean.Types"
+        "UNIT_SURFACE"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+      ];
+    }
+    {
+      # Ordered IR program core surface.
+      # Long-file split: theorems live in IrProgramTheorems (same namespace).
+      rel = "src/systems/SystemsLean/IrProgram.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "ORDERED-IR-PROGRAM"
+        "EMPTY-PROGRAM-FAIL-CLOSED"
+        "IR-PROGRAM-THEOREM"
+        "HOST-IR-PROGRAM-THEOREM"
+        "isWellTyped_empty_false"
+        "empty_not_well_typed"
+        "empty_isEmpty"
+        "empty_length_zero"
+        "checkFailClosed_eq_isWellTyped"
+        "foldWellTyped_empty_none"
+        "foldWellTyped_ill_typed_none"
+        "push_bad_node"
+        "programCap_eq_eight"
+        "push_value_one_ok"
+        "length_single_value"
+        "isWellTyped_single_value"
+        "foldWellTyped_single_value_some"
+        "isWellTyped_two_values"
+        "length_two_values"
+        "foldWellTyped_two_values_some"
+        "push_second_value_ok"
+        "push_full_at_cap"
+        "IrProgramTheorems"
+        "SystemsLean.IrProgram"
+      ];
+      anyGroups = [
+        [
+          "push"
+          "foldWellTyped"
+          "isWellTyped"
+        ]
+      ];
+    }
+    {
+      # IrProgramTheorems: IR-PROGRAM-THEOREM peel (same namespace).
+      rel = "src/systems/SystemsLean/IrProgramTheorems.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "IrProgramTheorems"
+        "SystemsLean.IrProgramTheorems"
+        "import SystemsLean.IrProgram"
+        "ORDERED-IR-PROGRAM"
+        "EMPTY-PROGRAM-FAIL-CLOSED"
+        "IR-PROGRAM-THEOREM"
+        "HOST-IR-PROGRAM-THEOREM"
+        "isWellTyped_empty_false"
+        "empty_not_well_typed"
+        "empty_isEmpty"
+        "empty_length_zero"
+        "checkFailClosed_eq_isWellTyped"
+        "foldWellTyped_empty_none"
+        "foldWellTyped_ill_typed_none"
+        "push_bad_node"
+        "programCap_eq_eight"
+        "push_value_one_ok"
+        "length_single_value"
+        "isWellTyped_single_value"
+        "foldWellTyped_single_value_some"
+        "isWellTyped_two_values"
+        "length_two_values"
+        "foldWellTyped_two_values_some"
+        "push_second_value_ok"
+        "push_full_at_cap"
+        # Structural readiness: real theorem forms (AND, not OR anyGroup).
+        "theorem isWellTyped_empty_false"
+        "theorem empty_not_well_typed"
+        "theorem foldWellTyped_ill_typed_none"
+        "theorem push_bad_node"
+        "theorem push_value_one_ok"
+        "theorem isWellTyped_single_value"
+        "theorem foldWellTyped_single_value_some"
+        "theorem isWellTyped_two_values"
+        "theorem length_two_values"
+        "theorem foldWellTyped_two_values_some"
+        "theorem push_second_value_ok"
+        "theorem push_full_at_cap"
+        "UNIT_SURFACE"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+      ];
+    }
+    {
+      # Erasure dialect. Long-file split: ERASURE-THEOREM + HOST-ERASURE-THEOREM
+      # live in ErasureTheorems (same namespace).
+      rel = "src/systems/SystemsLean/Erasure.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "ERASE-RULE-MULT-0"
+        "ERASE-NO-RUNTIME"
+        "EDGE-PROP"
+        "ERASE-PROP"
+        "SystemsLean.Erasure"
+        "ERASURE-THEOREM"
+        "HOST-ERASURE-THEOREM"
+        "ErasureTheorems"
+        "isRuntimeAbsent_unmarked_false"
+        "markForGrade?_mult1_none"
+        "checkFailClosed_unmarked_false"
+        "checkFailClosed_eq"
+        "markForGrade?_some_implies_isErasureGrade"
+        "markForGrade?_some_is_mark"
+        "isRuntimeAbsent_eq_marked"
+        "markForGrade?_mult0_isRuntimeAbsent"
+        # Greppable theorem cite (live def in Theorems module).
+        "theorem isRuntimeAbsent_unmarked_false"
+        "UNIT_SURFACE"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+      ];
+      anyGroups = [
+        [
+          "isRuntimeAbsent"
+          "mark"
+        ]
+      ];
+    }
+    {
+      # ErasureTheorems: ERASURE-THEOREM + HOST-ERASURE-THEOREM (same namespace).
+      rel = "src/systems/SystemsLean/ErasureTheorems.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "ErasureTheorems"
+        "SystemsLean.ErasureTheorems"
+        "import SystemsLean.Erasure"
+        "ERASURE-THEOREM"
+        "HOST-ERASURE-THEOREM"
+        "ERASE-RULE-MULT-0"
+        "ERASE-NO-RUNTIME"
+        "isRuntimeAbsent_unmarked_false"
+        "markForGrade?_mult1_none"
+        "checkFailClosed_unmarked_false"
+        "checkFailClosed_eq"
+        "markForGrade?_some_implies_isErasureGrade"
+        "markForGrade?_some_is_mark"
+        "isRuntimeAbsent_eq_marked"
+        "markForGrade?_mult0_isRuntimeAbsent"
+        # Structural readiness: real theorem forms (AND, not OR anyGroup).
+        "theorem isRuntimeAbsent_unmarked_false"
+        "theorem markForGrade?_mult1_none"
+        "theorem checkFailClosed_unmarked_false"
+        "theorem checkFailClosed_eq"
+        "theorem markForGrade?_some_implies_isErasureGrade"
+        "theorem markForGrade?_some_is_mark"
+        "theorem isRuntimeAbsent_eq_marked"
+        "theorem markForGrade?_mult0_isRuntimeAbsent"
+        "UNIT_SURFACE"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+      ];
+    }
+    {
+      # Extract / emit boundary dialect. Long-file split: EXTRACT-THEOREM +
+      # HOST-EXTRACT-THEOREM live in ExtractTheorems (same namespace).
+      rel = "src/systems/SystemsLean/Extract.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "EMIT-BOUNDARY"
+        "RUNTIME-FS"
+        "EDGE-RUNTIME"
+        "RUNTIME-CLASSIC"
+        "SystemsLean.Extract"
+        "EXTRACT-THEOREM"
+        "HOST-EXTRACT-THEOREM"
+        "ExtractTheorems"
+        "isFreestandingGoal_runtimeFs"
+        "extractOk_classic_reject"
+        "ofRuntimeTag?_fail_closed"
+        "ofRuntimeTag?_some_implies_isValidRuntimeTag"
+        "isValidRuntimeTag_zero"
+        "extractOkFromTags?_mult1_fs_true"
+        "extractOkFromTags?_mult0_marked_fs_true"
+        # Greppable theorem cite (live def in Theorems module).
+        "theorem isFreestandingGoal_runtimeFs"
+        "FAIL-CLOSED"
+        "FAIL_CLOSED_CHECKER_V1"
+        "UNIT_SURFACE"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+      ];
+      anyGroups = [
+        [
+          "extractOk"
+          "checkFailClosed"
+        ]
+      ];
+    }
+    {
+      # ExtractTheorems: EXTRACT-THEOREM + HOST-EXTRACT-THEOREM (same namespace).
+      rel = "src/systems/SystemsLean/ExtractTheorems.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "ExtractTheorems"
+        "SystemsLean.ExtractTheorems"
+        "import SystemsLean.Extract"
+        "EXTRACT-THEOREM"
+        "HOST-EXTRACT-THEOREM"
+        "isFreestandingGoal_runtimeFs"
+        "extractOk_classic_reject"
+        "ofRuntimeTag?_fail_closed"
+        "ofRuntimeTag?_some_implies_isValidRuntimeTag"
+        "isValidRuntimeTag_zero"
+        "isValidRuntimeTag_one"
+        "isValidRuntimeTag_two"
+        "extractOkFromTags?_mult1_fs_true"
+        "extractOkFromTags?_omega_fs_true"
+        "extractOkFromTags?_mult0_marked_fs_true"
+        "extractOkFromTags?_mult0_unmarked_fs_false"
+        "extractOkFromTags?_classic_reject"
+        "extractOkFromTags?_edge_reject"
+        "extractOkFromTags?_both_unknown_none"
+        # Structural readiness: real theorem forms (AND, not OR anyGroup).
+        "theorem isFreestandingGoal_runtimeFs"
+        "theorem extractOk_classic_reject"
+        "theorem ofRuntimeTag?_fail_closed"
+        "theorem ofRuntimeTag?_some_implies_isValidRuntimeTag"
+        "theorem isValidRuntimeTag_zero"
+        "theorem isValidRuntimeTag_one"
+        "theorem isValidRuntimeTag_two"
+        "theorem extractOkFromTags?_mult1_fs_true"
+        "theorem extractOkFromTags?_omega_fs_true"
+        "theorem extractOkFromTags?_mult0_marked_fs_true"
+        "theorem extractOkFromTags?_mult0_unmarked_fs_false"
+        "theorem extractOkFromTags?_classic_reject"
+        "theorem extractOkFromTags?_edge_reject"
+        "theorem extractOkFromTags?_both_unknown_none"
+        "UNIT_SURFACE"
+        "RUNTIME-FS"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+      ];
+    }
+    {
+      rel = "src/systems/SystemsLean/IrGraph.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "IR_GRAPH_EDGES_V0"
+        "IR-GRAPH-EDGES"
+        "EMPTY-GRAPH-OK"
+        "SLAKE_IR_EDGE_MAX"
+        "edgesSound"
+        "IR-GRAPH-THEOREM"
+        "HOST-IR-GRAPH-THEOREM"
+        "IrGraphTheorems"
+        "SystemsLean.IrGraph"
+        "FAIL-CLOSED"
+      ];
+      anyGroups = [
+        [
+          "addEdge"
+          "pushNode"
+          "isWellTyped"
+        ]
+      ];
+    }
+    {
+      # IrGraphTheorems: IR-GRAPH-THEOREM + IR-GRAPH-SMOKE peel (same namespace).
+      rel = "src/systems/SystemsLean/IrGraphTheorems.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "IrGraphTheorems"
+        "SystemsLean.IrGraphTheorems"
+        "import SystemsLean.IrGraph"
+        "IR-GRAPH-THEOREM"
+        "HOST-IR-GRAPH-THEOREM"
+        "IR-GRAPH-SMOKE"
+        "example"
+        "EMPTY-GRAPH-OK"
+        "isWellTyped_empty_true"
+        "empty_well_typed"
+        "checkFailClosed_eq_isWellTyped"
+        "empty_isEmpty"
+        "edgeMax_eq_sixteen"
+        "addEdge_empty_badEndpoints"
+        "edgesSound_empty"
+        "isWellTyped_one_node_empty_edges"
+        "pushNode_value_one_ok"
+        "addEdge_one_node_self_ok"
+        "addEdge_one_node_badEndpoints"
+        "edgesSound_one_edge"
+        "isWellTyped_two_nodes_one_edge"
+        "addEdge_two_nodes_ok"
+        "edgesSound_two_edges"
+        "isWellTyped_two_nodes_two_edges"
+        "addEdge_two_nodes_second_ok"
+        "addEdge_two_nodes_badEndpoints"
+        "edgesSound_oversize_false"
+        # Structural readiness: real theorem forms (AND, not OR anyGroup).
+        "theorem isWellTyped_empty_true"
+        "theorem empty_well_typed"
+        "theorem addEdge_empty_badEndpoints"
+        "theorem edgesSound_empty"
+        "theorem isWellTyped_one_node_empty_edges"
+        "theorem pushNode_value_one_ok"
+        "theorem addEdge_one_node_self_ok"
+        "theorem addEdge_one_node_badEndpoints"
+        "theorem edgesSound_one_edge"
+        "theorem isWellTyped_two_nodes_one_edge"
+        "theorem addEdge_two_nodes_ok"
+        "theorem edgesSound_two_edges"
+        "theorem isWellTyped_two_nodes_two_edges"
+        "theorem addEdge_two_nodes_second_ok"
+        "theorem addEdge_two_nodes_badEndpoints"
+        "theorem edgesSound_oversize_false"
+        "UNIT_SURFACE"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+      ];
+    }
+    {
+      rel = "src/systems/SystemsLean/HostCompose.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "HOST_COMPOSE_V0"
+        "HOST-COMPOSE"
+        "EMIT-BOUNDARY"
+        "RUNTIME-FS"
+        "SystemsLean.HostCompose"
+        "HostComposeTheorems"
+        "COMPOSE-THEOREM"
+        "HOST-COMPOSE-THEOREM"
+        "FAIL-CLOSED"
+        "JOIN-ALG"
+        "ConsumeToken"
+      ];
+      anyGroups = [
+        [
+          "extractOk"
+          "checkFailClosed"
+        ]
+        [
+          "mint"
+          "consume"
+          "markErased"
+        ]
+        [
+          "pushHostNode"
+          "addHostEdge"
+          "hostIsWellTyped"
+        ]
+        [
+          "multPreScan"
+          "nodeMultOk"
+        ]
+      ];
+    }
+    {
+      # HostComposeTheorems: COMPOSE-THEOREM + HOST-SMOKE peel (same namespace).
+      rel = "src/systems/SystemsLean/HostComposeTheorems.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "HostComposeTheorems"
+        "SystemsLean.HostComposeTheorems"
+        "import SystemsLean.HostCompose"
+        "COMPOSE-THEOREM"
+        "HOST-COMPOSE-THEOREM"
+        "HOST-SMOKE"
+        "example"
+        "multPreScan_empty_true"
+        "mint_zero_badId"
+        "consume_empty_notLive"
+        "nodeMultOk_mult1_eq_live"
+        "double_consume_notLive"
+        "checkFailClosed_eq"
+        "multPreScan_mult1_unminted_false"
+        "extractOkFs_mult1_unminted_false"
+        "multPreScan_mult1_minted_true"
+        "extractOkFs_mult1_minted_true"
+        "multPreScan_mult0_unmarked_false"
+        "multPreScan_mult0_marked_true"
+        "markErased_idempotent"
+        "multPreScan_omega_only_true"
+        "extractOkFs_omega_only_true"
+        "consume_live_payload"
+        "mint_nonzero_ok"
+        "mint_consume_roundtrip"
+        "pushHostNode_bad_node"
+        "pushHostNode_value_one_ok"
+        "addHostEdge_empty_badEndpoints"
+        "addHostEdge_two_values_ok"
+        "addHostEdge_one_node_badEndpoints"
+        # Structural readiness: real theorem forms (AND, not OR anyGroup).
+        "theorem multPreScan_empty_true"
+        "theorem mint_zero_badId"
+        "theorem consume_empty_notLive"
+        "theorem nodeMultOk_mult1_eq_live"
+        "theorem double_consume_notLive"
+        "theorem checkFailClosed_eq"
+        "theorem multPreScan_mult1_unminted_false"
+        "theorem extractOkFs_mult1_unminted_false"
+        "theorem multPreScan_mult1_minted_true"
+        "theorem markErased_idempotent"
+        "theorem multPreScan_omega_only_true"
+        "theorem mint_consume_roundtrip"
+        "theorem pushHostNode_bad_node"
+        "theorem pushHostNode_value_one_ok"
+        "theorem addHostEdge_empty_badEndpoints"
+        "theorem addHostEdge_two_values_ok"
+        "theorem addHostEdge_one_node_badEndpoints"
+        "UNIT_SURFACE"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+      ];
+    }
+    {
+      rel = "src/systems/SystemsLean/EmitPlan.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "EMIT_PLAN_V0"
+        "EMIT-PLAN"
+        "planFromCompose"
+        "isReady"
+        "checkFailClosed"
+        "SystemsLean.EmitPlan"
+        "EmitPlanScaffold"
+        "import SystemsLean.EmitPlanScaffold"
+        "EMIT-PLAN-SMOKE"
+        "example"
+        "EMIT-PLAN-THEOREM"
+        "HOST-EMIT-PLAN-THEOREM"
+        "planOk_empty_true"
+        "planFromCompose_empty_counts_zero"
+        "isReady_empty_plan"
+        "planOk_mult1_unminted_false"
+        "planOk_mult1_minted_true"
+        "planFromCompose_two_values_edge"
+        "planFromCompose_linear_and_erased"
+        # Structural readiness: real theorem forms (AND, not OR anyGroup).
+        "theorem planOk_empty_true"
+        "theorem planFromCompose_empty_counts_zero"
+        "theorem isReady_empty_plan"
+        "theorem planOk_mult1_unminted_false"
+        "theorem planOk_mult1_minted_true"
+        "theorem planFromCompose_two_values_edge"
+        "theorem planFromCompose_linear_and_erased"
+        # Host-owned freestanding emit plan scaffolding (HOST-EMIT-PLAN).
+        "SLAKE_SELF_HOST_EMIT_PLAN_V0"
+        "HOST-EMIT-PLAN"
+        "SELF-HOST-EMIT-PLAN"
+        "planHeaderFragment"
+        "planBodyFragment"
+        "emitPlanReady"
+        "EMIT-PLAN-PRODUCT-SMOKE"
+        "HOST-EMIT-PLAN-SMOKE"
+        "planSsotArtifactPath"
+        "src/systems/emit/host_emit_plan.ssot.txt"
+        "NON-SSOT"
+        "theorem emitPlanReady_true"
+      ];
+      anyGroups = [
+        [
+          "emitPlanOk"
+          "planHeaderHonestyOk"
+        ]
+      ];
+    }
+    {
+      # EmitPlanScaffold: HOST-EMIT-PLAN product scaffolding peel (same namespace).
+      rel = "src/systems/SystemsLean/EmitPlanScaffold.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "EmitPlanScaffold"
+        "SystemsLean.EmitPlanScaffold"
+        "SLAKE_SELF_HOST_EMIT_PLAN_V0"
+        "HOST-EMIT-PLAN"
+        "SELF-HOST-EMIT-PLAN"
+        "def planHeaderFragment : String :="
+        "def planBodyFragment : String :="
+        "def emitPlanReady : Bool :="
+        "def emitPlanOk : Bool :="
+        "def planHeaderHonestyOk : Bool :="
+        "def planBodyHonestyOk : Bool :="
+        "def emitPlanSurfaceOk : Bool :="
+        "EMIT-PLAN-PRODUCT-SMOKE"
+        "HOST-EMIT-PLAN-SMOKE"
+        "planSsotArtifactPath"
+        "src/systems/emit/host_emit_plan.ssot.txt"
+        "NON-SSOT"
+        "theorem emitPlanReady_true"
+        "UNIT_SURFACE"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+      ];
+    }
+    {
+      rel = "src/systems/SystemsLean/EmitApply.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "EMIT_APPLY_V0"
+        "EMIT-APPLY"
+        "applyFromCompose"
+        "applyIsValid"
+        "checkFailClosed"
+        "SystemsLean.EmitApply"
+        "EmitApplyScaffold"
+        "import SystemsLean.EmitApplyScaffold"
+        "applyCap"
+        "packTag"
+        "EMIT-APPLY-SMOKE"
+        "example"
+        "EMIT-APPLY-THEOREM"
+        "HOST-EMIT-APPLY-THEOREM"
+        "applyCap_eq_32"
+        "applyOk_empty_true"
+        "applyOk_linear_without_mint_false"
+        "packTag_linear"
+        "applyFromCompose_mult1_minted_tags"
+        "applyFromCompose_linear_and_erased_order"
+        "applyIsValid_count_tags_desync_false"
+        # Structural readiness: real theorem forms (AND, not OR anyGroup).
+        "theorem applyCap_eq_32"
+        "theorem applyOk_empty_true"
+        "theorem applyOk_linear_without_mint_false"
+        "theorem packTag_linear"
+        "theorem applyFromCompose_mult1_minted_tags"
+        "theorem applyFromCompose_linear_and_erased_order"
+        "theorem applyIsValid_count_tags_desync_false"
+        # Host-owned freestanding emit apply scaffolding (HOST-EMIT-APPLY).
+        "SLAKE_SELF_HOST_EMIT_APPLY_V0"
+        "HOST-EMIT-APPLY"
+        "SELF-HOST-EMIT-APPLY"
+        "applyHeaderFragment"
+        "applyBodyFragment"
+        "emitApplyReady"
+        "EMIT-APPLY-PRODUCT-SMOKE"
+        "HOST-EMIT-APPLY-SMOKE"
+        "applySsotArtifactPath"
+        "src/systems/emit/host_emit_apply.ssot.txt"
+        "NON-SSOT"
+        "theorem emitApplyReady_true"
+      ];
+      anyGroups = [
+        [
+          "APPLY_CAP"
+          "SLAKE_EMIT_APPLY_CAP"
+        ]
+        [
+          "emitApplyOk"
+          "applyHeaderHonestyOk"
+        ]
+      ];
+    }
+    {
+      # EmitApplyScaffold: HOST-EMIT-APPLY product scaffolding peel (same namespace).
+      rel = "src/systems/SystemsLean/EmitApplyScaffold.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "EmitApplyScaffold"
+        "SystemsLean.EmitApplyScaffold"
+        "SLAKE_SELF_HOST_EMIT_APPLY_V0"
+        "HOST-EMIT-APPLY"
+        "SELF-HOST-EMIT-APPLY"
+        "def applyHeaderFragment : String :="
+        "def applyBodyFragment : String :="
+        "def emitApplyReady : Bool :="
+        "def emitApplyOk : Bool :="
+        "def applyHeaderHonestyOk : Bool :="
+        "def applyBodyHonestyOk : Bool :="
+        "def emitApplySurfaceOk : Bool :="
+        "EMIT-APPLY-PRODUCT-SMOKE"
+        "HOST-EMIT-APPLY-SMOKE"
+        "applySsotArtifactPath"
+        "src/systems/emit/host_emit_apply.ssot.txt"
+        "NON-SSOT"
+        "theorem emitApplyReady_true"
+        "UNIT_SURFACE"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+      ];
+    }
+    {
+      rel = "src/systems/SystemsLean/EmitBody.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "EMIT_BODY_V0"
+        "EMIT-BODY"
+        "bodyFromCompose"
+        "bodyIsValid"
+        "buildFragment"
+        "SystemsLean.EmitBody"
+        "EmitBodyScaffold"
+        "import SystemsLean.EmitBodyScaffold"
+        "bodyCap"
+        "EMIT-BODY-SMOKE"
+        "example"
+        "RUNTIME-FS"
+        "EMIT-BOUNDARY"
+        "HOST-EMIT-SSOT"
+        "emptyComposeFragmentSsot"
+        "/* EMIT_BODY_V0 RUNTIME-FS r=0 e=0 */"
+        "EMIT-BODY-THEOREM"
+        "HOST-EMIT-BODY-THEOREM"
+        "bodyCap_eq_256"
+        "emptyComposeFragmentSsot_eq"
+        "bodyOk_empty_true"
+        "bodyOk_mult1_unminted_false"
+        "bodyOk_mult1_minted_true"
+        "bodyFromCompose_mult1_minted_buf"
+        "bodyFromCompose_mult0_marked_buf"
+        "bodyOk_omega_true"
+        "bodyFromCompose_linear_and_erased"
+        # Structural readiness: real theorem forms (AND, not OR anyGroup).
+        "theorem bodyCap_eq_256"
+        "theorem emptyComposeFragmentSsot_eq"
+        "theorem bodyOk_empty_true"
+        "theorem bodyOk_mult1_unminted_false"
+        "theorem bodyOk_mult1_minted_true"
+        "theorem bodyFromCompose_mult1_minted_buf"
+        "theorem bodyFromCompose_mult0_marked_buf"
+        "theorem bodyOk_omega_true"
+        "theorem bodyFromCompose_linear_and_erased"
+        # Host-owned freestanding emit body scaffolding (HOST-EMIT-BODY).
+        "SLAKE_SELF_HOST_EMIT_BODY_V0"
+        "HOST-EMIT-BODY"
+        "SELF-HOST-EMIT-BODY"
+        "bodyHeaderFragment"
+        "bodyBodyFragment"
+        "emitBodyReady"
+        "EMIT-BODY-PRODUCT-SMOKE"
+        "HOST-EMIT-BODY-SMOKE"
+        "bodySsotArtifactPath"
+        "src/systems/emit/host_emit_body_fragment.ssot.txt"
+        "NON-SSOT"
+        "theorem emitBodyReady_true"
+      ];
+      anyGroups = [
+        [
+          "BODY_CAP"
+          "SLAKE_EMIT_BODY_CAP"
+        ]
+        [
+          "emitBodyOk"
+          "bodyHeaderHonestyOk"
+        ]
+      ];
+    }
+    {
+      # EmitBodyScaffold: HOST-EMIT-BODY product scaffolding peel (same namespace).
+      rel = "src/systems/SystemsLean/EmitBodyScaffold.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "EmitBodyScaffold"
+        "SystemsLean.EmitBodyScaffold"
+        "SLAKE_SELF_HOST_EMIT_BODY_V0"
+        "HOST-EMIT-BODY"
+        "SELF-HOST-EMIT-BODY"
+        "def bodyHeaderFragment : String :="
+        "def bodyBodyFragment : String :="
+        "def emitBodyReady : Bool :="
+        "def emitBodyOk : Bool :="
+        "def bodyHeaderHonestyOk : Bool :="
+        "def bodyScaffoldHonestyOk : Bool :="
+        "def emitBodySurfaceOk : Bool :="
+        "EMIT-BODY-PRODUCT-SMOKE"
+        "HOST-EMIT-BODY-SMOKE"
+        "bodySsotArtifactPath"
+        "src/systems/emit/host_emit_body_fragment.ssot.txt"
+        "NON-SSOT"
+        "theorem emitBodyReady_true"
+        "UNIT_SURFACE"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+      ];
+    }
+    {
+      # Host-owned freestanding banner / version product C (HOST-EMIT-BANNER).
+      # Scaffolding body lives on EmitBannerScaffold (same namespace).
+      rel = "src/systems/SystemsLean/EmitBanner.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "SystemsLean.EmitBanner"
+        "SLAKE_SELF_HOST_EMIT_BANNER_V0"
+        "HOST-EMIT-BANNER"
+        "SELF-HOST-EMIT-BANNER"
+        "bannerHeaderFragment"
+        "bannerBodyFragment"
+        "emitBannerReady"
+        "EmitBannerScaffold"
+        "import SystemsLean.EmitBannerScaffold"
+        "EMIT-BANNER-SMOKE"
+        "HOST-EMIT-BANNER-SMOKE"
+        "slake_emit_version"
+        "slake_unit_translation_id"
+        "UNIT_TRANSLATION_V0"
+        "SLAKE_EMIT_FREESTANDING_C_V0"
+        "NON-SSOT"
+        "UNIT_SURFACE"
+        "src/systems/emit/host_emit_banner.ssot.txt"
+        "src/systems/SystemsLean/EmitBanner.lean"
+        "theorem emitBannerReady_true"
+        "Not freestanding emit"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+        "Not freestanding emit residual free"
+      ];
+      anyGroups = [
+        [
+          "emitBannerOk"
+          "headerHonestyOk"
+        ]
+      ];
+    }
+    {
+      # EmitBannerScaffold: HOST-EMIT-BANNER product scaffolding split (same namespace).
+      rel = "src/systems/SystemsLean/EmitBannerScaffold.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "EmitBannerScaffold"
+        "SystemsLean.EmitBannerScaffold"
+        "SLAKE_SELF_HOST_EMIT_BANNER_V0"
+        "HOST-EMIT-BANNER"
+        "SELF-HOST-EMIT-BANNER"
+        "def bannerHeaderFragment : String :="
+        "def bannerBodyFragment : String :="
+        "def emitBannerReady : Bool :="
+        "def emitBannerOk : Bool :="
+        "def ownershipHonestyOk : Bool :="
+        "def headerHonestyOk : Bool :="
+        "def bodyHonestyOk : Bool :="
+        "def emitBannerSurfaceOk : Bool :="
+        "EMIT-BANNER-SMOKE"
+        "HOST-EMIT-BANNER-SMOKE"
+        "ssotArtifactPath"
+        "src/systems/emit/host_emit_banner.ssot.txt"
+        "NON-SSOT"
+        "slake_emit_version"
+        "slake_unit_translation_id"
+        "UNIT_TRANSLATION_V0"
+        "SLAKE_EMIT_FREESTANDING_C_V0"
+        "theorem emitBannerReady_true"
+        "UNIT_SURFACE"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+      ];
+    }
+    {
+      # Dual SSOT equality gate: FreestandingEmit fail-closed SSOT == Lean fragments.
+      # (load helpers peeled to FreestandingEmitLoad; greppable pins stay on writer.)
+      rel = "src/systems/SystemsLean/FreestandingEmit.lean";
+      all = [
+        "SLAKE_EMIT_FREESTANDING_C_V0"
+        "DUAL-SSOT-EQUALITY"
+        "dualSsotBlockEqual"
+        "requireDualSsotEqual"
+        "dualSsotEqualityLive"
+        "bannerHeaderFragment"
+        "multHeaderFragment"
+        "linearHeaderFragment"
+        "erasureHeaderFragment"
+        "extractHeaderFragment"
+        "typesHeaderFragment"
+        "programHeaderFragment"
+        "graphHeaderFragment"
+        "composeHeaderFragment"
+        "planHeaderFragment"
+        "applyHeaderFragment"
+        "bodyHeaderFragment"
+        "FreestandingEmitLoad"
+        "product residual free"
+        "not PROVABLY"
+      ];
+    }
+    {
+      # FreestandingEmitLoad: SSOT load peel (stageId + Body/Banner + Dual SSOT).
+      rel = "src/systems/SystemsLean/FreestandingEmitLoad.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "SLAKE_EMIT_FREESTANDING_C_V0"
+        "FreestandingEmitLoad"
+        "FreestandingEmitLoadScaffold"
+        "def stageId : String := \"SLAKE_EMIT_FREESTANDING_C_V0\""
+        "def loadBodySsot"
+        "def loadBannerSsot"
+        "def requireDualSsotEqual"
+        "dualSsotBlockEqual"
+        "dualSsotEqualityLive"
+        "DUAL-SSOT-EQUALITY"
+        "UNIT_SURFACE"
+        "not residual free"
+        "not PROVABLY"
+      ];
+    }
+    {
+      # FreestandingEmitLoadScaffold: Mult..Apply unit SSOT loaders (same namespace).
+      rel = "src/systems/SystemsLean/FreestandingEmitLoadScaffold.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "SLAKE_EMIT_FREESTANDING_C_V0"
+        "FreestandingEmitLoadScaffold"
+        "SystemsLean.FreestandingEmitLoadScaffold"
+        "def loadMultSsot"
+        "def loadPlanSsot"
+        "def loadApplySsot"
+        "HOST-EMIT-MULT"
+        "HOST-EMIT-PLAN"
+        "HOST-EMIT-APPLY"
+        "UNIT_SURFACE"
+        "not residual free"
+        "not PROVABLY"
+      ];
+    }
+];
+}

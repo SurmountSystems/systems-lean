@@ -10,3 +10,6 @@
 [submodule "ref/rust"]
 	path = ref/rust
 	url = https://github.com/rust-lang/rust.git
+[submodule "skills/lean4-skills"]
+	path = skills/lean4-skills
+	url = https://github.com/cameronfreer/lean4-skills.git

@@ -1,0 +1,135 @@
+# HOST-EMIT-EXTRACT -- Extract + FAIL_CLOSED freestanding C product text (durable host artifact)
+# SSoT owner: SystemsLean.EmitExtract (src/systems/SystemsLean/EmitExtract.lean)
+#   extractHeaderFragment + extractBodyFragment
+# Lean FreestandingEmit embeds Extract product text from this artifact (no second dialect).
+# EXTRACT_C_HEADER / EXTRACT_C_BODY blocks must match extractHeaderFragment / extractBodyFragment.
+# Product API: slake_extract_status + runtime_class + check_bundle + check_fail_closed +
+#   extract_with_checks + extract_status_ok + extract_product_runtime.
+# Product wire stage tokens FAIL_CLOSED_CHECKER_V1 / EMIT-BOUNDARY / RUNTIME-FS remain
+# (map only). Host stage ids only: HOST-EMIT-EXTRACT / SELF-HOST-EMIT-EXTRACT /
+# SLAKE_SELF_HOST_EMIT_EXTRACT_V0.
+# Extract + composed fail-closed checker product text only; not residual free.
+# Do not mint EMIT_EXTRACT residual C stage ladder as freestanding residual progress.
+HOST-EMIT-EXTRACT
+NON-SSOT
+SELF-HOST-EMIT-EXTRACT
+SLAKE_SELF_HOST_EMIT_EXTRACT_V0
+FAIL_CLOSED_CHECKER_V1
+EMIT-BOUNDARY
+RUNTIME-FS
+# EXTRACT_C_HEADER_BEGIN
+/* ---- Extract (Extract.slake / EMIT-BOUNDARY / RUNTIME-FS) ----
+ * EDGE-RUNTIME / RUNTIME-CLASSIC mark stock-host managed residual (not this wire).
+ * HOST-EMIT-EXTRACT: dialect from SystemsLean.EmitExtract + host_emit_extract.ssot.txt
+ * (Lean FreestandingEmit embeds this Extract + FAIL_CLOSED product text).
+ */
+enum slake_extract_status {
+  SLAKE_EXTRACT_OK = 0,
+  SLAKE_EXTRACT_FAIL_CLOSED = 1
+};
+
+/* Runtime class tags for honesty (not a full runtime switch). */
+enum slake_runtime_class {
+  SLAKE_RUNTIME_FS = 0,       /* RUNTIME-FS freestanding product goal */
+  SLAKE_RUNTIME_CLASSIC = 1   /* RUNTIME-CLASSIC / EDGE-RUNTIME stock host (not product) */
+};
+
+int slake_extract_status_ok(void);
+/* Product wire claims RUNTIME-FS only. */
+enum slake_runtime_class slake_extract_product_runtime(void);
+
+/* FAIL_CLOSED_CHECKER_V1 -- composed checks before product extract.
+ * Still not residual free; not PROVABLY; no product GC.
+ */
+typedef struct slake_check_bundle {
+  enum slake_mult mult;
+  const slake_linear_token *linear; /* required live when mult == MULT-1; else may be null */
+  const slake_erased *erased;       /* required marked when mult == MULT-0; else may be null */
+  enum slake_runtime_class claimed_runtime; /* must be SLAKE_RUNTIME_FS for product */
+} slake_check_bundle;
+
+/* Fail-closed checker: SLAKE_EXTRACT_OK (0) or SLAKE_EXTRACT_FAIL_CLOSED (1).
+ * Rules:
+ *  - mult must pass slake_mult_is_valid
+ *  - MULT-1: linear non-null AND live (check-only; do not consume here)
+ *  - MULT-0: erased non-null AND slake_erasure_is_runtime_absent == 1
+ *  - MULT-OMEGA: linear/erased may be null (unrestricted)
+ *  - claimed_runtime must be SLAKE_RUNTIME_FS (fail closed on CLASSIC / EDGE-RUNTIME product claim)
+ *  - null bundle -> FAIL_CLOSED
+ * Document return codes exactly matching body.
+ * Greppable: FAIL_CLOSED_CHECKER_V1, EMIT-BOUNDARY, RUNTIME-FS
+ */
+int slake_check_fail_closed(const slake_check_bundle *b);
+
+/* Extract path: run checker; on OK write *out_rt = SLAKE_RUNTIME_FS and return OK;
+ * on fail leave *out_rt untouched.
+ * null out_rt on success path is FAIL_CLOSED.
+ * Greppable: FAIL_CLOSED_CHECKER_V1, EMIT-BOUNDARY, RUNTIME-FS
+ */
+int slake_extract_with_checks(const slake_check_bundle *b, enum slake_runtime_class *out_rt);
+# EXTRACT_C_HEADER_END
+# EXTRACT_C_BODY_BEGIN
+/* ---- Extract (EMIT-BOUNDARY / RUNTIME-FS) ----
+ * HOST-EMIT-EXTRACT: dialect from SystemsLean.EmitExtract + host_emit_extract.ssot.txt
+ * (Lean FreestandingEmit embeds this Extract + FAIL_CLOSED product text).
+ */
+
+int slake_extract_status_ok(void)
+{
+  return (int)SLAKE_EXTRACT_OK;
+}
+
+enum slake_runtime_class slake_extract_product_runtime(void)
+{
+  /* Product wire is RUNTIME-FS only; EDGE-RUNTIME / RUNTIME-CLASSIC stay off-wire. */
+  return SLAKE_RUNTIME_FS;
+}
+
+/* ---- FAIL_CLOSED_CHECKER_V1 (composed checks + extract path) ----
+ * HOST-EMIT-EXTRACT: dialect from SystemsLean.EmitExtract + host_emit_extract.ssot.txt
+ * (Lean FreestandingEmit embeds this Extract + FAIL_CLOSED product text).
+ */
+
+int slake_check_fail_closed(const slake_check_bundle *b)
+{
+  /* null bundle -> FAIL_CLOSED */
+  if (b == 0) {
+    return (int)SLAKE_EXTRACT_FAIL_CLOSED;
+  }
+  /* mult must pass slake_mult_is_valid */
+  if (slake_mult_is_valid(b->mult) != 1) {
+    return (int)SLAKE_EXTRACT_FAIL_CLOSED;
+  }
+  /* claimed_runtime must be SLAKE_RUNTIME_FS (fail closed on CLASSIC / EDGE-RUNTIME) */
+  if (b->claimed_runtime != SLAKE_RUNTIME_FS) {
+    return (int)SLAKE_EXTRACT_FAIL_CLOSED;
+  }
+  if (b->mult == SLAKE_MULT_1) {
+    /* MULT-1: linear non-null AND live (check-only; do not consume here) */
+    if (b->linear == 0 || slake_linear_token_is_live(b->linear) != 1) {
+      return (int)SLAKE_EXTRACT_FAIL_CLOSED;
+    }
+  } else if (b->mult == SLAKE_MULT_0) {
+    /* MULT-0: erased non-null AND runtime-absent marked */
+    if (b->erased == 0 || slake_erasure_is_runtime_absent(b->erased) != 1) {
+      return (int)SLAKE_EXTRACT_FAIL_CLOSED;
+    }
+  }
+  /* MULT-OMEGA: linear/erased may be null (unrestricted) */
+  return (int)SLAKE_EXTRACT_OK;
+}
+
+int slake_extract_with_checks(const slake_check_bundle *b, enum slake_runtime_class *out_rt)
+{
+  /* Fail closed first; leave *out_rt untouched on fail. */
+  if (slake_check_fail_closed(b) != (int)SLAKE_EXTRACT_OK) {
+    return (int)SLAKE_EXTRACT_FAIL_CLOSED;
+  }
+  /* null out_rt on success path is FAIL_CLOSED */
+  if (out_rt == 0) {
+    return (int)SLAKE_EXTRACT_FAIL_CLOSED;
+  }
+  *out_rt = SLAKE_RUNTIME_FS;
+  return (int)SLAKE_EXTRACT_OK;
+}
+# EXTRACT_C_BODY_END

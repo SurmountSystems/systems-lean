@@ -35,7 +35,7 @@ User direction:
 | `src/systems/smoke/slake_behavioral_probe.c` | ~1615 | Hosted behavioral tests of product C | Keep as **tests** (rename language), thin if possible; never product body |
 | `src/systems/emit/*.{c,h}` + `out/freestanding-c/*` | ~1650+ | **Generated product wire** | Keep generated; **stop treating as monorepo implementation**; publish via subtree; consider untracking dogfood from main history later |
 | `src/systems/check.sh` | ~228 | Process: optional Lake, driver runs, `cc` smoke | **Thin to just recipes** or pure orchestration; no static mills (already Nix) |
-| `script/slake-compile-path.sh` | ~149 | Structure compile-path driver | Port or absorb into thin just + Lean/Nix |
+| `script/slake-compile-path.sh` | gone | Structure compile-path stamp (deleted) | **Deleted:** static pure Nix + host `CompilePath.lean` (`SLAKE_COMPILE_PATH_V1` / `HOST-COMPILE-PATH`); no stamp mill restored |
 | `src/lean4/check.sh` | ~125 | Dual presence + optional Lake | **Pure Nix** presence (mirror systems-host pattern) |
 | `script/build-systems.sh` | ~101 | Multi-tier build orchestrator | Collapse into just + smaller drivers |
 | `src/idris2/check.sh` | ~90 | Dual presence + optional idris2 | **Pure Nix** presence |
@@ -85,7 +85,7 @@ Already paid earlier (do not re-do):
 
 1. **Language shift in policy:** drop casual "debt" for permanent roles (product wire, tests, thin orchestration). Reserve "debt" only for **scheduled deletion** items with an owner and exit criterion.
 2. **Wave A -- dual presence pure Nix (fast):** replace `src/idris2/check.sh` and `src/lean4/check.sh` static file/token presence with pure Nix modules; optional elaborator stays a thin just recipe.
-3. **Wave B -- process collapse (medium):** fold `build-systems.sh`, `out-freestanding-c.sh`, parts of `systems/check.sh` into short just recipes + one remaining driver call each; delete empty shells.
+3. **Wave B -- process collapse (medium):** fold `build-systems.sh`, `just build.sh`, parts of `systems/check.sh` into short just recipes + one remaining driver call each; delete empty shells.
 4. **Wave C -- Lean owns full freestanding emit (hard, high value):** implement Lean-side writer that produces byte-stable (or contract-stable) `slake_freestanding.{c,h}` from existing SSOT + host modules; bash emit becomes thin wrapper then **deleted**. This is the ~2k line kill.
 5. **Wave D -- release layout:** document and wire subtree/tarball publish; optionally untrack monorepo dogfood C after CI green path exists; scc exclude recipe pinned.
 6. **Wave E -- smoke honesty:** keep probe as tests; do not grow; split or generate only if it reduces maintenance without losing red/green product contracts.
@@ -111,7 +111,7 @@ Material alternatives rejected:
 | `src/systems/smoke/slake_behavioral_probe.c` | Product contract tests |
 | `src/systems/check.sh` | Process residual |
 | `src/idris2/check.sh` / `src/lean4/check.sh` | Dual presence -> Nix |
-| `script/build-systems.sh` / `slake-compile-path.sh` / `out-freestanding-c.sh` | Small drivers |
+| `script/build-systems.sh` / `slake-compile-path.sh` / `just build.sh` | Small drivers -- **compile-path stamp deleted**; build-systems gone; static pure Nix + CompilePath host |
 | `nix/systems-host-presence/` / `nix/systems-emit-wire/` | Patterns to mirror for duals |
 | `justfile` / `flake.nix` | Wire recipes and checks |
 | `AGENTS.md` / `doc/vocabulary.md` / `RESIDUAL-systems.md` | Policy: scheduled deletion vs permanent roles; stop debt-speak abuse |
@@ -127,7 +127,7 @@ Material alternatives rejected:
 | pure Nix presence walks | Template for idris/lean dual presence |
 | HOST-EMIT-SSOT / HOST-EMIT-MULT | Already Lean-owned fragments; extend to full file emit |
 | `just systems-host` / `systems-emit-wire` | Gate pattern for new pure checks |
-| `just out-freestanding-c` | Becomes "run Lean emit + install" |
+| `just build` | Becomes "run Lean emit + install" |
 | professional-tone / source-hygiene | Module size / purity norms |
 | ProbeWire honesty | Keep probe vs wire distinct while renaming "debt" |
 
@@ -155,9 +155,9 @@ Ordered; implement only after chat **Approve**. Prefer sequential `/implement` p
 
 ### 2. Wave B -- collapse small scripts
 
-1. Inline or replace `build-systems.sh` / `out-freestanding-c.sh` with short just recipes calling remaining drivers.
+1. Inline or replace `build-systems.sh` / `just build.sh` with short just recipes calling remaining drivers.
 2. Reduce `systems/check.sh` to: invoke pure gates already run by just check; optional lake; compile/emit drivers; cc probe -- target **under ~80 lines** or pure just steps.
-3. `slake-compile-path.sh`: keep only if still required for stage manifest; otherwise Lean/Nix owns readiness and shell only writes a tiny stamp.
+3. `slake-compile-path.sh`: **deleted** (stamp gone). Static unit walk + host presence pure Nix; host deepen `SystemsLean/CompilePath.lean`. Do not restore a stamp mill.
 4. Acceptance: fewer than N shell files under script/ (target: emit + at most one compile helper until Wave C deletes emit).
 
 ### 3. Wave C -- Lean-owned freestanding emit (main kill)
@@ -169,9 +169,9 @@ Ordered; implement only after chat **Approve**. Prefer sequential `/implement` p
 2. Implementation sketch (adjust after spike):
    - Lake exe or `lean --run` module under `src/systems/` that concatenates structured sections (Mult already fragments; expand section emitters for Linear/Types/Program/Emit already on the frozen wire)
    - Golden or contract tests: probe + pure presence, not byte-diff fetish unless stable
-3. `just out-freestanding-c` / emit path calls Lean writer; bash emit becomes wrapper then **deleted**.
+3. `just build` / emit path calls Lean writer; bash emit becomes wrapper then **deleted**.
 4. Update residual / AGENTS: emit shell **gone**, not frozen.
-5. Acceptance: `wc -l script/slake-emit-freestanding-c.sh` fails (file absent); `just out-freestanding-c` + probe green; no new EMIT_* stage theater.
+5. Acceptance: `wc -l script/slake-emit-freestanding-c.sh` fails (file absent); `just build` + probe green; no new EMIT_* stage theater.
 
 **Risk:** largest wave; may need 2-4 implement slices (header-only writer, body sections, cutover, delete bash).
 
@@ -201,7 +201,7 @@ just systems-emit-wire
 just idris-side   # when Wave A lands
 just lean-side
 ./src/systems/check.sh   # or successor
-just out-freestanding-c
+just build
 just check   # after human stages new nix/
 ```
 
@@ -234,7 +234,7 @@ Targets after full plan (approximate):
 2. Dual presence is pure Nix; dual check.sh deleted or elaborator-only thin.
 3. AGENTS scheduled-deletion list empty for shells that were targeted.
 4. scc novel Shell under agreed cap; C explained as generated + tests.
-5. Green: hygiene, systems-host, systems-emit-wire, out-freestanding-c, probe, just check (HITL flake stage as needed).
+5. Green: hygiene, systems-host, systems-emit-wire, just build, probe, just check (HITL flake stage as needed).
 6. No residual-free / PROVABLY / llvm unlock claims.
 
 ---

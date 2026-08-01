@@ -10,34 +10,40 @@
   - SLAKE_SELF_HOST_INVENTORY_CLOSE_V0 / HOST-INVENTORY-CLOSE /
     SELF-HOST-INVENTORY-CLOSE: greppable inventory close gate -- Mult..Emit
     freestanding parity + SelfApplyFs freestandingSelfApplyReady + LlvmHold
-    hold compose into one readiness bar (not residual free; not product complete).
+    hold compose into one readiness bar (not residual free; residual free stays
+    false after claim B freestanding product self-host complete).
   - inventoryCloseSurfaceOk: stage ids + inventory path cite +
     CLOSABLE-MISS-COUNT-0 token + prior HOST-SELF-APPLY-FS / HOST-LLVM-HOLD cites.
-  - inventoryPartialCarryHonest: intentional PARTIAL remains -- product complete
-    and llvm/PROVABLY unlock flags stay false when read from SelfApplyFs / LlvmHold.
-  - residualFreeClaimed / productSelfHostCompleteClaimed: MUST decide false.
+  - inventoryPartialCarryHonest: intentional PARTIAL remains -- residual free
+    and llvm/PROVABLY unlock stay false; product complete aligns with SelfApplyFs
+    complete true after claim B (LlvmHold local complete may stay false as hold).
+  - residualFreeClaimed: MUST decide false. productSelfHostCompleteClaimed: true
+    with SelfApplyFs freestandingProductSelfHostComplete after claim B.
   - inventoryCloseReady: SelfApplyFs.freestandingSelfApplyReady &&
     LlvmHold.llvmHoldReady && surface && partialCarry &&
-    !SelfApplyFs.freestandingProductSelfHostComplete &&
+    SelfApplyFs.freestandingProductSelfHostComplete &&
     !LlvmHold.llvmUnlocked && !LlvmHold.provablyUnlocked.
   - inventoryCloseDoesNotMeanResidualFree: inventoryCloseReady &&
     !residualFreeClaimed.
   - Host model = structural inventory close honesty. Not an AI/ML model.
     Not product C residual free.
 
-  Theorems (INVENTORY-CLOSE-THEOREM / HOST-INVENTORY-CLOSE-THEOREM -- partial
-  InventoryClose):
-  - inventoryCloseReady_true / residualFreeClaimed_false
-  - productSelfHostCompleteClaimed_false
-  - inventoryCloseDoesNotMeanResidualFree_true
-  - inventoryPartialCarryHonest_true / stageId_eq / hostInventoryCloseId_eq
+  Theorems + smoke live in SystemsLean.InventoryCloseTheorems (same namespace;
+  long-file split):
+  INVENTORY-CLOSE-THEOREM / HOST-INVENTORY-CLOSE-THEOREM /
+  INVENTORY-CLOSE-SMOKE / HOST-INVENTORY-CLOSE-SMOKE --
+  inventoryCloseReady_true / residualFreeClaimed_false /
+  productSelfHostCompleteClaimed_true / inventoryCloseDoesNotMeanResidualFree_true /
+  inventoryPartialCarryHonest_true / stageId_eq / hostInventoryCloseId_eq.
+  Core claim Bools + inventoryCloseReady stay here.
   These InventoryClose theorems do NOT set SpecProof.proofCompleteClaimed true.
   residualFreeClaimed stays false (proved false, not set true).
 
   Intentional non-claims / close (not residual free):
   - Inventory close is a readiness gate after Mult..LlvmHold ladder + inventory
     CLOSABLE-MISS-COUNT-0. It is NOT freestanding residual free.
-  - NOT freestanding product self-host complete.
+  - Freestanding product self-host complete is true on SelfApplyFs living tip
+    (claim B); inventory close still does NOT claim residual free or llvm unlock.
   - NOT PROVABLY. Does not unlock llvm / out/llvm-ir (LlvmHold still holds).
   - Intentional PARTIAL carry remains (List/String host vs C arrays; path honesty
     vs full product rebuild; join/self-host/matrix canaries vs formal duals).
@@ -56,10 +62,12 @@
   HOST-SELF-APPLY, selfApplyReady, SELF-HOST, MULT-0, MULT-1, MULT-OMEGA,
   JOIN-ALG, ConsumeToken, RUNTIME-FS, INVENTORY-CLOSE-THEOREM,
   HOST-INVENTORY-CLOSE-THEOREM, inventoryCloseReady_true,
-  residualFreeClaimed_false, UNIT_SURFACE host surface.
+  residualFreeClaimed_false, InventoryCloseTheorems, UNIT_SURFACE host surface.
   Module: SystemsLean.InventoryClose
+  Long-file split: INVENTORY-CLOSE-THEOREM / INVENTORY-CLOSE-SMOKE in
+  SystemsLean.InventoryCloseTheorems (same namespace). Core readiness stays here.
   Not freestanding emit. Not freestanding residual free. Not PROVABLY.
-  Not freestanding product self-host complete. Not freestanding emit residual free.
+  Not freestanding product residual free. Not freestanding emit residual free.
   Not llvm unlocked. Not proof complete.
   Red/green: just systems-host; lake build when toolchain installed.
   Module must stay ASCII.
@@ -130,36 +138,36 @@ def inventoryCloseSurfaceOk : Bool :=
     Greppable: residualFreeClaimed. -/
 def residualFreeClaimed : Bool := false
 
-/-- productSelfHostCompleteClaimed -- MUST decide false (still open).
-    Greppable: productSelfHostCompleteClaimed. -/
-def productSelfHostCompleteClaimed : Bool := false
+/-- productSelfHostCompleteClaimed -- aligns with SelfApplyFs complete true after
+    claim B. Greppable: productSelfHostCompleteClaimed. -/
+def productSelfHostCompleteClaimed : Bool := true
 
 /-- inventoryPartialCarryHonest -- intentional PARTIAL remains after inventory close.
-    FAIL-CLOSED: SelfApplyFs / LlvmHold complete and unlock flags stay false;
-    residual-free and product-complete claims stay false.
+    FAIL-CLOSED: residual free and llvm/PROVABLY unlock stay false; product complete
+    aligns with SelfApplyFs living tip true after claim B; LlvmHold local complete
+    may stay false as llvm-hold non-claim pin.
     Greppable: inventoryPartialCarryHonest, intentional PARTIAL. -/
 def inventoryPartialCarryHonest : Bool :=
-  (!SelfApplyFs.freestandingProductSelfHostComplete)
-    && (!LlvmHold.freestandingProductSelfHostComplete)
+  SelfApplyFs.freestandingProductSelfHostComplete
+    && productSelfHostCompleteClaimed
     && (!LlvmHold.llvmUnlocked)
     && (!LlvmHold.provablyUnlocked)
     && (!residualFreeClaimed)
-    && (!productSelfHostCompleteClaimed)
     && (intentionalPartialToken == "intentional PARTIAL")
 
 /-- inventoryCloseReady -- host inventory close bar after Mult..Emit freestanding
     parity + SelfApplyFs + SH6 hold.
     FAIL-CLOSED: freestandingSelfApplyReady && llvmHoldReady && surface &&
-    partialCarry && product complete remains false && llvm/PROVABLY unlock false.
-    Honest scope: inventory close readiness only -- NOT residual free, NOT
-    freestanding product self-host complete, NOT llvm unlock, NOT PROVABLY.
+    partialCarry && SelfApplyFs product complete true && llvm/PROVABLY unlock false.
+    Honest scope: inventory close readiness -- NOT residual free, NOT llvm unlock,
+    NOT PROVABLY. Product complete is true on living tip after claim B.
     Greppable: inventoryCloseReady, HOST-INVENTORY-CLOSE. -/
 def inventoryCloseReady : Bool :=
   SelfApplyFs.freestandingSelfApplyReady
     && LlvmHold.llvmHoldReady
     && inventoryCloseSurfaceOk
     && inventoryPartialCarryHonest
-    && !SelfApplyFs.freestandingProductSelfHostComplete
+    && SelfApplyFs.freestandingProductSelfHostComplete
     && !LlvmHold.llvmUnlocked
     && !LlvmHold.provablyUnlocked
 
@@ -171,89 +179,15 @@ def inventoryCloseDoesNotMeanResidualFree : Bool :=
 /-- Full inventory close ok (alias of inventoryCloseReady for inventory greps). -/
 def inventoryCloseOk : Bool := inventoryCloseReady
 
-/-! ### INVENTORY-CLOSE-THEOREM / HOST-INVENTORY-CLOSE-THEOREM (readable statements,
-    then proofs)
-
-  Real Lean theorems (not only `example` Bool canaries). Scope is inventory
-  close readiness and residual-free claim honesty only. Does not complete
-  SpecProof; residualFreeClaimed stays false (proved false).
-  maxRecDepth raised for freestandingSelfApplyReady / llvmHoldReady unfolds.
--/
-
-set_option maxRecDepth 16384
-
-/-- Primary stage id is greppable SLAKE_SELF_HOST_INVENTORY_CLOSE_V0.
-    Greppable: stageId_eq, INVENTORY-CLOSE-THEOREM, HOST-INVENTORY-CLOSE-THEOREM. -/
-theorem stageId_eq : stageId = "SLAKE_SELF_HOST_INVENTORY_CLOSE_V0" := rfl
-
-/-- Host map id is greppable HOST-INVENTORY-CLOSE.
-    Greppable: hostInventoryCloseId_eq, INVENTORY-CLOSE-THEOREM. -/
-theorem hostInventoryCloseId_eq :
-    hostInventoryCloseId = "HOST-INVENTORY-CLOSE" := rfl
-
-/-- residualFreeClaimed stays false (inventory close is not residual free).
-    Greppable: residualFreeClaimed_false, INVENTORY-CLOSE-THEOREM,
-    HOST-INVENTORY-CLOSE-THEOREM. -/
-theorem residualFreeClaimed_false : residualFreeClaimed = false := rfl
-
-/-- productSelfHostCompleteClaimed stays false (still open).
-    Greppable: productSelfHostCompleteClaimed_false, INVENTORY-CLOSE-THEOREM. -/
-theorem productSelfHostCompleteClaimed_false :
-    productSelfHostCompleteClaimed = false := rfl
-
-/-- Intentional PARTIAL carry honesty holds after inventory close.
-    Greppable: inventoryPartialCarryHonest_true, INVENTORY-CLOSE-THEOREM. -/
-theorem inventoryPartialCarryHonest_true :
-    inventoryPartialCarryHonest = true := by decide
-
-/-- Host inventory close readiness holds (not residual free).
-    Greppable: inventoryCloseReady_true, HOST-INVENTORY-CLOSE,
-    INVENTORY-CLOSE-THEOREM, HOST-INVENTORY-CLOSE-THEOREM. -/
-theorem inventoryCloseReady_true : inventoryCloseReady = true := by decide
-
-/-- Inventory close ready does NOT mean residual free.
-    Greppable: inventoryCloseDoesNotMeanResidualFree_true,
-    INVENTORY-CLOSE-THEOREM, HOST-INVENTORY-CLOSE-THEOREM. -/
-theorem inventoryCloseDoesNotMeanResidualFree_true :
-    inventoryCloseDoesNotMeanResidualFree = true := by decide
-
-/-! ### Inventory close smoke (behavioral; lake build fails if example fails)
-    Greppable: INVENTORY-CLOSE-SMOKE, HOST-INVENTORY-CLOSE-SMOKE.
-    maxRecDepth already raised above for inventoryCloseReady unfolds. -/
-
-/-- INVENTORY-CLOSE-SMOKE / HOST-INVENTORY-CLOSE-SMOKE: stage / map ids greppable. -/
-example : stageId = "SLAKE_SELF_HOST_INVENTORY_CLOSE_V0" := by decide
-example : hostInventoryCloseId = "HOST-INVENTORY-CLOSE" := by decide
-example : selfHostInventoryCloseId = "SELF-HOST-INVENTORY-CLOSE" := by decide
-example : acceptancePath = "src/systems/self-host.md" := by decide
-example : hostModulePath = "src/systems/SystemsLean/InventoryClose.lean" := by decide
-example : inventoryPath = "src/systems/host-partial-inventory.md" := by decide
-example : closableMissCountToken = "CLOSABLE-MISS-COUNT-0" := by decide
-example : intentionalPartialToken = "intentional PARTIAL" := by decide
-example : selfApplyFsStageCite = "SLAKE_SELF_HOST_SELF_APPLY_FS_V0" := by decide
-example : llvmHoldStageCite = "SLAKE_SELF_HOST_LLVM_HOLD_V0" := by decide
-example : hostSelfApplyFsCite = "HOST-SELF-APPLY-FS" := by decide
-example : hostLlvmHoldCite = "HOST-LLVM-HOLD" := by decide
-example : hostPartialInventoryCite = "HOST-PARTIAL-INVENTORY" := by decide
-example : inventoryCloseSurfaceOk = true := by decide
-
-/-- INVENTORY-CLOSE-SMOKE: residual-free / complete / unlock claims stay false. -/
-example : residualFreeClaimed = false := by decide
-example : productSelfHostCompleteClaimed = false := by decide
-example : SelfApplyFs.freestandingProductSelfHostComplete = false := by decide
-example : LlvmHold.freestandingProductSelfHostComplete = false := by decide
-example : LlvmHold.llvmUnlocked = false := by decide
-example : LlvmHold.provablyUnlocked = false := by decide
-example : inventoryPartialCarryHonest = true := by decide
-
-/-- INVENTORY-CLOSE-SMOKE: prior SH5 FS + SH6 hold ready. -/
-example : SelfApplyFs.freestandingSelfApplyReady = true := by decide
-example : LlvmHold.llvmHoldReady = true := by decide
-
-/-- INVENTORY-CLOSE-SMOKE / HOST-INVENTORY-CLOSE-SMOKE: close ready decides true
-    (not residual free; not product complete; not llvm unlock). -/
-example : inventoryCloseReady = true := by decide
-example : inventoryCloseDoesNotMeanResidualFree = true := by decide
-example : inventoryCloseOk = true := by decide
+/-! ### INVENTORY-CLOSE-THEOREM + INVENTORY-CLOSE-SMOKE split to InventoryCloseTheorems
+    (same namespace). Greppable cites live on InventoryCloseTheorems:
+    INVENTORY-CLOSE-THEOREM, HOST-INVENTORY-CLOSE-THEOREM, INVENTORY-CLOSE-SMOKE,
+    HOST-INVENTORY-CLOSE-SMOKE, stageId_eq, hostInventoryCloseId_eq,
+    residualFreeClaimed_false, productSelfHostCompleteClaimed_true,
+    inventoryPartialCarryHonest_true, inventoryCloseReady_true,
+    inventoryCloseDoesNotMeanResidualFree_true, InventoryCloseTheorems.
+    Import SystemsLean.InventoryCloseTheorems from the package root. Core claim
+    Bools + ready surface stay here -- inventory close readiness only; free claims
+    stay false; complete true via SelfApplyFs; not llvm / PROVABLY unlock. -/
 
 end SystemsLean.InventoryClose

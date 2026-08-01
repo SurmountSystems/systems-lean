@@ -1,0 +1,162 @@
+# HOST-EMIT-PROGRAM -- IR program freestanding C product text (durable host artifact)
+# SSoT owner: SystemsLean.EmitProgram (src/systems/SystemsLean/EmitProgram.lean)
+#   programHeaderFragment + programBodyFragment
+# Lean FreestandingEmit embeds IR program product text from this artifact (no second dialect).
+# PROGRAM_C_HEADER / PROGRAM_C_BODY blocks must match programHeaderFragment / programBodyFragment.
+# Product API: slake_ir_program + SLAKE_IR_PROGRAM_CAP + init/push/is_well_typed/check_fail_closed.
+# Product wire stage id IR_PROGRAM_V0 remains on the wire (map only).
+# Host stage ids only: HOST-EMIT-PROGRAM / SELF-HOST-EMIT-PROGRAM / SLAKE_SELF_HOST_EMIT_PROGRAM_V0.
+# Do not mint EMIT_PROGRAM_V0 residual C stage ladder as freestanding residual progress.
+HOST-EMIT-PROGRAM
+NON-SSOT
+SELF-HOST-EMIT-PROGRAM
+SLAKE_SELF_HOST_EMIT_PROGRAM_V0
+IR_PROGRAM_V0
+SLAKE_IR_PROGRAM_CAP
+# PROGRAM_C_HEADER_BEGIN
+/* ---- IR_PROGRAM_V0 -- multi-node ordered IR program (ordered nodes).
+ * Fixed-capacity ordered list of well-typed slake_ir_node; not CFG/edges yet.
+ * not residual free; not PROVABLY; no product GC.
+ * Honesty: MULT-1 / MULT-0 nodes share one linear / erased handle for V0 checks
+ * (checker does not consume; not a full linear resource graph).
+ * Greppable: IR_PROGRAM_V0, SLAKE_IR_PROGRAM_CAP, FAIL_CLOSED_CHECKER_V1
+ * HOST-EMIT-PROGRAM: dialect from SystemsLean.EmitProgram + host_emit_program.ssot.txt
+ * (Lean FreestandingEmit embeds this IR program product text).
+ */
+#define SLAKE_IR_PROGRAM_CAP 8
+
+typedef struct slake_ir_program {
+  slake_ir_node nodes[SLAKE_IR_PROGRAM_CAP];
+  uint8_t count; /* number of live slots 0..CAP */
+  uint8_t valid; /* 1 after successful init */
+} slake_ir_program;
+
+/* Greppable ordered IR program stage id: IR_PROGRAM_V0 */
+const char *slake_ir_program_id(void);
+
+/* Init empty program. 0 ok; -1 null.
+ * Dead slots: valid=0 with OMEGA+VALUE pairing (consistent if misread).
+ */
+int slake_ir_program_init(slake_ir_program *p);
+
+/* Append a well-typed node (copies fields after node init).
+ * 0 ok; -1 null/bad; -2 full (count==CAP).
+ * On failure leave program count unchanged if possible.
+ * Document codes matching body exactly.
+ */
+int slake_ir_program_push(slake_ir_program *p, uint32_t type_tag,
+                          enum slake_mult mult, enum slake_ir_kind kind);
+
+/* 1 if non-null, valid, count>=1, every live node well-typed; else 0.
+ * Empty program (count==0) is NOT well-typed as a program (fail closed).
+ */
+int slake_ir_program_is_well_typed(const slake_ir_program *p);
+
+/* Fail-closed check over all live nodes. For MULT-1 nodes require non-null live
+ * linear token (shared host token for V0 is OK -- not consumed by check).
+ * MULT-0 nodes need marked erased when checked.
+ * claimed_runtime always RUNTIME_FS.
+ * Empty / ill-typed program -> FAIL_CLOSED.
+ * Returns SLAKE_EXTRACT_OK (0) or FAIL_CLOSED (1). Header must match body.
+ * Greppable: IR_PROGRAM_V0, FAIL_CLOSED_CHECKER_V1, RUNTIME-FS
+ */
+int slake_ir_program_check_fail_closed(const slake_ir_program *p,
+    const slake_linear_token *linear,
+    const slake_erased *erased);
+# PROGRAM_C_HEADER_END
+# PROGRAM_C_BODY_BEGIN
+/* ---- IR_PROGRAM_V0 (multi-node ordered list; not CFG; not residual free) ----
+ * Collective well-typed + fail-closed over fixed-capacity node array.
+ * Edges/CFG remain residual. Shared linear token across MULT-1 nodes is V0 honesty.
+ * HOST-EMIT-PROGRAM: dialect from SystemsLean.EmitProgram + host_emit_program.ssot.txt
+ * (Lean FreestandingEmit embeds this IR program product text).
+ */
+
+const char *slake_ir_program_id(void)
+{
+  return "IR_PROGRAM_V0";
+}
+
+int slake_ir_program_init(slake_ir_program *p)
+{
+  uint8_t i;
+
+  if (p == 0) {
+    return -1;
+  }
+  p->count = 0;
+  p->valid = 1;
+  /* Dead slots: valid=0 with consistent OMEGA+VALUE pairing (not a live node). */
+  for (i = 0; i < (uint8_t)SLAKE_IR_PROGRAM_CAP; i++) {
+    p->nodes[i].valid = 0;
+    p->nodes[i].mult = SLAKE_MULT_OMEGA;
+    p->nodes[i].kind = SLAKE_IR_KIND_VALUE;
+    p->nodes[i].ty.tag = 0;
+  }
+  return 0;
+}
+
+int slake_ir_program_push(slake_ir_program *p, uint32_t type_tag,
+                          enum slake_mult mult, enum slake_ir_kind kind)
+{
+  slake_ir_node tmp;
+
+  if (p == 0 || p->valid == 0) {
+    return -1;
+  }
+  if (p->count >= (uint8_t)SLAKE_IR_PROGRAM_CAP) {
+    return -2; /* full; leave count unchanged */
+  }
+  /* Init into temp so a bad node never lands in the program. */
+  if (slake_ir_node_init(&tmp, type_tag, mult, kind) != 0) {
+    return -1;
+  }
+  p->nodes[p->count] = tmp;
+  p->count = (uint8_t)(p->count + 1);
+  return 0;
+}
+
+int slake_ir_program_is_well_typed(const slake_ir_program *p)
+{
+  uint8_t i;
+
+  if (p == 0) {
+    return 0;
+  }
+  if (p->valid == 0) {
+    return 0;
+  }
+  /* Empty program is not well-typed as a program (fail closed). */
+  if (p->count == 0) {
+    return 0;
+  }
+  if (p->count > (uint8_t)SLAKE_IR_PROGRAM_CAP) {
+    return 0;
+  }
+  for (i = 0; i < p->count; i++) {
+    if (slake_ir_node_is_well_typed(&p->nodes[i]) != 1) {
+      return 0;
+    }
+  }
+  return 1;
+}
+
+int slake_ir_program_check_fail_closed(const slake_ir_program *p,
+    const slake_linear_token *linear,
+    const slake_erased *erased)
+{
+  uint8_t i;
+
+  /* Null, empty, or ill-typed -> FAIL_CLOSED. */
+  if (slake_ir_program_is_well_typed(p) != 1) {
+    return (int)SLAKE_EXTRACT_FAIL_CLOSED;
+  }
+  for (i = 0; i < p->count; i++) {
+    if (slake_ir_node_check_fail_closed(&p->nodes[i], linear, erased)
+        != (int)SLAKE_EXTRACT_OK) {
+      return (int)SLAKE_EXTRACT_FAIL_CLOSED;
+    }
+  }
+  return (int)SLAKE_EXTRACT_OK;
+}
+# PROGRAM_C_BODY_END

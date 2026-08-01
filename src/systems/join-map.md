@@ -3,7 +3,8 @@
 **Greppable:** JOIN-MAP, HOST-JOIN-MAP, SLAKE_JOIN_MAP_V0, JOIN-ALG,
 JOIN-ALG-USE, joinAlgContractOk, joinAlgUseOk, joinDualCiteOk, ConsumeToken,
 ErasedIndex, UnrestrictedShare
-**Lean host:** `SystemsLean/JoinMap.lean`
+**Lean host:** `SystemsLean/JoinMap.lean` (core dialect); theorems/smoke in
+`SystemsLean/JoinMapTheorems.lean` (same namespace; long-file split).
 **Still not residual free. Not freestanding product self-host complete.
 Not formal dual-bridge proof. Dual trees read-only for this map.**
 
@@ -54,8 +55,9 @@ from Systems residual slices.
 - `joinProgramCompileReady p` = `CompilePath.programCompileReady p` && `joinAlgContractOk`
 - Sibling bars: empty HostCompose may be unit-ready; empty program is not program-ready
 
-Theorems / smoke: JOIN-MAP-THEOREM / JOIN-MAP-SMOKE in `JoinMap.lean`
-(`joinAlgUseOk_true`, `joinAlgContractOk_true`, empty host/program fixtures).
+Theorems / smoke: JOIN-MAP-THEOREM / JOIN-MAP-SMOKE in `JoinMapTheorems.lean`
+(same namespace; `joinAlgUseOk_true`, `joinAlgContractOk_true`, empty host/program
+fixtures). Core bars stay in `JoinMap.lean`.
 
 ---
 

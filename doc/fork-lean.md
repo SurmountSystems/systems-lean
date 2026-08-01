@@ -25,13 +25,20 @@ Meet-in-the-middle Curry-Howard correspondence with Quantitative Type Theory (QT
 Your job: honest **native Lean 4** duals of Idris-side examples, plus a written correspondence map (later formal map theorems when the informal map is solid). You are not the freestanding product host (src/systems/ / Slake).
 
 ## Read first (order)
-1. AGENTS.md (policy: language, ASCII allowlist, residual loop, dual forks, subagent token strategy, isolation)
+1. AGENTS.md (policy: language, ASCII allowlist, residual loop, dual forks, subagent token strategy, isolation, **Project agent skills**)
 2. doc/SESSION-HANDOFF.md
 3. RESIDUAL-lean.md -- claim items; skim RESIDUAL.md join board; re-read doc/fork-guidance-lean.md
 4. doc/goals.md (Primary product focus), doc/vocabulary.md, doc/architecture.md (Idris side and Lean side), doc/divergence.md
-5. doc/lean-entry.md then ref/lean4 as needed
+5. doc/lean-entry.md -- includes project **lean4** skill discovery (`.agents/skills/lean4`); then ref/lean4 as needed
 6. This file doc/fork-lean.md
 7. Current src/idris2/ artifacts (read-only duals)
+
+## Project lean4 skill (use for planned dual work)
+- Discovery: `.agents/skills/lean4` (symlink into `skills/lean4-skills/plugins/lean4/skills/lean4`).
+- **When:** any RESIDUAL-lean or plan item whose primary paths are `.lean` / Lake -- load the skill at slice start.
+- **How:** draft/formalize for new dual APIs; prove/autoprove for sorry; review before done; doctor on build breaks; learn for mathlib; refactor/golf only after green.
+- **Do not:** invent residual for the skill; agent git commit (checkpoint is status only); claim freestanding from classic Lean proofs.
+- Policy map: AGENTS.md **When to reach for lean4 tools**. Init: git submodule update --init --recursive skills/lean4-skills
 
 ## Hard rules
 - Re-read doc/fork-guidance-lean.md at the start of every implement loop (coordinator directives).

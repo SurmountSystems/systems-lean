@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Unlicense
-# Filter flake source to novel work only (no ref/, git, cache, result).
+# Filter flake source to novel work only (no ref/, skills submodules, git, cache, result).
 { lib, src }:
 lib.cleanSourceWith {
   name = "systems-lean-novel";
@@ -11,6 +11,7 @@ lib.cleanSourceWith {
       base = baseNameOf path;
     in
     !(lib.hasPrefix "ref/" rel)
+    && !(lib.hasPrefix "skills/" rel)
     && !(lib.hasPrefix ".git/" rel)
     && !(lib.hasInfix "/.git/" rel)
     && !(lib.hasPrefix ".cache/" rel)

@@ -1,0 +1,181 @@
+# HOST-EMIT-TYPES -- Types freestanding C product text (durable host artifact)
+# SSoT owner: SystemsLean.EmitTypes (src/systems/SystemsLean/EmitTypes.lean)
+#   typesHeaderFragment + typesBodyFragment
+# Lean FreestandingEmit embeds Types product text from this artifact (no second dialect).
+# TYPES_C_HEADER / TYPES_C_BODY blocks must match typesHeaderFragment / typesBodyFragment.
+# Product API: slake_type_tag + TYPED_IR_V0 slake_ir_node (kind/mult pairing + fail-closed).
+# Host stage ids only: HOST-EMIT-TYPES / SELF-HOST-EMIT-TYPES / SLAKE_SELF_HOST_EMIT_TYPES_V0.
+# Do not mint EMIT_TYPES_V0 residual C stage ladder as freestanding residual progress.
+HOST-EMIT-TYPES
+NON-SSOT
+SELF-HOST-EMIT-TYPES
+SLAKE_SELF_HOST_EMIT_TYPES_V0
+TYPED_IR_V0
+COMMON-UNIVERSE
+# TYPES_C_HEADER_BEGIN
+/* ---- Types (Types.slake / COMMON-UNIVERSE) ----
+ * Host elaborator residual is not product wire residual.
+ * Opaque tag only; no type checker body.
+ * HOST-EMIT-TYPES: dialect from SystemsLean.EmitTypes + host_emit_types.ssot.txt
+ * (Lean FreestandingEmit embeds this Types product text).
+ */
+typedef struct slake_type_tag {
+  uint32_t tag;
+} slake_type_tag;
+
+int slake_type_tag_init(slake_type_tag *t, uint32_t tag);
+uint32_t slake_type_tag_get(const slake_type_tag *t);
+
+/* ---- TYPED_IR_V0 -- richer typed IR surface behind checker/host.
+ * COMMON-UNIVERSE; not residual free; not full elaborator.
+ * Kind must match mult:
+ *   VALUE  <-> MULT-OMEGA
+ *   LINEAR <-> MULT-1
+ *   ERASED <-> MULT-0
+ * HOST-EMIT-TYPES: dialect from SystemsLean.EmitTypes + host_emit_types.ssot.txt
+ * (Lean FreestandingEmit embeds this Types product text).
+ */
+enum slake_ir_kind {
+  SLAKE_IR_KIND_VALUE = 0,   /* pairs with MULT-OMEGA */
+  SLAKE_IR_KIND_LINEAR = 1,  /* pairs with MULT-1 */
+  SLAKE_IR_KIND_ERASED = 2   /* pairs with MULT-0 */
+};
+
+typedef struct slake_ir_node {
+  slake_type_tag ty;
+  enum slake_mult mult;
+  enum slake_ir_kind kind;
+  uint8_t valid; /* 1 after successful init */
+} slake_ir_node;
+
+/* Greppable typed IR stage id: TYPED_IR_V0 */
+const char *slake_typed_ir_id(void);
+
+/* 0 ok; -1 null or invalid mult/kind pairing or type init fail.
+ * Kind must match mult (VALUE/OMEGA, LINEAR/1, ERASED/0).
+ * On failure leave node invalid (valid=0) if non-null.
+ * Document codes matching body exactly.
+ */
+int slake_ir_node_init(slake_ir_node *n, uint32_t type_tag,
+                       enum slake_mult mult, enum slake_ir_kind kind);
+
+/* 1 if non-null, valid flag set, mult valid, kind matches mult; else 0 */
+int slake_ir_node_is_well_typed(const slake_ir_node *n);
+
+/* Compose FAIL_CLOSED_CHECKER_V1 from IR node.
+ * MULT-1 requires non-null live linear; MULT-0 requires marked erased;
+ * MULT-OMEGA linear/erased may be null; claimed_runtime always RUNTIME_FS.
+ * Returns SLAKE_EXTRACT_OK (0) or FAIL_CLOSED (1). Header must match body.
+ * Greppable: TYPED_IR_V0, FAIL_CLOSED_CHECKER_V1, RUNTIME-FS
+ */
+int slake_ir_node_check_fail_closed(const slake_ir_node *n,
+    const slake_linear_token *linear,
+    const slake_erased *erased);
+# TYPES_C_HEADER_END
+# TYPES_C_BODY_BEGIN
+/* ---- Types (COMMON-UNIVERSE / TYPED_IR_V0) ----
+ * HOST-EMIT-TYPES: dialect from SystemsLean.EmitTypes + host_emit_types.ssot.txt
+ * (Lean FreestandingEmit embeds this Types product text).
+ */
+
+int slake_type_tag_init(slake_type_tag *t, uint32_t tag)
+{
+  if (t == 0) {
+    return -1;
+  }
+  t->tag = tag;
+  return 0;
+}
+
+uint32_t slake_type_tag_get(const slake_type_tag *t)
+{
+  if (t == 0) {
+    return 0;
+  }
+  return t->tag;
+}
+
+/* ---- TYPED_IR_V0 (richer typed IR; not residual free; not full elaborator) ----
+ * Kind/mult pairing fail-closed. Composes FAIL_CLOSED_CHECKER_V1 on check path.
+ * HOST-EMIT-TYPES: dialect from SystemsLean.EmitTypes + host_emit_types.ssot.txt
+ * (Lean FreestandingEmit embeds this Types product text).
+ */
+
+const char *slake_typed_ir_id(void)
+{
+  return "TYPED_IR_V0";
+}
+
+/* Internal: 1 if kind pairs with mult under TYPED_IR_V0 rules; 0 otherwise. */
+static int slake_ir_kind_matches_mult(enum slake_ir_kind kind, enum slake_mult mult)
+{
+  if (mult == SLAKE_MULT_OMEGA && kind == SLAKE_IR_KIND_VALUE) {
+    return 1;
+  }
+  if (mult == SLAKE_MULT_1 && kind == SLAKE_IR_KIND_LINEAR) {
+    return 1;
+  }
+  if (mult == SLAKE_MULT_0 && kind == SLAKE_IR_KIND_ERASED) {
+    return 1;
+  }
+  return 0;
+}
+
+int slake_ir_node_init(slake_ir_node *n, uint32_t type_tag,
+                       enum slake_mult mult, enum slake_ir_kind kind)
+{
+  if (n == 0) {
+    return -1;
+  }
+  /* Fail closed first; leave invalid on any reject path. */
+  n->valid = 0;
+  n->mult = mult;
+  n->kind = kind;
+  n->ty.tag = 0;
+  if (slake_mult_is_valid(mult) != 1) {
+    return -1;
+  }
+  if (slake_ir_kind_matches_mult(kind, mult) != 1) {
+    return -1;
+  }
+  if (slake_type_tag_init(&n->ty, type_tag) != 0) {
+    return -1;
+  }
+  n->valid = 1;
+  return 0;
+}
+
+int slake_ir_node_is_well_typed(const slake_ir_node *n)
+{
+  if (n == 0) {
+    return 0;
+  }
+  if (n->valid == 0) {
+    return 0;
+  }
+  if (slake_mult_is_valid(n->mult) != 1) {
+    return 0;
+  }
+  if (slake_ir_kind_matches_mult(n->kind, n->mult) != 1) {
+    return 0;
+  }
+  return 1;
+}
+
+int slake_ir_node_check_fail_closed(const slake_ir_node *n,
+    const slake_linear_token *linear,
+    const slake_erased *erased)
+{
+  slake_check_bundle b;
+
+  /* Well-typed IR required before composing FAIL_CLOSED_CHECKER_V1. */
+  if (slake_ir_node_is_well_typed(n) != 1) {
+    return (int)SLAKE_EXTRACT_FAIL_CLOSED;
+  }
+  b.mult = n->mult;
+  b.linear = linear;
+  b.erased = erased;
+  b.claimed_runtime = SLAKE_RUNTIME_FS; /* product path always RUNTIME-FS */
+  return slake_check_fail_closed(&b);
+}
+# TYPES_C_BODY_END

@@ -1,9 +1,25 @@
 # HOST-EMIT-SSOT -- EMIT_BODY_V0 fragment dialect (durable host artifact)
-# SSoT owner: SystemsLean.EmitBody.buildFragment (src/systems/SystemsLean/EmitBody.lean)
-# Lean FreestandingEmit embeds this dialect; do not invent a second format.
-# NON-SSOT: bulk frozen wire templates are not a second fragment dialect owner.
-# EMPTY_FRAGMENT must match bodyFromCompose HostCompose.empty (EMIT-BODY-SMOKE).
+# HOST-EMIT-BODY -- emit body freestanding C scaffolding product text
+# SSoT owner: SystemsLean.EmitBody (src/systems/SystemsLean/EmitBody.lean)
+#   dialect keys: EMPTY_FRAGMENT + HEADER_*/TAG_* (HOST-EMIT-SSOT)
+#   scaffolding: bodyHeaderFragment + bodyBodyFragment (BODY_C_HEADER / BODY_C_BODY)
+# Lean FreestandingEmit embeds body scaffolding from BODY_C_* blocks, then substitutes
+# dialect keys into __SSOT_*__ placeholders (no second dialect).
+# BODY_C_HEADER / BODY_C_BODY blocks must match bodyHeaderFragment / bodyBodyFragment.
+# Product API: slake_emit_body + from_compose + is_valid; SLAKE_EMIT_BODY_CAP 256.
+# Product wire stage id EMIT_BODY_V0 remains on the wire (map only).
+# Host stage ids only: HOST-EMIT-BODY / SELF-HOST-EMIT-BODY / SLAKE_SELF_HOST_EMIT_BODY_V0
+#   plus HOST-EMIT-SSOT for put_str dialect keys.
+# Fixed buffer fragment only; not full product module emit; not residual free.
+# Do not mint EMIT_BODY residual C stage ladder as freestanding residual progress.
+HOST-EMIT-SSOT
+HOST-EMIT-BODY
+NON-SSOT
+SELF-HOST-EMIT-BODY
+SLAKE_SELF_HOST_EMIT_BODY_V0
+EMIT_BODY_V0
 # Format pieces below are the only legal dialect for product wire put_str strings.
+# EMPTY_FRAGMENT must match bodyFromCompose HostCompose.empty (EMIT-BODY-SMOKE).
 EMPTY_FRAGMENT=/* EMIT_BODY_V0 RUNTIME-FS r=0 e=0 */
 HEADER_OPEN=/* EMIT_BODY_V0 RUNTIME-FS r=
 HEADER_E= e=
@@ -12,3 +28,240 @@ TAG_OPEN=/* t
 TAG_MULT= mult=
 TAG_KIND= kind=
 TAG_CLOSE= */
+# BODY_C_HEADER_BEGIN
+/* ---- EMIT_BODY_V0 -- freestanding C body fragment (not residual free; not CFG/SSA)
+ * Deterministic ASCII fragment from a checked host compose via plan + apply.
+ * Not full product module emit; not CFG/SSA; not residual free; no product GC.
+ * HOST-EMIT-BODY: scaffolding from SystemsLean.EmitBody + host_emit_body_fragment.ssot.txt
+ * (Lean FreestandingEmit embeds this emit body product text).
+ * HOST-EMIT-SSOT: dialect from SystemsLean.EmitBody.buildFragment +
+ *   host_emit_body_fragment.ssot.txt (put_str keys; no second fragment format).
+ * Greppable: EMIT_BODY_V0, EMIT_APPLY_V0, EMIT_PLAN_V0, HOST_COMPOSE_V0,
+ *            RUNTIME-FS, EMIT-BOUNDARY, HOST-EMIT-BODY, HOST-EMIT-SSOT
+ *
+ * Fragment shape (deterministic C comment lines; HOST-EMIT-SSOT):
+ *   EMIT_BODY_V0 RUNTIME-FS r=N e=M
+ *   tI mult=X kind=Y
+ * Tag mult/kind use EMIT_APPLY_V0 packing: mult high nibble, kind low nibble.
+ * MULT-0 tags may still be listed (erased inventory honesty, not product wire claim).
+ */
+#define SLAKE_EMIT_BODY_CAP 256
+
+typedef struct slake_emit_body {
+  char buf[SLAKE_EMIT_BODY_CAP]; /* NUL-terminated fragment on success */
+  uint16_t len;  /* strlen of buf on success (excluding NUL) */
+  uint8_t valid; /* 1 after successful build */
+} slake_emit_body;
+
+const char *slake_emit_body_id(void); /* exact "EMIT_BODY_V0" */
+
+/* Build body from checked host compose.
+ * 0 ok; -1 null out/hc, plan/apply/check fail, or buffer would overflow.
+ * On failure: if out non-null, valid=0, len=0, buf[0]=0 (fail closed).
+ * On success:
+ *   - require plan ready + apply valid (call those APIs; do not reimplement checks)
+ *   - write deterministic ASCII fragment into buf, NUL-terminated
+ *   - must contain greppable substrings: EMIT_BODY_V0 and RUNTIME-FS
+ *   - include decimal runtime_nodes and erased_nodes from plan
+ *   - for each apply tag index 0..count-1, append one short line encoding mult/kind
+ *     (same packing as EMIT_APPLY_V0: mult high nibble, kind low)
+ *   - MULT-0 tags may still be listed (erased inventory) -- honesty, not product wire claim
+ * Greppable: EMIT_BODY_V0, EMIT_APPLY_V0, EMIT_PLAN_V0, RUNTIME-FS, EMIT-BOUNDARY
+ * Honesty: not residual free; fragment is not full product module emit.
+ */
+int slake_emit_body_from_compose(const slake_host_compose *hc, slake_emit_body *out);
+
+/* 1 if non-null, valid, len < CAP, buf[len]==0; else 0 */
+int slake_emit_body_is_valid(const slake_emit_body *b);
+# BODY_C_HEADER_END
+# BODY_C_BODY_BEGIN
+/* ---- EMIT_BODY_V0 (freestanding C body fragment; not residual free; not CFG/SSA) ----
+ * Builds a fixed-buffer deterministic ASCII fragment via plan + apply APIs.
+ * No snprintf/stdlib; manual digit write. Greppable: EMIT_BODY_V0, RUNTIME-FS,
+ * EMIT_APPLY_V0, EMIT_PLAN_V0, EMIT-BOUNDARY, HOST-EMIT-BODY, HOST-EMIT-SSOT.
+ * HOST-EMIT-BODY: scaffolding from SystemsLean.EmitBody + host_emit_body_fragment.ssot.txt
+ * (Lean FreestandingEmit embeds this emit body product text).
+ * Fragment dialect: HOST-EMIT-SSOT (SystemsLean.EmitBody.buildFragment +
+ * host_emit_body_fragment.ssot.txt); Lean freestanding emit embeds HOST-EMIT-SSOT put_str text.
+ */
+
+/* HOST-EMIT-SSOT empty-compose fragment (matches EmitBody.emptyComposeFragmentSsot).
+ * Greppable contract text; returned only for honesty / smoke of dialect embed. */
+static const char slake_emit_body_empty_ssot[] = "__SSOT_EMPTY_FRAGMENT__\n";
+
+const char *slake_emit_body_id(void)
+{
+  /* Touch empty SSOT string so freestanding link keeps the greppable literal. */
+  if (slake_emit_body_empty_ssot[0] == 0) {
+    return "EMIT_BODY_V0";
+  }
+  return "EMIT_BODY_V0";
+}
+
+/* Append one char; leave room for trailing NUL. Returns 0 ok, -1 overflow. */
+static int slake_emit_body_put_char(slake_emit_body *out, char c)
+{
+  if (out->len + 1u >= (uint16_t)SLAKE_EMIT_BODY_CAP) {
+    return -1;
+  }
+  out->buf[out->len] = c;
+  out->len = (uint16_t)(out->len + 1u);
+  return 0;
+}
+
+static int slake_emit_body_put_str(slake_emit_body *out, const char *s)
+{
+  if (s == 0) {
+    return -1;
+  }
+  while (*s != 0) {
+    if (slake_emit_body_put_char(out, *s) != 0) {
+      return -1;
+    }
+    s = s + 1;
+  }
+  return 0;
+}
+
+/* Decimal write of uint8_t (0..255); freestanding, no snprintf. */
+static int slake_emit_body_put_u8(slake_emit_body *out, uint8_t v)
+{
+  char digs[3];
+  int n;
+  uint8_t x;
+
+  if (v == 0) {
+    return slake_emit_body_put_char(out, '0');
+  }
+  n = 0;
+  x = v;
+  while (x > 0 && n < 3) {
+    digs[n] = (char)('0' + (x % 10u));
+    n = n + 1;
+    x = (uint8_t)(x / 10u);
+  }
+  while (n > 0) {
+    n = n - 1;
+    if (slake_emit_body_put_char(out, digs[n]) != 0) {
+      return -1;
+    }
+  }
+  return 0;
+}
+
+static void slake_emit_body_fail_closed(slake_emit_body *out)
+{
+  out->len = 0;
+  out->valid = 0;
+  out->buf[0] = 0;
+}
+
+int slake_emit_body_from_compose(const slake_host_compose *hc, slake_emit_body *out)
+{
+  slake_emit_plan plan;
+  slake_emit_apply applied;
+  uint8_t i;
+  uint8_t mult;
+  uint8_t kind;
+
+  if (out == 0) {
+    return -1;
+  }
+  /* Fail closed: zero before any further checks. */
+  slake_emit_body_fail_closed(out);
+
+  if (hc == 0) {
+    return -1;
+  }
+
+  /* Require plan ready via plan API (does not reimplement check). */
+  if (slake_emit_plan_from_compose(hc, &plan) != 0) {
+    return -1;
+  }
+  if (slake_emit_plan_is_ready(&plan) != 1) {
+    return -1;
+  }
+
+  /* Require apply valid via apply API. */
+  if (slake_emit_apply_from_compose(hc, &applied) != 0) {
+    return -1;
+  }
+  if (slake_emit_apply_is_valid(&applied) != 1) {
+    return -1;
+  }
+
+  /* Header line: HOST-EMIT-SSOT dialect (EMIT_BODY_V0 RUNTIME-FS r=N e=M). */
+  if (slake_emit_body_put_str(out, "__SSOT_HEADER_OPEN__") != 0) {
+    slake_emit_body_fail_closed(out);
+    return -1;
+  }
+  if (slake_emit_body_put_u8(out, plan.runtime_nodes) != 0) {
+    slake_emit_body_fail_closed(out);
+    return -1;
+  }
+  if (slake_emit_body_put_str(out, "__SSOT_HEADER_E__") != 0) {
+    slake_emit_body_fail_closed(out);
+    return -1;
+  }
+  if (slake_emit_body_put_u8(out, plan.erased_nodes) != 0) {
+    slake_emit_body_fail_closed(out);
+    return -1;
+  }
+  if (slake_emit_body_put_str(out, "__SSOT_HEADER_CLOSE__\n") != 0) {
+    slake_emit_body_fail_closed(out);
+    return -1;
+  }
+
+  /* One line per apply tag: HOST-EMIT-SSOT tI mult=X kind=Y. */
+  for (i = 0; i < applied.count; i++) {
+    mult = (uint8_t)((applied.tags[i] >> 4) & 0xFu);
+    kind = (uint8_t)(applied.tags[i] & 0xFu);
+    if (slake_emit_body_put_str(out, "__SSOT_TAG_OPEN__") != 0) {
+      slake_emit_body_fail_closed(out);
+      return -1;
+    }
+    if (slake_emit_body_put_u8(out, i) != 0) {
+      slake_emit_body_fail_closed(out);
+      return -1;
+    }
+    if (slake_emit_body_put_str(out, "__SSOT_TAG_MULT__") != 0) {
+      slake_emit_body_fail_closed(out);
+      return -1;
+    }
+    if (slake_emit_body_put_u8(out, mult) != 0) {
+      slake_emit_body_fail_closed(out);
+      return -1;
+    }
+    if (slake_emit_body_put_str(out, "__SSOT_TAG_KIND__") != 0) {
+      slake_emit_body_fail_closed(out);
+      return -1;
+    }
+    if (slake_emit_body_put_u8(out, kind) != 0) {
+      slake_emit_body_fail_closed(out);
+      return -1;
+    }
+    if (slake_emit_body_put_str(out, "__SSOT_TAG_CLOSE__\n") != 0) {
+      slake_emit_body_fail_closed(out);
+      return -1;
+    }
+  }
+
+  out->buf[out->len] = 0;
+  out->valid = 1;
+  return 0;
+}
+
+int slake_emit_body_is_valid(const slake_emit_body *b)
+{
+  if (b == 0 || b->valid == 0) {
+    return 0;
+  }
+  if (b->len >= (uint16_t)SLAKE_EMIT_BODY_CAP) {
+    return 0;
+  }
+  if (b->buf[b->len] != 0) {
+    return 0;
+  }
+  return 1;
+}
+# BODY_C_BODY_END

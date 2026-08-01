@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: Unlicense
-# Pre-commit: pure flake hygiene + residual workspace gates (via just).
+# Optional local git hook -- process glue only (not a policy mill).
+# Real gates live in pure Nix + just: just check / just pre-commit (alias),
+# flake checks (source-hygiene, professional-tone, systems-host-presence,
+# systems-emit-wire, idris-side-presence, lean-side-presence).
+# Install from repo root:
+#   ln -sf ../../script/git-hooks/pre-commit .git/hooks/pre-commit
+# Or run just check without installing a hook.
 set -euo pipefail
 root=$(cd "$(dirname "$0")/../.." && pwd)
 cd "$root"

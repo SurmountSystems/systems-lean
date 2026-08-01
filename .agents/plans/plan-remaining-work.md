@@ -2,6 +2,11 @@
 
 ASCII only. Status snapshot after Mult..ProductPath host ladder (31 modules).
 
+**Superseded for product claim order:** prefer
+`.agents/plans/plan-close-six-claims.md` (six claims A-F, host-owned emit
+tracks, lean4 skill, recommended first residual **Host owns freestanding Types
+C**). Keep this file as historical snapshot of earlier remaining-work framing.
+
 ## North star (one line)
 
 Slake compiles Systems Lean to freestanding C with no classic Lean runtime on
