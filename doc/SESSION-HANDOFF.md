@@ -24,11 +24,22 @@ If role is unclear after compaction: **ask once**. Do not assume coordinator or 
 UnrestrictedShare) + IR sketch + systems skeleton + unit surface + compile path
 + **frozen** freestanding emit product wire (through emit Out / wire Body) +
 **SYSTEMS_LEAN_HOST partial** (Lake + Mult..SelfHostBody under `src/systems/`;
-**199** `SystemsLean/*.lean` host modules including
+**225** `SystemsLean/*.lean` host modules including
 FirstSurface + FirstSurfaceMain + MultSubsetEmit + MultSubsetEmitMain +
 MultSubsetRebuild + MultSubsetRebuildMain +
 LinearSubsetEmit + LinearSubsetEmitMain +
 LinearSubsetRebuild + LinearSubsetRebuildMain +
+TypesSubsetEmit + TypesSubsetEmitMain +
+TypesSubsetRebuild + TypesSubsetRebuildMain +
+ProgramSubsetEmit + ProgramSubsetEmitMain +
+ProgramSubsetRebuild + ProgramSubsetRebuildMain +
+ExtractSubsetEmit + ExtractSubsetEmitMain +
+ErasureSubsetEmit + ErasureSubsetEmitMain +
+ErasureSubsetRebuild + ErasureSubsetRebuildMain +
+GraphSubsetEmit + GraphSubsetEmitMain +
+GraphSubsetRebuild + GraphSubsetRebuildMain +
+ComposeSubsetEmit + ComposeSubsetEmitMain +
+ComposeSubsetRebuild + ComposeSubsetRebuildMain +
 OfficialRetireMain + PerformClaimedMain + OwnershipClaimedMain +
 StepContractFullMain + PerformClaimed + OfficialRetire +
 DualEqWriteCapableGap +
@@ -64,29 +75,35 @@ first (`SYSTEMS_PRODUCT_WIRE_FRESH=1` skips double regenerate in systems check).
 **Living tip (2026-08-01):** freestanding product self-host **complete true**;
 product residual free **true**; Lake host still used (DependsOnLake /
 StillUsesLake; host elaborator residual remains); bootstrap **S0+S1+S2+S3 done**
-(Mult under Lake; ideal **M0**). Ideal ladder **M1** Linear emit + rebuild
-**done** (`LinearSubsetEmit` / `just linear-subset-emit`;
-`LinearSubsetRebuild` / `just linear-subset-rebuild`). Open **empty**
-(done-for-now; Types ladder or Mult without-Lake M2 next by choice). **S4** /
-**M6** Lake retire **deferred** -- never forge StillUsesLake false early. Step 4
-PROVABLY/LLVM **held**. beastdb orthogonal (soft couple only). Long-file split
-campaign is **parked hygiene**, not the product goal. Complete is not "Lake is
-gone." Free is not Lake gone, not proof complete, not PROVABLY, not LLVM unlock.
-Missing freestanding binary does **not** block bootstrap. Cold/self-host bench
-note: `doc/dev/research/lake-vs-slake-serial-bench-2026-08-01.md`.
+(Mult under Lake; ideal **M0**). Ideal ladder **M1** Linear + Types + Program +
+Extract + Erasure + Graph + Compose emit/rebuild **done**
+(`ComposeSubsetRebuild` / `just compose-subset-rebuild`; `slake_compose_subset.{h,c}`).
+Open next: ideal **M3** (front-end over defined subset language; design then
+implement). M2 Name B full freestanding Mult write **done** (Path A:
+`emit/slake_mult_fs_write_tool.c` + host-cc `src/systems/bin/slake-mult-fs-write-cc`;
+`just mult-subset-freestanding-write`; `freestandingDriverComplete` **true**;
+product StillUsesLake/DependsOnLake remain). Mult without-Lake prebuilt driver
+(M2 Name A) **done**. Host MultSubsetEmit Mult SSOT write path **done**
+(`multFsWritePathReady` true). Design Name B full deepen **done**. Surface
+dual-check greps still `just mult-subset-freestanding-deepen`.
+**S4** / **M6** Lake retire **deferred** -- never forge StillUsesLake false early.
+Step 4 PROVABLY/LLVM **held**. beastdb orthogonal (soft couple only). Long-file
+split campaign is **parked hygiene**, not the product goal. Complete is not
+"Lake is gone." Free is not Lake gone, not proof complete, not PROVABLY, not
+LLVM unlock. Missing freestanding binary does **not** block bootstrap.
+Cold/self-host bench note:
+`doc/dev/research/lake-vs-slake-serial-bench-2026-08-01.md`.
 
-**Active product residual:** Open **empty** (done-for-now). Linear subset rebuild
-**done** (`SystemsLean.LinearSubsetRebuild` / `just linear-subset-rebuild`).
-Linear subset emit **done** (`SystemsLean.LinearSubsetEmit` /
-`just linear-subset-emit`). Bootstrap **S3 done**
-(`SystemsLean.MultSubsetRebuild` / `just mult-subset-rebuild`). S2 **done**
-(`MultSubsetEmit` / `just mult-subset-emit`). S1 **done**
-(`FirstSurface` / `just first-surface`). S4 / M6 Lake retire **deferred**. Plan
+**Active product residual:** Open **M3 subset language front-end design** (plan
+ideal M3; design then implement). Compose subset emit + rebuild **done**. Graph /
+Erasure / Extract / Program / Types / Linear emit+rebuild **done**. M2 Name B
+full freestanding Mult write **done** (`freestandingDriverComplete` true; Path A
+host-cc Mult package writer). Host MultSubsetEmit SSOT write path **done**
+(`multFsWritePathReady` true). Mult without-Lake prebuilt driver **done**. Mult
+S0-S3 **done**. S4 / M6 Lake retire **deferred**. Plan
 `.agents/plans/plan-residual-free-freestanding.md` Steps 0-3 **done**; Step 5
-Mult S0-S3 **done**; M1 Linear emit + rebuild **done**; follow-on Types ladder
-or M2 without-Lake by operator choice (not auto-opened). Step 4 (proof /
-PROVABLY / LLVM) **held** -- do not auto-start. Claim B complete closed; do not
-re-open.
+Mult S0-S3 **done**; M1 unit surfaces **done**; M2 Name A + host write + Name B
+full **done**. Step 4 **held**. Claim B complete closed; do not re-open.
 Long-file campaign parked (Linear last **118->92** via LinearTheorems **71**). Linear split **done** **118->92**;
 KernelSelfApply split **done** **125->105**;
 ProductOutKernel split **done** **130->106**;

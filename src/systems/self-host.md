@@ -652,10 +652,65 @@ HOST-LINEAR-SUBSET-REBUILD, linearSubsetRebuildReady,
 linearSubsetRebuildSelfApplyOk, linearSubsetRebuildWroteExpected,
 slake-linear-subset-rebuild, just linear-subset-rebuild, LinearSubsetRebuild,
 slake_linear_subset.h, slake_linear_subset.c, SLAKE_LINEAR_SUBSET_LINEAR,
+TYPES-SUBSET-EMIT, SLAKE_TYPES_SUBSET_EMIT, SLAKE_TYPES_SUBSET_EMIT_V0,
+HOST-TYPES-SUBSET-EMIT, typesSubsetEmitReady, typesSubsetEmitWroteExpected,
+slake-types-subset-emit, just types-subset-emit, TypesSubsetEmit,
+slake_types_subset.h, slake_types_subset.c, SLAKE_TYPES_SUBSET_TYPES,
+TYPES-SUBSET-REBUILD, SLAKE_TYPES_SUBSET_REBUILD, SLAKE_TYPES_SUBSET_REBUILD_V0,
+HOST-TYPES-SUBSET-REBUILD, typesSubsetRebuildReady,
+typesSubsetRebuildSelfApplyOk, typesSubsetRebuildWroteExpected,
+slake-types-subset-rebuild, just types-subset-rebuild, TypesSubsetRebuild,
+PROGRAM-SUBSET-EMIT, SLAKE_PROGRAM_SUBSET_EMIT, SLAKE_PROGRAM_SUBSET_EMIT_V0,
+HOST-PROGRAM-SUBSET-EMIT, programSubsetEmitReady, programSubsetEmitWroteExpected,
+slake-program-subset-emit, just program-subset-emit, ProgramSubsetEmit,
+slake_program_subset.h, slake_program_subset.c, SLAKE_PROGRAM_SUBSET_PROGRAM,
+PROGRAM-SUBSET-REBUILD, SLAKE_PROGRAM_SUBSET_REBUILD, SLAKE_PROGRAM_SUBSET_REBUILD_V0,
+HOST-PROGRAM-SUBSET-REBUILD, programSubsetRebuildReady,
+programSubsetRebuildSelfApplyOk, programSubsetRebuildWroteExpected,
+slake-program-subset-rebuild, just program-subset-rebuild, ProgramSubsetRebuild,
+EXTRACT-SUBSET-EMIT, SLAKE_EXTRACT_SUBSET_EMIT, SLAKE_EXTRACT_SUBSET_EMIT_V0,
+HOST-EXTRACT-SUBSET-EMIT, extractSubsetEmitReady, extractSubsetEmitWroteExpected,
+slake-extract-subset-emit, just extract-subset-emit, ExtractSubsetEmit,
+slake_extract_subset.h, slake_extract_subset.c, SLAKE_EXTRACT_SUBSET_EXTRACT,
+EXTRACT-SUBSET-REBUILD, SLAKE_EXTRACT_SUBSET_REBUILD, SLAKE_EXTRACT_SUBSET_REBUILD_V0,
+HOST-EXTRACT-SUBSET-REBUILD, extractSubsetRebuildReady,
+extractSubsetRebuildSelfApplyOk, extractSubsetRebuildWroteExpected,
+slake-extract-subset-rebuild, just extract-subset-rebuild, ExtractSubsetRebuild,
+ERASURE-SUBSET-EMIT, SLAKE_ERASURE_SUBSET_EMIT, SLAKE_ERASURE_SUBSET_EMIT_V0,
+HOST-ERASURE-SUBSET-EMIT, erasureSubsetEmitReady, erasureSubsetEmitWroteExpected,
+slake-erasure-subset-emit, just erasure-subset-emit, ErasureSubsetEmit,
+slake_erasure_subset.h, slake_erasure_subset.c, SLAKE_ERASURE_SUBSET_ERASURE,
+ERASURE-SUBSET-REBUILD, SLAKE_ERASURE_SUBSET_REBUILD, SLAKE_ERASURE_SUBSET_REBUILD_V0,
+HOST-ERASURE-SUBSET-REBUILD, erasureSubsetRebuildReady,
+erasureSubsetRebuildSelfApplyOk, erasureSubsetRebuildWroteExpected,
+slake-erasure-subset-rebuild, just erasure-subset-rebuild, ErasureSubsetRebuild,
+GRAPH-SUBSET-EMIT, SLAKE_GRAPH_SUBSET_EMIT, SLAKE_GRAPH_SUBSET_EMIT_V0,
+HOST-GRAPH-SUBSET-EMIT, graphSubsetEmitReady, graphSubsetEmitWroteExpected,
+slake-graph-subset-emit, just graph-subset-emit, GraphSubsetEmit,
+slake_graph_subset.h, slake_graph_subset.c, SLAKE_GRAPH_SUBSET_GRAPH,
+GRAPH-SUBSET-REBUILD, SLAKE_GRAPH_SUBSET_REBUILD, SLAKE_GRAPH_SUBSET_REBUILD_V0,
+HOST-GRAPH-SUBSET-REBUILD, graphSubsetRebuildReady,
+graphSubsetRebuildSelfApplyOk, graphSubsetRebuildWroteExpected,
+slake-graph-subset-rebuild, just graph-subset-rebuild, GraphSubsetRebuild,
+COMPOSE-SUBSET-EMIT, SLAKE_COMPOSE_SUBSET_EMIT, SLAKE_COMPOSE_SUBSET_EMIT_V0,
+HOST-COMPOSE-SUBSET-EMIT, composeSubsetEmitReady, composeSubsetEmitWroteExpected,
+slake-compose-subset-emit, just compose-subset-emit, ComposeSubsetEmit,
+slake_compose_subset.h, slake_compose_subset.c, SLAKE_COMPOSE_SUBSET_COMPOSE,
+COMPOSE-SUBSET-REBUILD, SLAKE_COMPOSE_SUBSET_REBUILD, SLAKE_COMPOSE_SUBSET_REBUILD_V0,
+HOST-COMPOSE-SUBSET-REBUILD, composeSubsetRebuildReady,
+composeSubsetRebuildSelfApplyOk, composeSubsetRebuildWroteExpected,
+slake-compose-subset-rebuild, just compose-subset-rebuild, ComposeSubsetRebuild,
+mult without-Lake driver design, mult-without-lake-driver-design-2026-08-01,
 bootstrap S0, bootstrap S1, bootstrap S2, bootstrap S3, ideal ladder M1,
 StillUsesLake, DependsOnLake, COMPILE-PATH-MULT, multFixtureCompilePathReady,
 HOST-EMIT-MULT, COMPILE-PATH-LINEAR, linearFixtureCompilePathReady,
-HOST-EMIT-LINEAR
+HOST-EMIT-LINEAR, COMPILE-PATH-TYPES, typesFixtureCompilePathReady,
+HOST-EMIT-TYPES, COMPILE-PATH-PROGRAM, programFixtureCompilePathReady,
+HOST-EMIT-PROGRAM, COMPILE-PATH-EXTRACT, extractRuntimeFsGateReady,
+HOST-EMIT-EXTRACT, COMPILE-PATH-ERASURE, erasureFixtureCompilePathReady,
+HOST-EMIT-ERASURE, COMPILE-PATH-GRAPH, graphFixtureCompilePathReady,
+HOST-EMIT-GRAPH, COMPILE-PATH-COMPOSE, composeFixtureCompilePathReady,
+HOST-EMIT-COMPOSE
 
 Bootstrap is host-assisted. Lake elaborates early Slake drivers. Missing a
 freestanding Slake binary is the **starting state** (S0 done = start, not
@@ -667,9 +722,26 @@ S4 elaborator proof.
 | **S0** | Host foundation | **done** | Lake elaborates Systems Lean; product wire residual free; claim B writer-path complete true |
 | **S1** | First compiler surface | **done** | Named Mult unit input `SLAKE_FIRST_SURFACE_MULT` -> `firstSurfaceReady` (unitCompileReady + HOST-EMIT-MULT); module `FirstSurface`; `just first-surface` / `slake-first-surface` |
 | **S2** | Emit freestanding C for that subset | **done** | Host-built Mult unit package write (`slake_mult_subset.{h,c}`) from S1 Mult input + HOST-EMIT-MULT; `MultSubsetEmit` / `just mult-subset-emit` |
-| **S3** | Rebuild own freestanding subset | **done** | Measured Mult subset self-application (`MultSubsetRebuild` / `just mult-subset-rebuild`); re-emit/re-validate S2 package; Lake still allowed; without-Lake finished later |
+| **S3** | Rebuild own freestanding subset | **done** | Measured Mult subset self-application (`MultSubsetRebuild` / `just mult-subset-rebuild`); re-emit/re-validate S2 package; Lake still allowed on S3 path |
 | **M1** | Linear subset emit (unit surface growth) | **done** | Host-built Linear unit package write (`slake_linear_subset.{h,c}`) from COMPILE-PATH-LINEAR + HOST-EMIT-LINEAR; `LinearSubsetEmit` / `just linear-subset-emit`; Lake remains |
 | **M1** | Linear subset rebuild (self-application) | **done** | Measured Linear subset self-application (`LinearSubsetRebuild` / `just linear-subset-rebuild`); re-emit/re-validate M1 package; Lake still allowed; without-Lake finished later |
+| **M1** | Types subset emit (unit surface growth) | **done** | Host-built Types unit package write (`slake_types_subset.{h,c}`) from COMPILE-PATH-TYPES + HOST-EMIT-TYPES; `TypesSubsetEmit` / `just types-subset-emit`; Lake remains |
+| **M1** | Types subset rebuild (self-application) | **done** | Measured Types subset self-application (`TypesSubsetRebuild` / `just types-subset-rebuild`); re-emit/re-validate M1 package; Lake still allowed; without-Lake finished later |
+| **M1** | Program subset emit (unit surface growth) | **done** | Host-built Program unit package write (`slake_program_subset.{h,c}`) from COMPILE-PATH-PROGRAM + HOST-EMIT-PROGRAM; `ProgramSubsetEmit` / `just program-subset-emit`; Lake remains |
+| **M1** | Program subset rebuild (self-application) | **done** | Measured Program subset self-application (`ProgramSubsetRebuild` / `just program-subset-rebuild`); re-emit/re-validate M1 package; Lake still allowed; without-Lake finished later |
+| **M1** | Extract subset emit (unit surface growth) | **done** | Host-built Extract unit package write (`slake_extract_subset.{h,c}`) from COMPILE-PATH-EXTRACT + HOST-EMIT-EXTRACT; `ExtractSubsetEmit` / `just extract-subset-emit`; Lake remains |
+| **M1** | Extract subset rebuild (self-application) | **done** | Measured Extract subset self-application (`ExtractSubsetRebuild` / `just extract-subset-rebuild`); re-emit/re-validate M1 package; Lake still allowed; without-Lake finished later |
+| **M1** | Erasure subset emit (unit surface growth) | **done** | Host-built Erasure unit package write (`slake_erasure_subset.{h,c}`) from COMPILE-PATH-ERASURE + HOST-EMIT-ERASURE; `ErasureSubsetEmit` / `just erasure-subset-emit`; Lake remains |
+| **M1** | Erasure subset rebuild (self-application) | **done** | Measured Erasure subset self-application (`ErasureSubsetRebuild` / `just erasure-subset-rebuild`); re-emit/re-validate M1 package; Lake still allowed; without-Lake finished later |
+| **M1** | Graph subset emit (unit surface growth) | **done** | Host-built Graph unit package write (`slake_graph_subset.{h,c}`) from COMPILE-PATH-GRAPH + HOST-EMIT-GRAPH; `GraphSubsetEmit` / `just graph-subset-emit`; Lake remains |
+| **M1** | Graph subset rebuild (self-application) | **done** | Measured Graph subset self-application (`GraphSubsetRebuild` / `just graph-subset-rebuild`); re-emit/re-validate M1 package; Lake still allowed; without-Lake finished later |
+| **M1** | Compose subset emit (unit surface growth) | **done** | Host-built Compose unit package write (`slake_compose_subset.{h,c}`) from COMPILE-PATH-COMPOSE + HOST-EMIT-COMPOSE; `ComposeSubsetEmit` / `just compose-subset-emit`; Lake remains |
+| **M1** | Compose subset rebuild (self-application) | **done** | Measured Compose subset self-application (`ComposeSubsetRebuild` / `just compose-subset-rebuild`); re-emit/re-validate M1 package; Lake still allowed; without-Lake finished later |
+| **M2** | Mult without-Lake driver design | **done** (design) | Research note `doc/dev/research/mult-without-lake-driver-design-2026-08-01.md` |
+| **M2** | Mult without-Lake prebuilt driver | **done** (partial) | Name A: `just mult-subset-rebuild-without-lake` runs prebuilt `.lake/build/bin/slake-mult-subset-rebuild` (no lake on hot path); `multSubsetRebuildWithoutLakeFinishedClaimed` true; product StillUsesLake/DependsOnLake true |
+| **M2** | Mult freestanding surface dual-check partial | **done** (partial) | Name B greps: `just mult-subset-freestanding-deepen` dual-checks freestanding Mult product wire + Mult subset package (no lake; no Mult rebuild prebuilt); `MultFsDeepen`; freestandingDeepenPartial true; product StillUsesLake/DependsOnLake true |
+| **M2** | MultSubsetEmit freestanding Mult SSOT write path | **done** (host path) | Host MultSubsetEmit SSOT write path: `multFsWritePathReady` true; Lake `slake-mult-fs-write` remains bootstrap helper only |
+| **M2** | Name B full freestanding Mult write | **done** | Path A: Lean-generated `emit/slake_mult_fs_write_tool.c` + host-cc `src/systems/bin/slake-mult-fs-write-cc` (outside `.lake`); `just mult-subset-freestanding-write` measured hot path no lake; Mult rebuild ELF not writer; `freestandingDriverComplete` **true**; `multFsDeepenDriverReady` true; product StillUsesLake/DependsOnLake **true** |
 | **S4** | Retire Lake from product path | deferred | DependsOnLake / StillUsesLake false only with elaborator proof -- never forge early |
 
 ### S1 surface (done)
@@ -711,16 +783,15 @@ from Lean EmitMult fragments (no hand-authored Mult product C features).
 |-------|----------------|
 | Module | `SystemsLean/MultSubsetRebuild.lean` (`SystemsLean.MultSubsetRebuild`) |
 | Lake exe | `slake-mult-subset-rebuild` (`MultSubsetRebuildMain.lean`) |
-| just recipe | `just mult-subset-rebuild` |
+| just recipe | `just mult-subset-rebuild` (Lake path); `just mult-subset-rebuild-without-lake` (M2 measured step) |
 | Input | S2 Mult subset package identity (`SLAKE_MULT_SUBSET_EMIT_V0` / `multSubsetEmitReady` / `multSubsetEmitWroteExpected`) |
 | Output | Measured self-application: re-emit/re-validate Mult unit package `emit/slake_mult_subset.{h,c}` from S2 inputs (not full freestanding dialect regenerate as sole success) |
 | Structural ready | `multSubsetRebuildReady` + `multSubsetRebuildSelfApplyOk` + `multSubsetRebuildWroteExpected` |
-| Lake host | `stillUsesLake` / `dependsOnLake` true; `multSubsetRebuildWithoutLakeFinishedClaimed` false |
+| Lake host | `stillUsesLake` / `dependsOnLake` true; M2 `multSubsetRebuildWithoutLakeFinishedClaimed` true (measured step only) |
 
-**Non-claims (S3):** not without-Lake finished (later deepen / S4); not S4 Lake
-retire; free/complete living tip unchanged; not PROVABLY; not llvm unlock; not
-full freestanding API dialect regenerate as sole success. S3 may still use Lake
-as host elaborator.
+**Non-claims (S3):** not S4 Lake retire; free/complete living tip unchanged; not
+PROVABLY; not llvm unlock; not full freestanding API dialect regenerate as sole
+success. S3 Lake path may still invoke Lake; M2 without-Lake uses prebuilt ELF.
 
 ### M1 Linear subset emit (done)
 
@@ -756,6 +827,272 @@ features). Lake remains until S4.
 S4 Lake retire; free/complete living tip unchanged; not PROVABLY; not llvm
 unlock; not full freestanding API dialect regenerate as sole success. Rebuild
 may still use Lake as host elaborator.
+
+### M1 Types subset emit (done)
+
+| Piece | Path / token |
+|-------|----------------|
+| Module | `SystemsLean/TypesSubsetEmit.lean` (`SystemsLean.TypesSubsetEmit`) |
+| Lake exe | `slake-types-subset-emit` (`TypesSubsetEmitMain.lean`) |
+| just recipe | `just types-subset-emit` |
+| Input | `SLAKE_TYPES_SUBSET_TYPES` -- COMPILE-PATH-TYPES / TYPES-FIXTURE (`typesFixtureCompilePathReady`) |
+| Output | Types unit package `emit/slake_types_subset.h` + `emit/slake_types_subset.c` (HOST-EMIT-TYPES dialect; not full `slake_freestanding.{c,h}` rewrite as sole success) |
+| Structural ready | `typesSubsetEmitReady` + `typesSubsetEmitWroteExpected` (package identity pin) |
+| Lake host | `stillUsesLake` / `dependsOnLake` true |
+
+**Non-claims (M1 Types emit):** not full freestanding API dialect regenerate as
+sole success; not Types subset rebuild (follow-on); not S4 Lake retire;
+free/complete living tip unchanged; not PROVABLY; not llvm unlock; not full
+elaborator type checker in C. Subset package is generator output from Lean
+EmitTypes fragments (no hand-authored Types product C features). Lake remains
+until S4.
+
+### M1 Types subset rebuild / self-application (done)
+
+| Piece | Path / token |
+|-------|----------------|
+| Module | `SystemsLean/TypesSubsetRebuild.lean` (`SystemsLean.TypesSubsetRebuild`) |
+| Lake exe | `slake-types-subset-rebuild` (`TypesSubsetRebuildMain.lean`) |
+| just recipe | `just types-subset-rebuild` |
+| Input | M1 Types subset package identity (`SLAKE_TYPES_SUBSET_EMIT_V0` / `typesSubsetEmitReady` / `typesSubsetEmitWroteExpected`) |
+| Output | Measured self-application: re-emit/re-validate Types unit package `emit/slake_types_subset.{h,c}` from M1 inputs (not full freestanding dialect regenerate as sole success) |
+| Structural ready | `typesSubsetRebuildReady` + `typesSubsetRebuildSelfApplyOk` + `typesSubsetRebuildWroteExpected` |
+| Lake host | `stillUsesLake` / `dependsOnLake` true; `typesSubsetRebuildWithoutLakeFinishedClaimed` false |
+
+**Non-claims (M1 Types rebuild):** not without-Lake finished (later deepen / S4);
+not S4 Lake retire; free/complete living tip unchanged; not PROVABLY; not llvm
+unlock; not full freestanding API dialect regenerate as sole success; not full
+type checker in C. Rebuild may still use Lake as host elaborator.
+
+### M1 Program subset emit (done)
+
+| Piece | Path / token |
+|-------|----------------|
+| Module | `SystemsLean/ProgramSubsetEmit.lean` (`SystemsLean.ProgramSubsetEmit`) |
+| Lake exe | `slake-program-subset-emit` (`ProgramSubsetEmitMain.lean`) |
+| just recipe | `just program-subset-emit` |
+| Input | `SLAKE_PROGRAM_SUBSET_PROGRAM` -- COMPILE-PATH-PROGRAM / PROGRAM-FIXTURE (`programFixtureCompilePathReady`) |
+| Output | Program unit package `emit/slake_program_subset.h` + `emit/slake_program_subset.c` (HOST-EMIT-PROGRAM dialect; not full `slake_freestanding.{c,h}` rewrite as sole success) |
+| Structural ready | `programSubsetEmitReady` + `programSubsetEmitWroteExpected` (package identity pin) |
+| Lake host | `stillUsesLake` / `dependsOnLake` true |
+
+**Non-claims (M1 Program emit):** not full freestanding API dialect regenerate as
+sole success; not Program subset rebuild (follow-on); not S4 Lake retire;
+free/complete living tip unchanged; not PROVABLY; not llvm unlock; not CFG/SSA
+completeness. Subset package is generator output from Lean EmitProgram fragments
+(no hand-authored Program product C features). Lake remains until S4.
+
+### M1 Program subset rebuild / self-application (done)
+
+| Piece | Path / token |
+|-------|----------------|
+| Module | `SystemsLean/ProgramSubsetRebuild.lean` (`SystemsLean.ProgramSubsetRebuild`) |
+| Lake exe | `slake-program-subset-rebuild` (`ProgramSubsetRebuildMain.lean`) |
+| just recipe | `just program-subset-rebuild` |
+| Input | M1 Program subset package identity (`SLAKE_PROGRAM_SUBSET_EMIT_V0` / `programSubsetEmitReady` / `programSubsetEmitWroteExpected`) |
+| Output | Measured self-application: re-emit/re-validate Program unit package `emit/slake_program_subset.{h,c}` from M1 inputs (not full freestanding dialect regenerate as sole success) |
+| Structural ready | `programSubsetRebuildReady` + `programSubsetRebuildSelfApplyOk` + `programSubsetRebuildWroteExpected` |
+| Lake host | `stillUsesLake` / `dependsOnLake` true; `programSubsetRebuildWithoutLakeFinishedClaimed` false |
+
+**Non-claims (M1 Program rebuild):** not without-Lake finished (later deepen / S4);
+not S4 Lake retire; free/complete living tip unchanged; not PROVABLY; not llvm
+unlock; not full freestanding API dialect regenerate as sole success; not CFG/SSA.
+Rebuild may still use Lake as host elaborator.
+
+### M1 Extract subset emit (done)
+
+| Piece | Path / token |
+|-------|----------------|
+| Module | `SystemsLean/ExtractSubsetEmit.lean` (`SystemsLean.ExtractSubsetEmit`) |
+| Lake exe | `slake-extract-subset-emit` (`ExtractSubsetEmitMain.lean`) |
+| just recipe | `just extract-subset-emit` |
+| Input | `SLAKE_EXTRACT_SUBSET_EXTRACT` -- COMPILE-PATH-EXTRACT / EXTRACT-RUNTIME-FS (`extractRuntimeFsGateReady`) |
+| Output | Extract unit package `emit/slake_extract_subset.h` + `emit/slake_extract_subset.c` (HOST-EMIT-EXTRACT dialect; not full `slake_freestanding.{c,h}` rewrite as sole success) |
+| Structural ready | `extractSubsetEmitReady` + `extractSubsetEmitWroteExpected` (package identity pin) |
+| Lake host | `stillUsesLake` / `dependsOnLake` true |
+
+**Non-claims (M1 Extract emit):** not full freestanding API dialect regenerate as
+sole success; not S4 Lake retire; free/complete living tip unchanged; not
+PROVABLY; not llvm unlock. Subset package is generator output from Lean
+EmitExtract fragments (no hand-authored Extract product C features). Lake remains
+until S4. Stage tokens FAIL_CLOSED_CHECKER_V1 / RUNTIME-FS stay on the package.
+
+### M1 Extract subset rebuild (done)
+
+| Piece | Path / token |
+|-------|----------------|
+| Module | `SystemsLean/ExtractSubsetRebuild.lean` (`SystemsLean.ExtractSubsetRebuild`) |
+| Lake exe | `slake-extract-subset-rebuild` (`ExtractSubsetRebuildMain.lean`) |
+| just recipe | `just extract-subset-rebuild` |
+| Input | M1 Extract subset package identity (`SLAKE_EXTRACT_SUBSET_EMIT_V0` / `extractSubsetEmitReady` / `extractSubsetEmitWroteExpected`) |
+| Output | Measured self-application: re-emit/re-validate Extract unit package `emit/slake_extract_subset.{h,c}` from M1 inputs (not full freestanding dialect regenerate as sole success) |
+| Structural ready | `extractSubsetRebuildReady` + `extractSubsetRebuildSelfApplyOk` + `extractSubsetRebuildWroteExpected` |
+| Lake host | `stillUsesLake` / `dependsOnLake` true; `extractSubsetRebuildWithoutLakeFinishedClaimed` false |
+
+**Non-claims (M1 Extract rebuild):** not without-Lake finished (later deepen / S4);
+not S4 Lake retire; free/complete living tip unchanged; not PROVABLY; not llvm
+unlock; not full freestanding API dialect regenerate as sole success. Rebuild may
+still use Lake as host elaborator.
+
+### M1 Erasure subset emit (done)
+
+| Piece | Path / token |
+|-------|----------------|
+| Module | `SystemsLean/ErasureSubsetEmit.lean` (`SystemsLean.ErasureSubsetEmit`) |
+| Lake exe | `slake-erasure-subset-emit` (`ErasureSubsetEmitMain.lean`) |
+| just recipe | `just erasure-subset-emit` |
+| Input | `SLAKE_ERASURE_SUBSET_ERASURE` -- COMPILE-PATH-ERASURE / ERASURE-FIXTURE (`erasureFixtureCompilePathReady`) |
+| Output | Erasure unit package `emit/slake_erasure_subset.h` + `emit/slake_erasure_subset.c` (HOST-EMIT-ERASURE dialect; not full `slake_freestanding.{c,h}` rewrite as sole success) |
+| Structural ready | `erasureSubsetEmitReady` + `erasureSubsetEmitWroteExpected` (package identity pin) |
+| Lake host | `stillUsesLake` / `dependsOnLake` true |
+
+**Non-claims (M1 Erasure emit):** not full freestanding API dialect regenerate as
+sole success; not S4 Lake retire; free/complete living tip unchanged; not
+PROVABLY; not llvm unlock. Subset package is generator output from Lean
+EmitErasure fragments (no hand-authored Erasure product C features). Lake remains
+until S4. Mult-0 absence honesty (ERASE-RULE-MULT-0 / ERASE-NO-RUNTIME) stays
+on the package.
+
+### M1 Erasure subset rebuild (done)
+
+| Piece | Path / token |
+|-------|----------------|
+| Module | `SystemsLean/ErasureSubsetRebuild.lean` (`SystemsLean.ErasureSubsetRebuild`) |
+| Lake exe | `slake-erasure-subset-rebuild` (`ErasureSubsetRebuildMain.lean`) |
+| just recipe | `just erasure-subset-rebuild` |
+| Input | M1 Erasure subset package identity (`SLAKE_ERASURE_SUBSET_EMIT_V0` / `erasureSubsetEmitReady` / `erasureSubsetEmitWroteExpected`) |
+| Output | Measured self-application: re-emit/re-validate Erasure unit package `emit/slake_erasure_subset.{h,c}` from M1 inputs (not full freestanding dialect regenerate as sole success) |
+| Structural ready | `erasureSubsetRebuildReady` + `erasureSubsetRebuildSelfApplyOk` + `erasureSubsetRebuildWroteExpected` |
+| Lake host | `stillUsesLake` / `dependsOnLake` true; `erasureSubsetRebuildWithoutLakeFinishedClaimed` false |
+
+**Non-claims (M1 Erasure rebuild):** not without-Lake finished (later deepen / S4);
+not S4 Lake retire; free/complete living tip unchanged; not PROVABLY; not llvm
+unlock; not full freestanding API dialect regenerate as sole success. Rebuild may
+still use Lake as host elaborator.
+
+### M1 Graph subset emit (done)
+
+| Piece | Path / token |
+|-------|----------------|
+| Module | `SystemsLean/GraphSubsetEmit.lean` (`SystemsLean.GraphSubsetEmit`) |
+| Lake exe | `slake-graph-subset-emit` (`GraphSubsetEmitMain.lean`) |
+| just recipe | `just graph-subset-emit` |
+| Input | `SLAKE_GRAPH_SUBSET_GRAPH` -- COMPILE-PATH-GRAPH / GRAPH-FIXTURE (`graphFixtureCompilePathReady`) |
+| Output | Graph unit package `emit/slake_graph_subset.h` + `emit/slake_graph_subset.c` (HOST-EMIT-GRAPH dialect; not full `slake_freestanding.{c,h}` rewrite as sole success) |
+| Structural ready | `graphSubsetEmitReady` + `graphSubsetEmitWroteExpected` (package identity pin) |
+| Lake host | `stillUsesLake` / `dependsOnLake` true |
+
+**Non-claims (M1 Graph emit):** not full freestanding API dialect regenerate as
+sole success; not S4 Lake retire; free/complete living tip unchanged; not
+PROVABLY; not llvm unlock; not full CFG/SSA. Subset package is generator output
+from Lean EmitGraph fragments (no hand-authored Graph product C features). Lake
+remains until S4.
+
+### M1 Graph subset rebuild (done)
+
+| Piece | Path / token |
+|-------|----------------|
+| Module | `SystemsLean/GraphSubsetRebuild.lean` (`SystemsLean.GraphSubsetRebuild`) |
+| Lake exe | `slake-graph-subset-rebuild` (`GraphSubsetRebuildMain.lean`) |
+| just recipe | `just graph-subset-rebuild` |
+| Input | M1 Graph subset package identity (`SLAKE_GRAPH_SUBSET_EMIT_V0` / `graphSubsetEmitReady` / `graphSubsetEmitWroteExpected`) |
+| Output | Measured self-application: re-emit/re-validate Graph unit package `emit/slake_graph_subset.{h,c}` from M1 inputs (not full freestanding dialect regenerate as sole success) |
+| Structural ready | `graphSubsetRebuildReady` + `graphSubsetRebuildSelfApplyOk` + `graphSubsetRebuildWroteExpected` |
+| Lake host | `stillUsesLake` / `dependsOnLake` true; `graphSubsetRebuildWithoutLakeFinishedClaimed` false |
+
+**Non-claims (M1 Graph rebuild):** not without-Lake finished (later deepen / S4);
+not S4 Lake retire; free/complete living tip unchanged; not PROVABLY; not llvm
+unlock; not full freestanding API dialect regenerate as sole success; not full
+CFG/SSA. Rebuild may still use Lake as host elaborator.
+
+### M1 Compose subset emit (done)
+
+| Piece | Path / token |
+|-------|----------------|
+| Module | `SystemsLean/ComposeSubsetEmit.lean` (`SystemsLean.ComposeSubsetEmit`) |
+| Lake exe | `slake-compose-subset-emit` (`ComposeSubsetEmitMain.lean`) |
+| just recipe | `just compose-subset-emit` |
+| Input | `SLAKE_COMPOSE_SUBSET_COMPOSE` -- COMPILE-PATH-COMPOSE / COMPOSE-FIXTURE (`composeFixtureCompilePathReady`) |
+| Output | Compose unit package `emit/slake_compose_subset.h` + `emit/slake_compose_subset.c` (HOST-EMIT-COMPOSE dialect; not full `slake_freestanding.{c,h}` rewrite as sole success) |
+| Structural ready | `composeSubsetEmitReady` + `composeSubsetEmitWroteExpected` (package identity pin) |
+| Lake host | `stillUsesLake` / `dependsOnLake` true |
+
+**Non-claims (M1 Compose emit):** not full freestanding API dialect regenerate as
+sole success; not S4 Lake retire; free/complete living tip unchanged; not
+PROVABLY; not llvm unlock; not full CFG/SSA; not elaborator MULT-1 freestanding
+residual free. Subset package is generator output from Lean EmitCompose fragments
+(no hand-authored Compose product C features). Lake remains until S4.
+
+### M1 Compose subset rebuild (done)
+
+| Piece | Path / token |
+|-------|----------------|
+| Module | `SystemsLean/ComposeSubsetRebuild.lean` (`SystemsLean.ComposeSubsetRebuild`) |
+| Lake exe | `slake-compose-subset-rebuild` (`ComposeSubsetRebuildMain.lean`) |
+| just recipe | `just compose-subset-rebuild` |
+| Input | M1 Compose subset package identity (`SLAKE_COMPOSE_SUBSET_EMIT_V0` / `composeSubsetEmitReady` / `composeSubsetEmitWroteExpected`) |
+| Output | Measured self-application: re-emit/re-validate Compose unit package `emit/slake_compose_subset.{h,c}` from M1 inputs (not full freestanding dialect regenerate as sole success) |
+| Structural ready | `composeSubsetRebuildReady` + `composeSubsetRebuildSelfApplyOk` + `composeSubsetRebuildWroteExpected` |
+| Lake host | `stillUsesLake` / `dependsOnLake` true; `composeSubsetRebuildWithoutLakeFinishedClaimed` false |
+
+**Non-claims (M1 Compose rebuild):** not without-Lake finished (later deepen / S4);
+not S4 Lake retire; free/complete living tip unchanged; not PROVABLY; not llvm
+unlock; not full freestanding API dialect regenerate as sole success; not full
+CFG/SSA; not elaborator MULT-1 freestanding residual free. Rebuild may still use
+Lake as host elaborator. M1 unit surfaces for Linear/Types/Program/Extract/Erasure/
+Graph/Compose emit+rebuild closed; next product residual is M2 Name B full design
+deepen (do not forge freestandingDriverComplete).
+
+### M2 Mult without-Lake driver design (done -- design only)
+
+| Piece | Path / token |
+|-------|----------------|
+| Research note | `doc/dev/research/mult-without-lake-driver-design-2026-08-01.md` |
+| Meaning | Without Lake for the **measured Mult re-emit step** (not product StillUsesLake false) |
+| Honesty | StillUsesLake / DependsOnLake stay true until M6 |
+
+**Non-claims (M2 design):** not freestanding Mult driver deepen (Name B); not S4;
+not re-open freestandingProductSelfHostComplete; not PROVABLY/llvm.
+
+### M2 Mult without-Lake prebuilt driver (done -- Name A partial)
+
+| Piece | Path / token |
+|-------|----------------|
+| Measured recipe | `just mult-subset-rebuild-without-lake` |
+| Prebuilt binary | `src/systems/.lake/build/bin/slake-mult-subset-rebuild` (bootstrap once: `lake build slake-mult-subset-rebuild`) |
+| Host pins | `multSubsetRebuildWithoutLakeFinishedClaimed` true; `justRecipeWithoutLake`; `prebuiltMultRebuildRel`; `multSubsetRebuildWithoutLakeKeepsHostLake` |
+| Dual evidence | Lean structural ready + package greps on `emit/slake_mult_subset.{h,c}` after prebuilt run |
+| Product Lake | `stillUsesLake` / `dependsOnLake` **true** (host elaborator residual remains until M6) |
+
+**Non-claims (M2 Name A):** not freestanding Mult driver complete; not S4 / M6
+product StillUsesLake false; not PROVABLY; not llvm unlock; not re-open
+freestandingProductSelfHostComplete; prebuilt Lake ELF is **not** freestanding
+self-host. Name B freestanding Mult surface dual-check partial is separate
+(`MultFsDeepen`).
+
+### M2 Mult freestanding surface dual-check + Name B full Mult write
+
+| Piece | Path / token |
+|-------|----------------|
+| Module | `SystemsLean/MultFsDeepen.lean` (`SystemsLean.MultFsDeepen`) |
+| Path A tool | `MultFsWriteTool.lean` / `MultFsWriteToolMain.lean` / lake exe `slake-mult-fs-write-tool` (bootstrap: emit tool C) |
+| Generated writer C | `emit/slake_mult_fs_write_tool.c` (Lean MultSubsetEmit package bytes embedded) |
+| Measured writer bin | `src/systems/bin/slake-mult-fs-write-cc` (host-cc; outside `.lake`; not Lake Mult write ELF) |
+| Host Lake write helper | `MultFsWriteMain.lean` / `slake-mult-fs-write` (bootstrap only; not measured writer) |
+| Greps recipe | `just mult-subset-freestanding-deepen` (surface dual-check; independent of complete) |
+| Write recipe | `just mult-subset-freestanding-write` (host-cc Path A; no lake on hot path; Mult rebuild ELF not the writer) |
+| Partial pin | `freestandingDeepenPartial` **true** |
+| Host write path pin | `multFsWritePathReady` **true** (MultSubsetEmit freestanding Mult SSOT write) |
+| Design complete pin | `freestandingDriverComplete` **true** (Path A host-cc Mult package writer + dual evidence) |
+| Ready ladder | `multFsDeepenReady` true; `multFsDeepenDriverReady` true; `multFsWriteNotRebuildDriver` true; `freestandingWriteToolNotLakeBuilt` true |
+| Dual evidence | Lean structural ready + theorems/smoke + package greps after host-cc write + freestanding Mult product wire greps |
+| Product Lake | `stillUsesLake` / `dependsOnLake` **true** (host elaborator residual remains until M6) |
+| Name A additive | `multSubsetRebuildWithoutLakeFinishedClaimed` stays true; prebuilt Mult rebuild path remains valid |
+
+**Non-claims:** not freestanding Mult compiler without Lake; not S4 / M6 product
+StillUsesLake false; not PROVABLY; not llvm unlock; not re-open
+freestandingProductSelfHostComplete. Next ideal ladder: **M3** front-end over
+defined subset language (design then implement).
 
 ---
 

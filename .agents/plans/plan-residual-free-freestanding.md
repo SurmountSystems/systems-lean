@@ -6,10 +6,14 @@ lags: `WATCHER.md`, `RESIDUAL-systems.md`, `SelfApplyFs.lean` /
 `SelfHostComplete.lean` claim flags, `self-host.md`.
 
 **Living goal (2026-08-01):** foundation free + complete + Mult bootstrap
-**S0-S3 done** under Lake. Ideal ladder **M1** Linear emit + rebuild **done**.
-Open empty (done-for-now); Types ladder or Mult without-Lake (M2) next by
-choice. **S4** never forge early. Free + complete are foundation, not ideal
-self-host. Step 4 PROVABLY/LLVM held.
+**S0-S3 done** under Lake. Ideal ladder **M1** unit surfaces **done**. Ideal
+ladder **M2** Mult without-Lake including Name B full Path A **done**
+(`freestandingDriverComplete` **true**; host-cc `slake-mult-fs-write-cc`;
+product StillUsesLake remains). Next Open **M3 subset language front-end
+design** (then implement). **S4** never forge early. Free + complete are
+foundation, not ideal self-host. Step 4 PROVABLY/LLVM held. Empty Open only
+when no plan Remaining and no checkable unit surfaces left (false-park
+correction).
 
 ---
 
@@ -216,9 +220,9 @@ proof. Never forge early.
 | Id | Milestone | Checkable shape | Status |
 |----|-----------|-----------------|--------|
 | **M0** | S0-S3 Mult under Lake | first-surface / mult-subset-emit / mult-subset-rebuild green | **Done** |
-| **M1** | Grow unit surfaces under Lake | Linear (then Types...) subset emit + rebuild, same dual-evidence pattern as Mult | **Linear emit + rebuild done**; Types ladder or M2 next by choice |
-| **M2** | Non-Lake **driver** for subset re-emit | Rebuild Mult (or Linear) package without invoking Lake for that step; subset withoutLakeFinished only when driver is real | After M1 depth |
-| **M3** | Real front-end over defined subset language | Parse/check good+bad golden inputs; not only fixed Mult fixtures | Design then implement |
+| **M1** | Grow unit surfaces under Lake | Linear / Types / Program / Extract subset emit + rebuild, same dual-evidence pattern as Mult | **Linear + Types + Program + Extract emit/rebuild done** |
+| **M2** | Non-Lake **driver** for subset re-emit | Rebuild Mult package without invoking Lake for that measured step; subset withoutLakeFinished only when driver is real | **done** (Name A prebuilt; Name B greps; host Mult SSOT write path; Name B full Path A host-cc Mult package writer; freestandingDriverComplete **true**; product Lake remains) |
+| **M3** | Real front-end over defined subset language | Parse/check good+bad golden inputs; not only fixed Mult fixtures | **Design open** then implement |
 | **M4** | Product-wire regenerate without Lake as product path | Ordered READ+COMPOSE+WRITE-HC+INSTALL without Lake product writer | After M2 |
 | **M5** | Slake rebuilds own compiler packages from subset sources | End-to-end self-application of compiler surface | After M3-M4 |
 | **M6** | **S4** product-path Lake retire | DependsOnLake / StillUsesLake false with elaborator proof; dual residual honesty | **Deferred** until ready |
@@ -247,8 +251,117 @@ quality. Do not divert iso residual into beastdb tree. Isolation holds.
 unit package; withoutLakeFinished false; join
 `/tmp/grok-1000/grok-impl-summary-linear-subset-rebuild.md`.
 
-**Follow-on (not auto-opened):** Types ladder (Types subset emit then rebuild)
-**or** Mult without-Lake driver design (ideal M2) when operator chooses.
+**Types subset emit (M1 continue):** **done** (2026-08-01). Operator approved
+default; `TypesSubsetEmit` / `TypesSubsetEmitMain`; `slake-types-subset-emit`;
+`just types-subset-emit`; COMPILE-PATH-TYPES + HOST-EMIT-TYPES ->
+`emit/slake_types_subset.{h,c}`; dual evidence; join
+`/tmp/grok-1000/grok-impl-summary-types-subset-emit.md`.
+
+**Types subset rebuild (M1 Types follow-on):** **done** (2026-08-01).
+`TypesSubsetRebuild` / `TypesSubsetRebuildMain`; `slake-types-subset-rebuild`;
+`just types-subset-rebuild`; M1 package identity -> re-emit/re-validate Types
+unit package; withoutLakeFinished false; join
+`/tmp/grok-1000/grok-impl-summary-types-subset-rebuild.md`.
+
+**Program subset emit (M1 continue):** **done** (2026-08-01).
+`ProgramSubsetEmit` / `ProgramSubsetEmitMain`; `slake-program-subset-emit`;
+`just program-subset-emit`; COMPILE-PATH-PROGRAM + HOST-EMIT-PROGRAM ->
+`emit/slake_program_subset.{h,c}`; dual evidence; join
+`/tmp/grok-1000/grok-impl-summary-residual-queue-20260801.md`.
+
+**Program subset rebuild (M1 Program follow-on):** **done** (2026-08-01).
+`ProgramSubsetRebuild` / `ProgramSubsetRebuildMain`;
+`slake-program-subset-rebuild`; `just program-subset-rebuild`; M1 package
+identity -> re-emit/re-validate Program unit package; withoutLakeFinished false;
+same residual-queue join.
+
+**Extract subset emit (M1 continue):** **done** (2026-08-01).
+`ExtractSubsetEmit` / `ExtractSubsetEmitMain`; `slake-extract-subset-emit`;
+`just extract-subset-emit`; COMPILE-PATH-EXTRACT / extractRuntimeFsGateReady +
+HOST-EMIT-EXTRACT -> `emit/slake_extract_subset.{h,c}`; dual evidence; join
+`/tmp/grok-1000/grok-impl-summary-2a634b1c.md`.
+
+**Extract subset rebuild (M1 Extract follow-on):** **done** (2026-08-01).
+`ExtractSubsetRebuild` / `ExtractSubsetRebuildMain`; `slake-extract-subset-rebuild`;
+`just extract-subset-rebuild`; M1 package identity `SLAKE_EXTRACT_SUBSET_EMIT_V0` /
+`extractSubsetEmitReady` -> re-emit/re-validate `emit/slake_extract_subset.{h,c}`;
+dual evidence; withoutLakeFinished claimed false; StillUsesLake true; join
+`/tmp/grok-1000/grok-impl-summary-extract-subset-rebuild.md`.
+
+**Mult without-Lake driver design (M2 prep):** **done** (2026-08-01). Note
+`doc/dev/research/mult-without-lake-driver-design-2026-08-01.md` (operational
+without-Lake meaning; Mult I/O inventory; honesty matrix; proposed Names A/B;
+non-claims). StillUsesLake stays true until M6.
+
+**Mult without-Lake prebuilt driver (M2 Name A):** **done** (2026-08-01).
+`just mult-subset-rebuild-without-lake` runs prebuilt Mult rebuild ELF (no lake
+on hot path); `multSubsetRebuildWithoutLakeFinishedClaimed` true; product
+StillUsesLake/DependsOnLake true; join
+`/tmp/grok-1000/grok-impl-summary-mult-without-lake-name-a-20260801.md`.
+
+**Mult freestanding surface dual-check partial (M2 Name B greps):** **done**
+(2026-08-01). `SystemsLean.MultFsDeepen`; `just mult-subset-freestanding-deepen`
+dual-checks freestanding Mult product wire + Mult subset package without lake or
+Mult rebuild prebuilt; `freestandingDeepenPartial` true; product
+StillUsesLake/DependsOnLake true; join
+`/tmp/grok-1000/grok-impl-summary-52008d13.md`.
+
+**Host MultSubsetEmit freestanding Mult SSOT write path:** **done**
+(2026-08-01). `multFsWrite` via MultSubsetEmit freestanding Mult SSOT; prebuilt
+`slake-mult-fs-write`; `just mult-subset-freestanding-write` (no lake on hot
+path); Mult rebuild ELF not the Mult package writer; `multFsWritePathReady` true;
+`freestandingDriverComplete` **false** (Lake-built write ELF is not design
+freestanding complete); product StillUsesLake/DependsOnLake true; join
+`/tmp/grok-1000/grok-impl-summary-353f96ab.md`.
+
+**Erasure subset emit (M1 continue):** **done** (2026-08-01).
+`SystemsLean.ErasureSubsetEmit` + `ErasureSubsetEmitMain`;
+`slake-erasure-subset-emit` / `just erasure-subset-emit`;
+`emit/slake_erasure_subset.{h,c}` via HOST-EMIT-ERASURE;
+`erasureFixtureCompilePathReady` input; dual evidence; StillUsesLake true;
+join `/tmp/grok-1000/grok-impl-summary-erasure-subset-emit.md`.
+
+**Erasure subset rebuild (M1 follow-on):** **done** (2026-08-01).
+`SystemsLean.ErasureSubsetRebuild` + `ErasureSubsetRebuildMain`;
+`slake-erasure-subset-rebuild` / `just erasure-subset-rebuild`;
+M1 package identity re-emit/re-validate; dual evidence; withoutLakeFinished false;
+StillUsesLake true; join `/tmp/grok-1000/grok-impl-summary-erasure-subset-rebuild.md`.
+
+**Graph subset emit (M1 continue):** **done** (2026-08-01).
+`SystemsLean.GraphSubsetEmit` + `GraphSubsetEmitMain`;
+`slake-graph-subset-emit` / `just graph-subset-emit`;
+`emit/slake_graph_subset.{h,c}` via HOST-EMIT-GRAPH;
+`graphFixtureCompilePathReady` input; dual evidence; StillUsesLake true;
+join `/tmp/grok-1000/grok-impl-summary-graph-subset-emit.md`.
+
+**Graph subset rebuild (M1 follow-on):** **done** (2026-08-01).
+`SystemsLean.GraphSubsetRebuild` + `GraphSubsetRebuildMain`;
+`slake-graph-subset-rebuild` / `just graph-subset-rebuild`;
+M1 package identity `SLAKE_GRAPH_SUBSET_EMIT_V0` / `graphSubsetEmitReady` ->
+re-emit/re-validate Graph unit package; dual evidence; withoutLakeFinished
+false; StillUsesLake true;
+join `/tmp/grok-1000/grok-impl-summary-graph-subset-rebuild.md`.
+
+**Compose subset emit (M1 continue):** **done** (2026-08-01).
+`SystemsLean.ComposeSubsetEmit` + `ComposeSubsetEmitMain`;
+`slake-compose-subset-emit` / `just compose-subset-emit`;
+`emit/slake_compose_subset.{h,c}` via HOST-EMIT-COMPOSE;
+`composeFixtureCompilePathReady` input; dual evidence; StillUsesLake true;
+join `/tmp/grok-1000/grok-impl-summary-compose-subset-emit.md`.
+
+**Compose subset rebuild (M1 follow-on):** **done** (2026-08-01).
+`SystemsLean.ComposeSubsetRebuild` + `ComposeSubsetRebuildMain`;
+`slake-compose-subset-rebuild` / `just compose-subset-rebuild`;
+M1 package identity `SLAKE_COMPOSE_SUBSET_EMIT_V0` / `composeSubsetEmitReady` ->
+re-emit/re-validate Compose unit package; dual evidence; withoutLakeFinished
+false; StillUsesLake true;
+join `/tmp/grok-1000/grok-impl-summary-compose-subset-rebuild.md`.
+
+**Next Open:** **M3 subset language front-end design** (plan ideal M3; design
+then implement). M2 Name B full Path A **done** (host-cc Mult package writer;
+freestandingDriverComplete true; StillUsesLake true until M6). S4/M6 deferred;
+Step 4 held. WATCHER carries `/implement` for M3 design. Do not empty Open while
+plan Remaining.
 
 #### Retrospective: Phase A / B / C (S1-S3 Mult) -- done
 
@@ -269,11 +382,14 @@ join `/tmp/grok-1000/grok-impl-summary-s2-mult-subset-emit.md`.
 **Phase C S3 -- Mult subset rebuild:** **done** (2026-08-01).
 `MultSubsetRebuild` / `MultSubsetRebuildMain`; `slake-mult-subset-rebuild`;
 `just mult-subset-rebuild`; Mult subset self-application under Lake;
-withoutLakeFinished stays false; join
-`/tmp/grok-1000/grok-impl-summary-s3-subset-rebuild.md`.
+withoutLakeFinished land-time claimed false (later flipped true by M2 Name A);
+join `/tmp/grok-1000/grok-impl-summary-s3-subset-rebuild.md`.
 
-Without-Lake self-application finished + S4 Lake retire stay deferred until M2
-driver design and M6 proof. Serial wall-time benches only (see cold bench note).
+Mult without-Lake measured step finished (Name A prebuilt). Host MultSubsetEmit
+Mult SSOT write path finished (multFsWritePathReady true). Name B full Path A
+finished (freestandingDriverComplete true). M3 design open.
+S4 / M6 Lake retire stays deferred until operator Open + proof.
+Serial wall-time benches only (see cold bench note).
 
 ---
 
@@ -359,6 +475,25 @@ sells complete as free).
 | 5 Phase C (S3) | **Done** -- MultSubsetRebuild Mult subset self-application measure + free green + honest docs |
 | 5 M1 (Linear subset emit) | **Done** -- LinearSubsetEmit + lake exe + just; Linear unit package write; dual evidence; free green |
 | 5 M1 (Linear subset rebuild) | **Done** -- LinearSubsetRebuild + lake exe + just; Linear subset self-application; withoutLakeFinished false; free green |
+| 5 M1 (Types subset emit) | **Done** -- TypesSubsetEmit + lake exe + just; Types unit package write; dual evidence; free green |
+| 5 M1 (Types subset rebuild) | **Done** -- TypesSubsetRebuild + lake exe + just; Types subset self-application; withoutLakeFinished false; free green |
+| 5 M1 (Program subset emit) | **Done** -- ProgramSubsetEmit + lake exe + just; Program unit package write; dual evidence; free green |
+| 5 M1 (Program subset rebuild) | **Done** -- ProgramSubsetRebuild + lake exe + just; Program subset self-application; withoutLakeFinished false; free green |
+| 5 M1 (Extract subset emit) | **Done** -- ExtractSubsetEmit + lake exe + just; Extract unit package write; dual evidence; free green |
+| 5 M1 (Extract subset rebuild) | **Done** -- ExtractSubsetRebuild + lake exe + just; Extract subset self-application; withoutLakeFinished false; free green |
+| 5 M1 (Erasure subset emit) | **Done** -- ErasureSubsetEmit + lake exe + just; Erasure unit package write; dual evidence; free green |
+| 5 M1 (Erasure subset rebuild) | **Done** -- ErasureSubsetRebuild + lake exe + just; Erasure subset self-application; withoutLakeFinished false; free green |
+| 5 M1 (Graph subset emit) | **Done** -- GraphSubsetEmit + lake exe + just; Graph unit package write; dual evidence; free green |
+| 5 M1 (Graph subset rebuild) | **Done** -- GraphSubsetRebuild + lake exe + just; Graph subset self-application; withoutLakeFinished false; free green |
+| 5 M1 (Compose subset emit) | **Done** -- ComposeSubsetEmit + lake exe + just; Compose unit package write; dual evidence; free green |
+| 5 M1 (Compose subset rebuild) | **Done** -- ComposeSubsetRebuild + lake exe + just; Compose subset self-application; withoutLakeFinished false; free green |
+| 5 M2 (Mult without-Lake design) | **Done** -- design note `doc/dev/research/mult-without-lake-driver-design-2026-08-01.md`; StillUsesLake true until M6 |
+| 5 M2 (Mult without-Lake Name A) | **Done** -- just mult-subset-rebuild-without-lake; prebuilt ELF; withoutLakeFinished true; product Lake remains; StillUsesLake true until M6 |
+| 5 M2 (Mult freestanding surface dual-check Name B greps) | **Done** -- MultFsDeepen; just mult-subset-freestanding-deepen; greps; freestandingDeepenPartial true; product Lake remains; StillUsesLake true until M6 |
+| 5 M2 (host MultSubsetEmit Mult SSOT write path) | **Done** -- MultFsDeepen + prebuilt slake-mult-fs-write / just mult-subset-freestanding-write; multFsWritePathReady true; freestandingDriverComplete false; Mult rebuild ELF not writer; product Lake remains; StillUsesLake true until M6 |
+| 5 M2 (Name B full Mult write design deepen) | **Done** -- note `doc/dev/research/name-b-full-mult-write-design-deepen-2026-08-01.md`; Path A prefer; no freestandingDriverComplete flip |
+| 5 M2 (Name B full freestanding Mult write) | **Done** -- Path A host-cc `slake-mult-fs-write-cc`; freestandingDriverComplete true; product Lake remains |
+| 5 M3 (subset language front-end design) | **Next Open** -- design note then implement residual |
 | Always | Hygiene if novel markdown; no C/shell product growth; no free forge |
 
 Claim flag changes still need Lake elaborator proof while we bootstrap. Measure
@@ -374,7 +509,7 @@ stays pure Nix.
 | Linear contracts before residual free claim? | Yes (done) |
 | Open full formal Idris/Lean isomorphism now? | No |
 | Auto-start PROVABLY / LLVM after free? | No |
-| After free + complete + S0-S3 + Linear emit/rebuild, next? | Open empty; Types ladder or Mult without-Lake (M2) by choice; not Step 4 |
+| After free + complete + S0-S3 + M1 unit surfaces + M2 Name B full, next? | M3 subset language front-end design then implement; not Step 4; not auto-start S4; never empty Open while plan Remaining |
 | Keep Lake for building M1 unit surfaces? | **Yes** (under Lake until M2/M6) |
 | Forge StillUsesLake false before M6? | **No** |
 | Divert residual into beastdb? | **No** (orthogonal; soft couple only) |

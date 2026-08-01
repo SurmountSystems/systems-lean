@@ -114,11 +114,29 @@ companions.
 
 ### Systems Open (join)
 
-**Living tip:** freestanding product self-host **complete true**; product residual free **true**; Lake host still used (host residual remains); bootstrap **S0+S1+S2+S3 done**; ideal ladder **M1** Linear emit + rebuild **done**; Open **empty** (done-for-now; Types ladder or M2 next by choice); S4 / M6 Lake retire deferred; long-file campaign parked hygiene. Do not re-open claim B. Free is not Lake gone and is not complete. Never forge StillUsesLake false.
+**Living tip:** freestanding product self-host **complete true**; product residual free **true**; Lake host still used (host residual remains); bootstrap **S0+S1+S2+S3 done**; ideal ladder **M1** unit surfaces **done**; M2 including Name B full Path A **done** (freestandingDriverComplete **true**); Open **M3 subset language front-end design**; S4 / M6 Lake retire deferred; long-file campaign parked hygiene. Do not re-open claim B. Free is not Lake gone and is not complete. Never forge StillUsesLake false.
 
 | Name | Status | Owner detail |
 |------|--------|--------------|
-| _(Open empty)_ | **done-for-now** | `RESIDUAL-systems.md` -- Linear emit+rebuild done; Types ladder or Mult without-Lake (M2) not auto-opened |
+| **M3 subset language front-end design** | **open** | `RESIDUAL-systems.md` -- plan ideal M3; design then implement |
+| **Name B full freestanding Mult write** | **done** (2026-08-01) | `RESIDUAL-systems.md` -- Path A host-cc Mult package writer; freestandingDriverComplete true |
+| **Name B full Mult write design deepen** | **done** (2026-08-01) | `RESIDUAL-systems.md` -- note `doc/dev/research/name-b-full-mult-write-design-deepen-2026-08-01.md` |
+| **Compose subset rebuild** | **done** (2026-08-01) | `RESIDUAL-systems.md` -- M1 Compose follow-on; ComposeSubsetRebuild + slake-compose-subset-rebuild / just compose-subset-rebuild; Compose subset self-application |
+| **Compose subset emit** | **done** (2026-08-01) | `RESIDUAL-systems.md` -- ideal M1 continue; ComposeSubsetEmit + slake-compose-subset-emit / just compose-subset-emit; Compose unit package write |
+| **Graph subset rebuild** | **done** (2026-08-01) | `RESIDUAL-systems.md` -- M1 Graph follow-on; GraphSubsetRebuild + slake-graph-subset-rebuild / just graph-subset-rebuild; Graph subset self-application |
+| **Graph subset emit** | **done** (2026-08-01) | `RESIDUAL-systems.md` -- ideal M1 continue; GraphSubsetEmit + slake-graph-subset-emit / just graph-subset-emit; Graph unit package write |
+| **Erasure subset rebuild** | **done** (2026-08-01) | `RESIDUAL-systems.md` -- M1 Erasure follow-on; ErasureSubsetRebuild + slake-erasure-subset-rebuild / just erasure-subset-rebuild; Erasure subset self-application |
+| **Erasure subset emit** | **done** (2026-08-01) | `RESIDUAL-systems.md` -- ideal M1 continue; ErasureSubsetEmit + slake-erasure-subset-emit / just erasure-subset-emit; Erasure unit package write |
+| **Extract subset rebuild** | **done** (2026-08-01) | `RESIDUAL-systems.md` -- M1 Extract follow-on; ExtractSubsetRebuild + slake-extract-subset-rebuild / just extract-subset-rebuild; Extract subset self-application |
+| **Extract subset emit** | **done** (2026-08-01) | `RESIDUAL-systems.md` -- ideal M1 continue; ExtractSubsetEmit + slake-extract-subset-emit / just extract-subset-emit; Extract unit package write |
+| **MultSubsetEmit freestanding Mult SSOT write path** | **done** (2026-08-01) | `RESIDUAL-systems.md` -- host Mult SSOT write; MultFsDeepen + prebuilt slake-mult-fs-write / just mult-subset-freestanding-write; multFsWritePathReady true; freestandingDriverComplete false; product Lake remains |
+| **Mult freestanding surface dual-check partial** | **done** (2026-08-01) | `RESIDUAL-systems.md` -- ideal M2 Name B greps; MultFsDeepen / just mult-subset-freestanding-deepen; freestandingDeepenPartial true; product Lake remains |
+| **Mult without-Lake prebuilt driver** | **done** (2026-08-01) | `RESIDUAL-systems.md` -- ideal M2 Name A; just mult-subset-rebuild-without-lake; withoutLakeFinished true; product Lake remains |
+| **Mult without-Lake driver design** | **done** (2026-08-01) | `RESIDUAL-systems.md` -- ideal M2 prep; note `doc/dev/research/mult-without-lake-driver-design-2026-08-01.md` |
+| **Program subset rebuild** | **done** (2026-08-01) | `RESIDUAL-systems.md` -- M1 Program follow-on; ProgramSubsetRebuild + slake-program-subset-rebuild / just program-subset-rebuild; Program subset self-application |
+| **Program subset emit** | **done** (2026-08-01) | `RESIDUAL-systems.md` -- ideal M1 continue; ProgramSubsetEmit + slake-program-subset-emit / just program-subset-emit; Program unit package write |
+| **Types subset rebuild** | **done** (2026-08-01) | `RESIDUAL-systems.md` -- M1 Types follow-on; TypesSubsetRebuild + slake-types-subset-rebuild / just types-subset-rebuild; Types subset self-application |
+| **Types subset emit** | **done** (2026-08-01) | `RESIDUAL-systems.md` -- ideal M1 continue; TypesSubsetEmit + slake-types-subset-emit / just types-subset-emit; Types unit package write |
 | **Linear subset rebuild** | **done** (2026-08-01) | `RESIDUAL-systems.md` -- M1 follow-on; LinearSubsetRebuild + slake-linear-subset-rebuild / just linear-subset-rebuild; Linear subset self-application |
 | **Linear subset emit** | **done** (2026-08-01) | `RESIDUAL-systems.md` -- ideal M1; LinearSubsetEmit + slake-linear-subset-emit / just linear-subset-emit; Linear unit package write |
 | **Slake rebuild freestanding subset** | **done** (2026-08-01) | `RESIDUAL-systems.md` -- bootstrap S3; MultSubsetRebuild + slake-mult-subset-rebuild / just mult-subset-rebuild; Mult subset self-application |
@@ -141,7 +159,7 @@ companions.
 | Host owns freestanding emit body scaffolding | **done** (partial) | `RESIDUAL-systems.md` -- EmitBody HOST-EMIT-BODY + host_emit_body_fragment.ssot.txt BODY_C_* + FreestandingEmit embed; SelfHostBody folds emitBodyReady; free/complete stay false |
 | Host owns freestanding banner text | **done** (partial) | `RESIDUAL-systems.md` -- EmitBanner + host_emit_banner.ssot.txt + FreestandingEmit embed; HOST-EMIT-BANNER; not SelfHostBody fold; free/complete stay false |
 | Dual SSOT equality gate | **done** | `RESIDUAL-systems.md` -- FreestandingEmit DUAL-SSOT-EQUALITY emit-time fail-closed; pure Nix live tokens; free/complete stay false |
-| Freestanding product self-host | **done** (claim B complete true; stepContractFull true; ownership claimed true; perform claimed true; StillUsesFreestandingEmit false; Full true; lake proof required on complete recipe after RCA 2026-07-30) | `RESIDUAL-systems.md` -- claim B complete closed; claim A free **true** (host residual remains); llvm/PROVABLY false; Lake host remains; long-file hygiene parked; bootstrap S0-S3 done; Linear subset emit done; Open **Linear subset rebuild**; S4/M6 deferred; free foundation Steps 0-3 done; plan `plan-residual-free-freestanding.md` Step 5 ideal ladder; RCA `doc/dev/research/selfapplyfs-rebuild-failure-2026-07-30.md` |
+| Freestanding product self-host | **done** (claim B complete true; stepContractFull true; ownership claimed true; perform claimed true; StillUsesFreestandingEmit false; Full true; lake proof required on complete recipe after RCA 2026-07-30) | `RESIDUAL-systems.md` -- claim B complete closed; claim A free **true** (host residual remains); llvm/PROVABLY false; Lake host remains; long-file hygiene parked; bootstrap S0-S3 done; M1 Linear/Types/Program/Extract emit+rebuild **done**; Open **empty** (done-for-now); M2 Name A Mult without-Lake prebuilt driver done; M2 Name B Mult freestanding surface dual-check partial done (freestandingDriverComplete false); design Name B full by choice; S4/Step 4 held; free foundation Steps 0-3 done; plan `plan-residual-free-freestanding.md` Step 5 ideal ladder; RCA `doc/dev/research/selfapplyfs-rebuild-failure-2026-07-30.md` |
 | SelfApplyFs dual-pin thin batch 1 | **done** | `RESIDUAL-systems.md` -- B2 KernelSelfApply historical pins home-owned; tip 5755->5710 (-45); inventory `doc/dev/research/selfapplyfs-dual-pin-thin-b1-2026-07-30.md` |
 | SelfApplyFs dual-pin thin batch 2 | **done** | `RESIDUAL-systems.md` -- B3 ProductOutKernel historical pins home-owned; tip 5710->5657 (-53); inventory `doc/dev/research/selfapplyfs-dual-pin-thin-b2-2026-07-30.md` |
 | SelfApplyFs dual-pin thin batch 3 | **done** | `RESIDUAL-systems.md` -- B4 BootstrapHonesty historical pins home-owned; tip 5657->5609 (-48); remains := true kept on tip; inventory `doc/dev/research/selfapplyfs-dual-pin-thin-b3-2026-07-30.md` |
@@ -308,7 +326,7 @@ Plain-English residual that is still open, held, or not claimed. Detail lives in
 
 | Kind | What | Status |
 |------|------|--------|
-| **Open (WATCHER)** | Linear subset rebuild (M1 follow-on); Step 4 held (PROVABLY / LLVM) | **open** (matches `WATCHER.md`; complete true; free true; host residual remains; S0-S3 done; Linear subset emit done; S4/M6 deferred) |
+| **Open (WATCHER)** | empty (done-for-now); Extract subset rebuild done; Step 4 held (PROVABLY / LLVM) | **done-for-now** (matches living tip; complete true; free true; host residual remains; S0-S3 done; M1 Linear/Types/Program/Extract emit+rebuild done; M2 Name A + Name B surface dual-check partial done; S4/M6 deferred; next by operator choice) |
 | Linear freestanding contracts | Exact-once / Mult 0/1/omega; axioms documented; lake green | **done** (2026-08-01) |
 | Residual free bar inventory | Checklist before free claim; measure green; honesty modules | **done** (2026-08-01; `doc/dev/research/residual-free-bar-inventory-2026-08-01.md`) |
 | Linear long-file split | **118->92** via LinearTheorems (**71**) | **done** |
@@ -394,7 +412,25 @@ cuts; agent git revert on screw-up (STOP, leave tree); plan-id or gap-docs re-gr
 
 | Priority | What | Why highest value | Where |
 |----------|------|-------------------|-------|
-| **done-for-now** | Open empty | Linear emit+rebuild done; Types ladder or M2 without-Lake next by choice | `RESIDUAL-systems.md`; plan Step 5 |
+| **open** | M3 subset language front-end design | Design note then implement residual | `RESIDUAL-systems.md`; plan ideal M3 |
+| **done** | Name B full freestanding Mult write (M2) | Path A host-cc Mult package writer; freestandingDriverComplete true | `RESIDUAL-systems.md`; plan Step 5 M2 Name B full done 2026-08-01 |
+| **done** | Name B full Mult write design deepen (M2 prep) | Design note Path A prefer; checkable Done when | `doc/dev/research/name-b-full-mult-write-design-deepen-2026-08-01.md`; plan Step 5 M2 design done 2026-08-01 |
+| **done** | Compose subset rebuild (M1 follow-on) | ComposeSubsetRebuild self-application; just compose-subset-rebuild GREEN | `RESIDUAL-systems.md`; plan Step 5 M1 Compose rebuild done 2026-08-01 |
+| **done** | Compose subset emit (ideal M1 continue) | ComposeSubsetEmit Compose unit package write; just compose-subset-emit GREEN | `RESIDUAL-systems.md`; plan Step 5 M1 Compose emit done 2026-08-01 |
+| **done** | Graph subset rebuild (M1 follow-on) | GraphSubsetRebuild self-application; just graph-subset-rebuild GREEN | `RESIDUAL-systems.md`; plan Step 5 M1 Graph rebuild done 2026-08-01 |
+| **done** | Graph subset emit (ideal M1 continue) | GraphSubsetEmit Graph unit package write; just graph-subset-emit GREEN | `RESIDUAL-systems.md`; plan Step 5 M1 Graph emit done 2026-08-01 |
+| **done** | Erasure subset rebuild (M1 follow-on) | ErasureSubsetRebuild self-application; just erasure-subset-rebuild GREEN | `RESIDUAL-systems.md`; plan Step 5 M1 Erasure rebuild done 2026-08-01 |
+| **done** | Erasure subset emit (ideal M1 continue) | ErasureSubsetEmit Erasure unit package write; just erasure-subset-emit GREEN | `RESIDUAL-systems.md`; plan Step 5 M1 Erasure emit done 2026-08-01 |
+| **done** | Extract subset rebuild (M1 follow-on) | ExtractSubsetRebuild self-application; just extract-subset-rebuild GREEN | `RESIDUAL-systems.md`; plan Step 5 M1 Extract rebuild done 2026-08-01 |
+| **done** | Extract subset emit (ideal M1 continue) | ExtractSubsetEmit Extract unit package write; just extract-subset-emit GREEN | `RESIDUAL-systems.md`; plan Step 5 M1 Extract emit done 2026-08-01 |
+| **done** | MultSubsetEmit freestanding Mult SSOT write path (host) | MultFsDeepen + prebuilt slake-mult-fs-write / just mult-subset-freestanding-write; multFsWritePathReady true; freestandingDriverComplete false; product Lake remains | `RESIDUAL-systems.md`; plan Step 5 M2 host write path 2026-08-01 |
+| **done** | Mult freestanding surface dual-check partial (M2 Name B greps) | MultFsDeepen; just mult-subset-freestanding-deepen; greps; freestandingDeepenPartial true; product Lake remains | `RESIDUAL-systems.md`; plan Step 5 M2 Name B greps done 2026-08-01 |
+| **done** | Mult without-Lake prebuilt driver (M2 Name A) | just mult-subset-rebuild-without-lake; prebuilt ELF; withoutLakeFinished true; product Lake remains | `RESIDUAL-systems.md`; plan Step 5 M2 Name A done 2026-08-01 |
+| **done** | Mult without-Lake driver design (M2 prep) | Design note + honesty matrix + proposed Names; no driver forge | `doc/dev/research/mult-without-lake-driver-design-2026-08-01.md`; plan Step 5 M2 design done 2026-08-01 |
+| **done** | Program subset rebuild (M1 follow-on) | ProgramSubsetRebuild self-application; just program-subset-rebuild GREEN | `RESIDUAL-systems.md`; plan Step 5 M1 Program rebuild done 2026-08-01 |
+| **done** | Program subset emit (ideal M1 continue) | ProgramSubsetEmit Program unit package write; just program-subset-emit GREEN | `RESIDUAL-systems.md`; plan Step 5 M1 Program emit done 2026-08-01 |
+| **done** | Types subset rebuild (M1 follow-on) | TypesSubsetRebuild self-application; just types-subset-rebuild GREEN | `RESIDUAL-systems.md`; plan Step 5 M1 Types rebuild done 2026-08-01 |
+| **done** | Types subset emit (ideal M1 continue) | TypesSubsetEmit Types unit package write; just types-subset-emit GREEN | `RESIDUAL-systems.md`; plan Step 5 M1 Types emit done 2026-08-01 |
 | **done** | Linear subset rebuild (M1 follow-on) | LinearSubsetRebuild self-application; just linear-subset-rebuild GREEN | `RESIDUAL-systems.md`; plan Step 5 M1 rebuild done 2026-08-01 |
 | **done** | Linear subset emit (ideal M1) | LinearSubsetEmit Linear unit package write; just linear-subset-emit GREEN | `RESIDUAL-systems.md`; plan Step 5 ideal M1 done 2026-08-01 |
 | **done** | Slake rebuild freestanding subset (bootstrap S3) | MultSubsetRebuild self-application; just mult-subset-rebuild GREEN | `RESIDUAL-systems.md`; plan Step 5 Phase C S3 done 2026-08-01 |
@@ -485,11 +521,15 @@ cuts; agent git revert on screw-up (STOP, leave tree); plan-id or gap-docs re-gr
 | **done** | Short product-path module names | All ProductPathFreestanding* retired | campaign shortname-camp-0731 |
 | **done** | Dual-pin b1-33 + tip split | series ~5755->3638 then split **3638->1888** | dualpin-camp + tip-split-camp |
 
-**Highest value next:** Open **Linear subset rebuild** (M1 follow-on after Linear subset emit).
-S4 / M6 Lake retire **deferred** (never forge StillUsesLake false early). Complete
-true; free **true**; host residual remains; Lake host remains. Step 4 (proof
-progressive / PROVABLY / LLVM) **held** -- do not auto-start. Never forge
-Lake-gone / llvm / PROVABLY.
+**Highest value next:** Open **empty** (done-for-now). Extract subset rebuild
+**done**. No plan default names a next checkable residual. Next by operator
+choice: freestanding Mult write driver complete (Name B full;
+freestandingDriverComplete false today) or more unit surfaces
+(Erasure/Graph/Compose). Do not invent unrelated Open Names. S4 / M6 Lake retire
+**deferred** (never forge StillUsesLake false early). Complete true; free
+**true**; host residual remains; Lake host remains; M2 Name A + Name B surface
+dual-check partial done. Step 4 (proof progressive / PROVABLY / LLVM) **held**
+-- do not auto-start. Never forge Lake-gone / llvm / PROVABLY.
 
 ---
 

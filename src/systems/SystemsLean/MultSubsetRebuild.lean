@@ -5,28 +5,39 @@
   self-application readiness bar for that subset. Re-emits and re-validates the
   Mult unit package from S2 inputs (not full freestanding dialect regenerate as
   sole success). Lake host remains (stillUsesLake / dependsOnLake true until S4).
-  Without-Lake finished self-application is later (S3 deepen / S4). Not free /
-  complete flip. Not freestanding residual free. Not freestanding emit residual
-  free. Not freestanding emit as full dialect success criterion. Not PROVABLY.
-  Not llvm unlock. Not hand-authored product C features. Not S4 Lake retire.
+  Without-Lake measured Mult re-emit step (M2 Name A partial): prebuilt binary + just
+  mult-subset-rebuild-without-lake (no lake on hot path). Mult freestanding deepen
+  + host MultSubsetEmit SSOT write (M2 Name B progress): MultFsDeepen /
+  just mult-subset-freestanding-deepen and just mult-subset-freestanding-write
+  (freestandingDeepenPartial true; multFsWritePathReady true;
+  freestandingDriverComplete false until design freestanding Mult write without
+  Lake-built ELF; Mult package write via MultSubsetEmit SSOT, not this Mult
+  rebuild ELF as sole package writer). Product StillUsesLake / DependsOnLake
+  stay true until S4 / M6. Not free / complete flip.
+  Not freestanding residual free. Not freestanding emit residual free.
+  Not freestanding emit. Not full freestanding dialect regenerate as sole
+  success. Not PROVABLY. Not llvm unlock. Not hand-authored product C features.
+  Not S4 Lake retire.
   Greppable: SYSTEMS_LEAN_HOST, MULT-SUBSET-REBUILD, SLAKE_MULT_SUBSET_REBUILD,
   SLAKE_MULT_SUBSET_REBUILD_V0, HOST-MULT-SUBSET-REBUILD, multSubsetRebuildReady,
   multSubsetRebuildInputReady, multSubsetRebuildSelfApplyOk,
   multSubsetRebuildWroteExpected, multSubsetRebuildReady_true,
   MULT-SUBSET-REBUILD-SMOKE, MULT-SUBSET-REBUILD-THEOREM, MULT-SUBSET-EMIT,
   multSubsetEmitReady, multSubsetEmitWroteExpected, slake-mult-subset-rebuild,
-  just mult-subset-rebuild, slake_mult_subset.h, slake_mult_subset.c,
+  just mult-subset-rebuild, just mult-subset-rebuild-without-lake,
+  multSubsetRebuildWithoutLakeFinishedClaimed, MULT-WITHOUT-LAKE,
+  slake_mult_subset.h, slake_mult_subset.c,
   StillUsesLake, DependsOnLake, RUNTIME-FS, UNIT_SURFACE host surface,
   MULT-0, MULT-1, MULT-OMEGA (Mult subset package dialect).
   Module: SystemsLean.MultSubsetRebuild
   Short role name (not ProductPathFreestandingBootstrapS3 kitchen-sink).
   Honesty dual evidence: multSubsetRebuildWroteExpected is a structural package
   identity pin only (rebuild reuses S2 package text). Actual on-disk re-write is
-  proven by lake exe multSubsetRebuildWrite (IO.FS.writeFile) plus just
-  mult-subset-rebuild greps on emit/slake_mult_subset.{h,c}. Do not read the
-  Lean Bool alone as filesystem write proof.
-  Red/green: lake build SystemsLean.MultSubsetRebuild;
-  lake exe slake-mult-subset-rebuild; just mult-subset-rebuild.
+  proven by multSubsetRebuildWrite (IO.FS.writeFile) via prebuilt or lake exe
+  plus just greps on emit/slake_mult_subset.{h,c}. Do not read the Lean Bool
+  alone as filesystem write proof.
+  Red/green: lake build SystemsLean.MultSubsetRebuild (bootstrap prebuild OK);
+  just mult-subset-rebuild-without-lake (measured M2 step); just mult-subset-rebuild.
   Module must stay ASCII.
 -/
 
@@ -56,11 +67,20 @@ def surfaceId : String := "MULT-SUBSET-REBUILD"
     Greppable: multSubsetRebuildInputId, MULT-SUBSET-EMIT, SLAKE_MULT_SUBSET_EMIT_V0. -/
 def multSubsetRebuildInputId : String := MultSubsetEmit.stageId
 
-/-- Lake exe name. -/
+/-- Lake exe name (bootstrap prebuild artifact for without-Lake measured step). -/
 def lakeExeName : String := "slake-mult-subset-rebuild"
 
-/-- just recipe name. -/
+/-- just recipe name (Lake-hosted S3 path; still valid). -/
 def justRecipe : String := "mult-subset-rebuild"
+
+/-- just recipe for Mult without-Lake measured re-emit (M2 partial; prebuilt ELF).
+    Greppable: justRecipeWithoutLake, mult-subset-rebuild-without-lake,
+    MULT-WITHOUT-LAKE. -/
+def justRecipeWithoutLake : String := "mult-subset-rebuild-without-lake"
+
+/-- Relative path of prebuilt Mult rebuild binary under src/systems (Lake once).
+    Greppable: prebuiltMultRebuildRel, slake-mult-subset-rebuild. -/
+def prebuiltMultRebuildRel : String := ".lake/build/bin/slake-mult-subset-rebuild"
 
 /-- Relative emit header base (same Mult unit package as S2). -/
 def emitHeaderBase : String := MultSubsetEmit.emitHeaderBase
@@ -68,7 +88,7 @@ def emitHeaderBase : String := MultSubsetEmit.emitHeaderBase
 /-- Relative emit source base (same Mult unit package as S2). -/
 def emitSourceBase : String := MultSubsetEmit.emitSourceBase
 
-/-- Host elaborator still Lake (bootstrap S3; S4 only retires).
+/-- Host elaborator still Lake (bootstrap; S4 / M6 only retires product pins).
     Greppable: StillUsesLake, DependsOnLake. -/
 def stillUsesLake : Bool := true
 def dependsOnLake : Bool := true
@@ -88,9 +108,11 @@ def multSubsetRebuildLlvmUnlocked : Bool := false
 /-- Local honesty: S3 does not unlock PROVABLY. -/
 def multSubsetRebuildProvablyUnlocked : Bool := false
 
-/-- Local honesty: S3 does not claim without-Lake finished (S4 / deepen later).
-    Greppable: multSubsetRebuildWithoutLakeFinishedClaimed. -/
-def multSubsetRebuildWithoutLakeFinishedClaimed : Bool := false
+/-- Local Mult without-Lake measured step finished (M2 partial): prebuilt driver
+    + just mult-subset-rebuild-without-lake with dual evidence. Not product
+    StillUsesLake false (S4 / M6). Not freestanding Mult driver deepen (Name B).
+    Greppable: multSubsetRebuildWithoutLakeFinishedClaimed, MULT-WITHOUT-LAKE. -/
+def multSubsetRebuildWithoutLakeFinishedClaimed : Bool := true
 
 /-- S2 Mult subset emit structural readiness reused as rebuild input.
     Greppable: multSubsetRebuildInputReady, multSubsetEmitReady. -/
@@ -123,8 +145,8 @@ def multSubsetRebuildWroteExpected : Bool :=
   multSubsetRebuildSelfApplyOk && multSubsetEmitWroteExpected
 
 /-- Structural ready for Mult subset rebuild / self-application measure
-    (S2 input + self-apply bar + Lake host + local free/complete/proof/llvm/
-    PROVABLY / without-Lake-finished non-claims).
+    (S2 input + self-apply bar + Lake host honesty + local free/complete/proof/
+    llvm / PROVABLY non-claims; without-Lake measured step may be finished).
     Greppable: multSubsetRebuildReady, MULT-SUBSET-REBUILD,
     SLAKE_MULT_SUBSET_REBUILD. -/
 def multSubsetRebuildReady : Bool :=
@@ -139,17 +161,18 @@ def multSubsetRebuildReady : Bool :=
     && !multSubsetRebuildProofCompleteClaimed
     && !multSubsetRebuildLlvmUnlocked
     && !multSubsetRebuildProvablyUnlocked
-    && !multSubsetRebuildWithoutLakeFinishedClaimed
     && (stageId == "SLAKE_MULT_SUBSET_REBUILD_V0")
     && (hostId == "HOST-MULT-SUBSET-REBUILD")
     && (surfaceId == "MULT-SUBSET-REBUILD")
     && (multSubsetRebuildInputId == "SLAKE_MULT_SUBSET_EMIT_V0")
     && (lakeExeName == "slake-mult-subset-rebuild")
     && (justRecipe == "mult-subset-rebuild")
+    && (justRecipeWithoutLake == "mult-subset-rebuild-without-lake")
+    && (prebuiltMultRebuildRel == ".lake/build/bin/slake-mult-subset-rebuild")
     && (emitHeaderBase == "slake_mult_subset.h")
     && (emitSourceBase == "slake_mult_subset.c")
 
-/-- multSubsetRebuildReady does not retire Lake (S4 only).
+/-- multSubsetRebuildReady does not retire Lake (S4 / M6 only).
     Greppable: multSubsetRebuildDoesNotRetireLake. -/
 def multSubsetRebuildDoesNotRetireLake : Bool :=
   multSubsetRebuildReady && stillUsesLake && dependsOnLake
@@ -159,10 +182,20 @@ def multSubsetRebuildDoesNotRetireLake : Bool :=
 def multSubsetRebuildDoesNotMeanResidualFree : Bool :=
   multSubsetRebuildReady && !multSubsetRebuildResidualFreeClaimed
 
-/-- multSubsetRebuildReady is not without-Lake finished.
-    Greppable: multSubsetRebuildDoesNotMeanWithoutLakeFinished. -/
+/-- Preferred honesty pin (M2 Name A): Mult without-Lake measured step finished
+    does not retire product Lake host. withoutLakeFinished true; StillUsesLake /
+    DependsOnLake true until S4 / M6. Prefer this name in new prose and greps.
+    Greppable: multSubsetRebuildWithoutLakeKeepsHostLake, MULT-WITHOUT-LAKE. -/
+def multSubsetRebuildWithoutLakeKeepsHostLake : Bool :=
+  multSubsetRebuildWithoutLakeFinishedClaimed && stillUsesLake && dependsOnLake
+
+/-- Deprecated alias of multSubsetRebuildWithoutLakeKeepsHostLake (historical
+    name from when S3 required withoutLakeFinished false). Kept only for
+    presence greps and old theorems; do not mint new prose that treats the name
+    as "without-Lake not finished." Greppable:
+    multSubsetRebuildDoesNotMeanWithoutLakeFinished. -/
 def multSubsetRebuildDoesNotMeanWithoutLakeFinished : Bool :=
-  multSubsetRebuildReady && !multSubsetRebuildWithoutLakeFinishedClaimed
+  multSubsetRebuildWithoutLakeKeepsHostLake
 
 /-! ### MULT-SUBSET-REBUILD-THEOREM (readable S3 statements, then proofs) -/
 
@@ -209,22 +242,30 @@ theorem multSubsetRebuildDoesNotMeanResidualFree_true :
     multSubsetRebuildDoesNotMeanResidualFree = true := by
   native_decide
 
-/-- S3 ready does not claim without-Lake finished.
-    Greppable: multSubsetRebuildDoesNotMeanWithoutLakeFinished_true,
-    MULT-SUBSET-REBUILD-THEOREM. -/
+/-- Preferred: without-Lake measured step keeps product Lake (not S4).
+    Greppable: multSubsetRebuildWithoutLakeKeepsHostLake_true,
+    MULT-SUBSET-REBUILD-THEOREM, MULT-WITHOUT-LAKE. -/
+theorem multSubsetRebuildWithoutLakeKeepsHostLake_true :
+    multSubsetRebuildWithoutLakeKeepsHostLake = true := by
+  native_decide
+
+/-- Alias theorem for multSubsetRebuildWithoutLakeKeepsHostLake_true (presence
+    grep stability). Prefer KeepsHostLake name in new prose.
+    Greppable: multSubsetRebuildDoesNotMeanWithoutLakeFinished_true. -/
 theorem multSubsetRebuildDoesNotMeanWithoutLakeFinished_true :
     multSubsetRebuildDoesNotMeanWithoutLakeFinished = true := by
   native_decide
 
-/-- Local free/complete/proof/llvm/PROVABLY/without-Lake honesty stays false;
-    Lake stays. Greppable: multSubsetRebuild_claims_false, MULT-SUBSET-REBUILD-THEOREM. -/
+/-- Local free/complete/proof/llvm/PROVABLY stay false; without-Lake measured
+    finished true; product Lake stays. Greppable: multSubsetRebuild_claims_false,
+    MULT-SUBSET-REBUILD-THEOREM, MULT-WITHOUT-LAKE. -/
 theorem multSubsetRebuild_claims_false :
     (multSubsetRebuildResidualFreeClaimed = false)
       /\ (multSubsetRebuildProductSelfHostCompleteClaimed = false)
       /\ (multSubsetRebuildProofCompleteClaimed = false)
       /\ (multSubsetRebuildLlvmUnlocked = false)
       /\ (multSubsetRebuildProvablyUnlocked = false)
-      /\ (multSubsetRebuildWithoutLakeFinishedClaimed = false)
+      /\ (multSubsetRebuildWithoutLakeFinishedClaimed = true)
       /\ (stillUsesLake = true)
       /\ (dependsOnLake = true) :=
   And.intro rfl
@@ -243,6 +284,8 @@ theorem multSubsetRebuild_ids_eq :
       /\ (multSubsetRebuildInputId = "SLAKE_MULT_SUBSET_EMIT_V0")
       /\ (lakeExeName = "slake-mult-subset-rebuild")
       /\ (justRecipe = "mult-subset-rebuild")
+      /\ (justRecipeWithoutLake = "mult-subset-rebuild-without-lake")
+      /\ (prebuiltMultRebuildRel = ".lake/build/bin/slake-mult-subset-rebuild")
       /\ (emitHeaderBase = "slake_mult_subset.h")
       /\ (emitSourceBase = "slake_mult_subset.c") :=
   And.intro rfl
@@ -250,7 +293,9 @@ theorem multSubsetRebuild_ids_eq :
       (And.intro rfl
         (And.intro rfl
           (And.intro rfl
-            (And.intro rfl (And.intro rfl rfl))))))
+            (And.intro rfl
+              (And.intro rfl
+                (And.intro rfl (And.intro rfl rfl))))))))
 
 /-! ### MULT-SUBSET-REBUILD-SMOKE (lake fails if examples fail)
     Greppable: MULT-SUBSET-REBUILD-SMOKE, MULT-SUBSET-REBUILD, MULT-SUBSET-EMIT. -/
@@ -261,17 +306,21 @@ example : multSubsetRebuildPackagePinOk = true := by native_decide
 example : multSubsetRebuildSelfApplyOk = true := by native_decide
 example : multSubsetRebuildWroteExpected = true := by native_decide
 
-/-- MULT-SUBSET-REBUILD-SMOKE: full ready; Lake remains; free/llvm/without-Lake stay local-false. -/
+/-- MULT-SUBSET-REBUILD-SMOKE: full ready; product Lake remains; free/llvm false;
+    without-Lake measured step finished (M2 partial). MULT-WITHOUT-LAKE. -/
 example : multSubsetRebuildReady = true := by native_decide
 example : multSubsetRebuildDoesNotRetireLake = true := by native_decide
 example : multSubsetRebuildDoesNotMeanResidualFree = true := by native_decide
+example : multSubsetRebuildWithoutLakeKeepsHostLake = true := by native_decide
 example : multSubsetRebuildDoesNotMeanWithoutLakeFinished = true := by native_decide
 example : stillUsesLake = true := rfl
 example : dependsOnLake = true := rfl
 example : multSubsetRebuildResidualFreeClaimed = false := rfl
 example : multSubsetRebuildLlvmUnlocked = false := rfl
 example : multSubsetRebuildProvablyUnlocked = false := rfl
-example : multSubsetRebuildWithoutLakeFinishedClaimed = false := rfl
+example : multSubsetRebuildWithoutLakeFinishedClaimed = true := rfl
+example : justRecipeWithoutLake = "mult-subset-rebuild-without-lake" := rfl
+example : prebuiltMultRebuildRel = ".lake/build/bin/slake-mult-subset-rebuild" := rfl
 example : multSubsetRebuildInputId = "SLAKE_MULT_SUBSET_EMIT_V0" := rfl
 example : lakeExeName = "slake-mult-subset-rebuild" := rfl
 example : emitHeaderBase = "slake_mult_subset.h" := rfl
@@ -325,13 +374,14 @@ def multSubsetRebuildWrite (root : System.FilePath) : IO Unit := do
   IO.println s!"  multSubsetRebuildSelfApplyOk: {multSubsetRebuildSelfApplyOk}"
   IO.println s!"  multSubsetRebuildReady: {multSubsetRebuildReady}"
   IO.println s!"  multSubsetRebuildWroteExpected: {multSubsetRebuildWroteExpected} (package identity pin)"
-  IO.println s!"  stillUsesLake: {stillUsesLake} (true until S4)"
+  IO.println s!"  stillUsesLake: {stillUsesLake} (true until S4 / M6)"
   IO.println s!"  dependsOnLake: {dependsOnLake} (host elaborator bootstrap)"
-  IO.println s!"  withoutLakeFinished: {multSubsetRebuildWithoutLakeFinishedClaimed} (false; deepen later)"
-  IO.println s!"  Lake exe: {lakeExeName} / just {justRecipe}"
+  IO.println s!"  withoutLakeFinished: {multSubsetRebuildWithoutLakeFinishedClaimed} (M2 measured step; product Lake remains)"
+  IO.println s!"  Lake exe: {lakeExeName} / just {justRecipe} / just {justRecipeWithoutLake}"
+  IO.println s!"  prebuilt: {prebuiltMultRebuildRel} (bootstrap once with Lake; measured without-Lake uses ELF)"
   IO.println "  honest: S3 = measured Mult subset self-application (re-emit/re-validate); not full dialect regenerate"
-  IO.println "  honest: Lake host remains; free/complete living tip unchanged; not PROVABLY; not llvm"
-  IO.println "  honest: not without-Lake finished; not S4 Lake retire"
+  IO.println "  honest: product Lake host remains; free/complete living tip unchanged; not PROVABLY; not llvm"
+  IO.println "  honest: without-Lake measured Mult re-emit finished (M2 partial); not S4 Lake retire"
   IO.println "  short module name MultSubsetRebuild (not ProductPathFreestandingBootstrapS3)"
   IO.FS.createDirAll emitDir
   -- Self-application: re-write Mult subset package from S2 assembled text.
@@ -352,8 +402,8 @@ def multSubsetRebuildWrite (root : System.FilePath) : IO Unit := do
   IO.println s!"GREEN {stageId}: Mult subset self-application rebuild under {emitDir}/"
   IO.println s!"  rewrote: {outH} ({headerWritten.length} chars)"
   IO.println s!"  rewrote: {outC} ({sourceWritten.length} chars)"
-  IO.println "  greppable: MULT-SUBSET-REBUILD, SLAKE_MULT_SUBSET_REBUILD_V0, MULT-SUBSET-EMIT, multSubsetRebuildReady"
-  IO.println "  honest: subset rebuild / self-application evidence (Lake-hosted; not without-Lake finished)"
+  IO.println "  greppable: MULT-SUBSET-REBUILD, SLAKE_MULT_SUBSET_REBUILD_V0, MULT-SUBSET-EMIT, multSubsetRebuildReady, MULT-WITHOUT-LAKE"
+  IO.println "  honest: subset rebuild / self-application evidence; measured without-Lake via just mult-subset-rebuild-without-lake"
 
 /-- Drop lake/exe separators so root path is first real arg. -/
 def filterArgs : List String -> List String

@@ -18,6 +18,8 @@ lib.cleanSourceWith {
     && !(lib.hasInfix "/.cache/" rel)
     && !(lib.hasPrefix ".lake/" rel)
     && !(lib.hasInfix "/.lake/" rel)
+    && !(lib.hasPrefix "src/systems/bin/" rel)
+    && !(lib.hasInfix "/src/systems/bin/" rel)
     && !(lib.hasPrefix "result" base)
     && !(lib.hasSuffix ".pyc" rel)
     && !(lib.hasInfix "__pycache__" rel);

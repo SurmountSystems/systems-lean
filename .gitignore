@@ -65,3 +65,6 @@ temp/
 # --- Lake / Lean local build (src/lean4 package) ---
 **/.lake/
 
+# --- Host-cc Mult package writer binary (Path A measured Mult write; rebuild via just) ---
+src/systems/bin/
+

@@ -2,7 +2,7 @@
   SYSTEMS_LEAN_HOST partial -- Systems Lean package root (classic elaborator).
   Imports Mult + MultTheorems + Linear + LinearTheorems + Types + TypesTheorems + ordered IR program + IrProgramTheorems + Erasure + ErasureTheorems + Extract +
   ExtractTheorems +
-  IrGraph + IrGraphTheorems + HostCompose + HostComposeTheorems + EmitPlan + EmitPlanScaffold + EmitApply + EmitApplyScaffold + EmitBody + EmitBanner + EmitBannerScaffold + CompilePath + CompilePathBody + CompilePathErasure + CompilePathPlan + CompilePathApply + CompilePathGraph + CompilePathCompose + CompilePathMult + FirstSurface + MultSubsetEmit + MultSubsetRebuild + CompilePathLinear + LinearSubsetEmit + LinearSubsetRebuild + CompilePathTypes + CompilePathProgram + CompilePathExtract +
+  IrGraph + IrGraphTheorems + HostCompose + HostComposeTheorems + EmitPlan + EmitPlanScaffold + EmitApply + EmitApplyScaffold + EmitBody + EmitBanner + EmitBannerScaffold + CompilePath + CompilePathBody + CompilePathErasure + CompilePathPlan + CompilePathApply + CompilePathGraph + CompilePathCompose + CompilePathMult + FirstSurface + MultSubsetEmit + MultSubsetRebuild + MultFsDeepen + CompilePathLinear + LinearSubsetEmit + LinearSubsetRebuild + CompilePathTypes + TypesSubsetEmit + TypesSubsetRebuild + CompilePathProgram + ProgramSubsetEmit + ProgramSubsetRebuild + CompilePathExtract + ExtractSubsetEmit + ExtractSubsetRebuild + ErasureSubsetEmit + ErasureSubsetRebuild + GraphSubsetEmit + GraphSubsetRebuild + ComposeSubsetEmit + ComposeSubsetRebuild +
   JoinMap + JoinMapTheorems + SelfHost + SelfHostTheorems + SurfaceMatrix + SurfaceMatrixTheorems + KernelMult + KernelMultTheorems + EmitMult + EmitMultScaffold + EmitLinear + EmitLinearScaffold +
   EmitErasure + EmitErasureScaffold + EmitExtract + EmitExtractScaffold + EmitTypes + EmitTypesScaffold + EmitProgram + EmitProgramScaffold + EmitGraph + EmitGraphScaffold + EmitCompose + EmitComposeScaffold +
   ParityMult + ParityMultTheorems +
@@ -65,12 +65,25 @@ import SystemsLean.CompilePathMult
 import SystemsLean.FirstSurface
 import SystemsLean.MultSubsetEmit
 import SystemsLean.MultSubsetRebuild
+import SystemsLean.MultFsDeepen
 import SystemsLean.CompilePathLinear
 import SystemsLean.LinearSubsetEmit
 import SystemsLean.LinearSubsetRebuild
 import SystemsLean.CompilePathTypes
+import SystemsLean.TypesSubsetEmit
+import SystemsLean.TypesSubsetRebuild
 import SystemsLean.CompilePathProgram
+import SystemsLean.ProgramSubsetEmit
+import SystemsLean.ProgramSubsetRebuild
 import SystemsLean.CompilePathExtract
+import SystemsLean.ExtractSubsetEmit
+import SystemsLean.ExtractSubsetRebuild
+import SystemsLean.ErasureSubsetEmit
+import SystemsLean.ErasureSubsetRebuild
+import SystemsLean.GraphSubsetEmit
+import SystemsLean.GraphSubsetRebuild
+import SystemsLean.ComposeSubsetEmit
+import SystemsLean.ComposeSubsetRebuild
 import SystemsLean.JoinMap
 import SystemsLean.JoinMapTheorems
 import SystemsLean.SelfHost

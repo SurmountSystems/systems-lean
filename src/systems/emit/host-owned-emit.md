@@ -15,8 +15,9 @@ still frozen in templates. **Out-first product:** consumers link the **release**
 surface under `out/freestanding-c/` (product Out). `emit/` is host workspace
 (SSOT + templates + generator dogfood write target), not a peer product home.
 Three languages only (Idris 2 / Lean 4 / pure Nix); freestanding C is **generated
-product Out only** -- never handwritten residual. Residual free remains false.
-Not PROVABLY. Not freestanding product self-host complete.
+product Out only** -- never handwritten residual. Claim A product residual free
+**true** (host elaborator residual remains). Claim B freestanding product
+self-host complete **true**. Not PROVABLY. Not llvm unlock. No product GC.
 
 ## Lean-owned (host SSOT + FreestandingEmit embed)
 
@@ -44,7 +45,74 @@ output: `emit/slake_freestanding.{h,c}` (dogfood). **Product Out / release:**
 **Bootstrap Mult subset package (S2):** `SystemsLean/MultSubsetEmit.lean` writes
 `emit/slake_mult_subset.{h,c}` from HOST-EMIT-MULT fragments (same Mult dialect;
 not a second Mult ownership path). Lake exe `slake-mult-subset-emit` /
-`just mult-subset-emit`. Not the full freestanding product wire; not product Out.
+`just mult-subset-emit`. Self-application rebuild: `MultSubsetRebuild.lean`
+re-emits/re-validates the same package (`slake-mult-subset-rebuild` /
+`just mult-subset-rebuild`). M2 measured without-Lake step:
+`just mult-subset-rebuild-without-lake` runs the prebuilt Mult rebuild binary
+(no lake on hot path). M2 Name B freestanding Mult surface dual-check + Name B full Mult write:
+`SystemsLean/MultFsDeepen.lean` / `just mult-subset-freestanding-deepen` (greps
+dual-check) and `just mult-subset-freestanding-write` (Path A: Lean-generated
+`emit/slake_mult_fs_write_tool.c` with MultSubsetEmit freestanding Mult SSOT
+bytes embedded; host-cc `src/systems/bin/slake-mult-fs-write-cc` outside
+`.lake`; Mult rebuild ELF not the package writer; Lake `slake-mult-fs-write`
+bootstrap helper only); freestandingDeepenPartial true; multFsWritePathReady
+true; freestandingDriverComplete **true**. Not the full freestanding product
+wire; not product Out. Product StillUsesLake remains until M6.
+
+**Bootstrap Linear subset package (M1):** `SystemsLean/LinearSubsetEmit.lean`
+writes `emit/slake_linear_subset.{h,c}` from HOST-EMIT-LINEAR fragments. Lake
+exe `slake-linear-subset-emit` / `just linear-subset-emit`. Self-application
+rebuild: `LinearSubsetRebuild.lean` re-emits/re-validates the same package
+(`slake-linear-subset-rebuild` / `just linear-subset-rebuild`).
+
+**Bootstrap Types subset package (M1):** `SystemsLean/TypesSubsetEmit.lean`
+writes `emit/slake_types_subset.{h,c}` from HOST-EMIT-TYPES fragments (same
+Types dialect; not a second Types ownership path). Lake exe
+`slake-types-subset-emit` / `just types-subset-emit`. Self-application rebuild:
+`SystemsLean/TypesSubsetRebuild.lean` re-emits/re-validates the same package
+(`slake-types-subset-rebuild` / `just types-subset-rebuild`). Not the full
+freestanding product wire; not product Out.
+
+**Bootstrap Program subset package (M1):** `SystemsLean/ProgramSubsetEmit.lean`
+writes `emit/slake_program_subset.{h,c}` from HOST-EMIT-PROGRAM fragments (same
+Program dialect; not a second Program ownership path). Lake exe
+`slake-program-subset-emit` / `just program-subset-emit`. Self-application
+rebuild: `SystemsLean/ProgramSubsetRebuild.lean` re-emits/re-validates the same
+package (`slake-program-subset-rebuild` / `just program-subset-rebuild`). Not
+the full freestanding product wire; not product Out.
+
+**Bootstrap Extract subset package (M1):** `SystemsLean/ExtractSubsetEmit.lean`
+writes `emit/slake_extract_subset.{h,c}` from HOST-EMIT-EXTRACT fragments (same
+Extract + FAIL_CLOSED dialect; not a second Extract ownership path). Lake exe
+`slake-extract-subset-emit` / `just extract-subset-emit`. Self-application
+rebuild: `SystemsLean/ExtractSubsetRebuild.lean` re-emits/re-validates the same
+package (`slake-extract-subset-rebuild` / `just extract-subset-rebuild`). Not
+the full freestanding product wire; not product Out.
+
+**Bootstrap Erasure subset package (M1):** `SystemsLean/ErasureSubsetEmit.lean`
+writes `emit/slake_erasure_subset.{h,c}` from HOST-EMIT-ERASURE fragments (same
+Erasure mult-0 absence dialect; not a second Erasure ownership path). Lake exe
+`slake-erasure-subset-emit` / `just erasure-subset-emit`. Self-application
+rebuild: `SystemsLean/ErasureSubsetRebuild.lean` re-emits/re-validates the same
+package (`slake-erasure-subset-rebuild` / `just erasure-subset-rebuild`). Not
+the full freestanding product wire; not product Out.
+
+**Bootstrap Graph subset package (M1):** `SystemsLean/GraphSubsetEmit.lean`
+writes `emit/slake_graph_subset.{h,c}` from HOST-EMIT-GRAPH fragments (same IR
+graph edges dialect; not a second Graph ownership path). Lake exe
+`slake-graph-subset-emit` / `just graph-subset-emit`. Self-application
+rebuild: `SystemsLean/GraphSubsetRebuild.lean` re-emits/re-validates the same
+package (`slake-graph-subset-rebuild` / `just graph-subset-rebuild`). Not the
+full freestanding product wire; not product Out; not full CFG/SSA.
+
+**Bootstrap Compose subset package (M1):** `SystemsLean/ComposeSubsetEmit.lean`
+writes `emit/slake_compose_subset.{h,c}` from HOST-EMIT-COMPOSE fragments (same
+host compose dialect; not a second Compose ownership path). Lake exe
+`slake-compose-subset-emit` / `just compose-subset-emit`. Self-application
+rebuild: `SystemsLean/ComposeSubsetRebuild.lean` re-emits/re-validates the same
+package (`slake-compose-subset-rebuild` / `just compose-subset-rebuild`). Not the
+full freestanding product wire; not product Out; not elaborator MULT-1 freestanding
+residual free.
 
 Host stage ids only (`HOST-EMIT-*` / `SLAKE_SELF_HOST_EMIT_*_V0`). Do not mint
 residual-only C stage ladders (`EMIT_MULT_V0`, `EMIT_LINEAR_V0`,
@@ -141,11 +209,15 @@ Four senses must not be mashed. Prose only -- **no** product ABI rename.
 
 ## Honesty
 
-- Residual free: **false** (claim A **measurement** green on release when present
-  via PRODUCT-RESIDUAL-FREE-MEASURE; DualResidual residualFreeClaimed stays false).
-  Freestanding product residual free claim: **false**.
-- Not PROVABLY. Not full Slake self-host complete. No product GC.
-- Host elaborator residual != product wire residual (do not forge either free).
+- Claim A product residual free: **true** (measure green on release via
+  PRODUCT-RESIDUAL-FREE-MEASURE; DualResidual residualFreeClaimed true;
+  productResidualRemains false). Host elaborator residual **remains**
+  (`hostElaboratorResidualRemains` true; DependsOnLake / StillUsesLake true).
+  Free is not Lake gone.
+- Claim B freestanding product self-host complete: **true** (writer path closed).
+  Complete is not "Lake is gone."
+- Not PROVABLY. Not llvm unlock. No product GC.
+- Host elaborator residual != product wire residual (do not forge host free).
 - Behavioral probe remains hosted smoke, not freestanding product body growth.
 - Ownership map lives here; stage tokens stay greppable in Lean / SSOT / product.
 - **Dual SSOT equality gate (CLOSED for emit-time fail-closed):** Lean fragments
@@ -159,8 +231,8 @@ Four senses must not be mashed. Prose only -- **no** product ABI rename.
   (`dualSsotBlockEqual` / `requireDualSsotEqual` / `dualSsotEqualityLive`) and
   fails closed on drift (Banner + Mult..Out/Body). Pure Nix
   `systems-host` + `systems-emit-wire` require those greppable tokens so the
-  gate stays live. Not residual free; not claim B complete; not PROVABLY; not
-  llvm.
+  gate stays live. Free true; complete true; host residual remains; not
+  PROVABLY; not llvm.
 
 ## Paths (quick)
 

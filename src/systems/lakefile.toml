@@ -271,6 +271,21 @@ name = "slake-mult-subset-rebuild"
 root = "SystemsLean.MultSubsetRebuildMain"
 supportInterpreter = true
 
+# M2 Mult freestanding package write host helper (MultSubsetEmit SSOT; not Mult rebuild ELF).
+# Bootstrap helper only after Name B full; measured write is host-cc Path A tool.
+# just mult-subset-freestanding-write / lake exe slake-mult-fs-write. Lake host remains (not S4).
+[[lean_exe]]
+name = "slake-mult-fs-write"
+root = "SystemsLean.MultFsWriteMain"
+supportInterpreter = true
+
+# Path A Mult package writer C generator (bootstrap). Measured Mult write uses host-cc bin.
+# lake exe slake-mult-fs-write-tool -- <root>. Lake host remains (not S4).
+[[lean_exe]]
+name = "slake-mult-fs-write-tool"
+root = "SystemsLean.MultFsWriteToolMain"
+supportInterpreter = true
+
 # Ideal ladder M1 Linear subset freestanding emit: Linear unit input -> Linear unit package write.
 # just linear-subset-emit / lake exe slake-linear-subset-emit. Lake host remains (not S4).
 [[lean_exe]]
@@ -283,4 +298,88 @@ supportInterpreter = true
 [[lean_exe]]
 name = "slake-linear-subset-rebuild"
 root = "SystemsLean.LinearSubsetRebuildMain"
+supportInterpreter = true
+
+# Ideal ladder M1 Types subset freestanding emit: Types unit input -> Types unit package write.
+# just types-subset-emit / lake exe slake-types-subset-emit. Lake host remains (not S4).
+[[lean_exe]]
+name = "slake-types-subset-emit"
+root = "SystemsLean.TypesSubsetEmitMain"
+supportInterpreter = true
+
+# M1 Types subset rebuild / self-application: M1 package identity -> re-emit/re-validate.
+# just types-subset-rebuild / lake exe slake-types-subset-rebuild. Lake host remains (not S4).
+[[lean_exe]]
+name = "slake-types-subset-rebuild"
+root = "SystemsLean.TypesSubsetRebuildMain"
+supportInterpreter = true
+
+# Ideal ladder M1 Program subset freestanding emit: Program unit input -> Program unit package write.
+# just program-subset-emit / lake exe slake-program-subset-emit. Lake host remains (not S4).
+[[lean_exe]]
+name = "slake-program-subset-emit"
+root = "SystemsLean.ProgramSubsetEmitMain"
+supportInterpreter = true
+
+# M1 Program subset rebuild / self-application: M1 package identity -> re-emit/re-validate.
+# just program-subset-rebuild / lake exe slake-program-subset-rebuild. Lake host remains (not S4).
+[[lean_exe]]
+name = "slake-program-subset-rebuild"
+root = "SystemsLean.ProgramSubsetRebuildMain"
+supportInterpreter = true
+
+# Ideal ladder M1 Extract subset freestanding emit: Extract gate input -> Extract unit package write.
+# just extract-subset-emit / lake exe slake-extract-subset-emit. Lake host remains (not S4).
+[[lean_exe]]
+name = "slake-extract-subset-emit"
+root = "SystemsLean.ExtractSubsetEmitMain"
+supportInterpreter = true
+
+# M1 Extract subset rebuild / self-application: M1 package identity -> re-emit/re-validate.
+# just extract-subset-rebuild / lake exe slake-extract-subset-rebuild. Lake host remains (not S4).
+[[lean_exe]]
+name = "slake-extract-subset-rebuild"
+root = "SystemsLean.ExtractSubsetRebuildMain"
+supportInterpreter = true
+
+# Ideal ladder M1 Erasure subset freestanding emit: Erasure unit input -> Erasure unit package write.
+# just erasure-subset-emit / lake exe slake-erasure-subset-emit. Lake host remains (not S4).
+[[lean_exe]]
+name = "slake-erasure-subset-emit"
+root = "SystemsLean.ErasureSubsetEmitMain"
+supportInterpreter = true
+
+# M1 Erasure subset rebuild / self-application: M1 package identity -> re-emit/re-validate.
+# just erasure-subset-rebuild / lake exe slake-erasure-subset-rebuild. Lake host remains (not S4).
+[[lean_exe]]
+name = "slake-erasure-subset-rebuild"
+root = "SystemsLean.ErasureSubsetRebuildMain"
+supportInterpreter = true
+
+# Ideal ladder M1 Graph subset freestanding emit: Graph unit input -> Graph unit package write.
+# just graph-subset-emit / lake exe slake-graph-subset-emit. Lake host remains (not S4).
+[[lean_exe]]
+name = "slake-graph-subset-emit"
+root = "SystemsLean.GraphSubsetEmitMain"
+supportInterpreter = true
+
+# M1 Graph subset rebuild / self-application: M1 package identity -> re-emit/re-validate.
+# just graph-subset-rebuild / lake exe slake-graph-subset-rebuild. Lake host remains (not S4).
+[[lean_exe]]
+name = "slake-graph-subset-rebuild"
+root = "SystemsLean.GraphSubsetRebuildMain"
+supportInterpreter = true
+
+# Ideal ladder M1 Compose subset freestanding emit: Compose unit input -> Compose unit package write.
+# just compose-subset-emit / lake exe slake-compose-subset-emit. Lake host remains (not S4).
+[[lean_exe]]
+name = "slake-compose-subset-emit"
+root = "SystemsLean.ComposeSubsetEmitMain"
+supportInterpreter = true
+
+# M1 Compose subset rebuild / self-application: M1 package identity -> re-emit/re-validate.
+# just compose-subset-rebuild / lake exe slake-compose-subset-rebuild. Lake host remains (not S4).
+[[lean_exe]]
+name = "slake-compose-subset-rebuild"
+root = "SystemsLean.ComposeSubsetRebuildMain"
 supportInterpreter = true
