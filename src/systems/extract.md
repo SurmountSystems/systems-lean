@@ -106,7 +106,7 @@ V0 freestanding C maps a thin composed checker (not a full compiler body):
 
 Still **not residual free**. Behavioral smoke in
 `src/systems/smoke/slake_behavioral_probe.c` exercises these return contracts under a
-hosted link (API semantics are freestanding). Residual `src/systems/check.sh` only
+hosted link (API semantics are freestanding). `just systems-cc-probe` only
 compiles/links/runs that probe when `cc` is present (not residual free).
 
 ## HOST_COMPOSE_V0 (host + IR graph composition for extract)

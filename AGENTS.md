@@ -186,12 +186,12 @@ Plan (waves): `.agents/plans/plan-paydown-shell-c-surfaces.md`.
 | Path | ~Lines | Exit criterion | Owner language |
 |------|--------|----------------|----------------|
 | `script/slake-emit-freestanding-c.sh` | gone | **Met (Wave C):** deleted; Lean `SystemsLean.FreestandingEmit` + templates write `slake_freestanding.{c,h}` from SSOT | Lean (`SystemsLean` emit) |
-| `src/idris2/check.sh` static presence | ~30 glue | **Met (Wave A):** static mill in `nix/idris-side-presence/` (`just idris-side`); shell is optional `idris2 --check` only | pure Nix + thin glue |
-| `src/lean4/check.sh` static presence | ~70 glue | **Met (Wave A):** static mill in `nix/lean-side-presence/` (`just lean-side`); shell is optional Lake only | pure Nix + thin glue |
+| `src/idris2/check.sh` | gone | **Met (delete glue):** deleted; static mill pure Nix (`just idris-side`); optional elaborator `just idris-elaborate` | pure Nix + thin just |
+| `src/lean4/check.sh` | gone | **Met (delete glue):** deleted; static mill pure Nix (`just lean-side`); optional elaborator `just lean-elaborate` | pure Nix + thin just |
 | `script/build-systems.sh` | gone | **Met (Wave B):** deleted; product path is root `just build` (not a stamp-only recipe) | just product wire |
 | `script/out-freestanding-c.sh` | gone | **Met (Wave B):** deleted; former `just out-freestanding-c` recipe **retired** into `just build` (Wave C Lean emit + install) | just + Lean emit |
 | `script/slake-compile-path.sh` | gone | **Met (delete stamp):** shell stamp deleted; static unit walk + host presence pure Nix (`systems-emit-wire` / `systems-host`); host deepen `SLAKE_COMPILE_PATH_V1` / `HOST-COMPILE-PATH` in `SystemsLean/CompilePath.lean`; greppable retired id `SLAKE_COMPILE_PATH_V0` remains in `justfile` honesty only | pure Nix + Lean host |
-| Fat body of `src/systems/check.sh` | ~100 glue | **Met (Wave B):** process glue only (Lake + `just build` + cc tests); static mills pure Nix; no compile-path shell | just + pure Nix gates |
+| `src/systems/check.sh` | gone | **Met (delete glue):** deleted; static mills pure Nix; optional Lake `just systems-lake`; product wire exercise `just systems-cc-probe` (no CompilePath shell re-check) | pure Nix + thin just |
 
 **Emit shell deleted (Wave C).** Do not restore `script/slake-emit-freestanding-c.sh`. Product wire comes from Lean emit / freestanding-capable path + emit templates + SSOT.
 
@@ -203,7 +203,7 @@ Plan (waves): `.agents/plans/plan-paydown-shell-c-surfaces.md`.
 |------|-------|------|
 | **Product wire** | `src/systems/emit/*.{c,h}`, `out/freestanding-c/*` | Generated freestanding C. Publish via git subtree / tarball. Do not hand-author features in C. |
 | **Behavioral tests** | `src/systems/smoke/slake_behavioral_probe.c` | Hosted product-contract tests linked against the wire. Do not grow as Systems Lean body. Prefer shrinking only when Lean theorems **duplicate** a live `cc` contract with evidence. |
-| **Process glue** | Thin just recipes; optional elaborator/`cc` one-liners; tiny `script/git-hooks/pre-commit` (calls `just pre-commit` / `just check`) | Orchestration that must invoke external binaries. Keep tiny. Not a place for algorithms. Install optional local hook: `ln -sf ../../script/git-hooks/pre-commit .git/hooks/pre-commit` from repo root (or copy). Prefer `just check` / flake checks as the real gate surface. |
+| **Process glue** | Thin just recipes (`idris-elaborate`, `lean-elaborate`, `systems-lake`, `systems-cc-probe`, `build`/`check` orchestration); tiny `script/git-hooks/pre-commit` (calls `just pre-commit` / `just check`) | Orchestration that must invoke external binaries. Keep tiny. Not a place for algorithms. Novel workspace `check.sh` **deleted**. Install optional local hook: `ln -sf ../../script/git-hooks/pre-commit .git/hooks/pre-commit` from repo root (or copy). Prefer `just check` / flake checks as the real gate surface. |
 | **Host emit SSOT text** | `src/systems/emit/host_emit_*.ssot.txt` | Lean-owned fragments; not shell dialect. |
 | **Tool config** | `lakefile.toml`, `lake-manifest.json`, CI YAML | Config only. |
 | **Prose** | `doc/`, residuals, plans, README | Humans and agents; min useful. |
@@ -219,7 +219,7 @@ When `scc` counts Shell, C, headers, config, or plain text beyond Lean / Idris /
 | Surface | Paths (examples) | Classification |
 |---------|------------------|----------------|
 | **Shell (scheduled deletion)** | none open (dual/static paid Wave A; compile-path greps paid; compile-path stamp shell deleted) | Must leave if any mill returns |
-| **Shell (process glue)** | `src/systems/check.sh`, dual optional elaborators, `script/git-hooks/pre-commit` | Keep tiny; no static greps |
+| **Shell (process glue)** | just elaborator/cc recipes (`idris-elaborate`, `lean-elaborate`, `systems-lake`, `systems-cc-probe`); `script/git-hooks/pre-commit` | Keep tiny; no static greps; novel `check.sh` gone |
 | **C (product wire)** | `src/systems/emit/slake_freestanding.c`, `out/freestanding-c/` | Generated; permanent role |
 | **C Header** | `*.h` beside emit | Same wire |
 | **C (behavioral tests)** | `src/systems/smoke/slake_behavioral_probe.c` | Tests; not product body |
@@ -418,7 +418,7 @@ Every open Systems residual item is a named accomplishment:
 |----|--------|
 | Add real **`.lean`** sources (types, mult, linear, erasure, extract, IR, host, emit planning as Lean) | Grow another bash-generated freestanding **C API stage** (`EMIT_*_V0` ladder) as the main residual treadmill |
 | Treat freestanding C under `emit/` / `out/freestanding-c/` as **emit product wire** (what Slake eventually produces) | Treat hand-written or generator-expanded C as the place Systems Lean is "implemented" |
-| Pay down scheduled-deletion shell (`script/slake-*.sh`, fat `check.sh`) toward Lean/Nix | Mint new shell feature markers and call that progress |
+| Pay down scheduled-deletion shell (`script/slake-*.sh`; novel `check.sh` already deleted) toward Lean/Nix | Mint new shell feature markers and call that progress |
 
 If a Systems residual prompt only extends the C emit generator, **stop and re-scope** toward Lean sources unless the human explicitly asked for emit-wire-only work. Marker-stage theater is not residual closed.
 
@@ -429,7 +429,7 @@ Hunter's bar: **writing more freestanding C sources or more shell scripts for pr
 | Forbidden as "progress" | Allowed only if |
 |-------------------------|-----------------|
 | New or expanded `*.c` / `*.h` under `src/systems/`, `emit/`, `out/freestanding-c/` as the work of a residual slice | Human **explicitly** orders a named wire fix (rare); still not "Systems Lean implementation" |
-| New or expanded `*.sh`, longer `check.sh`, more `script/slake-*.sh` stages | Human **explicitly** orders a named paydown or process-glue fix; prefer delete/port over grow |
+| New or expanded `*.sh`, restoring `check.sh`, more `script/slake-*.sh` stages | Human **explicitly** orders a named paydown or process-glue fix; prefer delete/port over grow |
 | Generator edits that only mint another C API stage | Never as default residual |
 
 **Existing** emit/out C is **product wire** (generated). Existing large shells are **scheduled deletion** until replaced by Lean/Nix -- not a license to grow them. Tracked emit/out C is **generator output** (see **Freestanding / ahead-of-time (AOT) C git policy** above); do not patch product contracts only in C without updating the authoritative generator / Lean SSOT path.
@@ -701,7 +701,7 @@ Fork prompts embed the same implement-loop design: `doc/fork-idris.md`, `doc/for
 
 ## ASCII and Unicode (hard rule)
 
-**How the check scrubs:** pure Nix `nix/source-hygiene.nix` (`just hygiene`, flake check `source-hygiene`) evaluates novel files with `builtins.readFile`: fails non-ASCII outside the allowlist and trailing whitespace. No ripgrep, no bash, no Python in the algorithm. Upstream `ref/**` is not scanned. Related pure checks: `just professional-tone` / flake `professional-tone` (`nix/professional-tone.nix`) for novel markdown banned tokens (also folded into `just hygiene`); `just systems-host` / flake `systems-host-presence` (`nix/systems-host-presence/`) for static Systems host presence tokens; `just systems-emit-wire` / flake `systems-emit-wire` (`nix/systems-emit-wire/`) for emit-wire stage tokens, UNIT_DEEPEN, unit-surface walk, optional release surface, hosted behavioral probe path; `just idris-side` / flake `idris-side-presence` (`nix/idris-side-presence/`) and `just lean-side` / flake `lean-side-presence` (`nix/lean-side-presence/`) for dual-side static presence (Wave A; thin check.sh is elaborator glue only).
+**How the check scrubs:** pure Nix `nix/source-hygiene.nix` (`just hygiene`, flake check `source-hygiene`) evaluates novel files with `builtins.readFile`: fails non-ASCII outside the allowlist and trailing whitespace. No ripgrep, no bash, no Python in the algorithm. Upstream `ref/**` is not scanned. Related pure checks: `just professional-tone` / flake `professional-tone` (`nix/professional-tone.nix`) for novel markdown banned tokens (also folded into `just hygiene`); `just systems-host` / flake `systems-host-presence` (`nix/systems-host-presence/`) for static Systems host presence tokens; `just systems-emit-wire` / flake `systems-emit-wire` (`nix/systems-emit-wire/`) for emit-wire stage tokens, UNIT_DEEPEN, unit-surface walk, optional release surface, hosted behavioral probe path; `just idris-side` / flake `idris-side-presence` (`nix/idris-side-presence/`) and `just lean-side` / flake `lean-side-presence` (`nix/lean-side-presence/`) for dual-side static presence (Wave A; elaborator glue is `just idris-elaborate` / `just lean-elaborate`).
 
 | Path | Unicode? |
 |------|----------|
@@ -795,7 +795,7 @@ Terms (plain English); full glossary in `doc/vocabulary.md`:
 | **Orchestration** | Gluing steps (write `doc/PROGRESS.md`, sleep, run `scc`). Not product logic. |
 | **ripgrep (`rg`)** | Default code search in the flake **devShell** (`pkgs.ripgrep`). Agents and humans search with `rg`, not ad-hoc `grep` mills. Pure Nix checks still must not shell out to ripgrep for policy algorithms. |
 | **elan** | Lean toolchain manager in the flake **devShell**. Install the pin from `src/systems/lean-toolchain` / `src/lean4/lean-toolchain` (`leanprover/lean4:v4.32.0`). Do not default to lagged `pkgs.lean4` as the elaborator. Workspace checks skip Lake when the pin is not installed (no surprise network download). |
-| **idris2 (devShell)** | Idris 2 elaborator package in the flake **devShell** for bridge-side checks. Residual `src/idris2/check.sh` still skips when the binary is absent. |
+| **idris2 (devShell)** | Idris 2 elaborator package in the flake **devShell** for bridge-side checks. `just idris-elaborate` skips when the binary is absent. |
 | **Novel source** | Our tree -- not `ref/`, not `skills/` (agent skill submodules), not `.git/`, not caches. |
 | **Source hygiene** | Novel text is printable ASCII (plus tab/newline) except a small allowlist; no trailing spaces/tabs. |
 | **Professional tone** | Novel `*.md` only (v1): short banned-token list in pure Nix; no profanity / demeaning slurs in project markdown. |
@@ -806,7 +806,7 @@ Terms (plain English); full glossary in `doc/vocabulary.md`:
 
 1. Progress meters and source hygiene as **project Python** under `script/`.
 2. "Fix" by stuffing the same work into **shell strings inside Nix** (bash-in-Nix) and flake apps.
-3. Product/build gates grown as **multi-thousand-line shell** under `script/` and `src/**/check.sh` instead of Lean or pure Nix.
+3. Product/build gates grown as **multi-thousand-line shell** under `script/` and former `src/**/check.sh` instead of Lean or pure Nix.
 4. Human rejection: **three languages only**; pure small Nix modules; architecture that respects large language model attention and compaction -- not Python, not bash-in-Nix, not kitchen-sink files.
 
 **Core lesson:** ask **where the algorithm lives**. If it lives in `.py` or a long shell string (including inside Nix), you have not done the work.
@@ -883,10 +883,10 @@ nix/
     residual-free-measure.nix # PRODUCT-RESIDUAL-FREE-MEASURE forbidden managed residual + honesty (claim A)
     unit-deepen.nix           # UNIT_DEEPEN_V1 units + companions
     unit-walk.nix             # dynamic SKELETON|UNIT_SURFACE walk + skip dirs
-  idris-side-presence/        # dual Idris static presence (Wave A; was check.sh mill)
+  idris-side-presence/        # dual Idris static presence (Wave A; check.sh deleted)
     default.nix               # pure eval: { ok, violations, summary }
     specs.nix                 # required paths + tokens + examples jargon
-  lean-side-presence/         # dual Lean static presence (Wave A; was check.sh mill)
+  lean-side-presence/         # dual Lean static presence (Wave A; check.sh deleted)
     default.nix               # pure eval: { ok, violations, summary }
     specs.nix                 # required paths + tokens + examples jargon
   progress/
@@ -956,5 +956,5 @@ Later: real builds and tests as defined in residual -- not vibes.
 - Add or restore project Python (`*.py`) -- upstream helpers under `skills/` do not license novel project Python
 - Add or grow shell/bash mills; restore deleted mills (`progress.py`, `check-source-hygiene.*`, `check-all.sh`, `watch-forks.sh`)
 - Smuggle tool logic through bash-in-Nix / shell-in-Nix / Python-in-Nix or flake apps that are only shell farms
-- Grow kitchen-sink `flake.nix`, mega `nix/` modules, or multi-thousand-line `check.sh` / emit shell instead of Lean or pure Nix
+- Grow kitchen-sink `flake.nix`, mega `nix/` modules, or restore multi-thousand-line `check.sh` / emit shell instead of Lean or pure Nix
 - Hide project skills only under host home dirs when the pack is already a repo submodule -- keep discovery under `.agents/skills/`

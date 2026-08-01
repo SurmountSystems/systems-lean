@@ -10,7 +10,7 @@ Greppable one-liners. Update when this workspace lands slices. Residual board: `
 | EX-SHARE | `src/lean4/examples/UnrestrictedShare.lean` | Classic Lean dual of algorithm UnrestrictedShare (MULT-OMEGA); not freestanding |
 | EX-TRUST | `src/lean4/examples/TRUST.md` | Trusted computing base notes for dual examples; pairs Idris TRUST |
 | JOIN-ALG | algorithm ids `ConsumeToken`, `ErasedIndex`, `UnrestrictedShare` | Paired with Idris under `src/idris2/examples/` |
-| CHECK | `src/lean4/check.sh` | Presence gate + optional Lake elaborator when lean/lake and pinned toolchain installed |
+| CHECK | `just lean-side` / `just lean-elaborate` | Pure Nix presence + optional Lake elaborator when pin installed |
 | LAKE | `src/lean4/lakefile.toml`, `lean-toolchain` | Minimal classic Lean package for dual examples (no freestanding claim) |
 
 ## Paired status (Idris duals present)
@@ -26,7 +26,7 @@ Greppable one-liners. Update when this workspace lands slices. Residual board: `
 ## What the Idris side should do next
 
 1. Align MULT-* / EDGE-* with Lean crosswalk if drift appears (Idris residual owns Idris files).
-2. Optional real `idris2 --check` gate when toolchain available (`src/idris2/check.sh`).
+2. Optional real `idris2 --check` gate when toolchain available (`just idris-elaborate`).
 3. Stay out of `src/systems/` freestanding body unless reassigned.
 
 ## What the coordinator should do next

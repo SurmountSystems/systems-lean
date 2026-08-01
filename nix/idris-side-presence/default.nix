@@ -8,7 +8,7 @@
 #
 # Specs data: ./specs.nix. Flake: checks.idris-side-presence.
 # Live gate (does not require git-tracked flake store): just idris-side
-# Thin src/idris2/check.sh retains optional idris2 --check only.
+# Optional elaborator process glue: just idris-elaborate (not pure eval).
 { lib, root }:
 let
   specs = import ./specs.nix;

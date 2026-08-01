@@ -1,7 +1,8 @@
 # Systems Lean -- thin task runner only (https://github.com/casey/just)
 # Three languages only for novel work: Idris 2, Lean 4 (Slake/Systems Lean), pure Nix.
 # just orchestrates (redirects, loops). Does not host product or tooling algorithms.
-# Residual script/*.sh and fat check.sh are scheduled deletion / process glue -- pay down, do not grow.
+# Process glue: thin just recipes (elaborators / cc) + optional script/git-hooks/pre-commit.
+# Novel workspace check.sh deleted; static mills are pure Nix under nix/.
 # Plan: .agents/plans/plan-paydown-shell-c-surfaces.md
 
 set shell := ["bash", "-euo", "pipefail", "-c"]
@@ -83,15 +84,15 @@ in if h.ok then h.summary + "\n" else throw h.summary
 default:
     @just --list
 
-# Full suite: product wire first (just build), then pure gates + flake + residual glue.
+# Full suite: product wire first (just build), then pure gates + flake + process glue.
 # Live pure gates (systems-host, systems-emit-wire, idris-side, lean-side, hygiene)
 # use impure eval of the worktree and do not require new nix/ files to be
 # git-tracked. nix flake check only sees tracked files -- after adding under
 # nix/ (or related flake copy paths), the human must stage those paths before
 # flake/continuous integration (CI) match. Agents never git add / stage / commit
 # to silence flake WARN (human-in-the-loop (HITL) stage; see AGENTS.md Nix tooling).
-# On flake failure, residual workspace scripts still run; suite exits non-zero.
-# SYSTEMS_PRODUCT_WIRE_FRESH=1 tells src/systems/check.sh to skip a second just build.
+# On flake failure, elaborator/cc recipes still run; suite exits non-zero.
+# SYSTEMS_PRODUCT_WIRE_FRESH=1 tells systems-cc-probe to skip a second just build.
 check: build hygiene systems-host systems-emit-wire idris-side lean-side
     #!/usr/bin/env bash
     set -euo pipefail
@@ -110,11 +111,12 @@ check: build hygiene systems-host systems-emit-wire idris-side lean-side
       echo "nix/ and related flake copy paths), then re-run. No fixed path list here (rots)." >&2
       echo "Policy: AGENTS.md (Nix tooling / HITL stage + Git hands-off)." >&2
     fi
-    if [[ -f ./src/idris2/check.sh ]]; then bash ./src/idris2/check.sh; fi
-    if [[ -f ./src/lean4/check.sh ]]; then bash ./src/lean4/check.sh; fi
-    if [[ -f ./src/systems/check.sh ]]; then bash ./src/systems/check.sh; fi
+    just idris-elaborate
+    just lean-elaborate
+    just systems-lake
+    just systems-cc-probe
     if [[ "$flake_rc" -ne 0 ]]; then
-      echo "check incomplete: flake rc=$flake_rc (live pure gates + workspace scripts ran)" >&2
+      echo "check incomplete: flake rc=$flake_rc (live pure gates + elaborator recipes ran)" >&2
       exit "$flake_rc"
     fi
     echo "check OK"
@@ -4369,14 +4371,186 @@ systems-emit-wire:
 product-residual-free-measure: systems-emit-wire
 
 # Pure Nix Idris-side dual presence (required files + tokens + examples jargon).
-# Live impure worktree eval. Thin src/idris2/check.sh is optional elaborator only.
+# Live impure worktree eval. Optional elaborator: just idris-elaborate.
 idris-side:
     @nix eval --impure --raw --expr {{quote(_idris_side)}}
 
 # Pure Nix Lean-side dual presence (required files + tokens + examples jargon).
-# Live impure worktree eval. Thin src/lean4/check.sh is optional Lake only.
+# Live impure worktree eval. Optional elaborator: just lean-elaborate.
 lean-side:
     @nix eval --impure --raw --expr {{quote(_lean_side)}}
+
+# Optional idris2 --check on dual examples. Skip GREEN if idris2 missing; RED if check fails.
+# Static presence: just idris-side. Module names match basenames (ConsumeToken, ...).
+idris-elaborate:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    fail=0
+    if command -v idris2 >/dev/null 2>&1; then
+      echo "== idris2 --check (optional when binary present) =="
+      for f in ConsumeToken.idr ErasedIndex.idr UnrestrictedShare.idr; do
+        if ! (cd src/idris2/examples && idris2 --check "$f"); then
+          echo "RED: idris2 --check failed on $f" >&2
+          fail=1
+        else
+          echo "ok idris2 --check $f"
+        fi
+      done
+    else
+      echo "skip idris2 --check (not on PATH; pure Nix idris-side presence still required via just idris-side)"
+    fi
+    if [[ "$fail" -ne 0 ]]; then
+      echo "idris-elaborate RED" >&2
+      exit 1
+    fi
+    echo "idris-elaborate GREEN (static presence: just idris-side)"
+
+# Shared: return 0 if elan lists the wanted toolchain (strips " (default)" suffixes).
+_elan-has-toolchain want:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    want="{{want}}"
+    while IFS= read -r line; do
+      [[ -z "$line" ]] && continue
+      base=${line%% (*}
+      base=${base%"${base##*[![:space:]]}"}
+      if [[ "$base" == "$want" ]]; then
+        exit 0
+      fi
+    done < <(elan toolchain list 2>/dev/null || true)
+    exit 1
+
+# Shared: optional lake build under dir when lean+lake and pin ready (or SYSTEMS_LEAN_LAKE=1).
+# Skip is GREEN. Avoids network toolchain download when pin not installed.
+_lake-if-pin dir label:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    here="{{dir}}"
+    label="{{label}}"
+    run_lake=0
+    if command -v lean >/dev/null 2>&1 && command -v lake >/dev/null 2>&1; then
+      want=$(tr -d '[:space:]' < "$here/lean-toolchain")
+      if command -v elan >/dev/null 2>&1; then
+        if just _elan-has-toolchain "$want"; then
+          run_lake=1
+        else
+          echo "skip $label elaborator (toolchain $want not installed; avoid network download)"
+        fi
+      elif [[ "${SYSTEMS_LEAN_LAKE:-}" == "1" ]]; then
+        echo "$label elaborator: no elan; SYSTEMS_LEAN_LAKE=1 set -- running PATH lake build"
+        run_lake=1
+      else
+        echo "skip $label elaborator (elan not on PATH; set SYSTEMS_LEAN_LAKE=1 to force PATH lake build)"
+      fi
+    else
+      echo "skip $label elaborator (lean and/or lake not on PATH)"
+    fi
+    if [[ "$run_lake" -eq 1 ]]; then
+      echo "== lake build ($label) =="
+      if ! (cd "$here" && lake build); then
+        echo "RED: lake build failed for $here" >&2
+        exit 1
+      fi
+      echo "ok lake build ($label)"
+    fi
+
+# Optional lake build in src/lean4 (dual examples). Same elan pin / SYSTEMS_LEAN_LAKE rules.
+# Static presence: just lean-side.
+lean-elaborate:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    just _lake-if-pin src/lean4 lean-side
+    echo "lean-elaborate GREEN (static presence: just lean-side)"
+
+# Optional lake build in src/systems (host bootstrap elaborator). Same elan skip rules.
+# CompilePath presence is pure Nix (just systems-host); not re-checked here.
+systems-lake:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    just _lake-if-pin src/systems systems
+    echo "systems-lake GREEN (static: just systems-host / systems-emit-wire)"
+
+# Freestanding-first cc -c on emit + link/run behavioral probe.
+# Under just check, SYSTEMS_PRODUCT_WIRE_FRESH=1 skips second just build (build already ran).
+# Solo: runs just build unless FRESH=1. Soft GREEN if no cc; RED if emit missing or tests fail.
+# Static probe path: just systems-emit-wire. Not residual free; not PROVABLY.
+systems-cc-probe:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    fail=0
+    emit_c=src/systems/emit/slake_freestanding.c
+    emit_h=src/systems/emit/slake_freestanding.h
+    probe=src/systems/smoke/slake_behavioral_probe.c
+    echo "== systems-cc-probe (product wire exercise) =="
+    if [[ "${SYSTEMS_PRODUCT_WIRE_FRESH:-}" == "1" ]]; then
+      echo "ok product wire already fresh from just check/build (SYSTEMS_PRODUCT_WIRE_FRESH=1; skip regenerate)"
+    elif ! just build; then
+      echo "RED: just build non-zero" >&2
+      fail=1
+    else
+      echo "ok just build GREEN"
+    fi
+    if [[ ! -f "$emit_c" || ! -f "$emit_h" ]]; then
+      echo "RED: emit product missing ($emit_c / $emit_h)" >&2
+      fail=1
+    else
+      echo "ok emit product .c/.h"
+    fi
+    if [[ ! -f out/freestanding-c/slake_freestanding.c || ! -f out/freestanding-c/slake_freestanding.h ]]; then
+      echo "RED: out/freestanding-c product missing" >&2
+      fail=1
+    else
+      echo "ok release surface"
+    fi
+    if [[ "$fail" -ne 0 ]]; then
+      echo "systems-cc-probe RED (product wire missing)" >&2
+      exit 1
+    fi
+    if ! command -v cc >/dev/null 2>&1; then
+      echo "ok compile + behavioral tests skipped (no cc)"
+    else
+      o="${TMPDIR:-/tmp}/slake_fs_smoke.o"
+      inc=$(dirname "$emit_c")
+      mode=""
+      if cc -c -std=c11 -ffreestanding -nostdlib -I"$inc" -o "$o" "$emit_c" 2>/dev/null; then
+        mode=ffreestanding-nostdlib
+      elif cc -c -std=c11 -I"$inc" -o "$o" "$emit_c" 2>/dev/null; then
+        mode=hosted-fallback
+      fi
+      rm -f "$o"
+      if [[ -n "$mode" ]]; then
+        echo "ok freestanding-first compile ($mode)"
+      else
+        echo "RED: freestanding-first compile failed" >&2
+        fail=1
+      fi
+      if [[ ! -f "$probe" ]]; then
+        echo "RED: missing $probe" >&2
+        fail=1
+      else
+        d="${TMPDIR:-/tmp}/slake_beh_$$"
+        mkdir -p "$d"
+        if ! cc -std=c11 -I"$inc" -o "$d/probe" "$probe" "$emit_c" 2>/dev/null; then
+          echo "RED: behavioral tests failed to link" >&2
+          fail=1
+        else
+          rc=0
+          "$d/probe" || rc=$?
+          if [[ "$rc" -eq 0 ]]; then
+            echo "ok behavioral tests ($probe)"
+          else
+            echo "RED: behavioral tests assert code=$rc" >&2
+            fail=1
+          fi
+        fi
+        rm -rf "$d"
+      fi
+    fi
+    if [[ "$fail" -ne 0 ]]; then
+      echo "systems-cc-probe RED" >&2
+      exit 1
+    fi
+    echo "systems-cc-probe GREEN (process glue; static pure Nix; not residual free)"
 
 # Poll: meters + scc + hygiene. Interval is loop sleep, not cycle cost.
 # Override: WATCH_INTERVAL=60 just watch

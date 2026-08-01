@@ -503,7 +503,7 @@ from chat.
 
 **Systems reseed after compaction:** `RESIDUAL-systems.md` -> `src/systems/README.md` ->
 `emit/host-owned-emit.md` -> `self-host.md` -> module headers. Gates:
-`just systems-host`, `just systems-emit-wire`, `just hygiene`, `./src/systems/check.sh`.
+`just systems-host`, `just systems-emit-wire`, `just hygiene`, `just systems-lake`, `just systems-cc-probe`.
 
 ---
 
@@ -534,7 +534,7 @@ Novel work uses **only**:
 2. **Lean 4** -- `src/lean4/` and `src/systems/` (Systems Lean / **Slake**)
 3. **Pure Nix flakes** -- small modules under `nix/` (not bash-in-Nix, not kitchen-sink files; layout for large language model attention and compaction)
 
-No project Python. Do not grow shell. Large residual `.sh` under `script/` and fat workspace `check.sh` bodies are **scheduled deletion** (pay down; plan `.agents/plans/plan-paydown-shell-c-surfaces.md`), not a template. Freestanding C under `out/` is **product wire** (emit output), not a source language for the project. Do not accumulate labeled debt when Lean/Nix ports are available.
+No project Python. Do not grow shell. Novel workspace `check.sh` **deleted** (process glue is just elaborator/cc recipes + optional pre-commit). Plan `.agents/plans/plan-paydown-shell-c-surfaces.md`. Freestanding C under `out/` is **product wire** (emit output), not a source language for the project. Do not accumulate labeled debt when Lean/Nix ports are available.
 
 Read `AGENTS.md` (**Three languages only** + **Nix tooling**) and `doc/vocabulary.md` before adding any tool or gate.
 

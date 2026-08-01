@@ -5,7 +5,6 @@
 # Skeleton docs/slake + Lake pin + Mult..SelfHostBody host ladder.
 requiredFiles = [
   "src/systems/README.md"
-  "src/systems/check.sh"
   "src/systems/types.md"
   "src/systems/mult.md"
   "src/systems/linear.md"

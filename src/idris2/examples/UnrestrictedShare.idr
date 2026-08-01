@@ -15,7 +15,7 @@
 |||   Unrestricted sharing here is not freestanding product C.
 |||
 ||| Prefer: idris2 --check examples/UnrestrictedShare.idr  (when idris2 is on PATH)
-module Examples.UnrestrictedShare
+module UnrestrictedShare
 
 %default total
 

@@ -11,7 +11,6 @@
     "src/idris2/examples/UnrestrictedShare.idr"
     "src/idris2/examples/TRUST.md"
     "src/idris2/JOIN.md"
-    "src/idris2/check.sh"
   ];
 
   # File content honesty tokens (all must appear; anyGroups optional).
@@ -47,7 +46,7 @@
     }
   ];
 
-  # Banned jargon under novel Idris examples only (not check.sh self-text).
+  # Banned jargon under novel Idris examples only.
   jargonWalkRoot = "src/idris2/examples";
   jargonWalkSkipDirs = [
     ".git"

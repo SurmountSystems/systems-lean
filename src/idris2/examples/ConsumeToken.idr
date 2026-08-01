@@ -15,7 +15,7 @@
 |||   This file is a correspondence seed, not Slake emit.
 |||
 ||| Prefer: idris2 --check examples/ConsumeToken.idr  (when idris2 is on PATH)
-module Examples.ConsumeToken
+module ConsumeToken
 
 %default total
 

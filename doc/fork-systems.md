@@ -54,7 +54,7 @@ Living residual: plain **Open Names** in RESIDUAL-systems.md (Goal / Done when /
 - Do not start out/llvm-ir pipeline (deferred until self-hosted Systems Lean / Slake).
 - Do not restore deleted bash emit or mint new EMIT_* C stages as residual.
 - Pin preferences to AGENTS.md same turn when the human teaches process.
-- Red/green when applicable: failing check or test first, then fix, then green just check / just build / src/systems/check.sh.
+- Red/green when applicable: failing check or test first, then fix, then green just check / just build / just systems-cc-probe.
 - Spec then proof when formal: separate statement from proof; proofs do not retire tests.
 
 ## Subagents and token efficiency (mandatory)
@@ -99,7 +99,7 @@ Authoritative ledger: `RESIDUAL-systems.md` (this list is a paste prompt snapsho
 6. Do not touch out/llvm-ir or CompCert PROVABLY until residual and evidence allow.
 7. Every durable slice: update residual + WATCHER + SESSION-HANDOFF + ownership/README as
    needed (AGENTS.md **Document slices so they survive compaction**); gates:
-   systems-host / systems-emit-wire / hygiene / src/systems/check.sh / just check.
+   systems-host / systems-emit-wire / hygiene / systems-lake / systems-cc-probe / just check.
    Host Lean slices: load `.agents/skills/lean4` (draft/prove/review/doctor).
 
 ## Implement loop design (run this mode)
@@ -124,8 +124,8 @@ Great, what do we need to work on next to manifest that consideration along with
 
 ## Validation (run yourself)
 just build
-./src/systems/check.sh
-just build
+just systems-lake
+just systems-cc-probe
 just check
 just hygiene
 Update RESIDUAL-systems.md. Re-read doc/fork-guidance-systems.md each loop. Coordinator owns RESIDUAL.md join board and meters.

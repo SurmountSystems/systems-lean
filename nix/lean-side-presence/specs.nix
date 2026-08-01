@@ -11,7 +11,6 @@
     "src/lean4/examples/UnrestrictedShare.lean"
     "src/lean4/examples/TRUST.md"
     "src/lean4/JOIN.md"
-    "src/lean4/check.sh"
     "src/lean4/lakefile.toml"
     "src/lean4/lean-toolchain"
     "src/lean4/lake-manifest.json"
@@ -53,7 +52,7 @@
     }
   ];
 
-  # Banned jargon under novel Lean examples only (not check.sh self-text).
+  # Banned jargon under novel Lean examples only.
   jargonWalkRoot = "src/lean4/examples";
   jargonWalkSkipDirs = [
     ".git"

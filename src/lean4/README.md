@@ -20,7 +20,6 @@ Lean 4 half of the meet-in-the-middle correspondence (kernel, elaborator, proof 
 | `examples/UnrestrictedShare.lean` | Dual algorithm id UnrestrictedShare (MULT-OMEGA focus) |
 | `examples/TRUST.md` | Trusted computing base notes for the examples |
 | `JOIN.md` | Greppable join points for the coordinator |
-| `check.sh` | Presence gate + optional Lake elaborator red/green |
 | `lakefile.toml` | Minimal Lake package (no remote deps) for classic elaborator |
 | `lean-toolchain` | Pin matching installed elan (currently v4.32.0) |
 | `lake-manifest.json` | Offline empty-deps snapshot (no remote packages) |
@@ -32,13 +31,14 @@ Prefer **Idris side** / **Lean side**. Follow AGENTS.md language rules.
 ## Validation
 
 ```bash
-just check
-./src/lean4/check.sh
+just lean-side          # pure Nix presence
+just lean-elaborate     # optional lake build (skip if pin missing)
+just check              # full suite
 ```
 
 Presence files are always required (including the empty offline `lake-manifest.json`).
 
-Optional classic Lean elaborator (`lake build`; not freestanding):
+Optional classic Lean elaborator (`just lean-elaborate` -> `lake build`; not freestanding):
 
 1. **elan present:** run only if the pin in `lean-toolchain` appears in `elan toolchain list` (status suffixes like ` (default)` are ignored). Missing pin -> skip (no network download).
 2. **elan absent:** skip by default so a mismatched PATH lean cannot RED `just check`. Set `SYSTEMS_LEAN_LAKE=1` to force PATH `lake build` (elaborator RED is accepted if that install cannot build the pin).

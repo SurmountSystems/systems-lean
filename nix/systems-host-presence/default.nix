@@ -9,7 +9,7 @@
 #
 # Specs data: ./specs.nix. Flake: checks.systems-host-presence.
 # Live gate (does not require git-tracked flake store): just systems-host
-# Shell check.sh no longer owns host presence or tree-wide jargon.
+# Workspace check.sh deleted; process glue is just systems-lake / systems-cc-probe.
 { lib, root }:
 let
   specs = import ./specs.nix;

@@ -11,7 +11,7 @@
 - **Do not invent residual** on this side unless a real drift appears vs Idris dual. Second dual example only on human request.
 - Stay in `src/lean4/` (+ `RESIDUAL-lean.md`). Do not implement `src/idris2/` or freestanding body under `src/systems/`.
 - Language: Idris side / Lean side -- do not say "pole".
-- Validate with `just check` and `./src/lean4/check.sh`. Track work only in `RESIDUAL-lean.md`.
+- Validate with `just check` and `just lean-side` / `just lean-elaborate`. Track work only in `RESIDUAL-lean.md`.
 - Lake elaborator gate (L-LAKE) **done**: optional `lake build` when lean/lake and pinned toolchain installed; skip honestly otherwise; no freestanding claim.
 - Optional deferred only: formal map theorems (L-FORMAL-ISO) if residual still names them -- not freestanding emit.
 

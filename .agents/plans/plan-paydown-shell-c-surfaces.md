@@ -230,11 +230,11 @@ Targets after full plan (approximate):
 
 ## Verification (definition of done for this plan)
 
-1. Emit bash **absent**; Lean path is sole freestanding C generator for dogfood.
-2. Dual presence is pure Nix; dual check.sh deleted or elaborator-only thin.
-3. AGENTS scheduled-deletion list empty for shells that were targeted.
+1. Emit bash **absent**; Lean path is sole freestanding C generator for dogfood. **Met.**
+2. Dual presence is pure Nix; dual + systems `check.sh` **deleted**; elaborators are just recipes. **Met (2026-08-01).**
+3. AGENTS scheduled-deletion list empty for shells that were targeted (check.sh rows marked gone). **Met.**
 4. scc novel Shell under agreed cap; C explained as generated + tests.
-5. Green: hygiene, systems-host, systems-emit-wire, just build, probe, just check (HITL flake stage as needed).
+5. Green: hygiene, systems-host, systems-emit-wire, just build, systems-cc-probe, just check (HITL flake stage as needed).
 6. No residual-free / PROVABLY / llvm unlock claims.
 
 ---
@@ -271,6 +271,6 @@ Targets after full plan (approximate):
 - `script/slake-emit-freestanding-c.sh` -- main kill
 - `src/systems/SystemsLean/Emit*.lean` -- Lean emit ownership
 - `nix/systems-host-presence/` -- dual presence pattern
-- `src/*/check.sh` -- thin or delete
+- `src/*/check.sh` -- **deleted** (just idris-elaborate / lean-elaborate / systems-lake / systems-cc-probe)
 - `AGENTS.md` -- scheduled deletion vs permanent roles
 - `justfile` / `flake.nix` -- wire

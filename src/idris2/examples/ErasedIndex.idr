@@ -15,7 +15,7 @@
 |||   in the trust base. This file is a correspondence seed, not Slake emit.
 |||
 ||| Prefer: idris2 --check examples/ErasedIndex.idr  (when idris2 is on PATH)
-module Examples.ErasedIndex
+module ErasedIndex
 
 import Data.Vect
 

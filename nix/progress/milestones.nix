@@ -113,8 +113,10 @@
     weight = 3;
     stream = "idris";
     phase = "bridge";
-    done = exists "src/idris2/check.sh";
-    note = "src/idris2/check.sh";
+    done =
+      exists "src/idris2/JOIN.md"
+      && exists "src/idris2/examples/ConsumeToken.idr";
+    note = "just idris-side pure presence (+ just idris-elaborate optional)";
   }
   {
     id = "lean_check";
@@ -122,8 +124,11 @@
     weight = 3;
     stream = "lean";
     phase = "bridge";
-    done = exists "src/lean4/check.sh";
-    note = "src/lean4/check.sh";
+    done =
+      exists "src/lean4/JOIN.md"
+      && exists "src/lean4/examples/ConsumeToken.lean"
+      && exists "src/lean4/lakefile.toml";
+    note = "just lean-side pure presence (+ just lean-elaborate optional)";
   }
   {
     id = "dual_pair";

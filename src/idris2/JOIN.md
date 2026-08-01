@@ -10,7 +10,7 @@ Greppable one-liners. Update when this side lands slices.
 | EX-SHARE | `src/idris2/examples/UnrestrictedShare.idr` | Native Idris UnrestrictedShare MULT-OMEGA copy/drop/multi-use; not freestanding |
 | EX-TRUST | `src/idris2/examples/TRUST.md` | Trusted computing base notes for dual examples |
 | JOIN-ALG | algorithm ids `ConsumeToken`, `ErasedIndex`, `UnrestrictedShare` | Mirror Lean side under `src/lean4/examples/` |
-| CHECK | `src/idris2/check.sh` | Red/green presence check for this side's required files |
+| CHECK | `just idris-side` / `just idris-elaborate` | Pure Nix presence + optional idris2 --check process glue |
 
 ## What Lean side should do next
 

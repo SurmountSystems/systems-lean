@@ -4,7 +4,7 @@ Idris 2 side of the meet-in-the-middle correspondence (Quantitative Type Theory,
 
 - Upstream reference only: `ref/Idris2` (read-only).
 - Freestanding compiler host is `src/systems/` (not this tree).
-- Validate: `./src/idris2/check.sh` then `just check`.
+- Validate: `just idris-side` (static) then optional `just idris-elaborate`; full suite `just check`.
 - Residual ledger: `RESIDUAL-idris.md` (root). Say **Idris side** / **Lean side** (see AGENTS.md language rules).
 
 ## Layout
@@ -17,7 +17,6 @@ Idris 2 side of the meet-in-the-middle correspondence (Quantitative Type Theory,
 | `examples/UnrestrictedShare.idr` | Native dual -- MULT-OMEGA unrestricted share (algorithm id UnrestrictedShare) |
 | `examples/TRUST.md` | Trusted computing base honesty |
 | `JOIN.md` | Greppable join table for coordinator |
-| `check.sh` | Red/green required-file check (+ optional idris2 --check) |
 
 ## Language
 

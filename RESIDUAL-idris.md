@@ -22,7 +22,7 @@ Re-read `doc/fork-guidance-idris.md` at the start of every implement loop.
 | Native ErasedIndex (MULT-0) | **done** | `examples/ErasedIndex.idr` |
 | Native UnrestrictedShare (MULT-OMEGA) | **done** | `examples/UnrestrictedShare.idr` |
 | JOIN greppable join points (three algorithm ids) | **done** | `src/idris2/JOIN.md` |
-| Presence red/green gate | **done** | `src/idris2/check.sh` (required files + greps + optional idris2) |
+| Presence red/green gate | **done** | pure Nix `just idris-side`; optional elaborator `just idris-elaborate` (check.sh deleted) |
 | EDGE-* join aliases to Lean map ids | **done** | multiplicity-map Join aliases + JOIN MULT-MAP claim |
 | Language pass on Idris-owned surfaces | **done** | no banned jargon in `.idr` modules |
 
@@ -36,7 +36,7 @@ Re-read `doc/fork-guidance-idris.md` at the start of every implement loop.
 |----------|------|--------|--------------------|
 | 1 | Three native duals (MULT-0 / 1 / OMEGA focus) | **done** | ConsumeToken, ErasedIndex, UnrestrictedShare + Lean duals |
 | 2 | Optional `idris2 --check` path honesty | **done** | skip if missing; RED if present and fails |
-| 3 | Wire `idris2` into project devShell for stronger CI | **done** | Flake `devShells.default` includes `pkgs.idris2`; check.sh still skips if binary absent outside the shell |
+| 3 | Wire `idris2` into project devShell for stronger CI | **done** | Flake `devShells.default` includes `pkgs.idris2`; `just idris-elaborate` skips if binary absent outside the shell |
 | 4 | Further native duals only when product map needs them | **open** (deferred) | Do not pad LOC; new algorithm id must dual with Lean |
 | 5 | Merge imperfect edges into `doc/divergence.md` | **blocked** (this fork) | **Coordinator** owns join into divergence |
 

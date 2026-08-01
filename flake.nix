@@ -167,7 +167,7 @@
               # Workspace checks skip Lake when the pin is not installed (no network).
               pkgs.elan
               # Idris 2 elaborator for bridge-side checks (skip-if-missing honesty in
-              # src/idris2/check.sh when binary absent outside this shell).
+              # just idris-elaborate when binary absent outside this shell).
               pkgs.idris2
             ];
             shellHook = ''

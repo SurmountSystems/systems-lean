@@ -13,7 +13,7 @@
 - Jargon: unpack **product wire** and **host model** (not AI model) -- `doc/vocabulary.md`, `AGENTS.md`.
 - Stay in `src/systems/` (+ `RESIDUAL-systems.md`). Duals read-only.
 - Language: Systems / Slake, Idris side, Lean side -- do not say "pole."
-- Validate: `just systems-host`, `just systems-emit-wire`, `just hygiene`, `./src/systems/check.sh`, `just check`.
+- Validate: `just systems-host`, `just systems-emit-wire`, `just hygiene`, `just systems-lake`, `just systems-cc-probe`, `just check`.
 - Hard non-claims: no freestanding residual free without evidence; no freestanding product self-host complete from SH5 partial alone; no proof complete from HOST-SPEC-PROOF alone; no PROVABLY; no `out/llvm-ir` before true freestanding product self-host; no product GC.
 
 ## Status snapshot

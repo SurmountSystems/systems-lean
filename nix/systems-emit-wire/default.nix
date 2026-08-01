@@ -11,7 +11,7 @@
 #
 # Specs data: ./specs.nix. Flake: checks.systems-emit-wire.
 # Live gate (does not require git-tracked flake store): just systems-emit-wire
-# Shell check.sh no longer owns these static mills (driver runs + link/run smoke remain).
+# Workspace check.sh deleted; link/run smoke is just systems-cc-probe process glue.
 { lib, root }:
 let
   specs = import ./specs.nix;

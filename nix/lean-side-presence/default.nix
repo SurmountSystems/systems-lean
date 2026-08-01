@@ -8,7 +8,7 @@
 #
 # Specs data: ./specs.nix. Flake: checks.lean-side-presence.
 # Live gate (does not require git-tracked flake store): just lean-side
-# Thin src/lean4/check.sh retains optional Lake elaborator only.
+# Optional elaborator process glue: just lean-elaborate (not pure eval).
 { lib, root }:
 let
   specs = import ./specs.nix;

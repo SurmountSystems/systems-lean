@@ -26,7 +26,7 @@ WATCHER implement prompts into this file (policy: root `AGENTS.md`
 | Generated product C (dogfood) | `emit/slake_freestanding.{c,h}` |
 | Hosted behavioral probe (not product body) | `smoke/slake_behavioral_probe.c` |
 | Release surface (copy of emit) | `../../out/freestanding-c/` |
-| Process glue (optional Lake + build + cc) | `check.sh` |
+| Process glue (optional Lake + cc probe) | root just: `systems-lake`, `systems-cc-probe` |
 
 Language inventory and freestanding C git policy SSoT: root `AGENTS.md`
 (**Three languages only**). Product wire consumers: `out/freestanding-c/README.md`.
@@ -73,7 +73,8 @@ just linear-subset-emit  # ideal M1 Linear subset freestanding package (Lake hos
 just linear-subset-rebuild  # M1 Linear subset self-application (Lake host)
 just systems-host    # pure Nix host presence
 just systems-emit-wire  # pure Nix emit-wire / unit walk
-./src/systems/check.sh  # optional Lake + build + probe (incomplete alone)
+just systems-lake    # optional host lake build (skip if pin missing)
+just systems-cc-probe  # freestanding-first cc + behavioral probe (after build)
 ```
 
 IR design sketch (not residual): `doc/shared-ir-sketch.md`.

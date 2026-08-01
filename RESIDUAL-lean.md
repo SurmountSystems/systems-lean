@@ -31,7 +31,7 @@ are mainly `.lean` / Lake proofs under `src/lean4/`, load project skill
 | L-EDGE-XWALK | Durable Lean <-> Idris edge crosswalk | **done** | multiplicity-map edge table |
 | L-README | README dual status + residual pointer | **done** | `README.md` |
 | L-JARGON | Language hygiene under Lean product sources | **done** | examples clean of banned jargon |
-| L-CHECK-SH | Presence/syntax red/green gate | **done** | `check.sh` |
+| L-CHECK-SH | Presence/syntax red/green gate | **done** | pure Nix `just lean-side`; optional `just lean-elaborate` (check.sh deleted) |
 | L-LAKE | Minimal Lake package + optional elaborator | **done** | `lakefile.toml` roots for three examples |
 | L-RESIDUAL | Living inventory in this file | **done** (kept current) | this file |
 
