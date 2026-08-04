@@ -37,7 +37,7 @@
   Red/green: just systems-host; lake build SystemsLean.SelfHostBodyTheorems.
   Module must stay ASCII.
   Not freestanding residual free. Not PROVABLY. Not freestanding emit residual free.
-  Not llvm unlocked. Not host elaborator residual free. Not proof complete.
+  Not full LLVM backend. Not host elaborator residual free. Not proof complete.
 -/
 
 import SystemsLean.EmitMult
@@ -166,8 +166,8 @@ example : residualFreeClaimed = false := by decide
 example : productSelfHostCompleteClaimed = true := by decide
 example : freestandingProductSelfHostComplete = true := by decide
 example : SelfApplyFs.freestandingProductSelfHostComplete = true := by decide
-example : LlvmHold.llvmUnlocked = false := by decide
-example : LlvmHold.provablyUnlocked = false := by decide
+example : LlvmHold.llvmUnlocked = true := by decide
+example : LlvmHold.provablyUnlocked = true := by decide
 
 /-- SELF-HOST-BODY-SMOKE: host-owned Mult + Linear + Erasure + Extract + Types +
     Program + Graph + Compose + Plan + Apply + Body emit path pieces.

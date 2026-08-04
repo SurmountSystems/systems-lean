@@ -52,40 +52,9 @@ Inventory prose: `skills/README.md`, `.agents/skills/README.md`. Lean entry poin
 
 ### When to reach for lean4 tools (planned / residual work)
 
-Use the project **lean4** skill as the default **host Lean** workbench whenever a residual Name, implement plan under `.agents/plans/`, or human task is mainly about **Lean sources, proofs, or Lake builds** under `src/systems/`, `src/lean4/`, or related host modules. Do **not** invent Open Names just to exercise the skill. Prefer freestanding product surface growth over pure theorem theater (see **Systems / Slake residual must grow Lean**).
+**Detail:** `doc/lean4-skill-use.md` (task-shape table + workstream map + residual slice loop).
 
-| Task shape (examples) | Reach for | How (host-agnostic) |
-|-----------------------|-----------|---------------------|
-| New host module / API surface with stubs or `sorry` | **draft** then **prove** (or **formalize** if claim + proof together) | "Use lean4 skill: draft skeletons for X, then guided prove" |
-| Long unattended sorry-fill with a budget | **autoprove** | "Use lean4 skill: autoprove with max cycles / wall budget; stop when stuck" |
-| Human wants to refute a bad claim, not prove it | **disprove** | Guided counterexample / negation search; do not rewrite the original theorem header |
-| Lake / elaborator errors, timeouts, instance soup | **doctor** + skill error refs | Diagnose environment, then compilation-errors / instance patterns |
-| Quality pass before calling a residual Name done | **review** (read-only) | After green `lake` / gates; review does not replace `just check` |
-| Proof works but is heavy or unreadable | **refactor** then optional **golf** | Only after correctness; keep freestanding claims honest |
-| Safe progress checkpoint (build + axiom scan) | **checkpoint** | **No agent `git commit`** -- report status; human signs commits |
-| Learning mathlib / Lean idioms for a dual or host proof | **learn** | Prefer skill pathways over ad-hoc web thrash |
-| Stuck mid-slice on a hard goal | **prove** cycle (plan / work / replan) | Use LSP tools when available; scripts via `skills/lean4-skills/plugins/lean4/bin` |
-
-**Map to this repo's workstreams** (not an Open queue -- guidance only):
-
-| Workstream | Paths | lean4 skill role |
-|------------|-------|------------------|
-| **Systems / Slake host** | `src/systems/**/*.lean` | Primary: draft/prove host theorems, fix Lake, review before Done when, doctor on build breaks. Product wire still comes from emit / freestanding C ownership docs -- skill does not replace emit SSOT. |
-| **Lean-side dual** | `src/lean4/**/*.lean` | Primary: dual examples, correspondence proofs, mathlib leverage, review/golf. |
-| **Idris-side dual** | `src/idris2/` | **Not** a lean4-skill target. Use Idris tools; skill only if you are temporarily in Lean duals. |
-| **Nix gates / hygiene / just** | `nix/`, `justfile` | **Not** lean4 skill. Pure Nix + project policy. |
-| **Emit / freestanding C product wire** | `emit/`, `out/freestanding-c/` | Skill helps **host Lean** that owns SSOT text and emit drivers; do not hand-author product C "with the skill." |
-| **Plans under `.agents/plans/`** | implement slices | When Done when mentions Lake, theorems, or `.lean` paths, load lean4 skill at slice start; still follow residual Name / Out of scope. |
-
-**Typical residual slice loop (host Lean):**
-
-1. Read residual **Name / Goal / Done when / Out of scope / Paths** (or the plan phase).
-2. Load `.agents/skills/lean4/SKILL.md` if any primary path is `.lean` or Lake.
-3. Prefer red/green project gates first (`just systems-host`, focused Lake, `just check` as appropriate).
-4. Use skill workflows for declaration/proof work; use project gates for "done."
-5. Document slice outcomes in residual / handoff / ownership maps as usual.
-
-**Do not use lean4 skill as a substitute for:** inventing residual, growing shell/C product work, forging freestanding/PROVABLY claims, agent commits, or pure Nix policy mills.
+Use the project **lean4** skill as the default **host Lean** workbench when residual or plan work is mainly `.lean` / Lake under `src/systems/` or `src/lean4/`. Do **not** invent Open Names only to exercise the skill. Prefer freestanding product surface growth over pure theorem theater. Skill does **not** replace emit SSOT (`emit/host-owned-emit.md`) or pure Nix gates.
 
 ### Policy overrides (this project wins)
 
@@ -155,7 +124,7 @@ These may appear on disk but are **not** places to implement new product or tool
 | **Bash-in-Nix / shell-in-Nix / Python-in-Nix** | Forbidden | Embedding a shell or Python program inside `writeShellApplication`, `runCommand`, or similar and calling it a flake is still shell/Python. Not allowed. |
 | **Freestanding C** (`out/freestanding-c/`, emit outputs) | **Product wire** (what Slake emits) | Generated release surface -- not a language for writing the project or its tools. Not "debt"; it is the product. |
 | **Markdown** | Human/agent prose | Docs and residual ledgers only -- not executable product. |
-| **`just` / justfile** | Thin task runner | May call Nix eval, print, sleep, or invoke **existing residual** scripts. Must not become a shell program farm. Keep recipes short. |
+| **`just` / justfile** | Thin task runner | Root `justfile` imports `just/*.just` (same namespace). May call Nix eval, print, sleep, or invoke **existing residual** scripts / lake exe. Must not become a shell program farm. Keep recipes short. See **Sub-1-KLOC** and **Never grow long bash in justfile** below. |
 | **`ref/`** | Read-only upstream | Do not treat upstream languages or scripts as our product stack. |
 
 ### Pay down, do not accumulate (hard rule)
@@ -190,7 +159,7 @@ Plan (waves): `.agents/plans/plan-paydown-shell-c-surfaces.md`.
 | `src/lean4/check.sh` | gone | **Met (delete glue):** deleted; static mill pure Nix (`just lean-side`); optional elaborator `just lean-elaborate` | pure Nix + thin just |
 | `script/build-systems.sh` | gone | **Met (Wave B):** deleted; product path is root `just build` (not a stamp-only recipe) | just product wire |
 | `script/out-freestanding-c.sh` | gone | **Met (Wave B):** deleted; former `just out-freestanding-c` recipe **retired** into `just build` (Wave C Lean emit + install) | just + Lean emit |
-| `script/slake-compile-path.sh` | gone | **Met (delete stamp):** shell stamp deleted; static unit walk + host presence pure Nix (`systems-emit-wire` / `systems-host`); host deepen `SLAKE_COMPILE_PATH_V1` / `HOST-COMPILE-PATH` in `SystemsLean/CompilePath.lean`; greppable retired id `SLAKE_COMPILE_PATH_V0` remains in `justfile` honesty only | pure Nix + Lean host |
+| `script/slake-compile-path.sh` | gone | **Met (delete stamp):** shell stamp deleted; static unit walk + host presence pure Nix (`systems-emit-wire` / `systems-host`); host deepen `SLAKE_COMPILE_PATH_V1` / `HOST-COMPILE-PATH` in `SystemsLean/CompilePath.lean`; greppable retired id `SLAKE_COMPILE_PATH_V0` remains in `just/product-wire.just` honesty only | pure Nix + Lean host |
 | `src/systems/check.sh` | gone | **Met (delete glue):** deleted; static mills pure Nix; optional Lake `just systems-lake`; product wire exercise `just systems-cc-probe` (no CompilePath shell re-check) | pure Nix + thin just |
 
 **Emit shell deleted (Wave C).** Do not restore `script/slake-emit-freestanding-c.sh`. Product wire comes from Lean emit / freestanding-capable path + emit templates + SSOT.
@@ -208,7 +177,45 @@ Plan (waves): `.agents/plans/plan-paydown-shell-c-surfaces.md`.
 | **Tool config** | `lakefile.lean` / `lakefile.toml`, `lake-manifest.json`, CI YAML | Config only. |
 | **Prose** | `doc/`, residuals, plans, README | Humans and agents; min useful. |
 
-**Target end state:** product and gates live in **Lean 4** / **Idris 2**; tooling lives in **small pure Nix modules**; `just` is a short menu; scheduled-deletion shells are **gone**; remaining shell is process glue only.
+**Target end state:** product and gates live in **Lean 4** / **Idris 2**; tooling lives in **small pure Nix modules**; `just` is a short modular menu; scheduled-deletion shells are **gone**; remaining shell is process glue only.
+
+### Sub-1-KLOC -- novel files stay under 1000 lines (hard rule)
+
+**Every novel file we keep must stay under 1000 lines on disk** (sub 1 KLOC). Applies to:
+
+| Surface | Rule |
+|---------|------|
+| **Root `justfile` + `just/*.just`** | Modular via `import` (same namespace so recipe names stay flat: `just check`, `just systems-host`). Root is a thin menu only (set shell, imports, `default`, `check`). Prefer each module well under ~800 so growth room exists. |
+| **Pure Nix under `nix/`** | Same bar; split data/helpers when a module grows past 1000. |
+| **Lean sources under `src/`** | Same as long-file residual (split seams; no full-file rebuild). |
+| **Novel prose / process surfaces** | Prefer under 1000; large residual/self-host maps may still need a named split residual. |
+
+**Growing any of the above past 1000 lines is residual** (split by role, or port gate logic to pure Nix). Do not leave an 8k-line just kitchen sink.
+
+**Honesty exceptions (do not claim "all files" green while these remain over):** permanent **product wire** C (`src/systems/emit/*.{c,h}`, `out/freestanding-c/`), large generated writers, and living maps such as `src/systems/self-host.md` until a named generator/doc split residual. Behavioral probe C is a permanent test role, not a license to grow hand-written product C.
+
+**Map:** `just/README.md`. Pure Nix gate paths that scan just recipes must point at the owning `just/*.just` module (not only root `justfile`).
+
+### Never grow long bash in justfile (hard rule)
+
+**Never** dump multi-hundred-line bash programs into root `justfile` or `just/*.just` for residual progress or presence gates. `just` is a **thin task menu only**.
+
+| Gate / check shape | Where it lives |
+|--------------------|----------------|
+| File existence, token presence, pin shapes, forge bans | **Pure Nix** under `nix/<small-module>/` (idiomatic flake checks; split if >~100-150 lines; one job per file). Mirror `systems-host-presence` / `systems-emit-wire` / `systems-llvm-ir`. |
+| Live impure eval | Thin just: `nix eval --impure --raw --expr ...` of the pure module (e.g. `just systems-host`, `just systems-llvm-ir`). |
+| Lake / host writers | Thin just: short banner (one stage id), `lake build` / `lake exe`, then re-eval pure gate or rely on `just systems-llvm-ir`. |
+| Sleep / print / recipe chain | Thin orchestration only (`just llvm-unit-package` may call `just llvm-mult-text` ... then pure join). |
+
+**Forbidden in just recipe bodies:**
+
+- Copy-paste token `for` loops across many nearly identical recipes
+- Residual honesty / non-claims essays as the gate body on stdout (driver stdout policy still applies)
+- New bash-in-Nix (`writeShellApplication` policy mills) as a "fix" for long just recipes
+- Restoring `script/*.sh` mills or inventing project Python for the same greps
+- Growing any single just module (or root justfile) to **>= 1000 lines** (see **Sub-1-KLOC**)
+
+**Pattern (llvm IR paid down):** static Mult..Graph / emit-path / hold greps live in `nix/systems-llvm-ir/`; just `llvm-*-text` recipes only invoke lake writers + pure presence; `just systems-llvm-ir` is the live pure gate. Fold live pure gates into `just check` when honesty requires it (same HITL stage rule as other `nix/` modules).
 
 ### Non-product surfaces (scc honesty)
 
@@ -286,6 +293,20 @@ Hunter **hates approval modals**. They steal focus, hide the actual text, and ac
 - **No structured questionnaires** for plan approval or residual clarification. Do not use multi-choice quiz tools (`ask_user_question` or similar). Put the full plan (or the open question) in chat and wait for freeform **Approve** / revise / abandon (or a clear prose answer). Unresolved plan options use documented defaults in the plan, not a quiz.
 
 ### Language (agent UX) -- natural, precise, not lazy
+
+### Talk like a normal person (hard rule)
+
+Chat replies, plans, residual Names, watcher text, and handoff status use **plain American English** and complete thoughts. Jargon that needs a decoder ring is a process bug: rewrite it.
+
+| Do | Do not |
+|----|--------|
+| Name the real thing in a full phrase (what it is, then a path if useful) | Short residual slang that only agents know |
+| "Fixed example inputs the checker must accept or reject" | Bare words like "goldens" as if they were ordinary English |
+| "Recipe that runs without calling Lake on that step" | Bare "without-Lake" as chat language |
+| "Slake path meant to do the same job as Lake" | Bare "peer" with no object |
+| "Checklist before we claim host develop no longer needs Lake day to day" | Bare "free bar" |
+| First use of any acronym: unpack in parentheses | Acronym soup and stage codes as chat language |
+| Keep classic Lean ahead-of-time C, freestanding product C, and our string-printed helpers separate | One vague "Lean prints C" ban |
 
 Write **thoughtful, concise, natural language**. This is not a jargon dump or acronym soup.
 
@@ -585,6 +606,29 @@ session is mid-slice.
 8. **Reference counting** on freestanding paths only if proven unavoidable; see `src/systems/README.md`.
 9. **Multiplicities:** only minimum 0 / 1 / omega for freestanding Slake in `src/systems/`.
 
+### Finish line: Slake does everything Lake does (host develop)
+
+**Project finish on the host side** means Slake owns every job Lake does today for Systems Lean under `src/systems/`: load the package, follow imports, elaborate and check modules (including theorems), and build the host tools we currently build with Lake. Durable program: `.agents/plans/plan-slake-replaces-lake.md`. Goals: `doc/goals.md` (north-star items 6-7).
+
+| Already true (do not re-open without cause) | Still false until checklist met |
+|---------------------------------------------|----------------------------------|
+| Freestanding product residual free; freestanding product self-host complete; product path without Lake on the normal step | Host develop still uses classic Lake for full SystemsLean elaborate |
+| Six-unit Mult / Linear / Types / Program / Graph / Compose checkers and package writers (foundation harness) | Six units alone are **not** "Slake does everything Lake does" |
+
+Do **not** empty residual Open with done-for-now while that plan still names checkable next work. Do **not** flip DualResidual host residual free until the **full** host checklist is met with elaborator proof.
+
+### Multi-language print policy (three stories -- keep separate)
+
+Novel code may touch more than one language surface. Treat these three stories differently. Inventory: `doc/dev/research/multi-language-print-inventory-2026-08-03.md`.
+
+| Story | What it is | Policy |
+|-------|------------|--------|
+| **(1) Classic Lean managed-runtime ahead-of-time C** | Upstream Lean / Lake can emit C for the **managed Lean runtime** path. Intermediate lives under build trees such as `.lake/`. Not freestanding product. Not our novel implementation language. | **Not** debt to ban because Lake emits C. Do not sell deleting `.lake/` IR as residual progress. |
+| **(2) Freestanding product C** | Slake product wire under `emit/` and `out/freestanding-c`, composed by Lean-owned emit (templates and authority fragments). Intentional product generation. | **Keep generating.** Improve structure only with a named Open residual, not a slogan ban on product C. Ownership SSoT: `emit/host-owned-emit.md`. |
+| **(3) Novel helpers that print another language as string soup** | Code **we** wrote that builds another language's full source mainly by string concatenation and `IO` / print (for example host-cc helper tools that are entire C programs held as Lean strings; or any real bash-as-string if found). Dense bash in `just/*.just` recipes is related temporary orchestration, not Lean-printed. | **Do not grow.** Inventory first; clean up with evidence. Supporting residual Names under plan-slake-replaces-lake Program P. Does **not** ban stories (1) or (2). |
+
+**Do not** grow novel Lean whose main job is printing another language's full source body as temporary helpers (shell-like scripts, host-cc helper tools). **Do not** confuse that cleanup with freestanding product emit or classic Lake ahead-of-time C.
+
 ### Driver stdout policy (Lake / host drivers)
 
 Lake and host **drivers** (subset emit/rebuild mains, Mult write/deepen, freestanding write tools, just-invoked measured steps) may print only:
@@ -597,7 +641,7 @@ Lake and host **drivers** (subset emit/rebuild mains, Mult write/deepen, freesta
 
 **Where honesty lives:** residual ledgers (`RESIDUAL-systems.md`), `self-host.md`, research notes under `doc/dev/research/`, module headers, pure Nix presence specs. Greppable stage ids once in headers and presence; not repeated as stdout essays.
 
-**Why:** runtime residual archaeology. Long driver banners restate product non-claims that already have durable homes and hide the signal (what wrote, paths, pin values). Scrub is touch-as-you-go alongside the freestanding ladder (bands in `RESIDUAL-systems.md` Decisions); it does not block M3 design.
+**Why:** long driver banners restate product non-claims that already have durable homes and hide the signal (what wrote, paths, pin values). Scrub on touch when editing drivers; keep residual essays in residual and self-host. Does not block product residual.
 
 **ASCII only** on novel driver source and banners. No banned professional-tone tokens in novel markdown. Prefer **document** (name the file) over agent jargon for saving rules.
 
@@ -611,13 +655,14 @@ RCA: `doc/dev/research/selfapplyfs-rebuild-failure-2026-07-30.md`. Plan:
    tree) and copying it over the live path. Surgical in-place edits only. If the
    file is too large for safe in-place work, **stop** and open a **split**
    residual; do **not** stitch sections with cut marks.
-2. **Long files (>1000 lines on disk) are residual.** Address with coherent
-   seams (dual-pin thin onto home modules, smoke/theorem module splits, pure Nix data slices),
+2. **Long files (>1000 lines on disk) are residual** (same **Sub-1-KLOC** bar).
+   Address with coherent seams (dual-pin thin onto home modules, smoke/theorem
+   module splits, pure Nix data slices, just role modules under `just/*.just`),
    not naive half-file cuts. Prefer gate-first dual-pin migration for SelfApplyFs
    tip shrink. Plan: `.agents/plans/plan-long-file-refactor.md`. Serialize tip
    writers (short-name rename vs dual-pin thin). On screw-up (red lake, cycle,
    stitch risk): **STOP**; do **not** `git revert` / undo; leave the tree for
-   the human.
+   the human. just modules and pure Nix modules use the same 1000-line bar as Lean.
 3. **Stitch / merge markers forbidden in product sources.** Lines that are agent
    cut marks (`==== ... ====` after leading whitespace) or git merge conflict
    markers (`<<<<<<<` / `>>>>>>>` prefix, or exact `=======`) must not land in
@@ -668,52 +713,9 @@ Both are required. Neither replaces the other (scientific method: theory + exper
 
 ## Subagents and token efficiency (strategic max, not wasteful)
 
-**Goal: token efficiency under attention limits.** Maximal **strategic** use of parallel subagents -- not maximal spawn count, not parent solo on deep work, not thrash.
+**Detail:** `doc/subagents-project.md`. Global process law: `~/.grok/AGENTS.md`.
 
-### Context economics (plan against these)
-
-- **Attention dilution:** parent quality drops as context fills -- often well before the hard cap. Parent is a **coordinator budget**, not a tool-output warehouse.
-- **Soft quality band:** keep the parent near **~40%** of its effective context when you can.
-- **Cost knee:** treat **~200k** parent tokens as a soft ceiling where further tokens get expensive (often ~**2x**). Hard ceiling may be higher (e.g. **500k**); do **not** treat "room left" as "fill it."
-- **Child isolation is the win:** each subagent has a fresh context. Heavy read/search/edit loops belong in children; parent holds goals, artifact paths, and short join results.
-
-### Maximal strategic use
-
-| Pattern | When | Parent keeps |
-|---------|------|----------------|
-| Parallel **explore** (read-only) | Disjoint dirs/files | Bullet map + paths only |
-| Independent research | Live contract vs local inventory | One-line results each |
-| Implementer + true-independent background | Scopes do not race | Exit codes + log paths |
-
-Rules of thumb:
-
-1. **Spawn for depth, not ceremony.** Many greps/reads/edits -> child. 1-2 lookups -> parent.
-2. **Join on disk.** Children write short summary files; parent reads those, not full transcripts or whole hot modules "to be sure."
-3. **Tight prompts.** Self-contained: goal, paths, acceptance, hard non-claims, output path. No parent history dump.
-4. **Short returns.** Verdict, files, residual bullets -- not novels.
-5. **One wait for many.** Launch independent children together; multi-id wait. Do not serialize independent explores.
-6. **`resume_from` for rounds.** Fix/re-review resumes the same agent when possible.
-7. **Right type.** Prefer explore/plan (read-only) for mapping; general-purpose only when writes are required.
-8. **Cap concurrency** (~2-4 typical). Raise only with clean disjoint scopes.
-9. **Right-size effort.** effort=1 is the token-efficient default; escalate only when risk justifies multi-reviewer cost.
-
-### Anti-patterns (waste)
-
-- Spawning for pure status ("is the file there?")
-- Fan-out of N identical explores over the same scope
-- Parallelizing a serial dependency
-- Parent re-implementing or re-grepping after a child finished
-- Stuffing the parent with raw logs when path + exit + short tail would do
-- Nested spawn fantasies (children cannot spawn children in this host)
-- Gate-only mills with no new named delta
-
-### After compaction
-
-Reseed from `RESIDUAL.md`, handoff, and on-disk summaries. Prefer `resume_from` when the host still has the child id. Soft ~40% / ~200k knee still apply to the **new** parent window.
-
-Fork prompts embed the same implement-loop design: `doc/fork-idris.md`, `doc/fork-lean.md`, `doc/fork-systems.md`.
-
----
+**Here:** parent is coordinator (goals, spawn/wait, join on disk). Multi-file research and non-trivial implementation live in tightly scoped subagents. Prefer explore/plan for read-only; general-purpose only for edits. Cap concurrency (~2-4). Soft quality band ~40% parent context; join on short on-disk summaries, not parent re-greps. Depth max L3. Isolation: work only in this repository unless the human is absolutely desperate for a named off-repo solution.
 
 ## ASCII and Unicode (hard rule)
 
@@ -794,124 +796,13 @@ Keep this map current when dirs move. README has a short tree; **this section is
 
 ## Nix tooling (under three languages only)
 
-This section details language **3** (pure Nix flakes). Read **Three languages only** first.
+**Detail SSoT:** `doc/nix-tooling.md` (map, history of mistakes, who owns what, pure Nix file inventory).
 
-**Product and bridge code** is Idris 2 or Lean 4 under `src/`.
-**Repo tooling** (meters, source hygiene, flake checks) is **pure Nix** under `nix/`, with a **thin** `justfile` only for orchestration. Not Python. Not shell. Not shell wrapped to look like Nix.
+**Hard rules stay here:** three languages only; pure evaluation for gates; no bash-in-Nix / shell-in-Nix / Python-in-Nix; no kitchen-sink `flake.nix`; **Sub-1-KLOC** on pure Nix modules under `nix/`; thin root `justfile` + `just/*.just` via `import`.
 
-Terms (plain English); full glossary in `doc/vocabulary.md`:
+**Live pure gates:** `just hygiene`, `just systems-host`, `just systems-emit-wire`, `just systems-llvm-ir`, `just idris-side`, `just lean-side`. Flake checks see only git-tracked paths (HITL stage; agents never `git add`).
 
-| Phrase | Meaning |
-|--------|---------|
-| **Nix** | Build and configuration language for project tools and continuous integration. |
-| **Flake** | Nix project entry (`flake.nix` + lock file) that exports named outputs (checks, packages, shell). |
-| **Pure Nix / pure evaluation** | The tool is ordinary Nix that *computes* a result (report text, pass/fail). No hidden shell doing the real work. |
-| **Bash-in-Nix** | Long shell inside `writeShellApplication` / `runCommand` sold as a flake tool. Forbidden. |
-| **`just` / justfile** | Thin task runner. Loops and redirects only -- not the policy algorithm. |
-| **Orchestration** | Gluing steps (write `doc/PROGRESS.md`, sleep, run `scc`). Not product logic. |
-| **ripgrep (`rg`)** | Default code search in the flake **devShell** (`pkgs.ripgrep`). Agents and humans search with `rg`, not ad-hoc `grep` mills. Pure Nix checks still must not shell out to ripgrep for policy algorithms. |
-| **elan** | Lean toolchain manager in the flake **devShell**. Install the pin from `src/systems/lean-toolchain` / `src/lean4/lean-toolchain` (`leanprover/lean4:v4.32.0`). Do not default to lagged `pkgs.lean4` as the elaborator. Workspace checks skip Lake when the pin is not installed (no surprise network download). |
-| **idris2 (devShell)** | Idris 2 elaborator package in the flake **devShell** for bridge-side checks. `just idris-elaborate` skips when the binary is absent. |
-| **Novel source** | Our tree -- not `ref/`, not `skills/` (agent skill submodules), not `.git/`, not caches. |
-| **Source hygiene** | Novel text is printable ASCII (plus tab/newline) except a small allowlist; no trailing spaces/tabs. |
-| **Professional tone** | Novel `*.md` only (v1): short banned-token list in pure Nix; no profanity / demeaning slurs in project markdown. |
-| **Progress meters** | Evidence-weighted bars in `doc/PROGRESS.md` (not a calendar guess). |
-| **Kitchen-sink file** | One huge file mixing unrelated jobs. Split instead. Designed against large language model attention limits. |
-
-### What went wrong (do not repeat)
-
-1. Progress meters and source hygiene as **project Python** under `script/`.
-2. "Fix" by stuffing the same work into **shell strings inside Nix** (bash-in-Nix) and flake apps.
-3. Product/build gates grown as **multi-thousand-line shell** under `script/` and former `src/**/check.sh` instead of Lean or pure Nix.
-4. Human rejection: **three languages only**; pure small Nix modules; architecture that respects large language model attention and compaction -- not Python, not bash-in-Nix, not kitchen-sink files.
-
-**Core lesson:** ask **where the algorithm lives**. If it lives in `.py` or a long shell string (including inside Nix), you have not done the work.
-
-### Who owns what
-
-| Layer | Owns | Does not own |
-|-------|------|----------------|
-| **`nix/` (pure Nix)** | Tooling policy, meters, filters, report text; flake checks; pure text packages | Product language semantics; multi-kLOC shell; sleep loops as "Nix packages" |
-| **`justfile`** | Short orchestration: eval redirect, watch interval, call residual debt scripts, optional scc | New algorithms; growing into a program |
-| **`flake.nix`** | Thin wire-up only | Embedded script farms |
-| **`script/` and `*.sh`** | Scheduled deletion / thin process glue only (see three-languages inventory) | New tools; expanding check/emit bash |
-
-### Before you add anything
-
-1. **Is it Idris-side product/bridge?** -> Idris 2 under `src/idris2/`.
-2. **Is it Lean-side or Slake / Systems Lean?** -> Lean 4 under `src/lean4/` or `src/systems/`.
-3. **Is it repo tooling (gate, meter, filter)?** -> Pure Nix module under `nix/`, small and named; wire a check or pure package; thin `just` line.
-4. **Is it only orchestration?** -> Short `just` recipe. Not a flake app whose body is bash.
-5. **Would you reach for Python or a new `.sh`?** -> Stop. Wrong language. Port or design in Lean/Nix.
-6. **Would the file exceed ~100-150 lines of mixed concerns?** -> Split for humans and for large language model context. Names describe the job.
-
-### Hard bans
-
-- No project Python.
-- No new shell mills; do not grow residual `.sh` files.
-- No bash-in-Nix / shell-in-Nix / Python-in-Nix.
-- No flake apps that are only shell farms.
-- No kitchen-sink `flake.nix` or mega `nix/` modules.
-- No "I removed Python" victory that leaves the algorithm in shell.
-
-### Current pure Nix map (keep small; update when tools move)
-
-| Tool | How you run it | Where the logic lives |
-|------|----------------|------------------------|
-| Source hygiene | `just hygiene` (includes professional-tone) or flake `source-hygiene` | `nix/source-hygiene.nix` -> check `source-hygiene` |
-| Professional tone | `just professional-tone` or folded into `just hygiene`; flake after human stages | `nix/professional-tone.nix` -> check `professional-tone` (novel `*.md` banned tokens) |
-| Systems host presence | `just systems-host` (live); flake after human stages | `nix/systems-host-presence/` -> check `systems-host-presence` |
-| Systems emit-wire presence | `just systems-emit-wire` (live); flake after human stages | `nix/systems-emit-wire/` -> check `systems-emit-wire` (drivers, emit product, unit walk, optional release, hosted probe path) |
-| Idris-side dual presence | `just idris-side` (live); flake after human stages | `nix/idris-side-presence/` -> check `idris-side-presence` (files + tokens + examples jargon) |
-| Lean-side dual presence | `just lean-side` (live); flake after human stages | `nix/lean-side-presence/` -> check `lean-side-presence` (files + tokens + examples jargon) |
-| Progress meters | `just progress` | `nix/progress/` -> text outputs / package `progress-report` |
-| Line-count appendix | `just progress-scc` | `just` + `scc` on PATH |
-| Watch loop | `just watch` | short `just` loop only |
-| Full suite | `just check` | hygiene (+ professional-tone) + systems-host + systems-emit-wire + idris-side + lean-side + flake check + residual workspace scripts |
-
-**New pure Nix modules and flakes (HITL stage):** `just systems-host` / `just
-systems-emit-wire` / `just idris-side` / `just lean-side` / `just hygiene` /
-`just professional-tone` evaluate the live worktree (impure) and do not require
-the new path to be git-tracked. `nix flake check` and
-`nix build .#checks.*.systems-host-presence` (or `systems-emit-wire`,
-`idris-side-presence`, `lean-side-presence`, `professional-tone`) only see files
-git tracks. After adding under `nix/` (and any related paths the flake copy
-needs), the **human** must `git add` those paths before flake/continuous
-integration (CI) match. Agents must **not** stage files to "help," silence flake
-WARN, or force flake/CI green. Prefer impure `just` pure-eval gates until the
-human stages. The `justfile` `check` recipe WARN states the same policy without
-a hardcoded path list -- stage what the flake error names (or `git status` under
-`nix/` and related flake copy paths). Same idea in `doc/SESSION-HANDOFF.md`
-(**Flake vs live**).
-
-```
-nix/
-  novel-source.nix            # which paths count as novel work
-  source-hygiene.nix          # pure ASCII + no trailing whitespace
-  professional-tone.nix       # novel *.md professional tone / banned tokens (v1)
-  systems-host-presence/      # skeleton + unit-surface + SYSTEMS_LEAN_HOST + tree-wide jargon
-    default.nix               # pure eval: { ok, violations, summary }
-    specs.nix                 # required paths + token tables
-  systems-emit-wire/          # compile/emit drivers, UNIT_DEEPEN, emit stages, unit walk, probe path, claim A residual free measure
-    default.nix               # pure eval: { ok, violations, summary, residualFreeMeasureGreen, ... }
-    specs.nix                 # thin join of data slices below
-    emit-product.nix          # drivers + emit product APIs/stages + optional release + smoke probe path
-    residual-free-measure.nix # PRODUCT-RESIDUAL-FREE-MEASURE forbidden managed residual + honesty (claim A)
-    unit-deepen.nix           # UNIT_DEEPEN_V1 units + companions
-    unit-walk.nix             # dynamic SKELETON|UNIT_SURFACE walk + skip dirs
-  idris-side-presence/        # dual Idris static presence (Wave A; check.sh deleted)
-    default.nix               # pure eval: { ok, violations, summary }
-    specs.nix                 # required paths + tokens + examples jargon
-  lean-side-presence/         # dual Lean static presence (Wave A; check.sh deleted)
-    default.nix               # pure eval: { ok, violations, summary }
-    specs.nix                 # required paths + tokens + examples jargon
-  progress/
-    default.nix               # entry: report and scores from a tree root
-    helpers.nix               # path probes
-    milestones.nix            # weighted evidence list
-    bars.nix                  # ASCII meter bars
-    render.nix                # markdown + console text
-```
+**Pattern:** presence/token algorithms live in `nix/<module>/`; just only `nix eval --impure` or thin lake/exe. Growing a pure Nix file past 1000 lines is residual (split data/eval slices).
 
 ## License (our novel work)
 

@@ -130,12 +130,12 @@ example : emptyProgramFailClosedMarker = "EMPTY-PROGRAM-FAIL-CLOSED" := by decid
 example : surfaceMatrixIdMarker = "SURFACE-MATRIX" := by decide
 example : productPathSurfaceOk = true := by decide
 
-/-- PRODUCT-PATH-SMOKE: residual-free / complete / unlock claims stay false. -/
+/-- PRODUCT-PATH-SMOKE: residual-free local false; complete true; llvm unlock orthogonal. -/
 example : residualFreeClaimed = false := by decide
 example : productSelfHostCompleteClaimed = true := by decide
 example : SelfApplyFs.freestandingProductSelfHostComplete = true := by decide
-example : LlvmHold.llvmUnlocked = false := by decide
-example : LlvmHold.provablyUnlocked = false := by decide
+example : LlvmHold.llvmUnlocked = true := by decide
+example : LlvmHold.provablyUnlocked = true := by decide
 
 /-- PRODUCT-PATH-SMOKE: freestanding unit product path (empty / unminted / emit). -/
 example : freestandingUnitProductPathReady = true := by decide
@@ -271,12 +271,12 @@ example :
 example : productPathCloseSurfaceOk = true := by decide
 example : productPathFurtherAliasTheaterHeld = true := by decide
 
-/-- PRODUCT-PATH-CLOSE-SMOKE: residual free / complete / unlock stay false. -/
+/-- PRODUCT-PATH-CLOSE-SMOKE: residual free local false; complete true; llvm unlock orthogonal. -/
 example : residualFreeClaimed = false := by decide
 example : productSelfHostCompleteClaimed = true := by decide
 example : SelfApplyFs.freestandingProductSelfHostComplete = true := by decide
-example : LlvmHold.llvmUnlocked = false := by decide
-example : LlvmHold.provablyUnlocked = false := by decide
+example : LlvmHold.llvmUnlocked = true := by decide
+example : LlvmHold.provablyUnlocked = true := by decide
 
 /-- PRODUCT-PATH-CLOSE-SMOKE / HOST-PRODUCT-PATH-CLOSE-SMOKE: ladder closed.
     Structural product path ladder closed -- not residual free; not complete. -/

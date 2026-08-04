@@ -1,0 +1,4 @@
+# B2 line shape -- inductive missing name (LINE-SHAPE)
+
+module Bad.Shape
+inductive

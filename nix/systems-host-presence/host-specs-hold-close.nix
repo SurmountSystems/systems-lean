@@ -8,9 +8,9 @@
   # After SelfApplyFs tip, before ProductPath.
   hostSpecsHoldCloseEarly = [
     {
-      # llvm / PROVABLY hold gate (SH6 held, documented -- not unlock).
+      # llvm / PROVABLY hold gate (SH6 unlock residual: living llvmUnlocked true; not full backend).
       # Long-file split: theorems + smoke live in LlvmHoldTheorems (same namespace).
-      # Fail-closed pins: unlock/complete defs must remain := false (not name-only).
+      # Fail-closed pins: living llvmUnlocked := true; local complete := false; PROVABLY true.
       rel = "src/systems/SystemsLean/LlvmHold.lean";
       all = [
         "SYSTEMS_LEAN_HOST"
@@ -37,19 +37,19 @@
         "src/systems/SystemsLean/LlvmHold.lean"
         "out/llvm-ir"
         "UNIT_SURFACE"
-        "Not freestanding residual free"
-        "Not PROVABLY"
+        "Not freestanding residual free forge"
+        "PROVABLY claimed"
         "Not freestanding emit residual free"
-        "Not llvm unlocked"
+        "Not full LLVM backend"
         # Hold-contract pins (presence fail-closed without Lake): defs on parent.
-        "def llvmUnlocked : Bool := false"
-        "def provablyUnlocked : Bool := false"
+        "def llvmUnlocked : Bool := true"
+        "def provablyUnlocked : Bool := true"
         "def freestandingProductSelfHostComplete : Bool := false"
         "LLVM-HOLD-THEOREM"
         "HOST-LLVM-HOLD-THEOREM"
         "llvmHoldReady_true"
-        "llvmUnlocked_false"
-        "provablyUnlocked_false"
+        "llvmUnlocked_true"
+        "provablyUnlocked_true"
         "sh6HoldReady_eq_llvmHoldReady"
       ];
       anyGroups = [
@@ -74,8 +74,8 @@
         "HOST-LLVM-HOLD-SMOKE"
         "example"
         "llvmHoldReady_true"
-        "llvmUnlocked_false"
-        "provablyUnlocked_false"
+        "llvmUnlocked_true"
+        "provablyUnlocked_true"
         "freestandingProductSelfHostComplete_false"
         "selfApplyDoesNotUnlockLlvm_true"
         "sh6HoldReady_eq_llvmHoldReady"
@@ -83,19 +83,19 @@
         "hostLlvmHoldId_eq"
         # Structural readiness: real theorem forms (AND, not OR anyGroup).
         "theorem llvmHoldReady_true"
-        "theorem llvmUnlocked_false"
-        "theorem provablyUnlocked_false"
+        "theorem llvmUnlocked_true"
+        "theorem provablyUnlocked_true"
         "theorem sh6HoldReady_eq_llvmHoldReady"
-        "example : llvmUnlocked = false"
-        "example : provablyUnlocked = false"
+        "example : llvmUnlocked = true"
+        "example : provablyUnlocked = true"
         "example : freestandingProductSelfHostComplete = false"
         "example : llvmHoldReady = true"
         "example : sh6HoldReady = true"
         "UNIT_SURFACE"
-        "Not freestanding residual free"
-        "Not PROVABLY"
+        "Not freestanding residual free forge"
+        "PROVABLY claimed"
         "Not freestanding emit residual free"
-        "Not llvm unlocked"
+        "Not full LLVM backend"
       ];
     }
     {
@@ -142,7 +142,7 @@
         "Not PROVABLY"
         "Not freestanding product"
         "Not freestanding emit residual free"
-        "Not llvm unlocked"
+        "Not full LLVM backend"
         # Claim pins (presence fail-closed without Lake): defs on parent.
         "def residualFreeClaimed : Bool := false"
         "def productSelfHostCompleteClaimed : Bool := true"
@@ -152,9 +152,7 @@
         "&& inventoryCloseSurfaceOk"
         "&& inventoryPartialCarryHonest"
         "&& SelfApplyFs.freestandingProductSelfHostComplete"
-        "&& !LlvmHold.llvmUnlocked"
-        "&& !LlvmHold.provablyUnlocked"
-        "INVENTORY-CLOSE-THEOREM"
+                "INVENTORY-CLOSE-THEOREM"
         "HOST-INVENTORY-CLOSE-THEOREM"
         "inventoryCloseReady_true"
         "residualFreeClaimed_false"
@@ -203,7 +201,7 @@
         "Not PROVABLY"
         "Not freestanding product"
         "Not freestanding emit residual free"
-        "Not llvm unlocked"
+        "Not full LLVM backend"
       ];
     }
   ];
@@ -267,7 +265,7 @@
         "Product residual free claimed"
         "Not PROVABLY"
         "Not freestanding emit residual free alone"
-        "Not llvm unlocked"
+        "Not full LLVM backend"
         "Not host elaborator residual free"
         # Claim pins (presence fail-closed without Lake): defs on parent.
         "def hostElaboratorResidualRemains : Bool := true"
@@ -294,9 +292,7 @@
         "&& residualFreeClaimed"
         "&& productSelfHostCompleteClaimed"
         "&& SelfApplyFs.freestandingProductSelfHostComplete"
-        "&& !LlvmHold.llvmUnlocked"
-        "&& !LlvmHold.provablyUnlocked"
-        "DUAL-RESIDUAL-THEOREM"
+                "DUAL-RESIDUAL-THEOREM"
         "HOST-DUAL-RESIDUAL-THEOREM"
         "dualResidualReady_true"
         "hostElaboratorResidualRemains_true"
@@ -358,7 +354,7 @@
         "Product residual free claimed"
         "Not PROVABLY"
         "Not freestanding emit residual free alone"
-        "Not llvm unlocked"
+        "Not full LLVM backend"
         "Not host elaborator residual free"
         "Not proof complete"
       ];
@@ -425,7 +421,7 @@
         "Not PROVABLY"
         "Not freestanding product"
         "Not freestanding emit residual free"
-        "Not llvm unlocked"
+        "Not full LLVM backend"
         "Not host elaborator residual free"
         # Claim pins (presence fail-closed without Lake): defs on parent.
         "def behavioralProbeIsSmokeDebt : Bool := true"
@@ -446,9 +442,7 @@
         "&& !residualFreeClaimed"
         "&& productSelfHostCompleteClaimed"
         "&& SelfApplyFs.freestandingProductSelfHostComplete"
-        "&& !LlvmHold.llvmUnlocked"
-        "&& !LlvmHold.provablyUnlocked"
-        "PROBE-WIRE-THEOREM"
+                "PROBE-WIRE-THEOREM"
         "HOST-PROBE-WIRE-THEOREM"
         "probeWireReady_true"
         "behavioralProbeIsSmokeDebt_true"
@@ -505,7 +499,7 @@
         "Not PROVABLY"
         "Not freestanding product"
         "Not freestanding emit residual free"
-        "Not llvm unlocked"
+        "Not full LLVM backend"
         "Not host elaborator residual free"
         "Not proof complete"
       ];
@@ -573,7 +567,7 @@
         "Not PROVABLY"
         "Not freestanding product"
         "Not freestanding emit residual free"
-        "Not llvm unlocked"
+        "Not full LLVM backend"
         "Not host elaborator residual free"
         "Not proof complete"
         # Claim pins (presence fail-closed without Lake): defs on parent.
@@ -593,9 +587,7 @@
         "&& !residualFreeClaimed"
         "&& productSelfHostCompleteClaimed"
         "&& SelfApplyFs.freestandingProductSelfHostComplete"
-        "&& !LlvmHold.llvmUnlocked"
-        "&& !LlvmHold.provablyUnlocked"
-        "SPEC-PROOF-THEOREM"
+                "SPEC-PROOF-THEOREM"
         "HOST-SPEC-PROOF-THEOREM"
         "specProofReady_true"
         "proofCompleteClaimed_false"
@@ -735,7 +727,7 @@
         "Not PROVABLY"
         "Not freestanding product"
         "Not freestanding emit residual free"
-        "Not llvm unlocked"
+        "Not full LLVM backend"
         "Not host elaborator residual free"
         "Not proof complete"
         # Claim pins (presence fail-closed without Lake): defs on parent.
@@ -761,9 +753,7 @@
         "&& !residualFreeClaimed"
         "&& productSelfHostCompleteClaimed"
         "&& SelfApplyFs.freestandingProductSelfHostComplete"
-        "&& !LlvmHold.llvmUnlocked"
-        "&& !LlvmHold.provablyUnlocked"
-        "SELF-HOST-BODY-THEOREM"
+                "SELF-HOST-BODY-THEOREM"
         "HOST-SELF-HOST-BODY-THEOREM"
         "selfHostBodyReady_true"
         "freestandingProductSelfHostComplete_true"

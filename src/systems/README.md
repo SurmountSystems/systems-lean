@@ -18,7 +18,7 @@ WATCHER implement prompts into this file (policy: root `AGENTS.md`
 |------|------|
 | Lean host (Lake package `SystemsLean`) | `SystemsLean/*.lean`, `lakefile.lean`, `lean-toolchain`, empty `lake-manifest.json` |
 | Module inventory + PARTIAL honesty | `host-partial-inventory.md` |
-| Self-host acceptance / living claims | `self-host.md` |
+| Self-host acceptance / living claims | `self-host.md` (thin index; archives: `self-host-bootstrap-archive.md`, `self-host-product-path-archive.md`, `self-host-host-surface-archive.md`) |
 | Freestanding C ownership (Lean vs template) | `emit/host-owned-emit.md` |
 | Dual / JOIN-ALG map | `join-map.md` |
 | Surface inventory prose | `surface-matrix.md` |
@@ -43,10 +43,10 @@ both **true** on the freestanding release path. Product path
 elaborator proof). Host elaborator residual **remains** (classic Lake may still
 elaborate SystemsLean for development; free is not host free). Bootstrap
 **S0-S3** + ideal ladder **M1-M6** product path **done** (including M6 product
-Lake pins flip). FreestandingDriverComplete **true** (Mult-orthogonal). Step 4
-PROVABLY/LLVM **held**. Free is not "Lake is gone," not proof complete, not
-PROVABLY, not LLVM. Detail and claim pins: `self-host.md` +
-`doc/SESSION-HANDOFF.md`.
+Lake pins flip). FreestandingDriverComplete **true** (Mult-orthogonal).
+PROVABLY **true**; llvm **unlocked** with evidence (`llvmUnlocked` true; not
+full backend). Free is not "Lake is gone," not proof complete, not host free.
+Detail and claim pins: `self-host.md` + `doc/SESSION-HANDOFF.md`.
 
 ## Product bar
 
@@ -95,6 +95,21 @@ just compose-subset-emit  # ideal M1 Compose subset freestanding package (Lake h
 just compose-subset-rebuild  # M1 Compose subset self-application (Lake host)
 just subset-packages-rebuild-join  # M5 Name A multi-unit Mult..Compose package rebuild join
 just front-mult-package  # M5 Name B SubsetFront G1 accept then Mult package write
+just host-front          # Peer Mult-first host fragment front-end (HostTerm IR goldens)
+just host-fragment-check # Peer Mult-first host fragment check (corpus G*/B*; Lake OK)
+just host-fragment-check-without-lake  # step 5 prebuilt check (no lake hot path)
+just host-graph          # Peer Mult-first multi-file module graph (Mult+MultSubsetEmit)
+just host-graph-without-lake  # step 6 prebuilt multi-file graph (no lake hot path)
+just host-package-write  # step 7 HostFront G1 + HostGraph Mult set then Mult package write
+just host-package-write-without-lake  # step 7 prebuilt Mult package write (no lake hot path)
+just host-residual-shrink  # step 10 partial host residual inventory (peer Lake-free paths)
+just llvm-emit-path        # LLVM IR design+stub honesty (llvmUnlocked stays false)
+just llvm-mult-text        # Mult unit IR from Lean SSOT (living unlock true; local pin false)
+just llvm-linear-text      # Linear unit IR from Lean SSOT (living unlock true; local pin false)
+just llvm-types-text       # Types unit IR from Lean SSOT (living unlock true; local pin false)
+just llvm-program-text     # Program unit IR from Lean SSOT (living unlock true; local pin false)
+just llvm-graph-text       # Graph unit IR from Lean SSOT (living unlock true; local pin false)
+just llvm-unit-package     # fail-closed Mult..Graph IR text join (llvm unlocked; not full backend)
 just systems-host    # pure Nix host presence
 just systems-emit-wire  # pure Nix emit-wire / unit walk
 just systems-lake    # optional host lake build (skip if pin missing)

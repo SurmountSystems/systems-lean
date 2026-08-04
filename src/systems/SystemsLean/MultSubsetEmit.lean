@@ -116,16 +116,21 @@ def multSubsetSourceBanner : String :=
     ++ " */\n"
     ++ "\n"
 
+/-- Include Mult unit header so standalone .c compiles under ccomp / host cc
+    (enum slake_mult + grade tags). Matches freestanding #include pattern.
+    Greppable: multSubsetSourceInclude, slake_mult_subset.h. -/
+def multSubsetSourceInclude : String :=
+  "#include \"slake_mult_subset.h\"\n\n"
+
 /-- Mult subset header package text (banner + multHeaderFragment).
     Greppable: multSubsetHeaderPackage, slake_mult_subset.h. -/
 def multSubsetHeaderPackage : String :=
   multSubsetHeaderBanner ++ multHeaderFragment
 
-/-- Mult subset source package text (banner + multBodyFragment).
+/-- Mult subset source package text (banner + include + multBodyFragment).
     Greppable: multSubsetSourcePackage, slake_mult_subset.c. -/
 def multSubsetSourcePackage : String :=
-  multSubsetSourceBanner ++ multBodyFragment
-
+  multSubsetSourceBanner ++ multSubsetSourceInclude ++ multBodyFragment
 /-- Package text honesty: banners + Mult dialect pieces present.
     Greppable: multSubsetEmitPackageOk. -/
 def multSubsetEmitPackageOk : Bool :=
@@ -191,8 +196,9 @@ def multSubsetEmitDoesNotMeanResidualFree : Bool :=
 def multSubsetEmitWroteExpected : Bool :=
   multSubsetEmitPackageOk
     && (multSubsetHeaderPackage == multSubsetHeaderBanner ++ multHeaderFragment)
-    && (multSubsetSourcePackage == multSubsetSourceBanner ++ multBodyFragment)
-
+    && (multSubsetSourcePackage
+      == multSubsetSourceBanner ++ multSubsetSourceInclude ++ multBodyFragment)
+    && (multSubsetSourceInclude == "#include \"slake_mult_subset.h\"\n\n")
 /-! ### MULT-SUBSET-EMIT-THEOREM (readable S2 statements, then proofs) -/
 
 set_option maxRecDepth 8192
@@ -328,11 +334,14 @@ def validateMultSubsetPackage (label : String) (text : String) (isSource : Bool)
     unless containsSub text "slake_mult_is_valid" do
       IO.eprintln s!"error: {label}: missing slake_mult_is_valid body"
       throw (IO.userError s!"{label}: missing is_valid")
+    -- Standalone compile under ccomp needs the unit header (enum + grades).
+    unless containsSub text "#include \"slake_mult_subset.h\"" do
+      IO.eprintln s!"error: {label}: missing #include \"slake_mult_subset.h\""
+      throw (IO.userError s!"{label}: missing include")
   else
     unless containsSub text "enum slake_mult" do
       IO.eprintln s!"error: {label}: missing enum slake_mult"
-      throw (IO.userError s!"{label}: missing enum")
-  -- Fail closed: must not be full freestanding dialect package.
+      throw (IO.userError s!"{label}: missing enum")  -- Fail closed: must not be full freestanding dialect package.
   if containsSub text "SLAKE_EMIT_FREESTANDING_C_V0" then
     IO.eprintln s!"error: {label}: unexpected full freestanding emit stage (subset only)"
     throw (IO.userError s!"{label}: full dialect")

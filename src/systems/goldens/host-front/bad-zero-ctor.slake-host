@@ -1,0 +1,4 @@
+# B4 zero-ctor inductive (ZERO-CTOR-INDUCTIVE)
+
+module Bad.Ind
+inductive EmptyLike deriving DecidableEq

@@ -1,0 +1,11 @@
+# G4 Types-shaped host fragment (TYPED_IR / kind-mult honesty mini)
+# form: module/namespace/def/check/end -- not full Types.lean / elaborator
+# Mult-first dialect still; Types unit shapes as expand surface
+
+module SystemsLean.TypesMini
+namespace SystemsLean.TypesMini
+def typedIrId : String := "TYPED_IR_V0"
+def kindMultOkId : String := "KIND-MULT-OK"
+def typesFixtureId : String := "TYPES-FIXTURE"
+check 0 : Nat
+end SystemsLean.TypesMini

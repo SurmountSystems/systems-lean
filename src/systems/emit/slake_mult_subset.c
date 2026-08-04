@@ -5,6 +5,8 @@
  * RUNTIME-FS; no product GC.
  */
 
+#include "slake_mult_subset.h"
+
 /* ---- Mult (FAIL-CLOSED-UNKNOWN-GRADE) ----
  * HOST-EMIT-MULT: dialect from SystemsLean.EmitMult + host_emit_mult.ssot.txt
  * (Lean FreestandingEmit embeds this Mult product text).

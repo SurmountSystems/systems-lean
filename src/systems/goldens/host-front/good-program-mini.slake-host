@@ -1,0 +1,11 @@
+# G5 Program-shaped host fragment (ordered IR program honesty mini)
+# form: module/namespace/def/check/end -- not full IrProgram.lean / elaborator
+# Mult-first dialect still; Program unit shapes as expand surface
+
+module SystemsLean.ProgramMini
+namespace SystemsLean.ProgramMini
+def irProgramId : String := "IR_PROGRAM_V0"
+def orderedIrProgramId : String := "ORDERED-IR-PROGRAM"
+def programFixtureId : String := "PROGRAM-FIXTURE"
+check 0 : Nat
+end SystemsLean.ProgramMini

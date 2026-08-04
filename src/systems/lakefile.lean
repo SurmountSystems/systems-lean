@@ -8,7 +8,7 @@ Not freestanding residual free. Not product C. Host elaborator only.
 Config: lakefile.lean (lakefile.toml retired).
 SKELETON honesty marker (unit walk; not freestanding residual free).
 
-lean_exe inventory (47). All thin mains: supportInterpreter := true.
+lean_exe inventory (51). All thin mains: supportInterpreter := true.
 Table-driven registration below: one uniform lean_exe block per row.
 ASCII string names (hyphenated); no guillemet identifiers.
   slake-emit-freestanding-c -> SystemsLean.FreestandingEmitMain
@@ -58,6 +58,19 @@ ASCII string names (hyphenated); no guillemet identifiers.
   slake-compose-subset-rebuild -> SystemsLean.ComposeSubsetRebuildMain
   slake-subset-front -> SystemsLean.SubsetFrontMain
   slake-front-mult-package -> SystemsLean.FrontMultPackageMain
+  slake-host-front -> SystemsLean.HostFrontMain
+  slake-host-fragment-check -> SystemsLean.HostCheckMain
+  slake-host-graph -> SystemsLean.HostGraphMain
+  slake-host-package-write -> SystemsLean.HostPackageWriteMain
+  slake-host-package-roots -> SystemsLean.HostPackageRootsMain
+  slake-host-import-graph -> SystemsLean.HostImportGraphMain
+  slake-host-module-check -> SystemsLean.HostModuleCheckMain
+  slake-llvm-mult-text -> SystemsLean.LlvmMultTextMain
+  slake-llvm-linear-text -> SystemsLean.LlvmLinearTextMain
+  slake-llvm-types-text -> SystemsLean.LlvmTypesTextMain
+  slake-llvm-program-text -> SystemsLean.LlvmProgramTextMain
+  slake-llvm-graph-text -> SystemsLean.LlvmGraphTextMain
+  slake-llvm-compose-text -> SystemsLean.LlvmComposeTextMain
 -/
 
 package SystemsLean where
@@ -253,4 +266,56 @@ lean_exe "slake-subset-front" where
 
 lean_exe "slake-front-mult-package" where
   root := `SystemsLean.FrontMultPackageMain
+  supportInterpreter := true
+
+lean_exe "slake-host-front" where
+  root := `SystemsLean.HostFrontMain
+  supportInterpreter := true
+
+lean_exe "slake-host-fragment-check" where
+  root := `SystemsLean.HostCheckMain
+  supportInterpreter := true
+
+lean_exe "slake-host-graph" where
+  root := `SystemsLean.HostGraphMain
+  supportInterpreter := true
+
+lean_exe "slake-host-package-write" where
+  root := `SystemsLean.HostPackageWriteMain
+  supportInterpreter := true
+
+lean_exe "slake-host-package-roots" where
+  root := `SystemsLean.HostPackageRootsMain
+  supportInterpreter := true
+
+lean_exe "slake-host-import-graph" where
+  root := `SystemsLean.HostImportGraphMain
+  supportInterpreter := true
+
+lean_exe "slake-host-module-check" where
+  root := `SystemsLean.HostModuleCheckMain
+  supportInterpreter := true
+
+lean_exe "slake-llvm-mult-text" where
+  root := `SystemsLean.LlvmMultTextMain
+  supportInterpreter := true
+
+lean_exe "slake-llvm-linear-text" where
+  root := `SystemsLean.LlvmLinearTextMain
+  supportInterpreter := true
+
+lean_exe "slake-llvm-types-text" where
+  root := `SystemsLean.LlvmTypesTextMain
+  supportInterpreter := true
+
+lean_exe "slake-llvm-program-text" where
+  root := `SystemsLean.LlvmProgramTextMain
+  supportInterpreter := true
+
+lean_exe "slake-llvm-graph-text" where
+  root := `SystemsLean.LlvmGraphTextMain
+  supportInterpreter := true
+
+lean_exe "slake-llvm-compose-text" where
+  root := `SystemsLean.LlvmComposeTextMain
   supportInterpreter := true

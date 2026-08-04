@@ -1,0 +1,14 @@
+# Host fragment dialect v0 (Mult-first) -- G1 Mult fixture
+# form: module/namespace/inductive/def/check/end
+# targets SystemsLean.HostTerm IR; not full Lean 4; not Mult IR node lines
+
+module SystemsLean.Mult
+namespace SystemsLean.Mult
+inductive Mult mult0 mult1 multOmega deriving DecidableEq Repr
+def name : Mult -> String := match var m | mult0 => "MULT-0" | mult1 => "MULT-1" | multOmega => "MULT-OMEGA"
+def isValid : Mult -> Bool := match var m | mult0 => true | mult1 => true | multOmega => true
+def ofNat? : Nat -> Option Mult := match var k | 0 => some mult0 | 1 => some mult1 | 2 => some multOmega | _ => none
+def isValidTag : Nat -> Bool := app isSome ( app ofNat? ( var k ) )
+def multIsValid : Mult -> Bool := app isValid ( var m )
+check mult0 : Mult
+end SystemsLean.Mult

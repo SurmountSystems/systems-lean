@@ -1,10 +1,10 @@
 /-
   SYSTEMS_LEAN_HOST partial -- thin Lake exe main for host MultSubsetEmit
   freestanding Mult SSOT package write. Root for lake exe slake-mult-fs-write
-  (bootstrap helper). Measured Mult write after Name B full is host-cc Path A
-  tool (slake-mult-fs-write-cc). Body lives in SystemsLean.MultFsDeepen
-  (multFsWrite / multFsWritePathReady; freestandingDriverComplete true with
-  Path A dual evidence). Not freestanding Mult compiler.
+  (bootstrap / measured Mult package write helper). Body lives in
+  SystemsLean.MultFsDeepen (multFsWrite / multFsWritePathReady;
+  freestandingDriverComplete true with Lean-native MultSubsetEmit dual evidence;
+  P1 Path A host-cc C print retired). Not freestanding Mult compiler.
   Greppable: SystemsLean.MultFsWriteMain, slake-mult-fs-write,
   MultFsWriteMain, MULT-FS-WRITE, MULT-FS-DEEPEN, SLAKE_MULT_FS_DEEPEN,
   SYSTEMS_LEAN_HOST, SKELETON.

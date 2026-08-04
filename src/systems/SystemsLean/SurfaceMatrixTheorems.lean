@@ -20,9 +20,13 @@
   Surface inventory readiness canaries != freestanding product self-host complete.
 
   Intentional non-claims:
-  - Surface matrix canaries only -- NOT freestanding residual free.
-  - NOT formal dual-bridge theorems. NOT PROVABLY. NOT llvm unlock.
-  - NOT proof complete. NOT freestanding product residual free.
+  - Surface matrix canaries only -- inventory readiness, not full language parity.
+  - CompCert PROVABLY inventory row is claimed in canary (rowProvably = PROVABLY;
+    rowProvablyClaimedOk). Theorems do NOT flip LlvmHold.provablyUnlocked.
+  - freestanding-complete + llvm unlock inventory rows are statusMeasured
+    (match living tip; not full backend; not full language parity).
+  - NOT formal dual-bridge theorems. NOT full llvm backend claim.
+  - NOT proof complete. NOT host residual free.
   - Lake example smokes are NOT full proofs.
 
   Greppable: SYSTEMS_LEAN_HOST, SURFACE-MATRIX-THEOREM, HOST-SURFACE-MATRIX-THEOREM,
@@ -30,12 +34,14 @@
   matrixSurfaceOk_true, matrixUnitReady_empty_true, matrixProgramReady_empty_false,
   empty_host_ok_ne_empty_program_ok, matrixUnitReady_mult1_unminted_false,
   matrixUnitReady_mult1_minted_true, matrixProgramReady_single_value,
+  rowProvablyClaimedOk, rowFreestandingSelfHostMeasuredOk, rowLlvmMeasuredOk,
   SurfaceMatrixTheorems, UNIT_SURFACE host surface.
   Module: SystemsLean.SurfaceMatrixTheorems
   Red/green: just systems-host; lake build SystemsLean.SurfaceMatrixTheorems.
   Module must stay ASCII.
-  Not freestanding residual free. Not PROVABLY. Not freestanding emit residual free.
-  Not proof complete.
+  Inventory freestanding/llvm measured + PROVABLY claimed; not full backend.
+  Not proof complete. Not host residual free.
+  Not freestanding residual free. Not freestanding emit residual free. Not PROVABLY.
 -/
 
 import SystemsLean.Mult
@@ -59,8 +65,11 @@ open SystemsLean.HostCompose (Host)
 
   Real Lean theorems (not only `example` Bool canaries). Scope is surface-matrix
   inventory readiness, empty host unit OK vs empty program fail-closed only.
-  Does not complete SpecProof; does not claim residual free / freestanding
-  product self-host complete / PROVABLY / llvm unlock / full superset parity.
+  Does not complete SpecProof; does not flip residual free / freestanding
+  product self-host complete / LlvmHold.provablyUnlocked / llvmUnlocked pins;
+  does not claim full backend or full superset parity. Inventory freestanding
+  and llvm rows are statusMeasured; CompCert row is PROVABLY; open language
+  parity rows stay open.
 -/
 
 /-- Primary stage id is greppable SLAKE_SURFACE_MATRIX_V0.
@@ -188,7 +197,8 @@ example :
     dualUnrestrictedShareIdris = "src/idris2/examples/UnrestrictedShare.idr" := by
   decide
 
-/-- SURFACE-MATRIX-SMOKE: host progressive rows present-partial; open rows stay open. -/
+/-- SURFACE-MATRIX-SMOKE: host progressive rows present-partial; open parity open;
+    freestanding + llvm measured; CompCert PROVABLY. -/
 example : hostRowsPresentPartialOk = true := by decide
 example : openRowsOpenOk = true := by decide
 example : rowMult = "present-partial" := by decide
@@ -197,8 +207,12 @@ example : rowSelfHostDirection = "present-partial" := by decide
 example : rowSyntaxSurface = "open" := by decide
 example : rowFullIdrisParity = "open" := by decide
 example : rowFullLeanParity = "open" := by decide
-example : rowLlvm = "open" := by decide
-example : rowProvably = "open" := by decide
+example : rowFreestandingSelfHost = "measured" := by decide
+example : rowLlvm = "measured" := by decide
+example : rowFreestandingSelfHostMeasuredOk = true := by decide
+example : rowLlvmMeasuredOk = true := by decide
+example : rowProvably = "PROVABLY" := by decide
+example : rowProvablyClaimedOk = true := by decide
 example : matrixSurfaceOk = true := by decide
 
 /-- SURFACE-MATRIX-SMOKE: empty HostCompose is matrix unit-ready (self-host + surface). -/

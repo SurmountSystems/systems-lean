@@ -94,7 +94,14 @@ just check        # CI-identical full suite
 just progress     # pure Nix meters -> doc/PROGRESS.md
 just watch        # every 300s: progress-scc + hygiene (just loop)
 just build        # product freestanding wire (emit + out/freestanding-c)
-just out-llvm-ir  # deferred (see out/llvm-ir/README.md)
+just llvm-emit-path  # design+stub honesty (llvm locked; see out/llvm-ir/README.md)
+just llvm-mult-text  # Mult unit IR from Lean SSOT -> out/llvm-ir/slake_mult.ll (llvm locked)
+just llvm-linear-text  # Linear unit IR from Lean SSOT -> out/llvm-ir/slake_linear.ll (llvm locked)
+just llvm-types-text  # Types unit IR from Lean SSOT -> out/llvm-ir/slake_types.ll (llvm locked)
+just llvm-program-text  # Program unit IR from Lean SSOT -> out/llvm-ir/slake_program.ll (llvm locked)
+just llvm-graph-text  # Graph unit IR from Lean SSOT -> out/llvm-ir/slake_graph.ll (llvm locked)
+just llvm-unit-package  # fail-closed Mult..Graph IR text join (llvm unlocked; not full backend)
+just out-llvm-ir     # deferred unlock message (not a green unlock path)
 ```
 
 Lean elaborator pin is `leanprover/lean4:v4.32.0` (`src/systems/lean-toolchain`, `src/lean4/lean-toolchain`).

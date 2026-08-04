@@ -1,0 +1,4 @@
+# B3 unknown command (UNKNOWN-CMD)
+
+module Bad.Unknown
+foobar xyz

@@ -13,7 +13,10 @@
     foldWellTyped_ill_typed_none / foldWellTyped_empty_none / push_bad_node /
     push_value_one_ok / length_single_value / isWellTyped_single_value /
     foldWellTyped_single_value_some / isWellTyped_two_values / length_two_values /
-    foldWellTyped_two_values_some / push_second_value_ok / push_full_at_cap.
+    foldWellTyped_two_values_some / push_second_value_ok / push_full_at_cap /
+    isWellTyped_mixed_kinds / length_mixed_kinds /
+    foldWellTyped_mixed_kinds_some / isWellTyped_mixed_bad_false
+    (multi-node VALUE+LINEAR+ERASED kind/mult pairing; net-new vs VALUE-only).
 
   These IrProgram theorems do NOT set SpecProof.proofCompleteClaimed true.
   Partial theorems on IrProgram != host proof complete != residual free.
@@ -23,6 +26,7 @@
   - NOT freestanding residual free.
   - NOT PROVABLY. NOT llvm unlock.
   - Not proof complete (SpecProof.proofCompleteClaimed stays false).
+  - Not a full elaborator type checker.
 
   Greppable: SYSTEMS_LEAN_HOST, ORDERED-IR-PROGRAM, EMPTY-PROGRAM-FAIL-CLOSED,
   IR-PROGRAM-THEOREM, HOST-IR-PROGRAM-THEOREM, isWellTyped_empty_false,
@@ -32,6 +36,8 @@
   push_value_one_ok, length_single_value, isWellTyped_single_value,
   foldWellTyped_single_value_some, isWellTyped_two_values, length_two_values,
   foldWellTyped_two_values_some, push_second_value_ok, push_full_at_cap,
+  isWellTyped_mixed_kinds, length_mixed_kinds, foldWellTyped_mixed_kinds_some,
+  isWellTyped_mixed_bad_false,
   IrProgramTheorems, SLAKE_IR_PROGRAM_CAP, MULT-0, MULT-1, MULT-OMEGA, TYPED_IR_V0
   UNIT_SURFACE host surface. Module: SystemsLean.IrProgramTheorems
   Red/green: just systems-host; lake build SystemsLean.IrProgramTheorems.
@@ -175,5 +181,48 @@ theorem push_full_at_cap :
         thmValueNode, thmValueNodeB, thmValueNode, thmValueNodeB
       ]
     } thmValueNode = PushResult.full := rfl
+
+/-! ### Multi-node mixed NodeKind (VALUE + LINEAR + ERASED)
+    Net-new vs VALUE-only thmTwoValues / single-node Types kindMultOk alone.
+    Kind/mult pairing: VALUE/omega, LINEAR/1, ERASED/0 (cite Types.kindMultOk). -/
+
+private def thmLinearNode : IrNode :=
+  { ty := typeTagInit 3, mult := Mult.mult1, kind := NodeKind.linear }
+
+private def thmErasedNode : IrNode :=
+  { ty := typeTagInit 4, mult := Mult.mult0, kind := NodeKind.erased }
+
+private def thmMixedKinds : Program :=
+  { nodes := [thmValueNode, thmLinearNode, thmErasedNode] }
+
+/-- Three-node mixed-kind program (VALUE + LINEAR + ERASED) is well-typed.
+    Each node pairs kind with expected mult (Types.kindMultOk table).
+    Greppable: isWellTyped_mixed_kinds, IR-PROGRAM-THEOREM, HOST-IR-PROGRAM-THEOREM,
+    TYPES-THEOREM, MULT-0, MULT-1, MULT-OMEGA. -/
+theorem isWellTyped_mixed_kinds :
+    isWellTyped thmMixedKinds = true := rfl
+
+/-- Mixed-kind program has length 3.
+    Greppable: length_mixed_kinds, IR-PROGRAM-THEOREM. -/
+theorem length_mixed_kinds : length thmMixedKinds = 3 := rfl
+
+/-- foldWellTyped success path on multi-node mixed-kind program.
+    Greppable: foldWellTyped_mixed_kinds_some, IR-PROGRAM-THEOREM,
+    HOST-IR-PROGRAM-THEOREM. -/
+theorem foldWellTyped_mixed_kinds_some :
+    foldWellTyped thmMixedKinds (0 : Nat) (fun acc _ => acc + 1) = some 3 := rfl
+
+private def thmBadValueNode : IrNode :=
+  { ty := typeTagInit 99, mult := Mult.mult1, kind := NodeKind.value }
+
+private def thmMixedBad : Program :=
+  { nodes := [thmValueNode, thmLinearNode, thmBadValueNode] }
+
+/-- Fail closed: mixed program with one kind/mult mismatch is not well-typed.
+    VALUE node carrying MULT-1 (not MULT-OMEGA) rejects the whole program.
+    Greppable: isWellTyped_mixed_bad_false, IR-PROGRAM-THEOREM,
+    HOST-IR-PROGRAM-THEOREM, TYPES-THEOREM. -/
+theorem isWellTyped_mixed_bad_false :
+    isWellTyped thmMixedBad = false := rfl
 
 end SystemsLean.IrProgram

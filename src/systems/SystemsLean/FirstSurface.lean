@@ -15,7 +15,9 @@
   RUNTIME-FS, UNIT_SURFACE host surface. Module: SystemsLean.FirstSurface
   Short role name (not ProductPathFreestandingBootstrapS1 kitchen-sink).
   Red/green: lake build SystemsLean.FirstSurface; lake exe slake-first-surface;
-  just first-surface. Module must stay ASCII.
+  just first-surface; just first-surface-without-lake (A10+++ prebuilt; no lake);
+  just host-develop-tools-clean-bootstrap (includes slake-first-surface leanc@rsp).
+  Module must stay ASCII.
 -/
 
 import SystemsLean.CompilePathMult

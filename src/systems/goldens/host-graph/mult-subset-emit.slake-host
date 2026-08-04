@@ -1,0 +1,12 @@
+# Mult-first host fragment -- MultSubsetEmit thin dep (imports Mult)
+# Not full SystemsLean.MultSubsetEmit; host fragment dialect only
+# Import closure: Mult -> MultSubsetEmit
+
+module MultSubsetEmit
+import Mult
+namespace MultSubsetEmit
+open Mult
+def multSubsetEmitInputId : String := "SLAKE_FIRST_SURFACE_MULT"
+def multSubsetEmitReady : Bool := true
+check mult0 : Mult
+end MultSubsetEmit

@@ -31,6 +31,10 @@
   - applyFromCompose_mult1_minted_tags / applyFromCompose_mult0_marked_tag
   - applyFromCompose_omega_tag / applyFromCompose_linear_and_erased_order
   - applyIsValid_count_tags_desync_false (inventory consistency)
+  - applyIsValid_oversize_count_false (count > applyCap fails closed even when
+    count == tags.length; net-new vs desync alone)
+  - applyFromCompose_sound_inventory (success path valid => applyIsValid;
+    fail-closed unminted => !applyIsValid)
   These EmitApply theorems do NOT set SpecProof.proofCompleteClaimed true.
   Partial theorems on EmitApply != host proof complete != residual free.
   Does not invent a second emit dialect; does not grow product C.
@@ -70,7 +74,8 @@
   EMIT-APPLY-THEOREM, HOST-EMIT-APPLY-THEOREM, applyCap_eq_32, applyOk_empty_true,
   applyOk_linear_without_mint_false, packTag_linear,
   applyFromCompose_mult1_minted_tags, applyFromCompose_linear_and_erased_order,
-  applyIsValid_count_tags_desync_false,
+  applyIsValid_count_tags_desync_false, applyIsValid_oversize_count_false,
+  applyFromCompose_sound_inventory,
   SLAKE_SELF_HOST_EMIT_APPLY_V0, HOST-EMIT-APPLY, SELF-HOST-EMIT-APPLY,
   applyHeaderFragment, applyBodyFragment, emitApplyReady, NON-SSOT,
   EMIT-APPLY-PRODUCT-SMOKE, HOST-EMIT-APPLY-SMOKE, EmitApplyScaffold,
@@ -174,8 +179,9 @@ def applyOk (hc : Host) : Bool :=
 
   Real Lean theorems (not only `example` Bool canaries). Scope is applyCap,
   empty-compose apply validity, fail-closed MULT-1 unminted, definitional tag
-  packing, minted/marked tag inventory, multi-node program order, and
-  applyIsValid count/tags consistency. Does not complete SpecProof; does not
+  packing, minted/marked tag inventory, multi-node program order,
+  applyIsValid count/tags consistency, oversize-count fail-closed, and
+  applyFromCompose sound inventory. Does not complete SpecProof; does not
   claim residual free / freestanding product self-host complete / PROVABLY.
   Does not invent a second emit dialect.
 -/
@@ -333,6 +339,33 @@ theorem applyIsValid_count_tags_desync_false :
     (let a1 : Apply := { tags := [17], count := 2, valid := true }
      let a2 : Apply := { tags := [17, 2], count := 1, valid := true }
      !applyIsValid a1 && !applyIsValid a2) = true := by decide
+
+/-- Hand-built Apply with valid=true, count == tags.length, but count > applyCap
+    fails closed (oversize inventory). Net-new vs count/tags desync alone.
+    Greppable: applyIsValid_oversize_count_false, APPLY_CAP, FAIL-CLOSED,
+    EMIT-APPLY-THEOREM, HOST-EMIT-APPLY-THEOREM. -/
+theorem applyIsValid_oversize_count_false :
+    (let a : Apply := { tags := List.replicate 33 17, count := 33, valid := true }
+     decide (a.count == a.tags.length) && decide (a.count > applyCap)
+       && !applyIsValid a) = true := by decide
+
+/-- applyFromCompose sound inventory: success path (checked hosts under cap)
+    yields applyIsValid; fail-closed unminted does not. Net-new vs desync alone.
+    Greppable: applyFromCompose_sound_inventory, applyIsValid, FAIL-CLOSED,
+    EMIT-APPLY-THEOREM, HOST-EMIT-APPLY-THEOREM. -/
+theorem applyFromCompose_sound_inventory :
+    (let aEmpty := applyFromCompose HostCompose.empty
+     let aMinted := applyFromCompose thmHostMult1Minted
+     let aMarked := applyFromCompose thmHostMult0Marked
+     let aOmega := applyFromCompose thmHostOmega
+     let aOrder := applyFromCompose thmHostLinearAndErased
+     let aUnminted := applyFromCompose thmHostMult1Unminted
+     aEmpty.valid && applyIsValid aEmpty
+       && aMinted.valid && applyIsValid aMinted
+       && aMarked.valid && applyIsValid aMarked
+       && aOmega.valid && applyIsValid aOmega
+       && aOrder.valid && applyIsValid aOrder
+       && !aUnminted.valid && !applyIsValid aUnminted) = true := by decide
 
 /-! ### Emit apply smoke (behavioral; lake build fails if an example does not hold)
     Greppable: EMIT-APPLY-SMOKE. Exercises empty ok, tag packing, multi-node order. -/

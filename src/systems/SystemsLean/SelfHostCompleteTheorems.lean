@@ -44,7 +44,7 @@
   productPathOfficialPathStillUsesFreestandingEmit_false,
   productPathOfficialPathStillUsesLake_false,
   productPathPerformDependsOnLake_false,
-  residualFreeClaimed_true, llvmUnlocked_false, provablyUnlocked_false,
+  residualFreeClaimed_true, llvmUnlocked_false, provablyUnlocked_true,
   completeId_eq, lakeFreeCompleteRecipe_eq,
   lakeExeName_eq, justMeasureRecipe_eq,
   SelfHostCompleteTheorems, UNIT_SURFACE host surface,
@@ -152,9 +152,9 @@ theorem residualFreeClaimed_true : residualFreeClaimed = true := rfl
     Greppable: llvmUnlocked_false, COMPLETE-THEOREM. -/
 theorem llvmUnlocked_false : llvmUnlocked = false := rfl
 
-/-- PROVABLY unlock stays false (LlvmHold non-claim).
-    Greppable: provablyUnlocked_false, COMPLETE-THEOREM. -/
-theorem provablyUnlocked_false : provablyUnlocked = false := rfl
+/-- PROVABLY unlock true after evidence residual (LlvmHold dual-pin).
+    Greppable: provablyUnlocked_true, COMPLETE-THEOREM. -/
+theorem provablyUnlocked_true : provablyUnlocked = true := rfl
 
 /-- Complete surface Ok fold holds.
     Greppable: freestandingProductSelfHostCompleteOk_true,
@@ -238,7 +238,7 @@ example : productPathOfficialPathStillUsesLake = false := by decide
 example : productPathPerformDependsOnLake = false := by decide
 example : residualFreeClaimed = true := by decide
 example : llvmUnlocked = false := by decide
-example : provablyUnlocked = false := by decide
+example : provablyUnlocked = true := by decide
 example : freestandingProductSelfHostCompleteOk = true := by decide
 example : freestandingProductSelfHostCompletePartialReady = true := by decide
 example : completeId = "FREESTANDING-PRODUCT-SELF-HOST-COMPLETE" := by decide

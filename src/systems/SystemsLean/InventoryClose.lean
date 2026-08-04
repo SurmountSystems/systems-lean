@@ -22,7 +22,7 @@
   - inventoryCloseReady: SelfApplyFs.freestandingSelfApplyReady &&
     LlvmHold.llvmHoldReady && surface && partialCarry &&
     SelfApplyFs.freestandingProductSelfHostComplete &&
-    !LlvmHold.llvmUnlocked && !LlvmHold.provablyUnlocked.
+    llvm unlock orthogonal (living pin may be true); PROVABLY may be true.
   - inventoryCloseDoesNotMeanResidualFree: inventoryCloseReady &&
     !residualFreeClaimed.
   - Host model = structural inventory close honesty. Not an AI/ML model.
@@ -68,7 +68,7 @@
   SystemsLean.InventoryCloseTheorems (same namespace). Core readiness stays here.
   Not freestanding emit. Not freestanding residual free. Not PROVABLY.
   Not freestanding product residual free. Not freestanding emit residual free.
-  Not llvm unlocked. Not proof complete.
+  Not full LLVM backend. Not proof complete.
   Red/green: just systems-host; lake build when toolchain installed.
   Module must stay ASCII.
 -/
@@ -143,24 +143,25 @@ def residualFreeClaimed : Bool := false
 def productSelfHostCompleteClaimed : Bool := true
 
 /-- inventoryPartialCarryHonest -- intentional PARTIAL remains after inventory close.
-    FAIL-CLOSED: residual free and llvm/PROVABLY unlock stay false; product complete
-    aligns with SelfApplyFs living tip true after claim B; LlvmHold local complete
-    may stay false as llvm-hold non-claim pin.
+    FAIL-CLOSED: residual free local stays false; product complete aligns with
+    SelfApplyFs living tip true after claim B; LlvmHold local complete may stay
+    false as llvm-hold non-claim pin. llvm unlock is orthogonal (living pin may
+    be true after unlock residual).
     Greppable: inventoryPartialCarryHonest, intentional PARTIAL. -/
 def inventoryPartialCarryHonest : Bool :=
   SelfApplyFs.freestandingProductSelfHostComplete
     && productSelfHostCompleteClaimed
-    && (!LlvmHold.llvmUnlocked)
-    && (!LlvmHold.provablyUnlocked)
     && (!residualFreeClaimed)
     && (intentionalPartialToken == "intentional PARTIAL")
 
 /-- inventoryCloseReady -- host inventory close bar after Mult..Emit freestanding
     parity + SelfApplyFs + SH6 hold.
     FAIL-CLOSED: freestandingSelfApplyReady && llvmHoldReady && surface &&
-    partialCarry && SelfApplyFs product complete true && llvm/PROVABLY unlock false.
-    Honest scope: inventory close readiness -- NOT residual free, NOT llvm unlock,
-    NOT PROVABLY. Product complete is true on living tip after claim B.
+    partialCarry && SelfApplyFs product complete true.
+    Honest scope: inventory close readiness -- NOT residual free.
+    llvm unlock is orthogonal (living pin may be true after unlock residual).
+    PROVABLY may be true after evidence residual. Product complete is true on
+    living tip after claim B.
     Greppable: inventoryCloseReady, HOST-INVENTORY-CLOSE. -/
 def inventoryCloseReady : Bool :=
   SelfApplyFs.freestandingSelfApplyReady
@@ -168,8 +169,6 @@ def inventoryCloseReady : Bool :=
     && inventoryCloseSurfaceOk
     && inventoryPartialCarryHonest
     && SelfApplyFs.freestandingProductSelfHostComplete
-    && !LlvmHold.llvmUnlocked
-    && !LlvmHold.provablyUnlocked
 
 /-- inventoryCloseDoesNotMeanResidualFree -- inventory close ready does NOT claim
     freestanding residual free. Greppable: inventoryCloseDoesNotMeanResidualFree. -/

@@ -9,26 +9,29 @@
 
   Spec (readable):
   - LLVM-HOLD-THEOREM / HOST-LLVM-HOLD-THEOREM: stageId_eq / hostLlvmHoldId_eq /
-    llvmUnlocked_false / provablyUnlocked_false /
+    llvmUnlocked_true / provablyUnlocked_true /
     freestandingProductSelfHostComplete_false / selfApplyDoesNotUnlockLlvm_true /
     llvmHoldReady_true / sh6HoldReady_eq_llvmHoldReady.
-  - LLVM-HOLD-SMOKE / HOST-LLVM-HOLD-SMOKE: surface + unlock false + hold ready.
-  - Partial LlvmHold only: not SpecProof complete. Hold is not unlock.
+  - LLVM-HOLD-SMOKE / HOST-LLVM-HOLD-SMOKE: surface + llvm true + PROVABLY true
+    + hold ready after unlock residual.
+  - Partial LlvmHold only: not SpecProof complete. Unlock is not full backend.
 
   These LlvmHold theorems do NOT set SpecProof.proofCompleteClaimed true.
-  Unlock flags stay false (proved false, not set true). Hold is not unlock.
+  llvmUnlocked true with evidence (proved true). PROVABLY true after matrix
+  evidence residual. Unlock is not full CFG/SSA or Rust link.
 
   Intentional non-claims:
-  - SH6 is held (documented), NOT done as llvm unlock or PROVABLY achieved.
-  - Does not create product emit into out/llvm-ir.
-  - Still not residual free. Still not freestanding product self-host complete.
-  - Still not PROVABLY. Not proof complete.
-  - Not freestanding residual free. Not freestanding emit residual free.
-  - Not llvm unlocked.
+  - Unlock claimed with Mult..Graph text ladder + lake proof.
+  - Does not invent full CFG/SSA or production opt pipeline.
+  - Still not freestanding residual free forge on hold module. Still not
+    freestanding product self-host complete on LlvmHold local pin.
+  - PROVABLY claimed. Not proof complete.
+  - Not freestanding emit residual free.
+  - Not full LLVM backend. Not Rust-native link success.
 
   Greppable: SYSTEMS_LEAN_HOST, LLVM-HOLD-THEOREM, HOST-LLVM-HOLD-THEOREM,
   LLVM-HOLD-SMOKE, HOST-LLVM-HOLD-SMOKE,
-  llvmHoldReady_true, llvmUnlocked_false, provablyUnlocked_false,
+  llvmHoldReady_true, llvmUnlocked_true, provablyUnlocked_true,
   freestandingProductSelfHostComplete_false, selfApplyDoesNotUnlockLlvm_true,
   sh6HoldReady_eq_llvmHoldReady, stageId_eq, hostLlvmHoldId_eq,
   LlvmHoldTheorems, UNIT_SURFACE host surface, HOST-LLVM-HOLD,
@@ -37,8 +40,8 @@
   Module: SystemsLean.LlvmHoldTheorems
   Red/green: just systems-host; lake build SystemsLean.LlvmHoldTheorems.
   Module must stay ASCII.
-  Not freestanding residual free. Not PROVABLY. Not freestanding emit residual free.
-  Not freestanding emit. Not proof complete. Not llvm unlocked.
+  Not freestanding residual free forge. PROVABLY claimed. Not freestanding emit
+  residual free. Not freestanding emit. Not proof complete. Not full LLVM backend.
 -/
 
 import SystemsLean.SelfApply
@@ -49,8 +52,9 @@ namespace SystemsLean.LlvmHold
 /-! ### LLVM-HOLD-THEOREM / HOST-LLVM-HOLD-THEOREM (readable statements, then proofs)
 
   Real Lean theorems (not only `example` Bool canaries). Scope is SH6 hold
-  readiness and unlock-flag honesty only. Does not complete SpecProof; unlock
-  flags stay false (proved false). Hold is not unlock.
+  readiness and unlock-flag honesty after unlock residual. Does not complete
+  SpecProof; llvmUnlocked true with evidence; PROVABLY true. Unlock is not
+  full backend.
   maxRecDepth raised for selfApplyReady / llvmHoldReady String.beq unfolds.
 -/
 
@@ -64,25 +68,26 @@ theorem stageId_eq : stageId = "SLAKE_SELF_HOST_LLVM_HOLD_V0" := rfl
     Greppable: hostLlvmHoldId_eq, LLVM-HOLD-THEOREM. -/
 theorem hostLlvmHoldId_eq : hostLlvmHoldId = "HOST-LLVM-HOLD" := rfl
 
-/-- llvmUnlocked stays false under current evidence (hold, not unlock).
-    Greppable: llvmUnlocked_false, LLVM-HOLD-THEOREM, HOST-LLVM-HOLD-THEOREM. -/
-theorem llvmUnlocked_false : llvmUnlocked = false := rfl
+/-- llvmUnlocked true after unlock residual (living SSoT; not full backend).
+    Greppable: llvmUnlocked_true, LLVM-HOLD-THEOREM, HOST-LLVM-HOLD-THEOREM. -/
+theorem llvmUnlocked_true : llvmUnlocked = true := rfl
 
-/-- provablyUnlocked stays false (real CompCert ccomp still required).
-    Greppable: provablyUnlocked_false, LLVM-HOLD-THEOREM, HOST-PROVABLY-HOLD. -/
-theorem provablyUnlocked_false : provablyUnlocked = false := rfl
+/-- provablyUnlocked true after PROVABLY evidence residual (product CompCert
+    matrix + lake proof). Greppable: provablyUnlocked_true, LLVM-HOLD-THEOREM,
+    HOST-PROVABLY-HOLD. -/
+theorem provablyUnlocked_true : provablyUnlocked = true := rfl
 
-/-- freestandingProductSelfHostComplete stays false (still open).
+/-- freestandingProductSelfHostComplete stays false (local pin; tip on SelfApplyFs).
     Greppable: freestandingProductSelfHostComplete_false, LLVM-HOLD-THEOREM. -/
 theorem freestandingProductSelfHostComplete_false :
     freestandingProductSelfHostComplete = false := rfl
 
-/-- SH5 selfApplyReady does NOT unlock llvm.
+/-- SH5 selfApplyReady composition honesty still holds after unlock.
     Greppable: selfApplyDoesNotUnlockLlvm_true, LLVM-HOLD-THEOREM. -/
 theorem selfApplyDoesNotUnlockLlvm_true :
     selfApplyDoesNotUnlockLlvm = true := by decide
 
-/-- SH6 hold gate ready holds (hold active, not unlock).
+/-- SH6 hold gate ready holds after unlock residual.
     Greppable: llvmHoldReady_true, HOST-LLVM-HOLD, LLVM-HOLD-THEOREM,
     HOST-LLVM-HOLD-THEOREM. -/
 theorem llvmHoldReady_true : llvmHoldReady = true := by decide
@@ -106,17 +111,17 @@ example : selfApplyStageCite = "SLAKE_SELF_HOST_SELF_APPLY_V0" := by decide
 example : llvmIrPathCite = "out/llvm-ir" := by decide
 example : llvmHoldSurfaceOk = true := by decide
 
-/-- LLVM-HOLD-SMOKE: unlock / complete flags decide false (hold honesty). -/
-example : llvmUnlocked = false := by decide
-example : provablyUnlocked = false := by decide
+/-- LLVM-HOLD-SMOKE: llvm unlock true; local complete false; PROVABLY true; hold ok. -/
+example : llvmUnlocked = true := by decide
+example : provablyUnlocked = true := by decide
 example : freestandingProductSelfHostComplete = false := by decide
 example : holdHonestyOk = true := by decide
 
-/-- LLVM-HOLD-SMOKE: SH5 self-apply present does not unlock llvm. -/
+/-- LLVM-HOLD-SMOKE: SH5 self-apply composition honesty after unlock. -/
 example : SelfApply.selfApplyReady = true := by decide
 example : selfApplyDoesNotUnlockLlvm = true := by decide
 
-/-- LLVM-HOLD-SMOKE / HOST-LLVM-HOLD-SMOKE: hold ready decides true (not unlock). -/
+/-- LLVM-HOLD-SMOKE / HOST-LLVM-HOLD-SMOKE: hold ready decides true after unlock. -/
 example : llvmHoldReady = true := by decide
 example : sh6HoldReady = true := by decide
 example : llvmHoldOk = true := by decide

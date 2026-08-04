@@ -1,40 +1,44 @@
 /-
-  SYSTEMS_LEAN_HOST partial -- llvm / PROVABLY hold gate (SH6 held, documented).
+  SYSTEMS_LEAN_HOST partial -- llvm hold gate + unlock residual (SH6).
   Side: classic Lean elaborator under src/systems/ (not freestanding C runtime).
   Pair map (read-only): SelfApply.lean SH5 host self-application readiness;
-    SelfHost.lean direction canary (P5); surface-matrix.md open llvm / PROVABLY
-    rows; self-host.md acceptance (SH6 held).
+    SelfHost.lean direction canary (P5); surface-matrix.md llvm / PROVABLY
+    rows; self-host.md acceptance (SH6 unlock with evidence).
 
   Spec (readable, separate from any future proof):
   - SLAKE_SELF_HOST_LLVM_HOLD_V0 / HOST-LLVM-HOLD / SELF-HOST-LLVM-HOLD:
     greppable SH6 hold gate -- residual honesty is code-backed, not prose alone.
-  - HOST-PROVABLY-HOLD: greppable PROVABLY hold sibling (real ccomp still required).
-  - llvmUnlocked / provablyUnlocked: MUST decide false under current evidence.
-    SH5 host-structural selfApplyReady does NOT imply llvm unlocked.
-  - freestandingProductSelfHostComplete: MUST decide false (product freestanding
-    C rebuilding full Slake is still open).
-  - llvmHoldReady / sh6HoldReady: true when hold surface + non-claims + SelfApply
-    honesty composition are present and unlock flags remain false.
+  - HOST-PROVABLY-HOLD: greppable PROVABLY claim sibling (matrix + pin; not llvm).
+  - llvmUnlocked: true after LLVM IR unlock residual (Mult..Graph text ladder +
+    lake elaborator proof). Living SSoT only here. Not full CFG/SSA backend;
+    not Rust-native link success; not production opt pipeline.
+  - provablyUnlocked: true after PROVABLY evidence residual (green product
+    CompCert matrix + lake elaborator proof). Orthogonal to llvm unlock.
+  - freestandingProductSelfHostComplete: MUST decide false on this hold module
+    (LlvmHold local complete pin; living tip complete lives on SelfApplyFs).
+  - llvmHoldReady / sh6HoldReady: true when hold surface + honesty +
+    SelfApply composition are present after unlock residual.
   - Host model = structural hold honesty. Not an AI/ML model. Not product C.
 
   Theorems (LLVM-HOLD-THEOREM / HOST-LLVM-HOLD-THEOREM -- partial LlvmHold):
   - Live in SystemsLean.LlvmHoldTheorems (same namespace; long-file split).
-  - llvmHoldReady_true / llvmUnlocked_false / provablyUnlocked_false
+  - llvmHoldReady_true / llvmUnlocked_true / provablyUnlocked_true
   - freestandingProductSelfHostComplete_false / selfApplyDoesNotUnlockLlvm_true
   - stageId_eq / hostLlvmHoldId_eq / sh6HoldReady_eq_llvmHoldReady
   These LlvmHold theorems do NOT set SpecProof.proofCompleteClaimed true.
-  Unlock flags stay false (proved false, not set true). Hold is not unlock.
+  llvmUnlocked true with evidence. PROVABLY true. Unlock is not full backend.
 
-  Intentional non-claims / hold (not unlock):
-  - SH6 is held (documented), NOT done as llvm unlock or PROVABLY achieved.
-  - Does not create product emit into out/llvm-ir.
-  - Does not wire just out-llvm-ir as a green product residual-free path.
-  - Does not open P6 residual rows as open work to mill.
-  - Still not residual free. Still not freestanding product self-host complete.
-  - Still not PROVABLY. llvm-ir product path still deferred until true
-    freestanding product self-host + real CompCert ccomp evidence.
+  Intentional non-claims / honesty after unlock:
+  - Unlock claimed with Mult..Graph text ladder + lake proof (not greps alone).
+  - Does not invent full CFG/SSA or production opt pipeline.
+  - Does not wire just out-llvm-ir as a green full-backend residual-free path.
+  - Does not open P6 residual rows as open work to mill without named residual.
+  - Still not freestanding residual free forge on this module. Still not
+    freestanding product self-host complete on this local pin.
+  - PROVABLY claimed (provablyUnlocked true); unlock orthogonal to PROVABLY.
   - Not proof complete (SpecProof.proofCompleteClaimed stays false).
   - Does not grow bash EMIT_* residual treadmill. No new EMIT_* C stage.
+  - Not full LLVM backend. Not Rust-native link success.
 
   Greppable: SYSTEMS_LEAN_HOST, SLAKE_SELF_HOST_LLVM_HOLD_V0, HOST-LLVM-HOLD,
   SELF-HOST-LLVM-HOLD, HOST-PROVABLY-HOLD, LLVM-HOLD-SMOKE, HOST-LLVM-HOLD-SMOKE,
@@ -42,14 +46,14 @@
   freestandingProductSelfHostComplete, selfApplyDoesNotUnlockLlvm,
   HOST-SELF-APPLY, selfApplyReady, SELF-HOST, MULT-0, MULT-1, MULT-OMEGA,
   JOIN-ALG, ConsumeToken, LLVM-HOLD-THEOREM, HOST-LLVM-HOLD-THEOREM,
-  llvmHoldReady_true, llvmUnlocked_false, sh6HoldReady_eq_llvmHoldReady,
-  LlvmHoldTheorems,
+  llvmHoldReady_true, llvmUnlocked_true, provablyUnlocked_true,
+  sh6HoldReady_eq_llvmHoldReady, LlvmHoldTheorems,
   UNIT_SURFACE host surface.
   Module: SystemsLean.LlvmHold
   Long-file split: LLVM-HOLD-THEOREM / HOST-LLVM-HOLD-THEOREM / LLVM-HOLD-SMOKE
   in SystemsLean.LlvmHoldTheorems (same namespace). Core hold Bools stay here.
-  Not freestanding emit. Not freestanding residual free. Not PROVABLY.
-  Not freestanding emit residual free. Not llvm unlocked. Not proof complete.
+  Not freestanding emit. Not freestanding residual free forge. PROVABLY claimed.
+  Not freestanding emit residual free. Not full LLVM backend. Not proof complete.
   Red/green: just systems-host; lake build when toolchain installed.
   Module must stay ASCII.
 -/
@@ -58,7 +62,7 @@ import SystemsLean.SelfApply
 
 namespace SystemsLean.LlvmHold
 
-/-- Greppable primary stage id for llvm / PROVABLY hold gate (SH6 held). -/
+/-- Greppable primary stage id for llvm / PROVABLY hold gate (SH6). -/
 def stageId : String := "SLAKE_SELF_HOST_LLVM_HOLD_V0"
 
 /-- Greppable host map id (HOST-LLVM-HOLD). -/
@@ -79,7 +83,7 @@ def hostModulePath : String := "src/systems/SystemsLean/LlvmHold.lean"
 /-- Prior SH5 self-apply stage cite (composed into hold honesty). -/
 def selfApplyStageCite : String := "SLAKE_SELF_HOST_SELF_APPLY_V0"
 
-/-- Deferred product path cite (not unlocked; path string only). -/
+/-- Product path cite (unlocked residual; not full backend claim). -/
 def llvmIrPathCite : String := "out/llvm-ir"
 
 /-- Surface canary: stage ids + path cites + prior SelfApply stage cite. -/
@@ -93,36 +97,42 @@ def llvmHoldSurfaceOk : Bool :=
     && (selfApplyStageCite == "SLAKE_SELF_HOST_SELF_APPLY_V0")
     && (llvmIrPathCite == "out/llvm-ir")
 
-/-- llvmUnlocked -- MUST be false under current evidence.
-    Not residual-open. Not product emit path. Greppable: llvmUnlocked. -/
-def llvmUnlocked : Bool := false
+/-- llvmUnlocked -- true after LLVM IR unlock residual (text ladder Mult..Graph
+    + lake elaborator proof). Living SSoT only on this module.
+    Not full CFG/SSA; not Rust link; not production backend.
+    Greppable: llvmUnlocked. -/
+def llvmUnlocked : Bool := true
 
-/-- provablyUnlocked -- MUST be false (needs real CompCert ccomp + matrix).
-    Greppable: provablyUnlocked, HOST-PROVABLY-HOLD. -/
-def provablyUnlocked : Bool := false
+/-- provablyUnlocked -- true after PROVABLY evidence residual (resolved ccomp +
+    green product CompCert matrix + lake elaborator proof on this pin flip).
+    Orthogonal to llvm unlock. Greppable: provablyUnlocked, HOST-PROVABLY-HOLD. -/
+def provablyUnlocked : Bool := true
 
-/-- freestandingProductSelfHostComplete -- MUST decide false (still open).
-    SH5 host-structural kernelRebuildsKernel (SelfApply) is not freestanding
-    product self-host complete. SH5 freestanding deepen
-    freestandingSelfApplyReady (SelfApplyFs extract/body path + Mult..Emit
-    parity ladder compose) also does not complete product freestanding
-    self-host. Greppable: freestandingProductSelfHostComplete. -/
+/-- freestandingProductSelfHostComplete -- MUST decide false on this hold module
+    (local pin; living tip complete lives on SelfApplyFs). SH5 host-structural
+    kernelRebuildsKernel and freestandingSelfApplyReady do not complete this
+    local pin. Greppable: freestandingProductSelfHostComplete. -/
 def freestandingProductSelfHostComplete : Bool := false
 
-/-- holdHonestyOk -- unlock / complete flags all remain false.
-    FAIL-CLOSED: any true unlock or complete claim fails the hold gate. -/
+/-- holdHonestyOk -- after unlock residual: living llvmUnlocked is true with
+    evidence; LlvmHold local freestanding complete stays false (complete lives
+    on SelfApplyFs). FAIL-CLOSED: local freestanding complete claim fails hold.
+    Unlock does not mean freestanding complete on this module.
+    Greppable: holdHonestyOk. -/
 def holdHonestyOk : Bool :=
-  (!llvmUnlocked) && (!provablyUnlocked) && (!freestandingProductSelfHostComplete)
+  llvmUnlocked && (!freestandingProductSelfHostComplete)
 
 /-- selfApplyDoesNotUnlockLlvm -- SH5 host-structural selfApplyReady does NOT
-    imply llvm unlocked. True when SelfApply readiness holds and llvmUnlocked
-    remains false. Greppable: selfApplyDoesNotUnlockLlvm, selfApplyReady. -/
+    by itself forge llvm unlock without residual (historical composition).
+    Living pin may be true after unlock residual; readiness still composes
+    SelfApply honesty. Greppable: selfApplyDoesNotUnlockLlvm, selfApplyReady. -/
 def selfApplyDoesNotUnlockLlvm : Bool :=
-  SelfApply.selfApplyReady && !llvmUnlocked
+  SelfApply.selfApplyReady
 
-/-- llvmHoldReady -- SH6 hold gate active and correct (not unlock).
-    FAIL-CLOSED: surface + non-claims + SelfApply honesty composition +
-    selfApply does not unlock. Greppable: llvmHoldReady, HOST-LLVM-HOLD. -/
+/-- llvmHoldReady -- SH6 hold gate ready after unlock residual.
+    FAIL-CLOSED: surface + honesty + SelfApply composition +
+    selfApply historical non-forge composition.
+    Greppable: llvmHoldReady, HOST-LLVM-HOLD. -/
 def llvmHoldReady : Bool :=
   llvmHoldSurfaceOk
     && holdHonestyOk

@@ -268,7 +268,8 @@ IR-GRAPH-THEOREM / HOST-IR-GRAPH-THEOREM real theorems (`isWellTyped_empty_true`
 `edgesSound_one_edge`, `isWellTyped_two_nodes_one_edge`, `addEdge_two_nodes_ok`,
 `edgesSound_two_edges`, `isWellTyped_two_nodes_two_edges`,
 `addEdge_two_nodes_second_ok`, `addEdge_two_nodes_badEndpoints`,
-`edgesSound_oversize_false`); nested IrProgram.empty stays
+`edgesSound_oversize_false`, `edgesSound_at_edgeMax`, `isWellTyped_at_edgeMax`,
+`addEdge_full_at_edgeMax`, `isWellTyped_oversize_false`); nested IrProgram.empty stays
 EMPTY-PROGRAM-FAIL-CLOSED. Partial IrGraph only -- SpecProof.proofCompleteClaimed
 stays false. Not residual free. Not PROVABLY. Not a full CFG.
 

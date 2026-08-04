@@ -2,6 +2,12 @@
 
 Kind: analysis only. Not residual. Measurement only -- no claim flips.
 
+**Same-job Mult package peer (plan step 8):** see
+`doc/dev/research/slake-vs-lake-same-job-mult-2026-08-02.md`
+(`just host-package-write-without-lake` vs `just mult-subset-emit`). This proper
+bench still holds for product-wire / full SystemsLean cold Lake contrast; do
+**not** use cold full `lake build` (~800 s) as the Mult package peer comparator.
+
 ## THE comparison: Slake with Slake vs Slake with Lake
 
 Operator ask: self-host rebuild times -- Slake building Slake surface vs Lake

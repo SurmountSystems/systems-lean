@@ -1,0 +1,7 @@
+# G2 minimal Mult inductive + check
+
+module SystemsLean.MultMini
+namespace SystemsLean.MultMini
+inductive Mult mult0 mult1 multOmega deriving DecidableEq Repr
+check mult0 : Mult
+end SystemsLean.MultMini

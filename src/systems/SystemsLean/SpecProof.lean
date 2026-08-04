@@ -30,7 +30,8 @@
     HOST-INVENTORY-CLOSE / HOST-LLVM-HOLD / EMIT-BOUNDARY / RUNTIME-FS cites.
   - specProofReady: ProbeWire.probeWireReady && surface &&
     specSurfaceStated && proofDoesNotRetireTests &&
-    specDoesNotImplyProofComplete && free/complete/unlock claims stay false.
+    specDoesNotImplyProofComplete && proof complete false && local residual free
+    false && product complete true; llvm unlock orthogonal.
   - specProofDoesNotMeanResidualFree /
     specProofDoesNotMeanProofComplete: ready && free/complete claims false.
   - Host model = structural formal feedback honesty. Not an AI/ML model.
@@ -202,12 +203,13 @@
     are formal feedback honesty canaries only -- proof complete stays false
     (proved false); they do NOT flip proofCompleteClaimed true.
   - LlvmHold LLVM-HOLD-THEOREM / HOST-LLVM-HOLD-THEOREM
-    (llvmHoldReady_true / llvmUnlocked_false / provablyUnlocked_false /
+    (llvmHoldReady_true / llvmUnlocked_true / provablyUnlocked_true /
     sh6HoldReady_eq_llvmHoldReady; sh6HoldReady definitional alias of
-    llvmHoldReady) are SH6 hold honesty canaries only -- unlock stays false;
-    they do NOT flip proofCompleteClaimed true.
-  - NOT freestanding product self-host complete.
-  - NOT PROVABLY. Does not unlock llvm / out/llvm-ir (LlvmHold still holds).
+    llvmHoldReady) are SH6 hold honesty canaries only -- living unlock true
+    with evidence after unlock residual; they do NOT flip proofCompleteClaimed.
+  - freestanding product self-host complete true on living tip (claim B).
+  - llvm unlock orthogonal (living pin true after unlock residual); NOT full
+    backend; NOT PROVABLY re-open.
   - Intentional PARTIAL carry remains.
   - Does not mint ProductPath / DualResidual / ProbeWire alias theater.
   - No new EMIT_* C stage. Does not grow check.sh. Does not grow probe C body.
@@ -242,7 +244,7 @@
   surface stay here.
   Not freestanding residual free. Not PROVABLY.
   Not freestanding product self-host complete. Not freestanding emit residual free.
-  Not llvm unlocked. Not host elaborator residual free. Not proof complete.
+  Not full LLVM backend. Not host elaborator residual free. Not proof complete.
   Red/green: just systems-host; lake build when toolchain installed.
   Module must stay ASCII.
 -/
@@ -385,10 +387,11 @@ def specDoesNotImplyProofComplete : Bool :=
 /-- specProofReady -- formal spec-proof separation bar after probe-vs-wire honesty.
     FAIL-CLOSED: probeWireReady && surface && specSurfaceStated &&
     proofDoesNotRetireTests && specDoesNotImplyProofComplete &&
-    free/complete/unlock claims stay false.
-    Honest scope: formal feedback honesty only -- NOT residual free, NOT
-    proof complete, NOT freestanding product self-host complete, NOT llvm unlock,
-    NOT PROVABLY.
+    proof complete false && local residual free false && product complete true.
+    llvm unlock orthogonal (living pin may be true after unlock residual).
+    Honest scope: formal feedback honesty only -- NOT residual free re-open;
+    proof complete stays false; product complete true on living tip; NOT
+    PROVABLY re-open; NOT full LLVM backend.
     Greppable: specProofReady, HOST-SPEC-PROOF. -/
 def specProofReady : Bool :=
   ProbeWire.probeWireReady
@@ -400,8 +403,6 @@ def specProofReady : Bool :=
     && !residualFreeClaimed
     && productSelfHostCompleteClaimed
     && SelfApplyFs.freestandingProductSelfHostComplete
-    && !LlvmHold.llvmUnlocked
-    && !LlvmHold.provablyUnlocked
 
 /-- specProofDoesNotMeanResidualFree -- spec-proof ready is not free SSoT
     (local residualFreeClaimed stays false; DualResidual owns product free).

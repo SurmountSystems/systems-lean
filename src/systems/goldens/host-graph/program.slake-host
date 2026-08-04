@@ -1,0 +1,13 @@
+# Program Mult companion host fragment (imports Mult)
+# Expand set: Mult + MultSubsetEmit + Linear + Types + Program
+# Not full SystemsLean.IrProgram / elaborator; host fragment dialect only
+
+module Program
+import Mult
+namespace Program
+open Mult
+def irProgramId : String := "IR_PROGRAM_V0"
+def orderedIrProgramId : String := "ORDERED-IR-PROGRAM"
+def programFixtureId : String := "PROGRAM-FIXTURE"
+check mult0 : Mult
+end Program

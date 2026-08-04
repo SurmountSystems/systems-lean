@@ -1,0 +1,13 @@
+# Compose Mult companion host fragment (imports Mult)
+# Expand set: Mult + MultSubsetEmit + Linear + Types + Program + Graph + Compose
+# Not full SystemsLean.HostCompose / elaborator; host fragment dialect only
+
+module Compose
+import Mult
+namespace Compose
+open Mult
+def hostComposeId : String := "HOST_COMPOSE_V0"
+def hostComposeSurfaceId : String := "HOST-COMPOSE"
+def composeFixtureId : String := "COMPOSE-FIXTURE"
+check mult0 : Mult
+end Compose

@@ -1,25 +1,27 @@
 /-
-  SYSTEMS_LEAN_HOST partial -- Path A freestanding product-wire writer tool.
-  Lean-generated host-cc dual-eq freestanding dialect writer (not Lake-built
-  CapableRegenerate ELF). Bootstrap may lake-build this generator once: it runs
-  freestandingCapableWriteFreestandingHc (dual-eq SSOT vs Emit* + dialect),
-  embeds the resulting slake_freestanding.{h,c} bytes into tool C, and the
-  measured recipe host-cc builds src/systems/bin/slake-product-wire-fs-write-cc
-  (outside .lake/build/bin) which WRITEs emit + INSTALLs Out. Same spirit as
-  MultFsWriteTool (M2 Name B Path A). Not S4 / M6. Product StillUsesLake remains.
-  freestandingDriverComplete stays Mult-orthogonal (separate pin here).
-  Not free/complete product flip. Not PROVABLY. Not llvm unlock.
+  SYSTEMS_LEAN_HOST partial -- freestanding product-wire writer tool (P1).
+  Living path: dual-eq freestandingCapableWriteFreestandingHc + Install Out via
+  Lean IO.FS.writeFile. Does NOT print full host-cc C tool bodies as Lean string
+  soup (Path A C-print retired under Program P Host-cc helper tools without C
+  printed from Lean). Greppable retired Path A path names
+  (slake_product_wire_fs_write_tool.c, slake-product-wire-fs-write-cc) remain
+  for archaeology and pin continuity. Not Lake-built CapableRegenerate ELF as
+  the only design. Product StillUsesLake remains. freestandingDriverComplete
+  stays Mult-orthogonal (separate pin here). Not free/complete product flip.
+  Not PROVABLY. Not llvm unlock.
   Greppable: SYSTEMS_LEAN_HOST, PRODUCT-WIRE-FS-WRITE-TOOL,
   SLAKE_PRODUCT_WIRE_FS_WRITE_TOOL, SLAKE_PRODUCT_WIRE_FS_WRITE_TOOL_V0,
   HOST-PRODUCT-WIRE-FS-WRITE-TOOL, productWireFsWriterReady,
   productWireFsWriterFinishedClaimed, productWireFsWriterNotLakeBuilt,
   productWireFsWriterKeepsHostLake, productWireFsWriterBinRel,
   productWireFsWriterCRel, productWireFsWriterEmit, productWireFsWriterCSource,
-  slake_product_wire_fs_write_tool.c, slake-product-wire-fs-write-cc,
-  product-wire-freestanding-write, freestandingCapableWriteFreestandingHc,
+  productWireFsWriterNativeIo, productWireFsWriterPrintsFullHelperC,
+  IO.FS.writeFile, slake_product_wire_fs_write_tool.c,
+  slake-product-wire-fs-write-cc, product-wire-freestanding-write,
+  freestandingCapableWriteFreestandingHc, freestandingCapableInstallFreestandingOut,
   PRODUCT-WIRE-FS-WRITE-TOOL-SMOKE, PRODUCT-WIRE-FS-WRITE-TOOL-THEOREM,
   StillUsesLake, DependsOnLake, UNIT_SURFACE, CapableWriteHc, InstallOut,
-  SLAKE_EMIT_FREESTANDING_C_V0, HOST-EMIT-SSOT.
+  SLAKE_EMIT_FREESTANDING_C_V0, HOST-EMIT-SSOT, RUNTIME-FS.
   Module: SystemsLean.ProductWireWriteTool
   Short role name (not ProductPathFreestanding* kitchen-sink).
   Red/green: lake build SystemsLean.ProductWireWriteTool;
@@ -27,22 +29,25 @@
   Module must stay ASCII.
   Not freestanding residual free. Not freestanding emit residual free.
   Not freestanding emit as Lake-only success. UNIT_SURFACE host surface.
+  Greppable: RUNTIME-FS (product-wire freestanding write honesty).
 -/
 
 import SystemsLean.CapableWriteHc
+import SystemsLean.InstallOut
 
 namespace SystemsLean.ProductWireWriteTool
 
 open SystemsLean.CapableWriteHc
+open SystemsLean.InstallOut
 
 /-! ### PRODUCT-WIRE-FS-WRITE-TOOL / SLAKE_PRODUCT_WIRE_FS_WRITE_TOOL
 
-  Path A freestanding product-wire writer (M4 Name B).
-  Bootstrap: dual-eq WRITE via freestandingCapableWriteFreestandingHc, embed
-  bytes into tool C. Measured: host-cc bin writes emit + installs Out.
+  Lean-native freestanding product-wire writer (M4 Name B, P1).
+  Living: dual-eq WRITE via freestandingCapableWriteFreestandingHc, then
+  freestandingCapableInstallFreestandingOut. No host-cc tool C generation.
 -/
 
-/-- Greppable primary stage id (Path A freestanding product-wire writer). -/
+/-- Greppable primary stage id (freestanding product-wire writer). -/
 def stageId : String := "SLAKE_PRODUCT_WIRE_FS_WRITE_TOOL_V0"
 
 /-- Greppable host map id. -/
@@ -51,21 +56,21 @@ def hostId : String := "HOST-PRODUCT-WIRE-FS-WRITE-TOOL"
 /-- Short surface name. -/
 def surfaceId : String := "PRODUCT-WIRE-FS-WRITE-TOOL"
 
-/-- Generated product-wire writer C relative to repo root.
+/-- Retired Path A product-wire writer C relative to repo root (archaeology only).
     Greppable: productWireFsWriterCRel, slake_product_wire_fs_write_tool.c. -/
 def productWireFsWriterCRel : String :=
   "src/systems/emit/slake_product_wire_fs_write_tool.c"
 
-/-- Host-cc product-wire writer binary relative to repo root (not under .lake).
+/-- Retired Path A host-cc product-wire writer binary (archaeology only).
     Greppable: productWireFsWriterBinRel, slake-product-wire-fs-write-cc. -/
 def productWireFsWriterBinRel : String :=
   "src/systems/bin/slake-product-wire-fs-write-cc"
 
-/-- Lake exe that regenerates tool C (bootstrap only; not measured product write).
+/-- Lake exe for living Lean-native product-wire WRITE+INSTALL.
     Greppable: lakeExeProductWireFsWriter, slake-product-wire-fs-write-tool. -/
 def lakeExeProductWireFsWriter : String := "slake-product-wire-fs-write-tool"
 
-/-- just recipe for measured product-wire freestanding write after Path A.
+/-- just recipe for measured product-wire freestanding write.
     Greppable: justRecipeProductWireFsWriter, product-wire-freestanding-write. -/
 def justRecipeProductWireFsWriter : String := "product-wire-freestanding-write"
 
@@ -81,15 +86,27 @@ def productWireFsWriterProofCompleteClaimed : Bool := false
 def productWireFsWriterLlvmUnlocked : Bool := false
 def productWireFsWriterProvablyUnlocked : Bool := false
 
-/-- Local finished pin for M4 Name B product-wire freestanding writer
+/-- Local finished pin for M4 product-wire freestanding writer
     (separate from Mult freestandingDriverComplete). Greppable:
     productWireFsWriterFinishedClaimed, PRODUCT-WIRE-FS-WRITE-TOOL. -/
 def productWireFsWriterFinishedClaimed : Bool := true
 
-/-- Writer bin path is not a Lake-built CapableRegenerate / Mult write ELF path.
+/-- Living product-wire writer uses Lean dual-eq WRITE + Install Out IO.
+    Greppable: productWireFsWriterNativeIo, IO.FS.writeFile, CapableWriteHc. -/
+def productWireFsWriterNativeIo : Bool := true
+
+/-- Living design does not print full helper C tool source from Lean (P1).
+    Greppable: productWireFsWriterPrintsFullHelperC. -/
+def productWireFsWriterPrintsFullHelperC : Bool := false
+
+/-- Honesty: living product-wire writer is Lean-native dual-eq WRITE+INSTALL, not
+    CapableRegenerate-only as sole design, not Mult package writer, and not full
+    host-cc C printed from Lean. Retired Path A path names stay greppable.
     Greppable: productWireFsWriterNotLakeBuilt, slake-product-wire-fs-write-cc. -/
 def productWireFsWriterNotLakeBuilt : Bool :=
-  (productWireFsWriterBinRel == "src/systems/bin/slake-product-wire-fs-write-cc")
+  productWireFsWriterNativeIo
+    && !productWireFsWriterPrintsFullHelperC
+    && (productWireFsWriterBinRel == "src/systems/bin/slake-product-wire-fs-write-cc")
     && (productWireFsWriterCRel
       == "src/systems/emit/slake_product_wire_fs_write_tool.c")
     && (productWireFsWriterBinRel
@@ -111,14 +128,16 @@ def productWireFsWriterNotLakeBuilt : Bool :=
 def productWireFsWriterKeepsHostLake : Bool :=
   productWireFsWriterFinishedClaimed && stillUsesLake && dependsOnLake
 
-/-- Structural ready: dual-eq Capable WRITE surface + non-Lake tool path + finished
-    + Lake host honesty. Greppable: productWireFsWriterReady. -/
+/-- Structural ready: dual-eq Capable WRITE surface + native Io + finished + Lake.
+    Greppable: productWireFsWriterReady. -/
 def productWireFsWriterReady : Bool :=
   productPathFreestandingCapableWriteHcOk
     && productPathCapableWriteDualEqualityLive
     && productWireFsWriterNotLakeBuilt
     && productWireFsWriterFinishedClaimed
     && productWireFsWriterKeepsHostLake
+    && productWireFsWriterNativeIo
+    && !productWireFsWriterPrintsFullHelperC
     && stillUsesLake
     && dependsOnLake
     && !productWireFsWriterResidualFreeClaimed
@@ -136,221 +155,43 @@ def productWireFsWriterReady : Bool :=
     && (productWireFsWriterCRel
       == "src/systems/emit/slake_product_wire_fs_write_tool.c")
 
-/-- Hex digit for low nibble 0..15. -/
-private def hexDigit (n : Nat) : Char :=
-  if n < 10 then Char.ofNat (48 + n) -- '0'
-  else Char.ofNat (97 + (n - 10)) -- 'a'
-
-/-- One byte as 0xNN. -/
-private def byteHex (b : UInt8) : String :=
-  let n := b.toNat
-  let hi := n / 16
-  let lo := n % 16
-  "0x" ++ String.ofList [hexDigit hi, hexDigit lo]
-
-/-- Format ByteArray as C initializer list (comma-separated 0xNN). -/
-private partial def formatCByteList (ba : ByteArray) : String :=
-  let rec go (i : Nat) (acc : String) : String :=
-    if i < ba.size then
-      let sep :=
-        if i == 0 then "\n  "
-        else if i % 12 == 0 then ",\n  "
-        else ", "
-      go (i + 1) (acc ++ sep ++ byteHex (ba[i]!))
-    else
-      acc
-  go 0 ""
-
-/-- One C static unsigned char array definition. -/
-private def cByteArrayDef (name : String) (s : String) : String :=
-  let ba := s.toUTF8
-  "static const unsigned char " ++ name ++ "[] = {"
-    ++ formatCByteList ba ++ "\n};\n"
-    ++ "static const size_t " ++ name ++ "_len = "
-    ++ toString ba.size ++ ";\n\n"
-
-/-- Build product-wire writer C tool source from dual-eq freestanding header/source.
-    Greppable: productWireFsWriterCSource. -/
-def productWireFsWriterCSource (header : String) (source : String) : String :=
-  "/* PRODUCT-WIRE-FS-WRITE-TOOL / SLAKE_PRODUCT_WIRE_FS_WRITE_TOOL_V0\n"
-    ++ " * Lean-generated freestanding product-wire writer (M4 Name B Path A).\n"
-    ++ " * Bytes: dual-eq freestandingCapableWriteFreestandingHc (CapableWriteHc).\n"
-    ++ " * Do not hand-edit freestanding dialect features here; regenerate from Lean.\n"
-    ++ " * Host-cc tool (stdio); not Lake AOT CapableRegenerate ELF.\n"
-    ++ " * Measured bin: src/systems/bin/slake-product-wire-fs-write-cc (outside .lake).\n"
-    ++ " * WRITE emit/slake_freestanding.{h,c} + INSTALL out/freestanding-c/.\n"
-    ++ " * Product StillUsesLake / DependsOnLake remain until S4 / M6.\n"
-    ++ " * freestandingDriverComplete is Mult-orthogonal (separate product-wire pin).\n"
-    ++ " * RUNTIME-FS; no product GC on freestanding product wire.\n"
+/-- Retired greppable marker only: Path A full host-cc C body removed (P1).
+    Not a living C tool source. Greppable: productWireFsWriterCSource,
+    slake_product_wire_fs_write_tool.c. -/
+def productWireFsWriterCSource : String :=
+  "/* RETIRED P1: productWireFsWriterCSource full host-cc C print removed.\n"
+    ++ " * Living product-wire write: freestandingCapableWriteFreestandingHc\n"
+    ++ " * + freestandingCapableInstallFreestandingOut (Lean-native IO).\n"
+    ++ " * Greppable archaeology: slake_product_wire_fs_write_tool.c,\n"
+    ++ " * slake-product-wire-fs-write-cc.\n"
+    ++ " * Do not restore multi-hundred-line C-in-Lean helper tools.\n"
     ++ " */\n"
-    ++ "#include <errno.h>\n"
-    ++ "#include <stdio.h>\n"
-    ++ "#include <stdlib.h>\n"
-    ++ "#include <string.h>\n"
-    ++ "#include <sys/stat.h>\n"
-    ++ "\n"
-    ++ cByteArrayDef "fs_header_bytes" header
-    ++ cByteArrayDef "fs_source_bytes" source
-    ++ "static int ensure_dir(const char *path)\n"
-    ++ "{\n"
-    ++ "  struct stat st;\n"
-    ++ "  if (stat(path, &st) == 0) {\n"
-    ++ "    if (S_ISDIR(st.st_mode)) {\n"
-    ++ "      return 0;\n"
-    ++ "    }\n"
-    ++ "    fprintf(stderr, \"error: not a directory: %s\\n\", path);\n"
-    ++ "    return -1;\n"
-    ++ "  }\n"
-    ++ "  if (mkdir(path, 0755) != 0 && errno != EEXIST) {\n"
-    ++ "    fprintf(stderr, \"error: mkdir %s: %s\\n\", path, strerror(errno));\n"
-    ++ "    return -1;\n"
-    ++ "  }\n"
-    ++ "  return 0;\n"
-    ++ "}\n"
-    ++ "\n"
-    ++ "static int ensure_emit_dir(const char *root)\n"
-    ++ "{\n"
-    ++ "  char p[4096];\n"
-    ++ "  if ((size_t)snprintf(p, sizeof p, \"%s/src\", root) >= sizeof p) {\n"
-    ++ "    fprintf(stderr, \"error: path too long (src)\\n\");\n"
-    ++ "    return -1;\n"
-    ++ "  }\n"
-    ++ "  if (ensure_dir(p) != 0) return -1;\n"
-    ++ "  if ((size_t)snprintf(p, sizeof p, \"%s/src/systems\", root) >= sizeof p) {\n"
-    ++ "    fprintf(stderr, \"error: path too long (systems)\\n\");\n"
-    ++ "    return -1;\n"
-    ++ "  }\n"
-    ++ "  if (ensure_dir(p) != 0) return -1;\n"
-    ++ "  if ((size_t)snprintf(p, sizeof p, \"%s/src/systems/emit\", root) >= sizeof p) {\n"
-    ++ "    fprintf(stderr, \"error: path too long (emit)\\n\");\n"
-    ++ "    return -1;\n"
-    ++ "  }\n"
-    ++ "  return ensure_dir(p);\n"
-    ++ "}\n"
-    ++ "\n"
-    ++ "static int ensure_out_dir(const char *root)\n"
-    ++ "{\n"
-    ++ "  char p[4096];\n"
-    ++ "  if ((size_t)snprintf(p, sizeof p, \"%s/out\", root) >= sizeof p) {\n"
-    ++ "    fprintf(stderr, \"error: path too long (out)\\n\");\n"
-    ++ "    return -1;\n"
-    ++ "  }\n"
-    ++ "  if (ensure_dir(p) != 0) return -1;\n"
-    ++ "  if ((size_t)snprintf(p, sizeof p, \"%s/out/freestanding-c\", root) >= sizeof p) {\n"
-    ++ "    fprintf(stderr, \"error: path too long (out/freestanding-c)\\n\");\n"
-    ++ "    return -1;\n"
-    ++ "  }\n"
-    ++ "  return ensure_dir(p);\n"
-    ++ "}\n"
-    ++ "\n"
-    ++ "static int write_bytes(const char *path, const unsigned char *data, size_t n)\n"
-    ++ "{\n"
-    ++ "  FILE *f = fopen(path, \"wb\");\n"
-    ++ "  size_t w;\n"
-    ++ "  if (!f) {\n"
-    ++ "    fprintf(stderr, \"error: open %s: %s\\n\", path, strerror(errno));\n"
-    ++ "    return -1;\n"
-    ++ "  }\n"
-    ++ "  w = fwrite(data, 1, n, f);\n"
-    ++ "  if (w != n) {\n"
-    ++ "    fprintf(stderr, \"error: short write %s (%zu of %zu)\\n\", path, w, n);\n"
-    ++ "    fclose(f);\n"
-    ++ "    return -1;\n"
-    ++ "  }\n"
-    ++ "  if (fclose(f) != 0) {\n"
-    ++ "    fprintf(stderr, \"error: close %s: %s\\n\", path, strerror(errno));\n"
-    ++ "    return -1;\n"
-    ++ "  }\n"
-    ++ "  return 0;\n"
-    ++ "}\n"
-    ++ "\n"
-    ++ "int main(int argc, char **argv)\n"
-    ++ "{\n"
-    ++ "  const char *root = (argc > 1 && argv[1] && argv[1][0]) ? argv[1] : \".\";\n"
-    ++ "  char path_h[4096];\n"
-    ++ "  char path_c[4096];\n"
-    ++ "  char path_oh[4096];\n"
-    ++ "  char path_oc[4096];\n"
-    ++ "  char path_readme[4096];\n"
-    ++ "  printf(\"== SLAKE_PRODUCT_WIRE_FS_WRITE_TOOL_V0: freestanding product-wire write (host-cc)\\n\");\n"
-    ++ "  printf(\"  host: HOST-PRODUCT-WIRE-FS-WRITE-TOOL / surface: PRODUCT-WIRE-FS-WRITE-TOOL\\n\");\n"
-    ++ "  printf(\"  package: dual-eq freestanding dialect (embedded; CapableWriteHc)\\n\");\n"
-    ++ "  printf(\"  honest: not Lake-built CapableRegenerate ELF; StillUsesLake remains\\n\");\n"
-    ++ "  if (ensure_emit_dir(root) != 0) {\n"
-    ++ "    return 1;\n"
-    ++ "  }\n"
-    ++ "  if (ensure_out_dir(root) != 0) {\n"
-    ++ "    return 1;\n"
-    ++ "  }\n"
-    ++ "  if ((size_t)snprintf(path_readme, sizeof path_readme,\n"
-    ++ "        \"%s/out/freestanding-c/README.md\", root) >= sizeof path_readme) {\n"
-    ++ "    fprintf(stderr, \"error: README path too long\\n\");\n"
-    ++ "    return 1;\n"
-    ++ "  }\n"
-    ++ "  {\n"
-    ++ "    FILE *rf = fopen(path_readme, \"rb\");\n"
-    ++ "    if (!rf) {\n"
-    ++ "      fprintf(stderr, \"error: missing Out README (release marker): %s\\n\", path_readme);\n"
-    ++ "      return 1;\n"
-    ++ "    }\n"
-    ++ "    fclose(rf);\n"
-    ++ "  }\n"
-    ++ "  if ((size_t)snprintf(path_h, sizeof path_h,\n"
-    ++ "        \"%s/src/systems/emit/slake_freestanding.h\", root) >= sizeof path_h) {\n"
-    ++ "    fprintf(stderr, \"error: header path too long\\n\");\n"
-    ++ "    return 1;\n"
-    ++ "  }\n"
-    ++ "  if ((size_t)snprintf(path_c, sizeof path_c,\n"
-    ++ "        \"%s/src/systems/emit/slake_freestanding.c\", root) >= sizeof path_c) {\n"
-    ++ "    fprintf(stderr, \"error: source path too long\\n\");\n"
-    ++ "    return 1;\n"
-    ++ "  }\n"
-    ++ "  if (write_bytes(path_h, fs_header_bytes, fs_header_bytes_len) != 0) {\n"
-    ++ "    return 1;\n"
-    ++ "  }\n"
-    ++ "  if (write_bytes(path_c, fs_source_bytes, fs_source_bytes_len) != 0) {\n"
-    ++ "    return 1;\n"
-    ++ "  }\n"
-    ++ "  if ((size_t)snprintf(path_oh, sizeof path_oh,\n"
-    ++ "        \"%s/out/freestanding-c/slake_freestanding.h\", root) >= sizeof path_oh) {\n"
-    ++ "    fprintf(stderr, \"error: Out header path too long\\n\");\n"
-    ++ "    return 1;\n"
-    ++ "  }\n"
-    ++ "  if ((size_t)snprintf(path_oc, sizeof path_oc,\n"
-    ++ "        \"%s/out/freestanding-c/slake_freestanding.c\", root) >= sizeof path_oc) {\n"
-    ++ "    fprintf(stderr, \"error: Out source path too long\\n\");\n"
-    ++ "    return 1;\n"
-    ++ "  }\n"
-    ++ "  if (write_bytes(path_oh, fs_header_bytes, fs_header_bytes_len) != 0) {\n"
-    ++ "    return 1;\n"
-    ++ "  }\n"
-    ++ "  if (write_bytes(path_oc, fs_source_bytes, fs_source_bytes_len) != 0) {\n"
-    ++ "    return 1;\n"
-    ++ "  }\n"
-    ++ "  printf(\"GREEN SLAKE_PRODUCT_WIRE_FS_WRITE_TOOL_V0: wrote freestanding wire + install Out\\n\");\n"
-    ++ "  printf(\"  wrote: %s (%zu bytes)\\n\", path_h, (size_t)fs_header_bytes_len);\n"
-    ++ "  printf(\"  wrote: %s (%zu bytes)\\n\", path_c, (size_t)fs_source_bytes_len);\n"
-    ++ "  printf(\"  installed: %s\\n\", path_oh);\n"
-    ++ "  printf(\"  installed: %s\\n\", path_oc);\n"
-    ++ "  printf(\"  greppable: PRODUCT-WIRE-FS-WRITE-TOOL, SLAKE_EMIT_FREESTANDING_C_V0, HOST-EMIT-SSOT\\n\");\n"
-    ++ "  return 0;\n"
-    ++ "}\n"
 
-/-- Emit product-wire writer C under root after dual-eq WRITE.
-    Greppable: productWireFsWriterEmit. -/
+/-- True if hay contains needle (ASCII scan). -/
+private def containsStr (hay needle : String) : Bool :=
+  (hay.splitOn needle).length > 1
+
+/-- Dual-eq WRITE emit + Install Out under root (Lean-native; no tool C).
+    Greppable: productWireFsWriterEmit, freestandingCapableWriteFreestandingHc,
+    freestandingCapableInstallFreestandingOut, IO.FS.writeFile. -/
 def productWireFsWriterEmit (root : System.FilePath) : IO Unit := do
   unless productWireFsWriterReady do
     IO.eprintln s!"error: {stageId}: productWireFsWriterReady false"
     throw (IO.userError "productWireFsWriterReady false")
   let emitDir := root / "src" / "systems" / "emit"
-  let outTool := emitDir / "slake_product_wire_fs_write_tool.c"
   let outH := emitDir / "slake_freestanding.h"
   let outC := emitDir / "slake_freestanding.c"
-  IO.println s!"== {stageId}: dual-eq WRITE then emit product-wire writer C =="
-  IO.println s!"  out tool C: {outTool}"
-  IO.println s!"  measured bin: {productWireFsWriterBinRel}"
-  -- Dual-eq freestanding dialect WRITE (CapableWriteHc authority; not Lake ELF measure).
+  let outDir := root / "out" / "freestanding-c"
+  let installH := outDir / "slake_freestanding.h"
+  let installC := outDir / "slake_freestanding.c"
+  IO.println s!"== {stageId}: Lean-native product-wire WRITE+INSTALL (no host-cc C print) =="
+  IO.println s!"  living: freestandingCapableWriteFreestandingHc + InstallOut"
+  IO.println s!"  lake exe: {lakeExeProductWireFsWriter}"
+  IO.println s!"  just: {justRecipeProductWireFsWriter}"
+  IO.println s!"  retired Path A C (not written): {productWireFsWriterCRel}"
+  IO.println s!"  retired Path A bin (not built): {productWireFsWriterBinRel}"
   freestandingCapableWriteFreestandingHc root
+  freestandingCapableInstallFreestandingOut root
   let header <- IO.FS.readFile outH
   let source <- IO.FS.readFile outC
   if header.isEmpty || source.isEmpty then
@@ -362,19 +203,17 @@ def productWireFsWriterEmit (root : System.FilePath) : IO Unit := do
   unless containsStr source "HOST-EMIT-SSOT" do
     IO.eprintln "error: freestanding source missing HOST-EMIT-SSOT"
     throw (IO.userError "missing HOST-EMIT-SSOT")
-  let toolC := productWireFsWriterCSource header source
-  IO.FS.createDirAll emitDir
-  IO.FS.writeFile outTool toolC
-  let written <- IO.FS.readFile outTool
-  if written != toolC then
-    IO.eprintln "error: tool C write mismatch"
-    throw (IO.userError "tool C mismatch")
-  unless (<- outTool.pathExists) do
-    IO.eprintln s!"error: missing tool C after write: {outTool}"
-    throw (IO.userError "missing tool C")
-  IO.println s!"GREEN {stageId}: wrote {outTool} ({written.length} chars)"
-  IO.println s!"  embedded freestanding header: {header.length} chars"
-  IO.println s!"  embedded freestanding source: {source.length} chars"
+  unless (<- installH.pathExists) do
+    IO.eprintln s!"error: missing Out install header: {installH}"
+    throw (IO.userError "missing Out header")
+  unless (<- installC.pathExists) do
+    IO.eprintln s!"error: missing Out install source: {installC}"
+    throw (IO.userError "missing Out source")
+  IO.println s!"GREEN {stageId}: freestanding wire + Out via Lean-native dual-eq WRITE+INSTALL"
+  IO.println s!"  wrote: {outH} ({header.length} chars)"
+  IO.println s!"  wrote: {outC} ({source.length} chars)"
+  IO.println s!"  installed: {installH}"
+  IO.println s!"  installed: {installC}"
 
 /-- Drop lake/exe separators so root path is first real arg. -/
 def filterArgs : List String -> List String
@@ -382,7 +221,7 @@ def filterArgs : List String -> List String
   | "--" :: rest => filterArgs rest
   | a :: rest => a :: filterArgs rest
 
-/-- CLI: dual-eq WRITE + emit product-wire writer C under repo root (default .). -/
+/-- CLI: Lean-native product-wire WRITE+INSTALL under repo root (default .). -/
 def main (args : List String) : IO UInt32 := do
   let root : System.FilePath :=
     match filterArgs args with
@@ -415,6 +254,14 @@ theorem productWireFsWriterReady_true :
     productWireFsWriterReady = true := by
   native_decide
 
+theorem productWireFsWriterNativeIo_true :
+    productWireFsWriterNativeIo = true :=
+  rfl
+
+theorem productWireFsWriterPrintsFullHelperC_false :
+    productWireFsWriterPrintsFullHelperC = false :=
+  rfl
+
 theorem productWireFsWriter_ids_eq :
     (stageId = "SLAKE_PRODUCT_WIRE_FS_WRITE_TOOL_V0")
       /\ (hostId = "HOST-PRODUCT-WIRE-FS-WRITE-TOOL")
@@ -441,6 +288,8 @@ example : productWireFsWriterNotLakeBuilt = true := by native_decide
 example : productWireFsWriterFinishedClaimed = true := rfl
 example : productWireFsWriterKeepsHostLake = true := by native_decide
 example : productWireFsWriterReady = true := by native_decide
+example : productWireFsWriterNativeIo = true := rfl
+example : productWireFsWriterPrintsFullHelperC = false := rfl
 example : productWireFsWriterBinRel
     = "src/systems/bin/slake-product-wire-fs-write-cc" := rfl
 example : productWireFsWriterCRel
@@ -452,5 +301,6 @@ example : productWireFsWriterLlvmUnlocked = false := rfl
 example : productWireFsWriterProvablyUnlocked = false := rfl
 example : lakeExeProductWireFsWriter = "slake-product-wire-fs-write-tool" := rfl
 example : justRecipeProductWireFsWriter = "product-wire-freestanding-write" := rfl
+example : productWireFsWriterCSource.length > 0 := by native_decide
 
 end SystemsLean.ProductWireWriteTool

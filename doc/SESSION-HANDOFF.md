@@ -24,7 +24,7 @@ If role is unclear after compaction: **ask once**. Do not assume coordinator or 
 UnrestrictedShare) + IR sketch + systems skeleton + unit surface + compile path
 + **frozen** freestanding emit product wire (through emit Out / wire Body) +
 **SYSTEMS_LEAN_HOST partial** (Lake + Mult..SelfHostBody under `src/systems/`;
-**235** `SystemsLean/*.lean` host modules including
+**270** `SystemsLean/*.lean` host modules including
 FirstSurface + FirstSurfaceMain + MultSubsetEmit + MultSubsetEmitMain +
 MultSubsetRebuild + MultSubsetRebuildMain +
 LinearSubsetEmit + LinearSubsetEmitMain +
@@ -41,7 +41,14 @@ GraphSubsetRebuild + GraphSubsetRebuildMain +
 ComposeSubsetEmit + ComposeSubsetEmitMain +
 ComposeSubsetRebuild + ComposeSubsetRebuildMain +
 SubsetFront + SubsetFrontMain + SubsetPackageJoin +
-FrontMultPackage + FrontMultPackageMain + LakeRetireInventory +
+FrontMultPackage + FrontMultPackageMain +
+HostTerm + HostFront + HostFrontTheorems + HostFrontMain + HostCheck + HostCheckMain +
+HostGraph + HostGraphTheorems + HostGraphMain + HostPackageWrite + HostPackageWriteTheorems + HostPackageWriteMain +
+HostPackageRoots + HostPackageRootsMain +
+HostImportGraph + HostImportGraphMain +
+HostModuleCheck + HostModuleCheckFixtures + HostModuleCheckTheorems + HostModuleCheckMain +
+HostResidualShrink +
+LakeRetireInventory +
 OfficialRetireMain + PerformClaimedMain + OwnershipClaimedMain +
 StepContractFullMain + PerformClaimed + OfficialRetire +
 DualEqWriteCapableGap +
@@ -74,39 +81,147 @@ milestones, not "Lake is gone."
 `out/freestanding-c/`). No `out-freestanding-c` just recipe. `just check` builds
 first (`SYSTEMS_PRODUCT_WIRE_FRESH=1` skips double regenerate in systems check).
 
-**Living tip (2026-08-01):** freestanding product self-host **complete true**;
+**Living tip (2026-08-03):** freestanding product self-host **complete true**;
 product residual free **true**; product path StillUsesLake/DependsOnLake
 **false** (M6 phase 2 lake elaborator proof); host elaborator residual
 **remains** (free is not host free); bootstrap **S0+S1+S2+S3 done**
-(Mult under Lake; ideal **M0**). Ideal ladder **M1** Linear + Types + Program +
+(Mult under Lake; ideal **M0**). Ideal M1 Linear + Types + Program +
 Extract + Erasure + Graph + Compose emit/rebuild **done**.
-M5 ladder **done** (design + Name A/B/C). M6 design + phase 1 inventory +
+M5 **done** (design + Name A/B/C). M6 design + phase 1 inventory +
 phase 2 product-path Lake pins flip **all done** (living tip
 `productPathOfficialPathStillUsesLake` / `productPathPerformDependsOnLake`
 false; `LakeRetireInventory` product pins false; join
-`/tmp/grok-1000/grok-impl-summary-m6-phase2-pin-flip.md`). Open **empty**
-(ideal ladder M0-M6 product path closed). M4 Name C/B/A **done**. M3
-subset language front-end **done**. M2 Name B full freestanding Mult write
-**done** (`freestandingDriverComplete` **true**).
-**S4** / **M6** Lake retire: **product path done** (pins false with lake proof;
-host residual remains). Step 4 PROVABLY/LLVM **held**. beastdb orthogonal
-(soft couple only). Long-file split campaign is **parked hygiene**, not the
-product goal. **Dual rail:** product ladder done-for-now + runtime residual
-archaeology stdout hygiene (P0-P5; policy in `AGENTS.md` Driver stdout policy)
-run without blocking each other. Complete is not "Lake is gone." Free is not
-Lake gone, not proof complete, not PROVABLY, not LLVM unlock.
-Missing freestanding binary does **not** block bootstrap. Proper post-M6 wall
-bench: `doc/dev/research/lake-vs-slake-proper-bench-2026-08-01.md` (earlier
-same-day ceremony: `lake-vs-slake-serial-bench-2026-08-01.md`).
+`/tmp/grok-1000/grok-impl-summary-m6-phase2-pin-flip.md`). Freestanding product
+path **M0-M6 closed**. Peer elaborator design **done**
+(`doc/dev/research/peer-elaborator-design-2026-08-01.md`). Host term
+representation **done** (`SystemsLean.HostTerm` / HOST-TERM-IR;
+join `/tmp/grok-1000/grok-impl-summary-host-term-representation.md`).
+Host fragment front-end **done** (`SystemsLean.HostFront` / just `host-front`;
+join `/tmp/grok-1000/grok-impl-summary-host-fragment-front-end.md`).
+Host fragment check **done** (`SystemsLean.HostCheck` / just
+`host-fragment-check`; join
+`/tmp/grok-1000/grok-impl-summary-host-fragment-check.md`).
+Check without Lake **done** (just `host-fragment-check-without-lake` Name A
+prebuilt; `hostFragmentCheckWithoutLakeFinished` true; join
+`/tmp/grok-1000/grok-impl-summary-check-without-lake.md`).
+Fragment module graph **done** (`SystemsLean.HostGraph` / just `host-graph` +
+`host-graph-without-lake`; Mult+MultSubsetEmit multi-file; fail-closed
+MISSING-IMPORT / IMPORT-CYCLE; `hostGraphWithoutLakeFinished` true; join
+`/tmp/grok-1000/grok-impl-summary-fragment-module-graph.md`).
+Elaborator Mult package write **done** (`SystemsLean.HostPackageWrite` / just
+`host-package-write` + `host-package-write-without-lake`; HostFront G1 +
+HostGraph Mult set then MultSubsetEmit write; `hostPackageWriteFinishedClaimed`
+/ `hostPackageWriteWithoutLakeFinished` true; join
+`/tmp/grok-1000/grok-impl-summary-elaborator-mult-package-write.md`).
+Same-job peer wall-clock **done**
+(`doc/dev/research/slake-vs-lake-same-job-mult-2026-08-02.md`; Job A
+`host-package-write-without-lake` median real **0.025 s** vs Job B
+`mult-subset-emit` median **0.906 s**; cold full Lake **not** peer; join
+`/tmp/grok-1000/grok-impl-summary-same-job-peer-wall-clock.md`).
+**Expand host fragment set done** (HostFront G3 Linear mini + HostGraph
+Mult+MultSubsetEmit+Linear expand; without-Lake fragment check + graph green;
+package write still green). Same-job Mult package wall-clock numbers
+(Job A 0.025 s / Job B 0.906 s) **still apply** after Expand: Mult package
+closure Mult+MultSubsetEmit unchanged. CompCert product seal **design done**
+(plan `.agents/plans/plan-compcert-product-seal.md`; note
+`doc/dev/research/compcert-product-seal-design-2026-08-02.md`).
+**Next product work:** primary Open **Host library seed expand continue**
+(beyond Mult..Compose+Erasure/Extract+CompilePath/Kernel+Kernel *Theorems+JoinMap/SelfHost+SurfaceMatrix+Emit scaffolds+KernelSelfApply+EmitMult+EmitPlan+EmitApply+EmitBody+KernelEmit+KernelEmitTheorems+ParityMult+ParityMultTheorems+ParityLinear+ParityLinearTheorems+ParityTypes+ParityTypesTheorems+ParityProgram+ParityProgramTheorems+ParityEmit+ParityEmitTheorems+SelfApply+SelfApplyTheorems+EmitLinear+EmitTypes+EmitProgram+EmitGraph+EmitCompose+EmitErasure+EmitExtract+EmitBanner+ProductOutKernel+ProductOutKernelTheorems+BootstrapHonesty+BootstrapHonestyTheorems+ProductPathWriterSurface+ProductPathWriterSurfaceTheorems+ProductPathWriterPathPlan+ProductPathWriterPathPlanTheorems+ProductPathWriterPathExec+ProductPathWriterPathExecTheorems
+modules=81 into next real SystemsLean library band; inventory remaining vs ~270; plan
+`.agents/plans/plan-slake-replaces-lake.md` remain). Host library seed expand continue
+L20 **done** (modules=81 ProductPathWriterSurface+ProductPathWriterSurfaceTheorems+ProductPathWriterPathPlan+ProductPathWriterPathPlanTheorems+ProductPathWriterPathExec+ProductPathWriterPathExecTheorems ProductPath writer pure-leaf band; join
+`.agents/joins/a31-host-library-seed-expand-continue.md`). Host library seed expand continue
+L19 **done** (modules=75 ProductOutKernel+ProductOutKernelTheorems+BootstrapHonesty+BootstrapHonestyTheorems SelfApplyFs leaf foundation band; join
+`.agents/joins/a30-host-library-seed-expand-continue.md`). L18 **done** (modules=71 EmitErasure+EmitExtract+EmitBanner band; join
+`.agents/joins/a29-host-library-seed-expand-continue.md`). L17 **done** (modules=68 EmitLinear+EmitTypes+EmitProgram+EmitGraph+EmitCompose band; join
+`.agents/joins/a28-host-library-seed-expand-continue.md`). L16 **done** (modules=63 SelfApply+SelfApplyTheorems band; join
+`.agents/joins/a27-host-library-seed-expand-continue.md`). L15 **done** (modules=61 ParityEmit+ParityEmitTheorems band; join
+`.agents/joins/a26-host-library-seed-expand-continue.md`). L14 **done** (modules=59 ParityProgram+ParityProgramTheorems band; join
+`.agents/joins/a25-host-library-seed-expand-continue.md`). L13 **done** (modules=57 ParityTypes+ParityTypesTheorems band; join
+`.agents/joins/a24-host-library-seed-expand-continue.md`). L12 **done** (modules=55 ParityLinear+ParityLinearTheorems band; join
+`.agents/joins/a23-host-library-seed-expand-continue.md`). L11 **done** (modules=53 ParityMult+ParityMultTheorems band; join
+`.agents/joins/a22-host-library-seed-expand-continue.md`). L10 **done** (modules=51 KernelEmit+KernelEmitTheorems band; join
+`.agents/joins/a21-host-library-seed-expand-continue.md`). L9 **done** (modules=49 Emit product Mult/Plan/Apply/Body band; join
+`.agents/joins/a20-host-library-seed-expand-continue.md`). L8 **done** (modules=45 KernelSelfApply band; join
+`.agents/joins/a19-host-library-seed-expand-continue.md`). L7 **done** (modules=43 Emit Erasure/Extract/Banner scaffold band; join
+`.agents/joins/a18-host-library-seed-expand-continue.md`). L6 **done** (modules=40 Emit Plan/Apply/Body scaffold band; join
+`.agents/joins/a17-host-library-seed-expand-continue.md`). L5 **done** (modules=37 Emit Mult..Compose scaffold band; join
+`.agents/joins/a16-host-library-seed-expand-continue.md`). L4 **done** (modules=31 SurfaceMatrix band; join
+`.agents/joins/a15-host-library-seed-expand-continue.md`). L3 **done** (modules=29 JoinMap/SelfHost band; join
+`.agents/joins/a14-host-library-seed-expand-continue.md`). L2 **done** (modules=25
+Kernel *Theorems band; join `.agents/joins/a13-host-library-seed-expand-continue.md`).
+L1 **done** (modules=21 CompilePath+Kernel band; join
+`.agents/joins/a12-host-library-seed-expand-continue.md`). Host real module seed expand
+**done** (modules=16; join `.agents/joins/a11-host-real-module-seed-expand.md`). First
+surface without Lake through A1 **done**. Finish line: Slake does everything Lake does
+for host develop under `src/systems/` -- **claim false; living work program true**. Full
+goal chain: Systems Lean + linear types + freestanding C + CompCert `ccomp` validate.
+Six-unit Mult..Compose path is foundation only. Operator choice **(a)** full host
+develop. Track 3c free flip **held** until full host checklist under new bar.
+Mult..Compose dual-ok is **not** host free. DualResidual host residual **remains** /
+free claimed **false** (do not flip). free/complete/PROVABLY true; product Lake pins
+false; proofCompleteClaimed false. Hygiene on touch including markdown: `just hygiene`
+(gradual scrub; no bulk Done rewrite). North-star multi-track plan still living
+(`.agents/plans/plan-north-star-remaining.md`).
 
-**Active product residual:** **done-for-now** (Open empty). Ideal freestanding
-ladder M0-M6 product path **closed**. M6 phase 2 product-path Lake pins flip
-**done** (lake elaborator proof). Host elaborator residual remains. M5 A/B/C
-**done**. M4 A/B/C **done**. M3 design+implement **done**. Dual rail hygiene
-P0-P5 non-blocking. Mult S0-S3 **done**. Plan
-`.agents/plans/plan-residual-free-freestanding.md` Steps 0-3 **done**; Step 5
-ideal ladder M1-M6 **done**; Step 4 **held**. Claim B complete closed; do not
-re-open.
+**Active product residual:** **Host library seed expand continue** (primary remain;
+open; plan L21+ beyond modules=81). Host library seed expand continue L20 **done**
+(A31; modules=81 ProductPathWriterSurface+ProductPathWriterSurfaceTheorems+ProductPathWriterPathPlan+ProductPathWriterPathPlanTheorems+ProductPathWriterPathExec+ProductPathWriterPathExecTheorems ProductPath writer pure-leaf band; join `.agents/joins/a31-host-library-seed-expand-continue.md`). Host library seed expand continue L19 **done**
+(A30; modules=75 ProductOutKernel+ProductOutKernelTheorems+BootstrapHonesty+BootstrapHonestyTheorems SelfApplyFs leaf foundation band; join `.agents/joins/a30-host-library-seed-expand-continue.md`). Host library seed expand continue L18 **done**
+(A29; modules=71 EmitErasure+EmitExtract+EmitBanner band; join `.agents/joins/a29-host-library-seed-expand-continue.md`). Host library seed expand continue L17 **done**
+(A28; modules=68 EmitLinear+EmitTypes+EmitProgram+EmitGraph+EmitCompose band; join
+`.agents/joins/a28-host-library-seed-expand-continue.md`). L16 **done**
+(A27; modules=63 SelfApply+SelfApplyTheorems band; join
+`.agents/joins/a27-host-library-seed-expand-continue.md`). L15 **done**
+(A26; modules=61 ParityEmit+ParityEmitTheorems band; join
+`.agents/joins/a26-host-library-seed-expand-continue.md`). L14 **done**
+(A25; modules=59 ParityProgram+ParityProgramTheorems band; join
+`.agents/joins/a25-host-library-seed-expand-continue.md`). L13 **done**
+(A24; modules=57 ParityTypes+ParityTypesTheorems band; join
+`.agents/joins/a24-host-library-seed-expand-continue.md`). L12 **done** (A23; modules=55; join
+`.agents/joins/a23-host-library-seed-expand-continue.md`). L11 **done** (A22; modules=53; join
+`.agents/joins/a22-host-library-seed-expand-continue.md`). L10 **done** (A21; modules=51; join
+`.agents/joins/a21-host-library-seed-expand-continue.md`). L9 **done** (A20; modules=49; join
+`.agents/joins/a20-host-library-seed-expand-continue.md`). L8 **done** (A19; modules=45; join
+`.agents/joins/a19-host-library-seed-expand-continue.md`). L7 **done** (A18; modules=43; join
+`.agents/joins/a18-host-library-seed-expand-continue.md`). L6 **done** (A17; modules=40; join
+`.agents/joins/a17-host-library-seed-expand-continue.md`). L5 **done** (A16; modules=37; join
+`.agents/joins/a16-host-library-seed-expand-continue.md`). L4 **done** (A15; modules=31; join
+`.agents/joins/a15-host-library-seed-expand-continue.md`). L3 **done** (A14; modules=29; join
+`.agents/joins/a14-host-library-seed-expand-continue.md`). L2 **done** (A13; modules=25;
+join `.agents/joins/a13-host-library-seed-expand-continue.md`). L1 **done** (A12;
+modules=21; join `.agents/joins/a12-host-library-seed-expand-continue.md`). Host real
+module seed expand **done** (A11; modules=16). A1-A10+++ / P1 foundation **done**.
+Mult..Compose package dual-ok **done** (foundation only, not host free).
+Peer elaborator steps 1-10 **done** (foundation). Host residual free design + bar
+inventory **done** (choice (a) full host develop). PROVABLY evidence **done**.
+CompCert seal **closed**. Freestanding product path M0-M6 **closed**. Host elaborator
+residual remains / free claimed false. proofCompleteClaimed **false**. Docs lockstep
+Step 1 (plan refresh 2026-08-03): claim false / living program true + goal chain +
+hygiene standing rule documented in residual / WATCHER / goals.
+**Programs:** plan-slake-replaces-lake (**primary host finish line; claim false;
+living work program true**); plan-north-star-remaining (**living multi-track**; Track 3 end claim full Lake-job replacement; Track 4a inventory **done**;
+Track 4b HostCompose spent mult1 reject **done**; IrGraph edge capacity full
+reject **done**; EmitApply desync fail-closed deepen **done**; Types multi-node
+mixed kind program **done** 4b-cont3; Host residual free design **done** Track 3a;
+Peer unit package expand beyond Mult **done** Track 3b-5 (Linear dual-ok); Host
+residual shrink inventory reseed **done** Track 3b-N; Peer Types unit package
+expand **done** Track 3b-6 (Mult+Linear+Types dual-ok); Peer Program unit package
+expand **done** Track 3b-7 (Mult+Linear+Types+Program dual-ok); Peer Graph unit
+package expand **done** Track 3b-8 (Mult+Linear+Types+Program+Graph dual-ok);
+Peer Compose unit package expand **done** Track 3b-9 (Mult..Compose dual-ok);
+Host residual free bar inventory **done**; HostPackageWrite long-file split
+**done** (tip 1015->784; HostPackageWriteTheorems 299); HostFront long-file
+split **done** (tip 1215->999; HostFrontTheorems 190); HostGraph long-file
+split **done** (tip 1116->939; HostGraphTheorems 230; peer Host tips done-for-now;
+Track 3c held; Compose expand 3b-4 done; Graph expand 3b-3 done; Program expand
+3b-2 done; Types expand 3b-1 done);
+SelfApplyFs + Self-host map long-file splits **done**; Superset + Matrix claim-row
+**done**) + plan-compcert-product-seal (**closed**; PROVABLY claimed) +
+plan-peer-elaborator (**closed** steps 1-10; partial host residual shrink) + LLVM
+IR unit text ladder Mult..Graph **done** + unlock design **done**.
+Claim B complete closed; free true; PROVABLY true; llvm true (not full backend);
+do not re-open free/complete without cause; do not forge proof complete or host free.
 Long-file campaign parked (Linear last **118->92** via LinearTheorems **71**). Linear split **done** **118->92**;
 KernelSelfApply split **done** **125->105**;
 ProductOutKernel split **done** **130->106**;
@@ -332,8 +447,18 @@ SelfHostBody prose = defined freestanding compile step.
 Product wire / host model jargon: `doc/vocabulary.md`. Ownership:
 `emit/host-owned-emit.md`. Acceptance: `src/systems/self-host.md`.
 
-**Next:** **Residual free claim** (plan Step 3; complete true; free false until
-checklist 2-10 green; Lake host remains; never forge).
+**Next (historical land-time only; do not re-queue):** Residual free claim was
+plan Step 3 at free-false framing. **Living tip wins:** product residual free
+**true** (2026-08-01); host residual remains. Active residual **was** Host residual
+shrink inventory reseed (Track 3b-N; now done) then Peer Types unit package
+expand (Track 3b-6; now done; join `/tmp/grok-1000/grok-impl-summary-peer-types-package-3b6.md`);
+HostPackageWrite long-file split **done** (tip 1015->784; HostPackageWriteTheorems
+299); HostFront long-file split **done** (tip 1215->999; HostFrontTheorems 190);
+HostGraph long-file split **done** (tip 1116->939; HostGraphTheorems 230);
+peer Host long-file tips **done-for-now** (Track 3c held; free bar inventory
+done; Peer Compose package 3b-9 done; Peer Graph package 3b-8 done) -- see Active
+product residual + Recommended next above.
+Never forge host free or re-open free false from this archaeology block.
 Step 2 Linear freestanding contracts done. Step 1 free bar inventory done
 (`doc/dev/research/residual-free-bar-inventory-2026-08-01.md`).
 Long-file hygiene parked (Linear last **118->92**).
@@ -399,12 +524,18 @@ No-sorry inventory **done** (**0** sorry/admit; inventory
 `doc/dev/research/no-sorry-host-inventory-2026-07-31.md`). CompilePath seams
 **done** at **458** (not re-open). SelfApplyFs tip split **done** **3638->1888**. Short-name
 ProductPathFreestanding* **done**. Dual-pin theater exhausted. Plan:
-`plan-residual-free-freestanding.md` (living product program); long-file plan is
-hygiene only. WATCHER = Residual free claim (plan Step 3). Linear freestanding
-contracts done. Step 1 free bar inventory done. Claim B complete closed with lake
-proof; product residual free false (checklist 2-10 open); do not forge free/llvm/PROVABLY.
-Living perform/ownership/complete true; StillUsesFreestandingEmit false;
-StillUsesLake true; DependsOnLake true.
+`plan-residual-free-freestanding.md` (historical free-program; living program is
+`plan-north-star-remaining.md`); long-file plan is hygiene only. **Historical
+land-time only (do not re-queue):** WATCHER once said Residual free claim (plan
+Step 3) with free false framing. **Living tip wins:** free **true**; product
+StillUsesLake/DependsOnLake **false**; host residual remains; Active residual
+**Host residual shrink inventory reseed** (3b-N). Peer unit package expand beyond
+Mult done (3b-5; Linear dual-ok). Host Compose fragment expand done (3b-4). Host
+Graph fragment expand done (3b-3). Host Program fragment expand done (3b-2). Host
+Types fragment expand done (3b-1). Linear freestanding contracts done. Step 1
+free bar inventory done. Claim B complete closed with lake proof; do not forge
+host free / free re-false / llvm full backend / PROVABLY re-false.
+Living perform/ownership/complete true; StillUsesFreestandingEmit false.
 Batch 16 split: B19 Regenerate PartialReady/Ok bulk in CapableRegenerate + RegenerateMain.
 Batch 15 split: B20 InstallOut PartialReady/Ok bulk in InstallOut (InstallOutMain already split; short-name batch 6).
 Batch 14 split: B21 FullBar PartialReady/Ok bulk in CapableFullBar + FullBarMain.
@@ -440,14 +571,14 @@ from chat.
 
 | Topic | Decision / fact | Where documented |
 |-------|-----------------|------------------|
-| Goal / north star | Systems Lean + Slake; freestanding runtimeless C primary product; isolation; self-host is freestanding product path (claim B), not Lake twin as product | `doc/goals.md`, this file North star, plan-close-six-claims |
+| Goal / north star | Systems Lean + Slake; freestanding runtimeless C primary product; isolation; self-host is freestanding product path (claim B); **host finish line** Slake does everything Lake does for host develop under `src/systems/` (**claim false; living work program true**; six-unit Mult..Compose is foundation only); full goal chain also keeps linear types + freestanding C + CompCert `ccomp` validate; hygiene on touch including markdown (`just hygiene`) | `doc/goals.md`, `.agents/plans/plan-slake-replaces-lake.md`, this file North star |
 | Out-first product | Product consumers = `out/freestanding-c/`; `src/systems/emit/` = host freestanding workspace (SSOT + templates + dogfood); freestanding C generated only (three languages only) | `doc/vocabulary.md`, `emit/host-owned-emit.md`, plan section 3/8 |
 | Three languages only | Novel work: Idris 2 / Lean 4 / pure Nix only; no handwritten product C residual; no Python; no new shell mills | `AGENTS.md`, `doc/vocabulary.md` |
 | Project Lean agent skill | Submodule `skills/lean4-skills`; discover `.agents/skills/lean4`; use for host Lean residual/plans (draft/prove/review/doctor); not under `ref/` | `AGENTS.md` (**Project agent skills** + **When to reach for lean4 tools**), `skills/README.md`, `doc/lean-entry.md` |
-| Open residual | **Residual free claim** (plan Step 3); Linear freestanding contracts **done**; Step 1 free bar inventory **done**; complete true; product residual free false (checklist 2-10 open); Lake host remains; long-file campaign parked hygiene | `RESIDUAL-systems.md`, `WATCHER.md`, `plan-residual-free-freestanding.md` |
+| Open residual | Primary **Host library seed expand continue** (beyond modules=81; A31 L20 ProductPath writer pure-leaf seed expand **done**; A30 L19 SelfApplyFs leaf foundation ProductOutKernel+BootstrapHonesty seed expand **done**; A29 L18 Emit Erasure/Extract/Banner product seed expand **done**; A28 L17 Emit Mult..Compose product seed expand **done**; A27 L16 SelfApply **done**; A26 L15 ParityEmit **done**; A25 L14 ParityProgram **done**; A24 L13 ParityTypes **done**; A23 L12 ParityLinear **done**; A22 L11 **done**; A21 L10 **done**; A20 L9 **done**; A19 L8 **done**; A18 L7 **done**; A17 L6 **done**; A16 L5 **done**; A15 L4 **done**; A14 L3 **done**; A13 L2 **done**; A12 L1 **done**); A1-A31 foundation **done**; finish line plan `plan-slake-replaces-lake.md` (**claim false; living work program true**; full goal chain + hygiene section H); operator choice (a) full host develop; Mult..Compose foundation only not host free; Track 3c free flip **held**; DualResidual host remains true / free claimed false -- do not flip; free/complete/PROVABLY true; product Lake pins false; llvm unlocked; proofCompleteClaimed false; SelfApplyFs still held (remaining ProductPath/Capable) | `RESIDUAL-systems.md`, `WATCHER.md`, `plan-slake-replaces-lake.md`, `plan-north-star-remaining.md` |
 | Plan approval notes (2026-07-31) | Chip away >1 KLOC was hygiene; living product program is residual free + linear freestanding; free claim only when bar met; ccomp/CompCert held; never forge free/PROVABLY | `.agents/plans/plan-residual-free-freestanding.md`; `plan-long-file-refactor.md` hygiene only |
 | SelfApplyFs rebuild RCA | 2026-07-30 failed `/tmp` full-file stitch left four `====` markers + foreign paste; grep-only GREEN lied. Prevention: hygiene marker ban; lake on complete recipe; AGENTS no-stitch / claim-bool lake law | `doc/dev/research/selfapplyfs-rebuild-failure-2026-07-30.md`; `.agents/plans/plan-selfapplyfs-rca-prevention.md`; `nix/source-hygiene.nix`; `AGENTS.md` Product Lean edits |
-| Product program | Claim B complete **true**; product residual free **false**; Lake host still used; living program = residual free + linear freestanding (Steps 0-3); long-file hygiene parked; C/D/E false/held | `.agents/plans/plan-residual-free-freestanding.md`; historical `.agents/plans/plan-close-six-claims.md` (section 0 living tip wins) |
+| Product program | **Living tip wins:** claim B complete **true**; product residual free **true**; PROVABLY true; product StillUsesLake/DependsOnLake **false**; host elaborator residual **remains** (host free claimed false); llvm unlocked (not full backend); proofCompleteClaimed **false**. **Primary host program** = plan-slake-replaces-lake (**claim false; living work program true**). Multi-track = plan-north-star-remaining. Historical at-land framing (residual free false / Steps 0-3 only / C/D/E held) was land-time free-program prose -- do **not** re-elevate free false from this row. | living: `RESIDUAL-systems.md`, `plan-slake-replaces-lake.md`, `plan-north-star-remaining.md`; historical: `plan-residual-free-freestanding.md`, `plan-close-six-claims.md` |
 | B6 writer path plan | Ordered freestanding-capable regenerate steps (READ-SSOT, COMPOSE-PLAN-APPLY-BODY, WRITE-FREESTANDING-HC, INSTALL-OUT); plan substrate only; Lake bootstrap remains; complete false | `self-host.md` SELF-HOST-PRODUCT-WRITER-PATH-PLAN; `SelfApplyFs.productWriterPathPlanPartialReady` |
 | B7 writer path execution | Host FreestandingEmit + just build perform B6 plan steps (load/render/write/install cites); still Lake bootstrap; complete false | `self-host.md` SELF-HOST-PRODUCT-WRITER-PATH-EXEC; `SelfApplyFs.productWriterPathExecutionPartialReady` |
 | B8 ownership inputs | Mult..Out SSOT + emit + Out surfaces; Ok/PartialReady bulk in ProductPathOwnershipInputs (batch-27); living tip ownership claimed true after B40 | `self-host.md` SELF-HOST-PRODUCT-PATH-OWNERSHIP; `SelfApplyFs.productPathOwnershipInputsPartialReady`; `ProductPathOwnershipInputs` |
@@ -514,12 +645,12 @@ from chat.
 | HOST-EMIT-APPLY | Emit apply freestanding C is fixed tag buffer CAP 32; wire id `EMIT_APPLY_V0`; host stage HOST-EMIT-APPLY -- not full C body codegen; scaffolding split to EmitApplyScaffold | `EmitApply.lean`, `EmitApplyScaffold.lean`, `host_emit_apply.ssot.txt`, ownership map |
 | HOST-EMIT-BODY / residual **Out** | Emit Out freestanding C is CAP 256 scaffolding (put_char / put_u8 / from_compose) + HOST-EMIT-SSOT dialect keys; residual name **Out**; wire id `EMIT_BODY_V0` frozen; host stage HOST-EMIT-BODY -- one stage not whole product | `EmitBody.lean`, `host_emit_body_fragment.ssot.txt`, ownership map naming section |
 | Defined freestanding compile step | `selfHostBodyReady` folds Mult..Out emit readiness + freestanding emit stage (native_decide for large honesty folds); complete true via SelfApplyFs alias; free stays false; not llvm unlock; theorems/smoke in SelfHostBodyTheorems | `SelfHostBody.lean`, `SelfHostBodyTheorems.lean`, `self-host.md` |
-| Recommended next residual Name | **Residual free claim** -- plan Step 3; free flip only when inventory checklist 2-10 green; Linear contracts done; complete true; free false; Lake host remains; never forge | `RESIDUAL-systems.md`, `WATCHER.md`, `plan-residual-free-freestanding.md` |
+| Recommended next residual Name | **Host library seed expand continue** (primary L21+; beyond modules=81; next coherent band); A1-A31 L20 foundation **done** (modules=81 ProductPath writer pure leaves; L19 modules=75 ProductOutKernel+BootstrapHonesty leaf foundation; L18 modules=71 EmitErasure..EmitBanner; L17 modules=68 EmitLinear..EmitCompose); SelfApplyFs still held (remaining ProductPath/Capable); Track 3c free flip held until full host checklist choice (a); Mult..Compose not host free; DualResidual unchanged; never forge proof complete or host free; hygiene on touch | `RESIDUAL-systems.md`, `WATCHER.md`, `plan-slake-replaces-lake.md` |
 | Dual SSOT equality | **Done:** emit-time DUAL-SSOT-EQUALITY fail-closed; pure Nix systems-host + systems-emit-wire live tokens | `FreestandingEmit.lean`, `host-owned-emit.md`, residual Done |
 | Dual ErasedIndex product cite | Freestanding path via **HOST-EMIT-ERASURE** (not "frozen wire only") | `join-map.md` |
 | Process glue | Remaining novel shell is process glue only; static presence pure Nix; compile-path stamp only | `src/systems/README.md` Shell ownership |
 | Host Lean skill on residual | Load `.agents/skills/lean4` for `.lean`/Lake slices; draft/prove/review/doctor; not claim forge; no invent Names for skill | `AGENTS.md` Project agent skills; plan section 4 |
-| Still false | residual free; proof complete; PROVABLY; llvm / CompCert seal (claim B freestanding product self-host complete is **true**) | residual files, SelfApplyFs / LlvmHold / SpecProof |
+| Still false | proof complete (`proofCompleteClaimed`); host elaborator residual free (product free/complete/PROVABLY true; llvm unlocked; claim B complete true) | residual files, SpecProof / DualResidual / LlvmHold |
 
 **Systems reseed after compaction:** `RESIDUAL-systems.md` -> `src/systems/README.md` ->
 `emit/host-owned-emit.md` -> `self-host.md` -> module headers. Gates:

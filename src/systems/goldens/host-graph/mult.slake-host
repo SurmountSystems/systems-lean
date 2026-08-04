@@ -1,0 +1,10 @@
+# Mult-first host fragment -- Mult leaf (no imports)
+# Graph closure leaf for Mult + MultSubsetEmit multi-file set
+# Not full Lean Mult.lean; host fragment dialect only
+
+module Mult
+namespace Mult
+inductive Mult mult0 mult1 multOmega deriving DecidableEq Repr
+def isValid : Mult -> Bool := match var m | mult0 => true | mult1 => true | multOmega => true
+check mult0 : Mult
+end Mult

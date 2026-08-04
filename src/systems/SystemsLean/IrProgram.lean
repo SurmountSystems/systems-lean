@@ -25,7 +25,9 @@
   foldWellTyped_empty_none / push_bad_node / programCap_eq_eight /
   push_value_one_ok / length_single_value / isWellTyped_single_value /
   foldWellTyped_single_value_some / isWellTyped_two_values / length_two_values /
-  foldWellTyped_two_values_some / push_second_value_ok / push_full_at_cap.
+  foldWellTyped_two_values_some / push_second_value_ok / push_full_at_cap /
+  isWellTyped_mixed_kinds / length_mixed_kinds / foldWellTyped_mixed_kinds_some /
+  isWellTyped_mixed_bad_false (multi-node VALUE+LINEAR+ERASED kind/mult pairing).
   Core Program defs (programCap, push, isWellTyped, foldWellTyped, checkFailClosed)
   stay here.
   These IrProgram theorems do NOT set SpecProof.proofCompleteClaimed true.
@@ -48,6 +50,8 @@
   push_value_one_ok, length_single_value, isWellTyped_single_value,
   foldWellTyped_single_value_some, isWellTyped_two_values, length_two_values,
   foldWellTyped_two_values_some, push_second_value_ok, push_full_at_cap,
+  isWellTyped_mixed_kinds, length_mixed_kinds, foldWellTyped_mixed_kinds_some,
+  isWellTyped_mixed_bad_false,
   IrProgramTheorems, SLAKE_IR_PROGRAM_CAP, MULT-0, MULT-1, MULT-OMEGA, TYPED_IR_V0
   UNIT_SURFACE host surface. Module: SystemsLean.IrProgram
   Long-file split: IR-PROGRAM-THEOREM in SystemsLean.IrProgramTheorems
@@ -130,7 +134,8 @@ def checkFailClosed (p : Program) : Bool := isWellTyped p
     push_value_one_ok, length_single_value, isWellTyped_single_value,
     foldWellTyped_single_value_some, isWellTyped_two_values, length_two_values,
     foldWellTyped_two_values_some, push_second_value_ok, push_full_at_cap,
-    IrProgramTheorems.
+    isWellTyped_mixed_kinds, length_mixed_kinds, foldWellTyped_mixed_kinds_some,
+    isWellTyped_mixed_bad_false, IrProgramTheorems.
     Import SystemsLean.IrProgramTheorems from the package root. Core Program
     defs stay here -- ordered IR program surface only; free claims stay false;
     not llvm / PROVABLY unlock. -/

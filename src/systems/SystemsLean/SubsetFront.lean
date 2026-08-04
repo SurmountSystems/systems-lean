@@ -28,8 +28,10 @@
   Short role name (not ProductPath* kitchen-sink).
   Dual evidence: Lean structural pins on dual-pinned golden String constants
   (match on-disk goldens) + lake exe / just subset-front over files.
+  Without-Lake (A10): subset-front-without-lake + develop clean-bootstrap
+  (ownership pins in HostResidualShrink). Host residual remains; not free.
   Red/green: lake build SystemsLean.SubsetFront; lake exe slake-subset-front;
-  just subset-front. Module must stay ASCII.
+  just subset-front; just subset-front-without-lake. Module must stay ASCII.
 -/
 
 import SystemsLean.CompilePath

@@ -2,13 +2,16 @@
   SYSTEMS_LEAN_HOST partial -- Systems Lean package root (classic elaborator).
   Imports Mult + MultTheorems + Linear + LinearTheorems + Types + TypesTheorems + ordered IR program + IrProgramTheorems + Erasure + ErasureTheorems + Extract +
   ExtractTheorems +
-  IrGraph + IrGraphTheorems + HostCompose + HostComposeTheorems + EmitPlan + EmitPlanScaffold + EmitApply + EmitApplyScaffold + EmitBody + EmitBanner + EmitBannerScaffold + CompilePath + CompilePathBody + CompilePathErasure + CompilePathPlan + CompilePathApply + CompilePathGraph + CompilePathCompose + CompilePathMult + FirstSurface + MultSubsetEmit + MultSubsetRebuild + MultFsDeepen + CompilePathLinear + LinearSubsetEmit + LinearSubsetRebuild + CompilePathTypes + TypesSubsetEmit + TypesSubsetRebuild + CompilePathProgram + ProgramSubsetEmit + ProgramSubsetRebuild + CompilePathExtract + ExtractSubsetEmit + ExtractSubsetRebuild + ErasureSubsetEmit + ErasureSubsetRebuild + GraphSubsetEmit + GraphSubsetRebuild + ComposeSubsetEmit + ComposeSubsetRebuild + SubsetFront + SubsetPackageJoin + FrontMultPackage +
+  IrGraph + IrGraphTheorems + HostCompose + HostComposeTheorems + EmitPlan + EmitPlanScaffold + EmitApply + EmitApplyScaffold + EmitBody + EmitBanner + EmitBannerScaffold + CompilePath + CompilePathBody + CompilePathErasure + CompilePathPlan + CompilePathApply + CompilePathGraph + CompilePathCompose + CompilePathMult + FirstSurface + MultSubsetEmit + MultSubsetRebuild + MultFsDeepen + CompilePathLinear + LinearSubsetEmit + LinearSubsetRebuild + CompilePathTypes + TypesSubsetEmit + TypesSubsetRebuild + CompilePathProgram + ProgramSubsetEmit + ProgramSubsetRebuild + CompilePathExtract + ExtractSubsetEmit + ExtractSubsetRebuild + ErasureSubsetEmit + ErasureSubsetRebuild + GraphSubsetEmit + GraphSubsetRebuild + ComposeSubsetEmit + ComposeSubsetRebuild + SubsetFront + SubsetPackageJoin + FrontMultPackage + HostTerm + HostFront +
+  HostCheck + HostGraph + HostGraphTheorems + HostFrontTheorems + HostPackageWrite + HostPackageWriteTheorems +
+  HostPackageRoots + HostImportGraph + HostModuleCheck + HostModuleCheckFixtures +
+  HostModuleCheckTheorems +
   JoinMap + JoinMapTheorems + SelfHost + SelfHostTheorems + SurfaceMatrix + SurfaceMatrixTheorems + KernelMult + KernelMultTheorems + EmitMult + EmitMultScaffold + EmitLinear + EmitLinearScaffold +
   EmitErasure + EmitErasureScaffold + EmitExtract + EmitExtractScaffold + EmitTypes + EmitTypesScaffold + EmitProgram + EmitProgramScaffold + EmitGraph + EmitGraphScaffold + EmitCompose + EmitComposeScaffold +
   ParityMult + ParityMultTheorems +
   KernelLinear + KernelLinearTheorems + ParityLinear + ParityLinearTheorems + KernelTypes + KernelTypesTheorems + ParityTypes + ParityTypesTheorems + KernelProgram +
   KernelProgramTheorems +
-  ParityProgram + ParityProgramTheorems + KernelEmit + KernelEmitTheorems + ParityEmit + ParityEmitTheorems + SelfApply + SelfApplyTheorems + SelfApplyFs + LlvmHold + LlvmHoldTheorems +
+  ParityProgram + ParityProgramTheorems + KernelEmit + KernelEmitTheorems + ParityEmit + ParityEmitTheorems + SelfApply + SelfApplyTheorems + SelfApplyFs + LlvmHold + LlvmHoldTheorems + LlvmEmitPath + LlvmMultText + LlvmLinearText + LlvmTypesText + LlvmProgramText + LlvmGraphText + LlvmComposeText +
 
   InventoryClose + InventoryCloseTheorems + ProductPath + ProductPathTheorems + DualResidual +
   DualResidualTheorems + ProbeWire + ProbeWireTheorems +
@@ -87,6 +90,19 @@ import SystemsLean.ComposeSubsetRebuild
 import SystemsLean.SubsetFront
 import SystemsLean.SubsetPackageJoin
 import SystemsLean.FrontMultPackage
+import SystemsLean.HostTerm
+import SystemsLean.HostFront
+import SystemsLean.HostFrontTheorems
+import SystemsLean.HostCheck
+import SystemsLean.HostGraph
+import SystemsLean.HostGraphTheorems
+import SystemsLean.HostPackageWrite
+import SystemsLean.HostPackageWriteTheorems
+import SystemsLean.HostPackageRoots
+import SystemsLean.HostImportGraph
+import SystemsLean.HostModuleCheckFixtures
+import SystemsLean.HostModuleCheck
+import SystemsLean.HostModuleCheckTheorems
 import SystemsLean.JoinMap
 import SystemsLean.JoinMapTheorems
 import SystemsLean.SelfHost
@@ -134,6 +150,13 @@ import SystemsLean.SelfApplyTheorems
 import SystemsLean.SelfApplyFs
 import SystemsLean.LlvmHold
 import SystemsLean.LlvmHoldTheorems
+import SystemsLean.LlvmEmitPath
+import SystemsLean.LlvmMultText
+import SystemsLean.LlvmLinearText
+import SystemsLean.LlvmTypesText
+import SystemsLean.LlvmProgramText
+import SystemsLean.LlvmGraphText
+import SystemsLean.LlvmComposeText
 import SystemsLean.InventoryClose
 import SystemsLean.InventoryCloseTheorems
 import SystemsLean.ProductPath

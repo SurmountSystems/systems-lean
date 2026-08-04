@@ -1,0 +1,8 @@
+# B-cycle B: CycleB imports CycleA (pair with bad-cycle-a; IMPORT-CYCLE)
+
+module CycleB
+import CycleA
+namespace CycleB
+def b : Nat := 2
+check 2 : Nat
+end CycleB

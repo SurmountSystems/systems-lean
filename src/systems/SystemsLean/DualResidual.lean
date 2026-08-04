@@ -36,7 +36,8 @@
     HOST-RESIDUAL / PRODUCT-WIRE-RESIDUAL / EMIT-BOUNDARY cites.
   - dualResidualReady: ProductPath.productPathCloseReady && surface &&
     surfacesDistinct && host residual remains && product residual gone &&
-    residual free claimed && complete true && llvm/PROVABLY false.
+    residual free claimed && complete true; llvm unlock orthogonal (living pin
+    may be true); PROVABLY may be true.
   - residualFreeMeasureAgreesFree: measure cited + free claimed + product
     residual gone (measure alone never forged free; free is deliberate).
   - dualResidualDoesNotForgeHostFree: ready && host free false && host remains
@@ -58,8 +59,8 @@
   Intentional non-claims / partial:
   - Product residual free claimed -- host elaborator residual is NOT free.
   - Host elaborator residual is NOT forged free (Lake managed runtime remains).
-  - NOT PROVABLY. Does not unlock llvm / out/llvm-ir (LlvmHold still holds).
-  - Intentional PARTIAL carry remains for host elaborator residual.
+  - llvm unlock orthogonal (LlvmHold.llvmUnlocked may be true after unlock residual).
+  - NOT PROVABLY re-open. Intentional PARTIAL carry remains for host residual.
   - Not proof complete (SpecProof.proofCompleteClaimed stays false).
   - Does not mint ProductPath alias theater. Does not grow bash EMIT_* treadmill.
   - No new EMIT_* C stage. Does not grow check.sh.
@@ -85,7 +86,7 @@
   residualFreeMeasureAgreesFree, UNIT_SURFACE host surface.
   Module: SystemsLean.DualResidual
   Product residual free claimed. Host elaborator residual remains. Not PROVABLY.
-  Not freestanding emit residual free alone. Not llvm unlocked.
+  Not freestanding emit residual free alone. Not full LLVM backend.
   Not host elaborator residual free. Not proof complete.
   Red/green: just systems-host; lake build when toolchain installed.
   Module must stay ASCII.
@@ -261,9 +262,10 @@ def dualResidualSurfacesDistinct : Bool :=
 /-- dualResidualReady -- dual residual honesty bar after product residual free.
     FAIL-CLOSED: productPathCloseReady && surface && surfacesDistinct &&
     host residual remains && product residual gone && free claimed &&
-    complete true && llvm/PROVABLY false && measure agrees free.
+    complete true && measure agrees free. llvm unlock orthogonal (living pin
+    may be true after unlock residual); PROVABLY may be true.
     Honest scope: product residual free claimed; host elaborator residual
-    remains; NOT host free; NOT llvm unlock; NOT PROVABLY.
+    remains; NOT host free; NOT full LLVM backend; NOT PROVABLY re-open.
     Greppable: dualResidualReady, HOST-DUAL-RESIDUAL. -/
 def dualResidualReady : Bool :=
   ProductPath.productPathCloseReady
@@ -277,8 +279,6 @@ def dualResidualReady : Bool :=
     && residualFreeClaimed
     && productSelfHostCompleteClaimed
     && SelfApplyFs.freestandingProductSelfHostComplete
-    && !LlvmHold.llvmUnlocked
-    && !LlvmHold.provablyUnlocked
 
 /-- dualResidualDoesNotForgeHostFree -- dual residual ready does NOT forge
     host elaborator residual free (host residual remains; host free false;

@@ -32,6 +32,9 @@
   - mint_consume_exact_once_sequential (mint then consume once then second notLive)
   - nodeMultOk_omega / nodeMultOk_mult1_eq_live / nodeMultOk_mult0_eq_absent
   - multPreScan / extractOkFs MULT-1 and MULT-0 gap-close; extractOk_eq family
+  - consume_mult1_minted / multPreScan_mult1_spent_false /
+    extractOkFs_mult1_spent_false / checkFailClosed_mult1_spent_false /
+    mult1_spent_scrub / consume_mult1_spent_reject (spent MULT-1 graph)
   - markErased_idempotent / multPreScan_omega_only_true / mint_consume_roundtrip
   - pushHostNode_* / addHostEdge_* fail-closed + ok; HOST-SMOKE examples
   These HostCompose theorems do NOT set SpecProof.proofCompleteClaimed true.

@@ -1,0 +1,11 @@
+# G6 Graph-shaped host fragment (edge-list IR graph honesty mini)
+# form: module/namespace/def/check/end -- not full IrGraph.lean / elaborator
+# Mult-first dialect still; Graph unit shapes as expand surface
+
+module SystemsLean.GraphMini
+namespace SystemsLean.GraphMini
+def irGraphEdgesId : String := "IR_GRAPH_EDGES_V0"
+def emptyGraphOkId : String := "EMPTY-GRAPH-OK"
+def graphFixtureId : String := "GRAPH-FIXTURE"
+check 0 : Nat
+end SystemsLean.GraphMini

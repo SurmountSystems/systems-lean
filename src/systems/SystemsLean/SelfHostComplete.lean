@@ -147,8 +147,8 @@ def residualFreeClaimed : Bool := true
 /-- llvm unlock stays false (LlvmHold non-claim). -/
 def llvmUnlocked : Bool := false
 
-/-- PROVABLY unlock stays false (LlvmHold non-claim). -/
-def provablyUnlocked : Bool := false
+/-- PROVABLY unlock true after evidence residual (LlvmHold dual-pin). -/
+def provablyUnlocked : Bool := true
 
 /-- Named complete tokens. -/
 def completeId : String :=
@@ -194,7 +194,7 @@ def b38RetireOfficialRecipe : String := "freestanding-retire-official"
 /-- Complete surface ok: measured/step advanced/complete true; Full + ownership +
     perform + dual-eq WRITE; StillUsesFreestandingEmit/Blocks/RetireRequired false;
     StillUsesLake/DependsOnLake false (M6 product path); free may be true (claim A);
-    llvm/PROVABLY false.
+    llvm false; PROVABLY true after evidence residual.
     Greppable: freestandingProductSelfHostCompleteOk. -/
 def freestandingProductSelfHostCompleteOk : Bool :=
   (stageId
@@ -224,7 +224,7 @@ def freestandingProductSelfHostCompleteOk : Bool :=
     && (productPathCapableWriteDualEqualityLive == true)
     && (residualFreeClaimed == true)
     && (llvmUnlocked == false)
-    && (provablyUnlocked == false)
+    && (provablyUnlocked == true)
     && (completeId == "FREESTANDING-PRODUCT-SELF-HOST-COMPLETE")
     && (completeMeasuredId
         == "FREESTANDING-PRODUCT-SELF-HOST-COMPLETE-MEASURED")
@@ -281,7 +281,7 @@ def printSelfHostCompleteMeasure : IO Unit := do
   IO.println s!"  productPathPerformDependsOnLake: {productPathPerformDependsOnLake}"
   IO.println s!"  residualFreeClaimed: {residualFreeClaimed} (claim A product free)"
   IO.println s!"  llvmUnlocked: {llvmUnlocked} (stays false)"
-  IO.println s!"  provablyUnlocked: {provablyUnlocked} (stays false)"
+  IO.println s!"  provablyUnlocked: {provablyUnlocked} (true after PROVABLY residual)"
   IO.println s!"  Lake-free complete recipe: just {lakeFreeCompleteRecipe}"
   IO.println s!"  measure: just {justMeasureRecipe} / lake exe {lakeExeName}"
   IO.println s!"  Full recipe: just {fullRecipe}"
@@ -291,17 +291,17 @@ def printSelfHostCompleteMeasure : IO Unit := do
   IO.println "  honest: complete with Full bar is independent of residual free"
   IO.println "  honest: product path Lake retired (M6); host elaborator residual may remain"
   IO.println "  honest: FreestandingEmit is not official writer; free may be true"
-  IO.println "  honest: CAPABLE-GAP stays closed; llvm/PROVABLY stay false"
+  IO.println "  honest: CAPABLE-GAP stays closed; llvm false; PROVABLY true after matrix"
   IO.println "  short module name SelfHostComplete (not ProductPathFreestanding* kitchen-sink)"
   if freestandingProductSelfHostCompleteOk then
-    IO.println s!"GREEN {stageId}: complete surface ok (measured true; complete true; stepContractFull true; ownership claimed true; perform claimed true; official dual-eq WRITE; StillUsesFreestandingEmit false; Blocks false; DependsOnLake false; StillUsesLake false; residual free true; llvm/PROVABLY false)"
+    IO.println s!"GREEN {stageId}: complete surface ok (measured true; complete true; stepContractFull true; ownership claimed true; perform claimed true; official dual-eq WRITE; StillUsesFreestandingEmit false; Blocks false; DependsOnLake false; StillUsesLake false; residual free true; llvm false; PROVABLY true)"
   else
     IO.eprintln s!"error: {stageId} complete surface not ok"
     throw (IO.userError "freestandingProductSelfHostCompleteOk false")
 
 /-- Complete PartialReady fold (closed claim B). Tip re-exports chain fold.
-    residual free may be true (claim A); llvm / PROVABLY stay false.
-    Product StillUsesLake / DependsOnLake false (M6).
+    residual free may be true (claim A); llvm stays false; PROVABLY true after
+    evidence residual. Product StillUsesLake / DependsOnLake false (M6).
     Greppable: freestandingProductSelfHostCompletePartialReady,
     SELF-HOST-FREESTANDING-PRODUCT-COMPLETE,
     FREESTANDING-PRODUCT-SELF-HOST-COMPLETE. -/
@@ -325,7 +325,7 @@ def freestandingProductSelfHostCompletePartialReady : Bool :=
     && !productPathPerformDependsOnLake
     && residualFreeClaimed
     && !llvmUnlocked
-    && !provablyUnlocked
+    && provablyUnlocked
 
 /-- CLI: print complete measure. Fail-closed if Ok false. -/
 def main (_args : List String) : IO UInt32 := do

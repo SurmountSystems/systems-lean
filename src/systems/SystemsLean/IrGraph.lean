@@ -35,6 +35,9 @@
     multi-node two-edge (0->1, 1->0) soundness + second addEdge success.
   - addEdge_two_nodes_badEndpoints: out-of-range after multi-node fails closed.
   - edgesSound_oversize_false: edge list past edgeMax fails closed.
+  - edgesSound_at_edgeMax / isWellTyped_at_edgeMax / addEdge_full_at_edgeMax /
+    isWellTyped_oversize_false: capacity-full reject (16 edges ok; 17th full;
+    oversize isWellTyped fail-closed).
   - IR-GRAPH-SMOKE behavioral examples live with theorems.
   Nested IrProgram.empty stays EMPTY-PROGRAM-FAIL-CLOSED (do not claim empty
   program is well-typed as a program).

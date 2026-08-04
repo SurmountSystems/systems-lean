@@ -1,14 +1,14 @@
 /-
   SYSTEMS_LEAN_HOST partial -- Mult freestanding deepen + Name B full Mult write.
   After Mult without-Lake prebuilt (Name A), Name B greps partial, and host
-  MultSubsetEmit SSOT write path: measured Mult package write uses Path A
-  Lean-generated host-cc Mult package writer (slake-mult-fs-write-cc under
-  src/systems/bin/, outside .lake) -- not Lake-built Mult write ELF and not
-  Mult rebuild ELF. freestandingDeepenPartial true; multFsWritePathReady true;
+  MultSubsetEmit SSOT write path: measured Mult package write uses Lean-native
+  MultSubsetEmit / MultFsWriteTool IO.FS.writeFile (P1; Path A host-cc full C
+  print from Lean retired). Not Mult rebuild ELF as package writer.
+  freestandingDeepenPartial true; multFsWritePathReady true;
   freestandingDriverComplete **true** with dual evidence (Lean pins + just
   greps after real write). Product StillUsesLake / DependsOnLake stay true
   until S4 / M6. Name A prebuilt path remains valid (additive). Host Lake
-  multFsWrite / slake-mult-fs-write remain bootstrap helpers only. Not free /
+  multFsWrite / slake-mult-fs-write remain bootstrap helpers. Not free /
   complete product flip. Not freestanding residual free. Not freestanding emit
   residual free. Not freestanding Mult compiler without Lake. Not full
   freestanding dialect rewrite as sole success. Not PROVABLY. Not llvm unlock.
@@ -37,10 +37,10 @@
   Ladder: multFsDeepenReady (partial surface) stays true; multFsDeepenDriverReady
   requires freestandingDriverComplete. Dual evidence: Lean structural pins +
   theorems/smoke + just mult-subset-freestanding-write package greps after real
-  host-cc write. Do not read Lean Bool alone as filesystem proof. Measured write
-  recipe must not exec Mult rebuild ELF or Lake Mult write ELF as writer.
-  Bootstrap may lake-build MultFsWriteTool once to regenerate tool C; measured
-  path runs host-cc bin only (no lake).
+  Mult package write. Do not read Lean Bool alone as filesystem proof. Measured
+  write recipe must not exec Mult rebuild ELF as package writer. Living Mult
+  write is Lean MultSubsetEmit IO (P1); retired Path A host-cc path names stay
+  greppable for archaeology only.
   Red/green: lake build SystemsLean.MultFsDeepen; just mult-subset-freestanding-write;
   just mult-subset-freestanding-deepen.
   Module must stay ASCII.
@@ -59,11 +59,12 @@ open SystemsLean.EmitMult
 /-! ### MULT-FS-DEEPEN / SLAKE_MULT_FS_DEEPEN (M2 Name B deepen + full Mult write)
 
   Input: Name A without-Lake finished + S2 Mult package identity + freestanding
-  Mult dialect (HOST-EMIT-MULT) + Name B greps partial + Path A Mult write tool.
-  Output: Mult package write via MultSubsetEmit freestanding Mult SSOT, measured
-  with host-cc Mult package writer (not Mult rebuild ELF; not Lake Mult write
-  ELF). freestandingDriverComplete true with dual evidence. Ready ladder keeps
-  partial true (complete implies partial). Product Lake host remains until S4.
+  Mult dialect (HOST-EMIT-MULT) + Name B greps partial + MultFsWriteTool
+  Lean-native Mult write (P1).
+  Output: Mult package write via MultSubsetEmit freestanding Mult SSOT (Lean
+  IO; not Mult rebuild ELF). freestandingDriverComplete true with dual evidence.
+  Ready ladder keeps partial true (complete implies partial). Product Lake host
+  remains until S4.
 -/
 
 /-- Greppable primary stage id (M2 Name B freestanding Mult deepen / write). -/
@@ -92,22 +93,23 @@ def lakeExeFsWrite : String := "slake-mult-fs-write"
     Greppable: prebuiltFsWriteRel, slake-mult-fs-write. -/
 def prebuiltFsWriteRel : String := ".lake/build/bin/slake-mult-fs-write"
 
-/-- Path A host-cc Mult package writer bin (measured; outside .lake).
+/-- Retired Path A host-cc Mult package writer bin path (archaeology only).
     Greppable: freestandingWriteToolBinRel, slake-mult-fs-write-cc. -/
 def freestandingWriteToolBinRel : String :=
   MultFsWriteTool.freestandingWriteToolBinRel
 
-/-- Path A generated Mult package writer C source.
+/-- Retired Path A Mult package writer C path (archaeology only).
     Greppable: freestandingWriteToolCRel, slake_mult_fs_write_tool.c. -/
 def freestandingWriteToolCRel : String :=
   MultFsWriteTool.freestandingWriteToolCRel
 
-/-- Path A writer is not Lake Mult write / Mult rebuild ELF.
+/-- Mult write honesty: Lean-native MultSubsetEmit / MultFsWriteTool; not Mult
+    rebuild ELF; not full host-cc C print from Lean (P1).
     Greppable: freestandingWriteToolNotLakeBuilt, MULT-FS-WRITE-TOOL. -/
 def freestandingWriteToolNotLakeBuilt : Bool :=
   MultFsWriteTool.freestandingWriteToolNotLakeBuilt
 
-/-- Path A Mult write tool structural ready.
+/-- MultFsWriteTool structural ready (Lean-native Mult package write).
     Greppable: multFsWriteToolReady, MULT-FS-WRITE-TOOL. -/
 def multFsWriteToolReady : Bool := MultFsWriteTool.multFsWriteToolReady
 
@@ -118,10 +120,10 @@ def multFsWriteToolReady : Bool := MultFsWriteTool.multFsWriteToolReady
     freestandingDeepenPartial, MULT-FS-DEEPEN. -/
 def freestandingDeepenPartial : Bool := true
 
-/-- Design freestanding Mult package write driver complete (no Lake-built ELF on
-    measured Mult re-emit). True with Path A host-cc Mult package writer
-    (slake-mult-fs-write-cc outside .lake) + dual evidence. Greppable:
-    freestandingDriverComplete, MULT-FS-DEEPEN, MULT-FS-WRITE-TOOL. -/
+/-- Design freestanding Mult package write driver complete. True with Lean-native
+    MultSubsetEmit / MultFsWriteTool Mult package write + dual evidence (P1;
+    Path A host-cc C print retired). Greppable: freestandingDriverComplete,
+    MULT-FS-DEEPEN, MULT-FS-WRITE-TOOL. -/
 def freestandingDriverComplete : Bool := true
 
 /-- Host MultSubsetEmit freestanding Mult SSOT package write path ready

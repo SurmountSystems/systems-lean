@@ -1,0 +1,9 @@
+# B-missing: import name not present in graph (MISSING-IMPORT)
+# Checked as single-file closure under HostGraph (import NotPresent absent)
+
+module Bad.Missing
+import NotPresent
+namespace Bad.Missing
+def x : Nat := 0
+check 0 : Nat
+end Bad.Missing

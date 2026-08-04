@@ -15,7 +15,9 @@
     edgesSound_one_edge / isWellTyped_two_nodes_one_edge / addEdge_two_nodes_ok /
     edgesSound_two_edges / isWellTyped_two_nodes_two_edges /
     addEdge_two_nodes_second_ok / addEdge_two_nodes_badEndpoints /
-    edgesSound_oversize_false.
+    edgesSound_oversize_false / edgesSound_at_edgeMax /
+    isWellTyped_at_edgeMax / addEdge_full_at_edgeMax /
+    isWellTyped_oversize_false.
   - IR-GRAPH-SMOKE: empty graph / edgeMax / badEndpoints / multi-node edge /
     capacity full / oversize edgesSound behavioral examples (lake build fails
     if example fails).
@@ -40,8 +42,9 @@
   edgesSound_one_edge, isWellTyped_two_nodes_one_edge, addEdge_two_nodes_ok,
   edgesSound_two_edges, isWellTyped_two_nodes_two_edges,
   addEdge_two_nodes_second_ok, addEdge_two_nodes_badEndpoints,
-  edgesSound_oversize_false, IrGraphTheorems, UNIT_SURFACE host surface,
-  RUNTIME-FS.
+  edgesSound_oversize_false, edgesSound_at_edgeMax, isWellTyped_at_edgeMax,
+  addEdge_full_at_edgeMax, isWellTyped_oversize_false, IrGraphTheorems,
+  UNIT_SURFACE host surface, RUNTIME-FS.
   Module: SystemsLean.IrGraphTheorems
   Red/green: just systems-host; lake build SystemsLean.IrGraphTheorems.
   Module must stay ASCII.
@@ -230,6 +233,53 @@ theorem addEdge_two_nodes_badEndpoints :
 theorem edgesSound_oversize_false :
     edgesSound
       (List.replicate (edgeMax + 1) { fromIdx := 0, toIdx := 0 }) 2 = false := by
+  decide
+
+/-! ### Edge capacity full reject (promote IR-GRAPH-SMOKE capacity-full path)
+
+  Net-new vs edgesSound_oversize_false alone and empty badEndpoints: at exactly
+  edgeMax, edgesSound / isWellTyped hold; addEdge returns full; oversize graph
+  isWellTyped fails closed (structure-literal bypass of addEdge).
+-/
+
+/-- Two-node graph fixture with exactly edgeMax in-range edges (0->1). -/
+private def thmTwoNodesEdgeMax : Graph := {
+  prog := { nodes := [thmValueNode, thmValueNodeB] }
+  edges := List.replicate edgeMax { fromIdx := 0, toIdx := 1 }
+}
+
+/-- Exactly edgeMax in-range edges are sound (capacity upper bound inclusive).
+    Greppable: edgesSound_at_edgeMax, SLAKE_IR_EDGE_MAX, IR-GRAPH-THEOREM,
+    HOST-IR-GRAPH-THEOREM. -/
+theorem edgesSound_at_edgeMax :
+    edgesSound (List.replicate edgeMax { fromIdx := 0, toIdx := 1 }) 2 = true := by
+  decide
+
+/-- Two-node graph with exactly edgeMax valid edges is well-typed.
+    Greppable: isWellTyped_at_edgeMax, SLAKE_IR_EDGE_MAX, IR-GRAPH-THEOREM,
+    HOST-IR-GRAPH-THEOREM. -/
+theorem isWellTyped_at_edgeMax :
+    isWellTyped thmTwoNodesEdgeMax = true := by
+  decide
+
+/-- addEdge at edgeMax edges returns full (FAIL-CLOSED capacity; 17th edge).
+    Greppable: addEdge_full_at_edgeMax, SLAKE_IR_EDGE_MAX, FAIL-CLOSED,
+    IR-GRAPH-THEOREM, HOST-IR-GRAPH-THEOREM. -/
+theorem addEdge_full_at_edgeMax :
+    addEdge thmTwoNodesEdgeMax 0 1 = AddEdgeResult.full := by
+  unfold addEdge
+  rw [if_pos (by decide : thmTwoNodesEdgeMax.edges.length >= edgeMax)]
+
+/-- Graph with edgeMax+1 edges fails isWellTyped (capacity upper bound on graph;
+    structure literal may bypass addEdge). Net-new vs edgesSound_oversize_false
+    alone: closes the isWellTyped path used by IR-GRAPH-SMOKE oversize.
+    Greppable: isWellTyped_oversize_false, SLAKE_IR_EDGE_MAX, IR-GRAPH-THEOREM,
+    HOST-IR-GRAPH-THEOREM. -/
+theorem isWellTyped_oversize_false :
+    isWellTyped {
+      prog := { nodes := [thmValueNode, thmValueNodeB] }
+      edges := List.replicate (edgeMax + 1) { fromIdx := 0, toIdx := 0 }
+    } = false := by
   decide
 
 /-! ### Graph smoke (behavioral; lake build fails if an example does not hold)

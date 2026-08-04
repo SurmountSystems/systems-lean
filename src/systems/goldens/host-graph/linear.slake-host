@@ -1,0 +1,13 @@
+# Linear Mult companion host fragment (imports Mult)
+# Expand set: Mult + MultSubsetEmit + Linear
+# Not full SystemsLean.Linear axioms; host fragment dialect only
+
+module Linear
+import Mult
+namespace Linear
+open Mult
+def shareNat : Nat -> Nat := var n
+def polyId : Nat -> Nat := var x
+def linearExactOnceId : String := "LINEAR-EXACT-ONCE"
+check mult0 : Mult
+end Linear

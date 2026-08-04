@@ -1,0 +1,11 @@
+# G3 Linear-shaped host fragment (shareNat / polyId / LINEAR-EXACT-ONCE id)
+# form: module/namespace/def/check/end -- not full Linear.lean axioms
+# Mult-first dialect still; Linear unit shapes as expand surface
+
+module SystemsLean.LinearMini
+namespace SystemsLean.LinearMini
+def shareNat : Nat -> Nat := var n
+def polyId : Nat -> Nat := var x
+def linearExactOnceId : String := "LINEAR-EXACT-ONCE"
+check 0 : Nat
+end SystemsLean.LinearMini

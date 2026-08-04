@@ -34,6 +34,10 @@
   - mkNode?_ok: success path when kindMultOk (fields match).
   - mkNodeFromTags?_unknown_mult / unknown_kind fail closed.
   - mkNodeFromTags?_value_omega_some / linear_one_some / erased_zero_some.
+  - Multi-node mixed-kind ordered IR program well-typed / fold (VALUE+LINEAR+ERASED)
+    lives in SystemsLean.IrProgramTheorems (isWellTyped_mixed_kinds /
+    foldWellTyped_mixed_kinds_some / isWellTyped_mixed_bad_false); cite Types
+    kind/mult pairing; not re-proved as single-node mkNode? alone.
   These Types theorems do NOT set SpecProof.proofCompleteClaimed true.
   Partial theorems on Types != host proof complete != residual free.
 

@@ -34,7 +34,7 @@
     HOST-LLVM-HOLD / EMIT-BOUNDARY / RUNTIME-FS cites.
   - probeWireReady: DualResidual.dualResidualReady && surface &&
     surfacesDistinct && smoke-debt + not-wire + emit-path + does-not-replace
-    && free/complete/unlock claims stay false.
+    && local residual free false && product complete true; llvm unlock orthogonal.
   - probeWireDoesNotMeanResidualFree /
     probeWireDoesNotMeanProductComplete: ready && free/complete claims false.
   - Host model = structural probe-vs-wire honesty. Not an AI/ML model.
@@ -55,8 +55,8 @@
   - Hosted behavioral probe green is NOT product residual free.
   - Product freestanding wire residual remains (DualResidual product residual).
   - NOT freestanding product self-host complete.
-  - NOT PROVABLY. Does not unlock llvm / out/llvm-ir (LlvmHold still holds).
-  - Intentional PARTIAL carry remains.
+  - llvm unlock orthogonal (LlvmHold.llvmUnlocked may be true after unlock residual).
+  - NOT PROVABLY re-open. Intentional PARTIAL carry remains.
   - Not proof complete (SpecProof.proofCompleteClaimed stays false).
   - Does not mint ProductPath alias theater. Does not grow bash EMIT_* treadmill.
   - No new EMIT_* C stage. Does not grow check.sh. Does not grow probe C body.
@@ -82,7 +82,7 @@
   SystemsLean.ProbeWireTheorems (same namespace).
   Not freestanding residual free. Not PROVABLY.
   Not freestanding product self-host complete. Not freestanding emit residual free.
-  Not llvm unlocked. Not host elaborator residual free. Not proof complete.
+  Not full LLVM backend. Not host elaborator residual free. Not proof complete.
   Red/green: just systems-host; lake build when toolchain installed.
   Module must stay ASCII.
 -/
@@ -237,10 +237,12 @@ def probeWireSurfacesDistinct : Bool :=
 
 /-- probeWireReady -- probe-vs-wire honesty bar after dual residual honesty.
     FAIL-CLOSED: dualResidualReady && surface && surfacesDistinct &&
-    smoke-debt + not-wire + emit-path + does-not-replace && free/complete/unlock
-    claims stay false.
-    Honest scope: probe-vs-wire honesty only -- NOT residual free, NOT
-    freestanding product self-host complete, NOT llvm unlock, NOT PROVABLY.
+    smoke-debt + not-wire + emit-path + does-not-replace && local residual free
+    false && product complete true. llvm unlock orthogonal (living pin may be
+    true after unlock residual).
+    Honest scope: probe-vs-wire honesty only -- local residual free false;
+    product complete true on living tip; NOT PROVABLY re-open; NOT full LLVM
+    backend.
     Greppable: probeWireReady, HOST-PROBE-WIRE. -/
 def probeWireReady : Bool :=
   DualResidual.dualResidualReady
@@ -253,8 +255,6 @@ def probeWireReady : Bool :=
     && !residualFreeClaimed
     && productSelfHostCompleteClaimed
     && SelfApplyFs.freestandingProductSelfHostComplete
-    && !LlvmHold.llvmUnlocked
-    && !LlvmHold.provablyUnlocked
 
 /-- probeWireDoesNotMeanResidualFree -- probe-vs-wire ready is not free SSoT
     (local residualFreeClaimed stays false; DualResidual owns product free;

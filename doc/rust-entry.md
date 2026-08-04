@@ -27,11 +27,22 @@ Exact crate layout can shift across rustc versions; search under `ref/rust/compi
 
 | Phrase | Status |
 |--------|--------|
-| "LLVM IR backend" | Design goal for Slake |
+| "LLVM IR backend" | Design goal for Slake; Mult..Graph text + compose + optional llvm-as + unlock **done** (not full backend) |
 | "Rust layout-compatible" | Must be defined against rustc_abi rules + tests |
 | "Without classic FFI" | Happy path = layout/IR-level interop, not hand `extern "C"` glue as default -- **not claimed** until design note + tests |
 
-See `doc/architecture.md`, residual item for LLVM + Rust interop design note.
+**Design note (2026-08-03):** `doc/dev/research/rust-native-layout-design-2026-08-03.md`
+(Kind: analysis only). Layout/ABI bar, non-claims, residual Names for layout
+tests. **Layout size/align fixture done** (research
+`doc/dev/research/layout-size-align-fixture-2026-08-03.md`; Mult-first size/align
+table). **ABI parity smoke done** (`just abi-parity-smoke`; pure Nix Mult
+fixture/header/IR agreement). **Layout IR tag dual-pin done**
+(`just layout-ir-dual-pin`; pure Nix Mult IR tags vs fixture;
+`LAYOUT-IR-TAG-DUAL-PIN`). Mult-first layout test ladder **closed**. Does
+**not** claim Rust-native link success without classic FFI. Do not edit
+`ref/rust` as product.
+
+See `doc/architecture.md` for freestanding vs LLVM product framing.
 
 ---
 

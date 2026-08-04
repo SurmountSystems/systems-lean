@@ -24,7 +24,10 @@
   consume_empty_notLive, double_consume_notLive, nodeMultOk_mult1_eq_live,
   checkFailClosed_eq, multPreScan_mult1_unminted_false,
   extractOkFs_mult1_unminted_false, multPreScan_mult1_minted_true,
-  markErased_idempotent, multPreScan_omega_only_true, mint_consume_roundtrip,
+  consume_mult1_minted, multPreScan_mult1_spent_false,
+  extractOkFs_mult1_spent_false, checkFailClosed_mult1_spent_false,
+  mult1_spent_scrub, consume_mult1_spent_reject, markErased_idempotent,
+  multPreScan_omega_only_true, mint_consume_roundtrip,
   mint_consume_exact_once_sequential, pushHostNode_bad_node,
   pushHostNode_value_one_ok, addHostEdge_empty_badEndpoints,
   addHostEdge_two_values_ok, addHostEdge_one_node_badEndpoints,
@@ -185,6 +188,14 @@ private def thmHostMult1Minted : Host := {
   erased := Erasure.unmarked
 }
 
+/-- One MULT-1 node after spend: live scrubbed false, id scrubbed 0; graph
+    still carries the MULT-1 node (net-new vs empty-host consume scrub). -/
+private def thmHostMult1Spent : Host := {
+  graph := { prog := { nodes := [thmLinearNode] }, edges := [] }
+  linear := LinearHost.empty
+  erased := Erasure.unmarked
+}
+
 /-- One MULT-0 node without erasure mark. -/
 private def thmHostMult0Unmarked : Host := {
   graph := { prog := { nodes := [thmErasedNode] }, edges := [] }
@@ -222,6 +233,60 @@ theorem multPreScan_mult1_minted_true :
     HOST-COMPOSE-THEOREM. -/
 theorem extractOkFs_mult1_minted_true :
     extractOkFs thmHostMult1Minted = true := rfl
+
+/-- consume of MULT-1 minted host returns spent host + payload 1 (graph kept;
+    live false, id scrubbed 0). Net-new vs empty-host consume_minted_one.
+    Greppable: consume_mult1_minted, MULT-1, COMPOSE-THEOREM,
+    HOST-COMPOSE-THEOREM. -/
+theorem consume_mult1_minted :
+    consume thmHostMult1Minted =
+      ConsumeResult.ok thmHostMult1Spent 1 := rfl
+
+/-- MULT-1 graph node after spend fails multPreScan (live cleared; node remains).
+    Greppable: multPreScan_mult1_spent_false, MULT-1, COMPOSE-THEOREM,
+    HOST-COMPOSE-THEOREM. -/
+theorem multPreScan_mult1_spent_false :
+    multPreScan thmHostMult1Spent = false := rfl
+
+/-- MULT-1 graph node after spend fails extract under RUNTIME-FS.
+    Greppable: extractOkFs_mult1_spent_false, MULT-1, RUNTIME-FS, COMPOSE-THEOREM,
+    HOST-COMPOSE-THEOREM. -/
+theorem extractOkFs_mult1_spent_false :
+    extractOkFs thmHostMult1Spent = false := rfl
+
+/-- MULT-1 graph node after spend fails checkFailClosed (fail-closed bar).
+    Greppable: checkFailClosed_mult1_spent_false, MULT-1, FAIL-CLOSED,
+    COMPOSE-THEOREM, HOST-COMPOSE-THEOREM. -/
+theorem checkFailClosed_mult1_spent_false :
+    checkFailClosed thmHostMult1Spent = false := rfl
+
+/-- Spent scrub honesty on MULT-1 graph host: live false and id 0 after consume.
+    Greppable: mult1_spent_scrub, MULT-1, COMPOSE-THEOREM, HOST-COMPOSE-THEOREM. -/
+theorem mult1_spent_scrub :
+    thmHostMult1Spent.linear.live = false
+      /\ thmHostMult1Spent.linear.id = 0 :=
+  And.intro rfl rfl
+
+/-- Consume minted MULT-1 host: fail-closed reject on spent host + scrub.
+    Starts from already-minted fixture (not a mint arm); conjoins consume path,
+    multPreScan / extractOkFs / checkFailClosed false, and spent scrub so a
+    broken intermediate cannot green alone (And.intro honesty; promotes
+    HOST-SMOKE consume-after-mint path then !extractOkFs + scrub). Live-flag
+    only -- does NOT claim elaborator LINEAR-EXACT-ONCE.
+    Greppable: consume_mult1_spent_reject, MULT-1, FAIL-CLOSED,
+    COMPOSE-THEOREM, HOST-COMPOSE-THEOREM. -/
+theorem consume_mult1_spent_reject :
+    (consume thmHostMult1Minted =
+      ConsumeResult.ok thmHostMult1Spent 1)
+      /\ (multPreScan thmHostMult1Spent = false)
+      /\ (extractOkFs thmHostMult1Spent = false)
+      /\ (checkFailClosed thmHostMult1Spent = false)
+      /\ (thmHostMult1Spent.linear.live = false)
+      /\ (thmHostMult1Spent.linear.id = 0) :=
+  And.intro consume_mult1_minted
+    (And.intro multPreScan_mult1_spent_false
+      (And.intro extractOkFs_mult1_spent_false
+        (And.intro checkFailClosed_mult1_spent_false mult1_spent_scrub)))
 
 /-- MULT-0 graph node without mark fails multPreScan (ERASE-NO-RUNTIME).
     Greppable: multPreScan_mult0_unmarked_false, MULT-0, COMPOSE-THEOREM,

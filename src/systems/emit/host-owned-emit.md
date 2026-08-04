@@ -51,13 +51,13 @@ re-emits/re-validates the same package (`slake-mult-subset-rebuild` /
 `just mult-subset-rebuild-without-lake` runs the prebuilt Mult rebuild binary
 (no lake on hot path). M2 Name B freestanding Mult surface dual-check + Name B full Mult write:
 `SystemsLean/MultFsDeepen.lean` / `just mult-subset-freestanding-deepen` (greps
-dual-check) and `just mult-subset-freestanding-write` (Path A: Lean-generated
-`emit/slake_mult_fs_write_tool.c` with MultSubsetEmit freestanding Mult SSOT
-bytes embedded; host-cc `src/systems/bin/slake-mult-fs-write-cc` outside
-`.lake`; Mult rebuild ELF not the package writer; Lake `slake-mult-fs-write`
-bootstrap helper only); freestandingDeepenPartial true; multFsWritePathReady
-true; freestandingDriverComplete **true**. Not the full freestanding product
-wire; not product Out. Product StillUsesLake remains until M6.
+dual-check) and `just mult-subset-freestanding-write` (P1 Lean-native Mult
+package write: MultSubsetEmit / MultFsWriteTool via `IO.FS.writeFile`; Path A
+host-cc full C print from Lean **retired**; Mult rebuild ELF not the package
+writer; Lake Mult write / MultFsWriteTool prebuilt or lake exe for measure);
+freestandingDeepenPartial true; multFsWritePathReady true;
+freestandingDriverComplete **true**. Not the full freestanding product wire;
+not product Out. Product StillUsesLake remains until M6.
 
 **M4 product-wire without-Lake measured step (Name A):**
 `just freestanding-capable-regenerate-without-lake` runs prebuilt
@@ -67,21 +67,20 @@ Ordered READ+COMPOSE+WRITE-HC+INSTALL of full freestanding dialect + Out.
 Host pins: `productWireWithoutLakeFinishedClaimed` true;
 `productWireWithoutLakeKeepsHostLake`. Product StillUsesLake remains until M6.
 
-**M4 product-wire freestanding writer (Name B Path A):**
-`just product-wire-freestanding-write` host-cc builds
-`src/systems/bin/slake-product-wire-fs-write-cc` from Lean-generated
-`emit/slake_product_wire_fs_write_tool.c` (bootstrap once:
-`lake build slake-product-wire-fs-write-tool` +
-`lake exe slake-product-wire-fs-write-tool -- <root>`; dual-eq WRITE embeds
-freestanding dialect bytes). Measured path: no lake; WRITE
+**M4 product-wire freestanding writer (Name B, P1 Lean-native):**
+`just product-wire-freestanding-write` runs dual-eq
+`freestandingCapableWriteFreestandingHc` +
+`freestandingCapableInstallFreestandingOut` via ProductWireWriteTool Lean IO
+(or prebuilt CapableRegenerate). Path A host-cc full C print from Lean
+**retired** (`productWireFsWriterPrintsFullHelperC` false). WRITE
 `emit/slake_freestanding.{h,c}` + INSTALL `out/freestanding-c/`. Host pins:
 `productWireFsWriterFinishedClaimed` true; `productWireFsWriterReady` true;
-`productWireFsWriterNotLakeBuilt` true. freestandingDriverComplete stays
+`productWireFsWriterNativeIo` true. freestandingDriverComplete stays
 Mult-orthogonal. Product StillUsesLake remains until M6.
 
 **M4 official build without-Lake (Name C):**
-`just build` no longer calls `lake` on the hot path. Prefers Name B
-`product-wire-freestanding-write` when tool C + host `cc` exist; else Name A
+`just build` prefers Name B `product-wire-freestanding-write` (P1 Lean-native)
+when ProductWireWriteTool + prebuilt/lake path exist; else Name A
 `freestanding-capable-regenerate-without-lake` when prebuilt CapableRegenerate
 exists; fail closed with bootstrap hints if both missing. Dual evidence on emit
 + Out after build. Product StillUsesLake remains until M6. Lake-hosted

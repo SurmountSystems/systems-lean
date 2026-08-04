@@ -37,20 +37,21 @@
   - selfHostBodyReady: emitMultReady && emitLinearReady && emitErasureReady &&
     emitExtractReady && emitTypesReady && emitProgramReady && emitGraphReady &&
     emitComposeReady && emitPlanReady && emitApplyReady && emitBodyReady &&
-    surface && freestanding emit stage cite && free/complete/unlock claims stay
-    false (complete via !SelfApplyFs.freestandingProductSelfHostComplete once;
-    local freestandingProductSelfHostComplete is alias for theorems/smokes).
+    surface && freestanding emit stage cite && local residual free false &&
+    product complete true (SelfApplyFs.freestandingProductSelfHostComplete);
+    llvm unlock orthogonal (living pin may be true after unlock residual).
   - Host model = structural body path pin. Not an AI/ML model.
-    Not product C residual free. Not freestanding product self-host complete.
-    Not full Slake self-application of the product compiler. Not llvm unlock.
+    Not product C residual free. Not full Slake self-application alone.
+    Not full LLVM backend.
 
   Intentional non-claims / partial:
-  - Defined body path only -- NOT freestanding residual free.
-  - NOT freestanding product self-host complete (proved false).
-  - NOT full Slake compiler self-application on product sources.
+  - Defined body path only -- NOT freestanding residual free re-open.
+  - freestanding product self-host complete true on living tip (claim B).
+  - NOT full Slake compiler self-application on product sources beyond body path.
   - NOT readiness-only re-list of ProductPath / SelfApply / Mult..Emit ladder.
   - Does not invent a new EMIT_* C residual stage. Does not grow probe C.
-  - Does not unlock llvm / out/llvm-ir / PROVABLY.
+  - llvm unlock is orthogonal (LlvmHold.llvmUnlocked may be true after unlock residual).
+  - PROVABLY may be true (LlvmHold.provablyUnlocked after evidence residual).
   - Intentional PARTIAL carry remains.
 
   Theorems + smoke (SELF-HOST-BODY-THEOREM / HOST-SELF-HOST-BODY-THEOREM /
@@ -62,6 +63,7 @@
   SELF-HOST-BODY, SELF-HOST-BODY-SMOKE, HOST-SELF-HOST-BODY-SMOKE,
   selfHostBodyReady, selfHostBodySurfaceOk, residualFreeClaimed,
   productSelfHostCompleteClaimed, freestandingProductSelfHostComplete,
+  llvmUnlocked, provablyUnlocked,
   selfHostBodyDoesNotComplete, selfHostBodyDoesNotMeanResidualFree,
   selfHostBodyOk, selfHostBodyOk_eq_ready, SLAKE_EMIT_FREESTANDING_C_V0,
   HOST-EMIT-MULT, HOST-EMIT-LINEAR, HOST-EMIT-ERASURE, HOST-EMIT-EXTRACT,
@@ -77,7 +79,7 @@
   Module: SystemsLean.SelfHostBody
   Not freestanding residual free. Not PROVABLY.
   Not freestanding product self-host complete. Not freestanding emit residual free.
-  Not llvm unlocked. Not host elaborator residual free. Not proof complete.
+  Not full LLVM backend. Not host elaborator residual free. Not proof complete.
   Red/green: just systems-host; just systems-emit-wire; just build;
   ./src/systems/check.sh; lake build when toolchain installed.
   Module must stay ASCII.
@@ -268,15 +270,14 @@ def freestandingProductSelfHostComplete : Bool :=
 /-- selfHostBodyReady -- defined freestanding compile body path after host-owned
     Mult + Linear + Erasure + Extract + Types + Program + Graph + Compose + Plan +
     Apply + Body emit readiness.
-    FAIL-CLOSED: emitMultReady && emitLinearReady && emitErasureReady &&
-    emitExtractReady && emitTypesReady && emitProgramReady && emitGraphReady &&
-    emitComposeReady && emitPlanReady && emitApplyReady && emitBodyReady &&
-    surface && freestanding emit stage cite && free/complete/unlock stay false
-    (complete flag once as !SelfApplyFs.freestandingProductSelfHostComplete).
-    Honest scope: body path definition only -- NOT residual free, NOT
-    freestanding product self-host complete, NOT full product compiler
-    self-application, NOT llvm unlock, NOT PROVABLY, NOT Mult..Emit readiness
-    re-list (ProductPath / SelfApply theater held).
+    FAIL-CLOSED: emit Mult..Body ready && surface && freestanding emit stage cite
+    && local residual free false && product complete claimed true && SelfApplyFs
+    complete true. llvm unlock is orthogonal (living pin may be true after unlock
+    residual).
+    Honest scope: body path definition only -- local residual free false;
+    product complete true on living tip; NOT full product compiler
+    self-application; NOT full LLVM backend; NOT PROVABLY re-open; NOT Mult..Emit
+    readiness re-list (ProductPath / SelfApply theater held).
     Greppable: selfHostBodyReady, HOST-SELF-HOST-BODY, SELF-HOST-BODY. -/
 def selfHostBodyReady : Bool :=
   EmitMult.emitMultReady
@@ -295,8 +296,6 @@ def selfHostBodyReady : Bool :=
     && !residualFreeClaimed
     && productSelfHostCompleteClaimed
     && SelfApplyFs.freestandingProductSelfHostComplete
-    && !LlvmHold.llvmUnlocked
-    && !LlvmHold.provablyUnlocked
 
 /-- selfHostBodyDoesNotComplete -- body path ready does NOT complete product
     freestanding self-host. Greppable: selfHostBodyDoesNotComplete. -/

@@ -1,0 +1,47 @@
+# MEASURED-STUB -- LLVM IR emit path honesty (not production IR)
+
+Stage: SLAKE_LLVM_EMIT_PATH_V0
+Host pin: SystemsLean.LlvmEmitPath (HOST-LLVM-EMIT-PATH)
+Hold unlock SSoT: SystemsLean.LlvmHold.llvmUnlocked (true after unlock residual)
+Recipe: just llvm-emit-path
+Design: doc/dev/research/llvm-ir-emit-path-2026-08-02.md
+
+## Status
+
+Measured honesty stub for the first LLVM IR emit path residual.
+This file is generator-owned honesty text, not a real Mult unit IR package
+and not a production LLVM module.
+
+## Generator ownership
+
+- Structural pins: src/systems/SystemsLean/LlvmEmitPath.lean
+- Hold gate (unlock true with evidence): src/systems/SystemsLean/LlvmHold.lean
+- Release surface map: out/llvm-ir/README.md
+- Do not hand-author a second product C dialect here
+- Primary freestanding product wire remains out/freestanding-c
+
+## Non-claims
+
+- llvmUnlocked true after unlock residual (not full backend)
+- Not production-ready out/llvm-ir
+- Not full LLVM backend / llvm-as pipeline
+- Not Rust-native link success
+- Not PROVABLY re-open
+- Not freestanding residual free re-open
+- Not freestanding product self-host complete rebrand
+
+## Mult IR text (landed)
+
+Generator-owned Mult unit IR: `slake_mult.ll` from
+`SystemsLean.LlvmMultText` / `just llvm-mult-text` (Mult grades MULT-0 / MULT-1 /
+MULT-OMEGA). Still not production backend. Living llvmUnlocked true after unlock
+residual; not full backend.
+
+## Linear IR text (landed)
+
+Generator-owned Linear unit IR: `slake_linear.ll` from
+`SystemsLean.LlvmLinearText` / `just llvm-linear-text` (Linear SSOT class ids
+MULT-0/1/OMEGA, LINEAR-EXACT-ONCE, shareNat/polyId sketches). Still not
+production backend. Living llvmUnlocked true after unlock residual; not full backend.
+
+SPDX-License-Identifier: Unlicense

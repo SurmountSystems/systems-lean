@@ -1,0 +1,11 @@
+# G7 Compose-shaped host fragment (HostCompose mint/consume honesty mini)
+# form: module/namespace/def/check/end -- not full HostCompose.lean / elaborator
+# Mult-first dialect still; Compose unit shapes as expand surface
+
+module SystemsLean.ComposeMini
+namespace SystemsLean.ComposeMini
+def hostComposeId : String := "HOST_COMPOSE_V0"
+def hostComposeSurfaceId : String := "HOST-COMPOSE"
+def composeFixtureId : String := "COMPOSE-FIXTURE"
+check 0 : Nat
+end SystemsLean.ComposeMini

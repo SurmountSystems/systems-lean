@@ -205,7 +205,8 @@ EMIT_APPLY_V0, EMIT_PLAN_V0, HOST_COMPOSE_V0, RUNTIME-FS, slake_emit_apply.
 `applyFromCompose` (alias `fromCompose`); `applyIsValid`; multi-tag EMIT-APPLY-SMOKE;
 EMIT-APPLY-THEOREM / HOST-EMIT-APPLY-THEOREM real theorems (applyCap, empty valid,
 fail-closed MULT-1 unminted, packTag table, minted/marked/omega tags, multi-node
-program order, applyIsValid count/tags desync reject). PARTIAL vs full C
+program order, applyIsValid count/tags desync reject, oversize-count fail-closed,
+applyFromCompose sound inventory). PARTIAL vs full C
 EMIT_APPLY_V0. Still not residual free. Not proof complete
 (SpecProof.proofCompleteClaimed stays false). Greppable host: EMIT-APPLY,
 APPLY_CAP, FAIL-CLOSED, applyFromCompose, EMIT-APPLY-THEOREM.

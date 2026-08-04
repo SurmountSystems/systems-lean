@@ -1,0 +1,13 @@
+# Types Mult companion host fragment (imports Mult)
+# Expand set: Mult + MultSubsetEmit + Linear + Types
+# Not full SystemsLean.Types / elaborator; host fragment dialect only
+
+module Types
+import Mult
+namespace Types
+open Mult
+def typedIrId : String := "TYPED_IR_V0"
+def kindMultOkId : String := "KIND-MULT-OK"
+def typesFixtureId : String := "TYPES-FIXTURE"
+check mult0 : Mult
+end Types

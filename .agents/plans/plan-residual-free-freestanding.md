@@ -31,16 +31,19 @@ done**. M6 design **done**
 **done** (`LakeRetireInventory` / `just lake-retire-inventory`). M6 phase 2
 product-path Lake pins flip **done** (living tip StillUsesLake/DependsOnLake
 **false** with lake elaborator proof; host residual remains; join
-`/tmp/grok-1000/grok-impl-summary-m6-phase2-pin-flip.md`). **Open:** **empty**
-(ideal ladder M0-M6 product path closed). Step 4 PROVABLY/LLVM held. Free +
-complete are foundation; product path Lake retired; host elaborator residual
-remains.
+`/tmp/grok-1000/grok-impl-summary-m6-phase2-pin-flip.md`). Freestanding product
+path **M0-M6 done**. Step 4 PROVABLY/LLVM held. Free + complete are foundation;
+product path Lake retired; host elaborator residual remains.
 
-**Parallel hygiene (non-blocking):** runtime residual archaeology stdout bands
-**P0-P5** (policy lockstep; inventory; MultFsDeepen exemplar; M1 subset
-banners; just echoes; DualEq cluster parked). Touch-as-you-go alongside the
-freestanding ladder. Does not empty Open or block M3. Policy:
-`AGENTS.md` **Driver stdout policy**; Decision row in `RESIDUAL-systems.md`.
+**Next program (after this plan):** peer elaborator -- freestanding Slake
+checking host work peer to Lake. Plan:
+`.agents/plans/plan-peer-elaborator.md`. Open residual: **Peer elaborator
+design**. Do not forge free/complete/host free/PROVABLY/llvm.
+
+**Parallel hygiene (non-blocking):** driver stdout hygiene (short status lines
+only; residual essays stay in residual / self-host / research). Scrub on touch.
+Policy: `AGENTS.md` **Driver stdout policy**; Decision row in
+`RESIDUAL-systems.md`.
 
 ---
 
@@ -384,11 +387,14 @@ re-emit/re-validate Compose unit package; dual evidence; withoutLakeFinished
 false; StillUsesLake true;
 join `/tmp/grok-1000/grok-impl-summary-compose-subset-rebuild.md`.
 
-**Next Open:** **empty** (done-for-now). M6 design + phase 1 inventory + phase 2
+**Next Open:** **Peer elaborator design** (not this plan's remaining work;
+freestanding product path M0-M6 closed). Plan:
+`.agents/plans/plan-peer-elaborator.md`. M6 design + phase 1 inventory + phase 2
 pin flip **done** (product StillUsesLake/DependsOnLake false with lake proof;
 host residual remains). M5 A/B/C **done**. M4 Name C/B/A **done**. M3
 design+implement **done**. M2 Name B full Path A **done**. Step 4 held
-(PROVABLY / LLVM -- operator-gated only). Parallel hygiene P0-P5 may run.
+(PROVABLY / LLVM -- operator-gated only). Driver stdout hygiene may run in
+parallel.
 
 #### Retrospective: Phase A / B / C (S1-S3 Mult) -- done
 
@@ -553,7 +559,7 @@ stays pure Nix.
 | Linear contracts before residual free claim? | Yes (done) |
 | Open full formal Idris/Lean isomorphism now? | No |
 | Auto-start PROVABLY / LLVM after free? | No |
-| After free + complete + S0-S3 + M1 + M2 + M3 + M4 + M5 (Names A/B/C) closed, next? | M6 design then implement (ideal ladder M0-M6). Empty Open after M5 was false park. Phase 1 inventory done; Open phase 2 pin flip with elaborator proof; never auto-forge StillUsesLake false without lake; not Step 4; hygiene P0-P5 parallel non-blocking |
+| After free + complete + S0-S3 + M1 + M2 + M3 + M4 + M5 (Names A/B/C) closed, next? | M6 design then implement (ideal M0-M6) -- **done**. Next program: peer elaborator (`.agents/plans/plan-peer-elaborator.md`). Never auto-forge host free / PROVABLY / llvm; driver stdout hygiene parallel non-blocking |
 | Keep Lake for building M1 unit surfaces? | **Yes** (under Lake until M2/M6) |
 | Forge StillUsesLake false before M6? | **No** |
 | Divert residual into beastdb? | **No** (orthogonal; soft couple only) |

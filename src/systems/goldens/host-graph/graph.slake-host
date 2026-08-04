@@ -1,0 +1,13 @@
+# Graph Mult companion host fragment (imports Mult)
+# Expand set: Mult + MultSubsetEmit + Linear + Types + Program + Graph
+# Not full SystemsLean.IrGraph / elaborator; host fragment dialect only
+
+module Graph
+import Mult
+namespace Graph
+open Mult
+def irGraphEdgesId : String := "IR_GRAPH_EDGES_V0"
+def emptyGraphOkId : String := "EMPTY-GRAPH-OK"
+def graphFixtureId : String := "GRAPH-FIXTURE"
+check mult0 : Mult
+end Graph

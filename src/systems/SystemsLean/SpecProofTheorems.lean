@@ -137,8 +137,8 @@ example : proofDoesNotRetireTests = true := by decide
 example : residualFreeClaimed = false := by decide
 example : productSelfHostCompleteClaimed = true := by decide
 example : SelfApplyFs.freestandingProductSelfHostComplete = true := by decide
-example : LlvmHold.llvmUnlocked = false := by decide
-example : LlvmHold.provablyUnlocked = false := by decide
+example : LlvmHold.llvmUnlocked = true := by decide
+example : LlvmHold.provablyUnlocked = true := by decide
 example : specDoesNotImplyProofComplete = true := by decide
 
 /-- SPEC-PROOF-SMOKE: prior probe-wire + dual residual + ladder + inventory + hold. -/

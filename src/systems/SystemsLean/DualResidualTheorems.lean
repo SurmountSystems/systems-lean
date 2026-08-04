@@ -37,7 +37,7 @@
   Red/green: just systems-host; lake build SystemsLean.DualResidualTheorems.
   Module must stay ASCII.
   Product residual free claimed. Host elaborator residual remains. Not PROVABLY.
-  Not freestanding emit residual free alone. Not llvm unlocked.
+  Not freestanding emit residual free alone. Not full LLVM backend.
   Not host elaborator residual free. Not proof complete.
 -/
 
@@ -149,8 +149,8 @@ example : hostElaboratorResidualFreeClaimed = false := by decide
 example : residualFreeClaimed = true := by decide
 example : productSelfHostCompleteClaimed = true := by decide
 example : SelfApplyFs.freestandingProductSelfHostComplete = true := by decide
-example : LlvmHold.llvmUnlocked = false := by decide
-example : LlvmHold.provablyUnlocked = false := by decide
+example : LlvmHold.llvmUnlocked = true := by decide
+example : LlvmHold.provablyUnlocked = true := by decide
 example : dualResidualSurfacesDistinct = true := by decide
 
 /-- DUAL-RESIDUAL-SMOKE: prior ladder close + inventory close + hold ready. -/

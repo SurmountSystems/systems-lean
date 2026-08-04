@@ -39,7 +39,7 @@
   Red/green: just systems-host; lake build SystemsLean.ProbeWireTheorems.
   Module must stay ASCII.
   Not freestanding residual free. Not PROVABLY. Not freestanding product.
-  Not freestanding emit residual free. Not llvm unlocked.
+  Not freestanding emit residual free. Not full LLVM backend.
   Not host elaborator residual free. Not proof complete.
 -/
 
@@ -140,8 +140,8 @@ example : probeDoesNotReplaceProductWire = true := by decide
 example : residualFreeClaimed = false := by decide
 example : productSelfHostCompleteClaimed = true := by decide
 example : SelfApplyFs.freestandingProductSelfHostComplete = true := by decide
-example : LlvmHold.llvmUnlocked = false := by decide
-example : LlvmHold.provablyUnlocked = false := by decide
+example : LlvmHold.llvmUnlocked = true := by decide
+example : LlvmHold.provablyUnlocked = true := by decide
 example : probeWireSurfacesDistinct = true := by decide
 
 /-- PROBE-WIRE-SMOKE: prior dual residual + ladder close + inventory + hold. -/

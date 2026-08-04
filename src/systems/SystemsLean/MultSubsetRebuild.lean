@@ -37,7 +37,10 @@
   plus just greps on emit/slake_mult_subset.{h,c}. Do not read the Lean Bool
   alone as filesystem write proof.
   Red/green: lake build SystemsLean.MultSubsetRebuild (bootstrap prebuild OK);
-  just mult-subset-rebuild-without-lake (measured M2 step); just mult-subset-rebuild.
+  just mult-subset-rebuild-without-lake (measured M2 / A10++ inventory dual-ok);
+  just host-develop-tools-clean-bootstrap (A10++ leanc bin link includes this tool);
+  just mult-subset-rebuild. HostResidualShrink cites
+  multSubsetRebuildWithoutLakeDualOk / measuredHostLakeFreeMultSubsetRebuild.
   Module must stay ASCII.
 -/
 

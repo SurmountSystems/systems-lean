@@ -64,8 +64,8 @@ Idris 2 and Lean 4 map, primary emit runtimeless freestanding C under
 | `[##########] 100.0%` | 10 | bridge | lean | Lean dual example | src/lean4/examples |
 | `[##########] 100.0%` | 5 | bridge | idris | Idris JOIN greppable points | src/idris2/JOIN.md |
 | `[##########] 100.0%` | 5 | bridge | lean | Lean JOIN greppable points | src/lean4/JOIN.md |
-| `[##########] 100.0%` | 3 | bridge | idris | Idris presence red/green gate | src/idris2/check.sh |
-| `[##########] 100.0%` | 3 | bridge | lean | Lean presence red/green gate | src/lean4/check.sh |
+| `[##########] 100.0%` | 3 | bridge | idris | Idris presence red/green gate | just idris-side pure presence (+ just idris-elaborate optional) |
+| `[##########] 100.0%` | 3 | bridge | lean | Lean presence red/green gate | just lean-side pure presence (+ just lean-elaborate optional) |
 | `[##########] 100.0%` | 8 | join | both | Dual pair join-ready | both JOIN.md + nontrivial sides |
 | `[##########] 100.0%` | 6 | join | both | Divergence imperfect edges joined | doc/divergence.md cites dual imperfect edges |
 | `[##########] 100.0%` | 8 | join | both | Shared intermediate-representation sketch | doc/shared-ir-sketch.md |

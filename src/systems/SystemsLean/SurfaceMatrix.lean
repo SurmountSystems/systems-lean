@@ -36,29 +36,36 @@
   Intentional non-claims / partial parity:
   - PARTIAL: inventory + progressive host gate, not day-one full Idris+Lean
     parity or "superset complete".
-  - Open rows stay open: full syntax surface, full elaborator, freestanding
-    product self-host, llvm, PROVABLY, full Idris parity, full Lean parity.
+  - Inventory canary matches living tip: freestanding self-host complete and
+    llvm unlock rows statusMeasured (not statusOpen lag); CompCert PROVABLY
+    statusProvably. Living claim pins elsewhere: freestandingProductSelfHostComplete
+    true, llvmUnlocked true (not full backend), residual free true, host residual
+    remains, PROVABLY true. Prose SSoT: src/systems/surface-matrix.md.
+  - Open language gaps stay open: full syntax surface, full elaborator,
+    full Idris parity, full Lean parity, full CFG/SSA backend.
+  - CompCert PROVABLY row claimed after product matrix + evidence residual.
   - Duals cited only (three JOIN-ALG algorithm examples); no dual invent.
-  - Not residual free. Not PROVABLY. Not freestanding emit residual free.
   - Not proof complete (SpecProof.proofCompleteClaimed stays false).
   - Does not fold program bar into unit bar (sibling APIs; P3 residual lesson).
-  - Does not unlock out/llvm-ir (still deferred until true self-host).
+  - Does not claim full out/llvm-ir backend from unlock true alone.
 
   Greppable: SYSTEMS_LEAN_HOST, SLAKE_SURFACE_MATRIX_V0, HOST-SURFACE-MATRIX,
   SURFACE-MATRIX, matrixUnitReady, matrixProgramReady, matrixReady,
   matrixSurfaceOk, SURFACE-MATRIX-SMOKE, HOST-SELF-HOST, SLAKE_SELF_HOST_V0,
   HOST-JOIN-MAP, HOST-COMPILE-PATH, MULT-0, MULT-1, MULT-OMEGA, JOIN-ALG,
-  ConsumeToken, ErasedIndex, UnrestrictedShare, present-partial, open,
+  ConsumeToken, ErasedIndex, UnrestrictedShare, present-partial, open, measured,
   EMPTY-PROGRAM-FAIL-CLOSED, FAIL-CLOSED, SURFACE-MATRIX-THEOREM,
   HOST-SURFACE-MATRIX-THEOREM, SurfaceMatrixTheorems,
   matrixUnitReady_empty_true, matrixProgramReady_empty_false,
   matrixUnitReady_mult1_unminted_false, matrixUnitReady_mult1_minted_true,
-  matrixProgramReady_single_value, UNIT_SURFACE host surface.
+  matrixProgramReady_single_value, rowFreestandingSelfHostMeasuredOk,
+  rowLlvmMeasuredOk, rowProvablyClaimedOk, UNIT_SURFACE host surface.
   Module: SystemsLean.SurfaceMatrix
   Long-file peel: SURFACE-MATRIX-THEOREM + SURFACE-MATRIX-SMOKE in
   SystemsLean.SurfaceMatrixTheorems (same namespace). Core dialect stays here.
   Red/green: just systems-host (nix/systems-host-presence/; flake checks.systems-host-presence); lake build when toolchain installed.
   Module must stay ASCII.
+  Not freestanding residual free. Not freestanding emit residual free. Not PROVABLY.
 -/
 
 import SystemsLean.Mult
@@ -123,6 +130,12 @@ def statusPresentPartial : String := "present-partial"
 /-- Row open / not claimed (full feature, parity, or deferred track). -/
 def statusOpen : String := "open"
 
+/-- Row claimed PROVABLY after green product CompCert matrix + pin flip. -/
+def statusProvably : String := "PROVABLY"
+
+/-- Row measured against living claim pin / fail-closed evidence (not full parity). -/
+def statusMeasured : String := "measured"
+
 /-- Multiplicity surface MULT-0 / MULT-1 / MULT-OMEGA (host Mult). -/
 def rowMult : String := statusPresentPartial
 
@@ -156,17 +169,20 @@ def rowSyntaxSurface : String := statusOpen
 /-- Full classic elaborator parity (not claimed). -/
 def rowFullElaborator : String := statusOpen
 
-/-- Freestanding product self-host complete (not claimed): HOST-SELF-HOST
-    direction + SH5 SelfApply host-structural only; freestanding product
-    self-host complete still open; SH6 held. Do not flip to present-partial. -/
-def rowFreestandingSelfHost : String := statusOpen
+/-- Freestanding product self-host complete inventory row.
+    Living claim pin freestandingProductSelfHostComplete is true elsewhere
+    (SelfApplyFs). Inventory string statusMeasured matches living tip (claim B).
+    Not the claim-B SSoT; not residual free synonym; not proof complete. -/
+def rowFreestandingSelfHost : String := statusMeasured
 
-/-- out/llvm-ir pipeline (deferred; SH6 held until true freestanding product
-    self-host; SH5 host-structural kernelRebuildsKernel does not unlock). -/
-def rowLlvm : String := statusOpen
+/-- out/llvm-ir unlock inventory row.
+    Living pin LlvmHold.llvmUnlocked is true (not full backend). Inventory
+    string statusMeasured matches unlock tip. Not full CFG/SSA / Rust-native
+    link; full backend stays a separate open prose row in surface-matrix.md. -/
+def rowLlvm : String := statusMeasured
 
-/-- CompCert PROVABLY (needs real ccomp + matrix; never forge). -/
-def rowProvably : String := statusOpen
+/-- CompCert PROVABLY (claimed after green product matrix + pin flip). -/
+def rowProvably : String := statusProvably
 
 /-- Full Idris 2 core parity (not claimed; progressive gates only). -/
 def rowFullIdrisParity : String := statusOpen
@@ -186,19 +202,39 @@ def hostRowsPresentPartialOk : Bool :=
     && (rowJoinMap == statusPresentPartial)
     && (rowSelfHostDirection == statusPresentPartial)
 
-/-- openRowsOpenOk -- open / not-claimed rows stay open (honesty). -/
+/-- openRowsOpenOk -- open / not-claimed language-parity rows stay open (honesty).
+    Freestanding complete, llvm unlock, and CompCert PROVABLY are measured /
+    claimed separately (rowFreestandingSelfHostMeasuredOk, rowLlvmMeasuredOk,
+    rowProvablyClaimedOk). Full backend stays open in prose inventory only. -/
 def openRowsOpenOk : Bool :=
   (rowSyntaxSurface == statusOpen)
     && (rowFullElaborator == statusOpen)
-    && (rowFreestandingSelfHost == statusOpen)
-    && (rowLlvm == statusOpen)
-    && (rowProvably == statusOpen)
     && (rowFullIdrisParity == statusOpen)
     && (rowFullLeanParity == statusOpen)
 
+/-- rowFreestandingSelfHostMeasuredOk -- freestanding complete inventory measured.
+    Inventory string self-check only (same pattern as rowProvablyClaimedOk).
+    Does not import SelfApplyFs.freestandingProductSelfHostComplete; living tip
+    dual-pin lag is intentional -- reseed inventory strings with a named residual
+    if tip and canary diverge. Not claim-B SSoT. -/
+def rowFreestandingSelfHostMeasuredOk : Bool :=
+  rowFreestandingSelfHost == statusMeasured
+
+/-- rowLlvmMeasuredOk -- llvm unlock inventory measured (not full backend).
+    Inventory string self-check only (same pattern as rowProvablyClaimedOk).
+    Does not import LlvmHold.llvmUnlocked; living tip dual-pin lag intentional.
+    Full backend stays open in surface-matrix.md prose. -/
+def rowLlvmMeasuredOk : Bool :=
+  rowLlvm == statusMeasured
+
+/-- rowProvablyClaimedOk -- CompCert PROVABLY row claimed (not open).
+    Inventory string self-check only; does not import LlvmHold.provablyUnlocked. -/
+def rowProvablyClaimedOk : Bool :=
+  rowProvably == statusProvably
+
 /-- matrixSurfaceOk -- stage / dual / row-status inventory canary.
     Surface-level only (not implementing missing language features).
-    Greppable: matrixSurfaceOk, SURFACE-MATRIX, present-partial, open. -/
+    Greppable: matrixSurfaceOk, SURFACE-MATRIX, present-partial, open, measured. -/
 def matrixSurfaceOk : Bool :=
   (stageId == "SLAKE_SURFACE_MATRIX_V0")
     && (hostSurfaceMatrixId == "HOST-SURFACE-MATRIX")
@@ -209,6 +245,9 @@ def matrixSurfaceOk : Bool :=
     && dualCiteOk
     && hostRowsPresentPartialOk
     && openRowsOpenOk
+    && rowFreestandingSelfHostMeasuredOk
+    && rowLlvmMeasuredOk
+    && rowProvablyClaimedOk
 
 /-- SURFACE-MATRIX readiness verdict (inventory; not product C; not superset complete).
     Field layering (JoinMap / SelfHost pattern; not pre-folded):

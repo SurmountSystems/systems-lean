@@ -39,7 +39,7 @@
   Module must stay ASCII.
   Not freestanding emit. Not freestanding residual free. Not PROVABLY.
   Not freestanding product. Not freestanding emit residual free.
-  Not llvm unlocked. Not proof complete.
+  Not full LLVM backend. Not proof complete.
 -/
 
 import SystemsLean.SelfApplyFs
@@ -118,8 +118,8 @@ example : inventoryCloseSurfaceOk = true := by decide
 example : residualFreeClaimed = false := by decide
 example : productSelfHostCompleteClaimed = true := by decide
 example : SelfApplyFs.freestandingProductSelfHostComplete = true := by decide
-example : LlvmHold.llvmUnlocked = false := by decide
-example : LlvmHold.provablyUnlocked = false := by decide
+example : LlvmHold.llvmUnlocked = true := by decide
+example : LlvmHold.provablyUnlocked = true := by decide
 example : inventoryPartialCarryHonest = true := by decide
 
 /-- INVENTORY-CLOSE-SMOKE: prior SH5 FS + SH6 hold ready. -/

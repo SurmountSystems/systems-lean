@@ -25,8 +25,10 @@
   Short role name (not ProductPath* kitchen-sink).
   Dual evidence: Lean structural pins (G1 accept + Mult package ready) + lake
   exe / just front-mult-package (accept G1 then Mult package write + greps).
+  Without-Lake (A10+): front-mult-package-without-lake + develop clean-bootstrap
+  (ownership pins in HostResidualShrink). Host residual remains; not free.
   Red/green: lake build SystemsLean.FrontMultPackage; lake exe slake-front-mult-package;
-  just front-mult-package. Module must stay ASCII.
+  just front-mult-package; just front-mult-package-without-lake. Module must stay ASCII.
 -/
 
 import SystemsLean.SubsetFront

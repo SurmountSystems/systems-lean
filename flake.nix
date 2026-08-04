@@ -53,6 +53,11 @@
         root = novelSource;
       };
 
+      systemsLlvmIr = import ./nix/systems-llvm-ir {
+        inherit lib;
+        root = novelSource;
+      };
+
       idrisSidePresence = import ./nix/idris-side-presence {
         inherit lib;
         root = novelSource;
@@ -92,6 +97,13 @@
         else
           throw systemsEmitWire.summary;
 
+      mkSystemsLlvmIrPresenceCheck =
+        pkgs:
+        if systemsLlvmIr.ok then
+          pkgs.writeText "systems-llvm-ir-presence-ok" systemsLlvmIr.summary
+        else
+          throw systemsLlvmIr.summary;
+
       mkIdrisSidePresenceCheck =
         pkgs:
         if idrisSidePresence.ok then
@@ -119,6 +131,7 @@
         professionalTone = import ./nix/professional-tone.nix;
         systemsHostPresence = import ./nix/systems-host-presence;
         systemsEmitWire = import ./nix/systems-emit-wire;
+        systemsLlvmIr = import ./nix/systems-llvm-ir;
         idrisSidePresence = import ./nix/idris-side-presence;
         leanSidePresence = import ./nix/lean-side-presence;
       };
@@ -134,6 +147,7 @@
           professional-tone = mkProfessionalToneCheck pkgs;
           systems-host-presence = mkSystemsHostPresenceCheck pkgs;
           systems-emit-wire = mkSystemsEmitWireCheck pkgs;
+          systems-llvm-ir-presence = mkSystemsLlvmIrPresenceCheck pkgs;
           idris-side-presence = mkIdrisSidePresenceCheck pkgs;
           lean-side-presence = mkLeanSidePresenceCheck pkgs;
         }

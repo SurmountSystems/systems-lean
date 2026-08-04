@@ -85,6 +85,44 @@ hostLeans = [
   "src/systems/SystemsLean/SubsetPackageJoin.lean"
   "src/systems/SystemsLean/FrontMultPackage.lean"
   "src/systems/SystemsLean/FrontMultPackageMain.lean"
+  "src/systems/SystemsLean/HostTerm.lean"
+  "src/systems/SystemsLean/HostFront.lean"
+  # Long-file peel: HOST-FRONT-THEOREM + HOST-FRONT-SMOKE
+  # (same namespace HostFront).
+  "src/systems/SystemsLean/HostFrontTheorems.lean"
+  "src/systems/SystemsLean/HostFrontMain.lean"
+  "src/systems/SystemsLean/HostCheck.lean"
+  "src/systems/SystemsLean/HostCheckMain.lean"
+  "src/systems/SystemsLean/HostGraph.lean"
+  # Long-file split: HOST-GRAPH-THEOREM + HOST-GRAPH-SMOKE
+  # (same namespace HostGraph).
+  "src/systems/SystemsLean/HostGraphTheorems.lean"
+  "src/systems/SystemsLean/HostGraphMain.lean"
+  "src/systems/SystemsLean/HostPackageWrite.lean"
+  # Long-file peel: HOST-PACKAGE-WRITE-THEOREM + HOST-PACKAGE-WRITE-SMOKE
+  # (same namespace HostPackageWrite).
+  "src/systems/SystemsLean/HostPackageWriteTheorems.lean"
+  "src/systems/SystemsLean/HostPackageWriteMain.lean"
+  "src/systems/SystemsLean/HostPackageRoots.lean"
+  "src/systems/SystemsLean/HostPackageRootsMain.lean"
+  "src/systems/SystemsLean/HostImportGraph.lean"
+  "src/systems/SystemsLean/HostImportGraphMain.lean"
+  "src/systems/SystemsLean/HostModuleCheck.lean"
+  "src/systems/SystemsLean/HostModuleCheckFixtures.lean"
+  "src/systems/SystemsLean/HostModuleCheckTheorems.lean"
+  "src/systems/SystemsLean/HostModuleCheckMain.lean"
+  "src/systems/SystemsLean/HostResidualShrink.lean"
+  "src/systems/SystemsLean/LlvmEmitPath.lean"
+  "src/systems/SystemsLean/LlvmMultText.lean"
+  "src/systems/SystemsLean/LlvmMultTextMain.lean"
+  "src/systems/SystemsLean/LlvmLinearText.lean"
+  "src/systems/SystemsLean/LlvmLinearTextMain.lean"
+  "src/systems/SystemsLean/LlvmTypesText.lean"
+  "src/systems/SystemsLean/LlvmTypesTextMain.lean"
+  "src/systems/SystemsLean/LlvmProgramText.lean"
+  "src/systems/SystemsLean/LlvmProgramTextMain.lean"
+  "src/systems/SystemsLean/LlvmGraphText.lean"
+  "src/systems/SystemsLean/LlvmGraphTextMain.lean"
   "src/systems/SystemsLean/LakeRetireInventory.lean"
   "src/systems/SystemsLean/JoinMap.lean"
   # Long-file peel: JOIN-MAP-THEOREM + JOIN-MAP-SMOKE (same namespace JoinMap).
@@ -194,6 +232,7 @@ hostLeans = [
   # Long-file split: theorems + smoke (same namespace SelfApply).
   "src/systems/SystemsLean/SelfApplyTheorems.lean"
   "src/systems/SystemsLean/SelfApplyFs.lean"
+  "src/systems/SystemsLean/SelfApplyFsTheorems.lean"
   "src/systems/SystemsLean/SelfHostComplete.lean"
   "src/systems/SystemsLean/LlvmHold.lean"
   # Long-file split: theorems + smoke (same namespace LlvmHold).

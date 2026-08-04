@@ -98,16 +98,17 @@
     freestandingJoinProgramProductPathReady && freestandingSelfHostProductPathReady &&
     freestandingSelfHostProgramProductPathReady &&
     freestandingMatrixUnitProductPathReady && freestandingMatrixProgramProductPathReady &&
-    productPathSurfaceOk && !residual free claimed && !product complete claimed
-    && SelfApplyFs.freestandingProductSelfHostComplete &&
-    !LlvmHold.llvmUnlocked && !LlvmHold.provablyUnlocked.
-  - productPathDoesNotComplete / productPathDoesNotMeanResidualFree: ready &&
-    complete/residual claims stay false.
+    productPathSurfaceOk && !residual free claimed && product complete claimed
+    true && SelfApplyFs.freestandingProductSelfHostComplete &&
+    llvm unlock orthogonal (living pin may be true); PROVABLY may be true.
+  - productPathDoesNotComplete / productPathDoesNotMeanResidualFree: ready with
+    local residual free false; complete true on living tip (path readiness is
+    not residual free re-open).
   - SLAKE_SELF_HOST_PRODUCT_PATH_CLOSE_V0 / HOST-PRODUCT-PATH-CLOSE /
     SELF-HOST-PRODUCT-PATH-CLOSE: structural freestanding product path ladder
     close -- documents unit/program/emit/join/self-host/matrix folds closed at
-    productPathReady without forging residual free / product complete / llvm
-    unlock. Same module (no 32nd module); greppable close helpers only.
+    productPathReady without forging residual free; complete true on living tip;
+    llvm unlock orthogonal. Same module (no 32nd module); greppable close helpers.
   - productPathCloseSurfaceOk: close stage ids + structural ladder closed token
     + intentional PARTIAL carry cite (String canaries).
   - productPathFurtherAliasTheaterHeld: honesty canary -- further ProductPath
@@ -115,7 +116,7 @@
     alone are not residual progress (held as theater; not residual free claim).
   - productPathLadderClosedOk / productPathCloseReady: productPathReady &&
     productPathCloseSurfaceOk && productPathFurtherAliasTheaterHeld &&
-    residual free / complete / unlock claims stay false.
+    residual free false && product complete true; llvm unlock orthogonal.
   - productPathCloseDoesNotMeanResidualFree: close ready && !residual free.
   - Host model = structural freestanding product path honesty. Not an AI/ML
     model. Not product C residual free.
@@ -128,15 +129,15 @@
 
   Intentional non-claims / partial:
   - Product path readiness only -- NOT freestanding residual free.
-  - Structural ladder close is NOT residual free and NOT product self-host
-    complete (close documents path folds only).
-  - NOT freestanding product self-host complete (self-host unit + program paths
-    are direction honesty only; HOST-SELF-HOST cite does not complete self-host).
+  - Structural ladder close is NOT residual free re-open (close documents path
+    folds; complete true on living tip via SelfApplyFs).
+  - Self-host unit + program paths are direction honesty only; HOST-SELF-HOST
+    cite alone does not re-prove complete.
   - NOT day-one full Idris+Lean surface parity (HOST-SURFACE-MATRIX open rows
     stay open; matrix path is progressive inventory honesty only).
-  - NOT PROVABLY. Does not unlock llvm / out/llvm-ir (LlvmHold still holds).
-  - Intentional PARTIAL carry remains (host Bool path honesty vs full product
-    freestanding C rebuild of Slake).
+  - llvm unlock orthogonal (LlvmHold.llvmUnlocked may be true after unlock residual).
+  - NOT PROVABLY re-open. Intentional PARTIAL carry remains (host Bool path
+    honesty vs full product freestanding C rebuild of Slake).
   - Further ProductPath alias theater of inventoryCloseReady-implied bars held
     (productPathFurtherAliasTheaterHeld); not residual progress.
   - Does not mint phantom modules. Does not grow bash EMIT_* residual treadmill.
@@ -183,7 +184,7 @@
   Module: SystemsLean.ProductPath
   Not freestanding residual free. Not PROVABLY.
   Not freestanding product self-host complete. Not freestanding emit residual free.
-  Not llvm unlocked. Not day-one full Idris+Lean surface parity.
+  Not full LLVM backend. Not day-one full Idris+Lean surface parity.
   Red/green: just systems-host; lake build when toolchain installed.
   Module must stay ASCII.
 -/
@@ -305,13 +306,13 @@ def residualFreeClaimed : Bool := false
 def productSelfHostCompleteClaimed : Bool := true
 
 /-- productPathReady -- freestanding product path bar after inventory close.
-    FAIL-CLOSED: inventoryCloseReady && unit path && program path && emit path &&
-    join unit path && join program path && self-host unit path && self-host
-    program path && matrix unit path && matrix program path && surface &&
-    residual free / product complete / llvm unlock claims stay false.
-    Honest scope: freestanding product path readiness only -- NOT residual free,
-    NOT freestanding product self-host complete, NOT llvm unlock, NOT PROVABLY,
-    NOT day-one full Idris+Lean surface parity.
+    FAIL-CLOSED: inventoryCloseReady && unit/program/emit/join/self-host/matrix
+    paths && surface && local residual free false && product complete claimed
+    true && SelfApplyFs complete true. llvm unlock is orthogonal (living pin
+    may be true after unlock residual).
+    Honest scope: freestanding product path readiness only -- local residual
+    free false; product complete true on living tip; NOT full LLVM backend;
+    NOT PROVABLY re-open; NOT day-one full Idris+Lean surface parity.
     Greppable: productPathReady, HOST-PRODUCT-PATH. -/
 def productPathReady : Bool :=
   InventoryClose.inventoryCloseReady
@@ -328,8 +329,6 @@ def productPathReady : Bool :=
     && !residualFreeClaimed
     && productSelfHostCompleteClaimed
     && SelfApplyFs.freestandingProductSelfHostComplete
-    && !LlvmHold.llvmUnlocked
-    && !LlvmHold.provablyUnlocked
 
 /-- productPathDoesNotComplete -- product path ready does NOT complete freestanding
     product self-host. Greppable: productPathDoesNotComplete. -/
@@ -394,10 +393,11 @@ def productPathFurtherAliasTheaterHeld : Bool :=
 
 /-- productPathLadderClosedOk -- structural freestanding product path ladder
     closed at unit/program/emit/join/self-host/matrix (via productPathReady).
-    FAIL-CLOSED: productPathReady && residual free / complete / unlock claims
-    stay false && close surface && further alias theater honesty.
-    Honest scope: structural ladder close only -- NOT residual free, NOT
-    freestanding product self-host complete, NOT llvm unlock, NOT PROVABLY.
+    FAIL-CLOSED: productPathReady && close surface && further alias theater
+    honesty && local residual free false && product complete true on living tip.
+    llvm unlock orthogonal (living pin may be true after unlock residual).
+    Honest scope: structural ladder close only -- local residual free false;
+    product complete true; NOT full LLVM backend; NOT PROVABLY re-open.
     Greppable: productPathLadderClosedOk, HOST-PRODUCT-PATH-CLOSE. -/
 def productPathLadderClosedOk : Bool :=
   productPathReady
@@ -406,8 +406,6 @@ def productPathLadderClosedOk : Bool :=
     && !residualFreeClaimed
     && productSelfHostCompleteClaimed
     && SelfApplyFs.freestandingProductSelfHostComplete
-    && !LlvmHold.llvmUnlocked
-    && !LlvmHold.provablyUnlocked
 
 /-- productPathCloseReady -- dual greppable alias of productPathLadderClosedOk.
     Greppable: productPathCloseReady. -/
