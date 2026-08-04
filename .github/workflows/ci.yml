@@ -48,8 +48,15 @@ jobs:
           # --command takes executable + args separately; do not quote the whole
           # command as one argv (nix treats "elan toolchain install ..." as a path).
           pin=$(tr -d '[:space:]' < src/systems/lean-toolchain)
-          echo "Installing elan pin: $pin (from src/systems/lean-toolchain)"
-          nix develop . --command elan toolchain install "$pin"
+          echo "Ensuring elan pin: $pin (from src/systems/lean-toolchain)"
+          # Cache hit leaves ~/.elan with the pin already present; plain
+          # `elan toolchain install` then exits 1 ("already installed") and
+          # fails the job. Skip install when the pin is already listed.
+          if nix develop . --command elan toolchain list 2>/dev/null | grep -qF "$pin"; then
+            echo "already installed: $pin"
+          else
+            nix develop . --command elan toolchain install "$pin"
+          fi
 
       - name: just check (full suite)
         run: |
