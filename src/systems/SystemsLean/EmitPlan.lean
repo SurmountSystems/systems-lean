@@ -30,6 +30,8 @@
   - isReady_failClosed_false / planOk_mult1_unminted_false
   - planFromCompose_mult1_unminted_failClosed (zeroed inventory)
   - planOk_mult1_minted_true / planFromCompose_mult1_minted_runtime
+  - planOk_mult1_spent_false / planFromCompose_mult1_spent_failClosed
+  - planOk_mult1_spent_reject (mint+consume then plan reject; spent scrub)
   - planOk_mult0_unmarked_false / planFromCompose_mult0_marked_erased
   - planFromCompose_omega_runtime / planFromCompose_two_values_edge
   - planFromCompose_linear_and_erased (runtime+erased inventory)
@@ -72,6 +74,8 @@
   EMIT-PLAN-THEOREM, HOST-EMIT-PLAN-THEOREM, planOk_empty_true,
   planFromCompose_empty_counts_zero, isReady_empty_plan,
   planOk_mult1_unminted_false, planOk_mult1_minted_true,
+  planOk_mult1_spent_false, planFromCompose_mult1_spent_failClosed,
+  planOk_mult1_spent_reject,
   planFromCompose_two_values_edge, planFromCompose_linear_and_erased,
   SLAKE_SELF_HOST_EMIT_PLAN_V0, HOST-EMIT-PLAN, SELF-HOST-EMIT-PLAN,
   planHeaderFragment, planBodyFragment, emitPlanReady, NON-SSOT,
@@ -170,10 +174,11 @@ def planOk (hc : Host) : Bool :=
 /-! ### EMIT-PLAN-THEOREM / HOST-EMIT-PLAN-THEOREM (readable statements, then proofs)
 
   Real Lean theorems (not only `example` Bool canaries). Scope is empty-compose
-  plan readiness, count inventory, fail-closed MULT-1 unminted, minted/marked
-  ready counts, edgeCount, and multi-node runtime+erased inventory. Does not
-  complete SpecProof; does not claim residual free / freestanding product
-  self-host complete / PROVABLY. Does not invent a second emit dialect.
+  plan readiness, count inventory, fail-closed MULT-1 unminted, minted ready
+  counts, spent MULT-1 plan reject (mint then consume), marked MULT-0 /
+  edgeCount / multi-node runtime+erased inventory. Does not complete SpecProof;
+  does not claim residual free / freestanding product self-host complete /
+  PROVABLY. Does not invent a second emit dialect.
 -/
 
 /-- planOk is definitionally isReady (planFromCompose hc).
@@ -231,6 +236,13 @@ private def thmHostMult1Minted : Host :=
   { HostCompose.empty with
     graph := { prog := { nodes := [thmLinearNode] }, edges := [] }
     linear := { live := true, id := 1 } }
+
+/-- One MULT-1 node after spend: live scrubbed false, id scrubbed 0; graph
+    still carries the MULT-1 node (mint then consume shape; net-new vs empty
+    host consume scrub alone). -/
+private def thmHostMult1Spent : Host :=
+  { HostCompose.empty with
+    graph := { prog := { nodes := [thmLinearNode] }, edges := [] } }
 
 /-- One MULT-0 node without erasure mark (multPreScan fails). -/
 private def thmHostMult0Unmarked : Host :=
@@ -290,6 +302,38 @@ theorem planFromCompose_mult1_minted_runtime :
     (let p := planFromCompose thmHostMult1Minted
      isReady p && p.nodeCount == 1 && p.runtimeNodes == 1
        && p.erasedNodes == 0) = true := by decide
+
+/-- MULT-1 graph node after spend fails planOk (live cleared; node remains).
+    Net-new vs planOk_mult1_minted_true alone and vs HostCompose spent mult1
+    reject alone (this is EmitPlan readiness layer).
+    Greppable: planOk_mult1_spent_false, MULT-1, FAIL-CLOSED, EMIT-PLAN-THEOREM,
+    HOST-EMIT-PLAN-THEOREM. -/
+theorem planOk_mult1_spent_false :
+    planOk thmHostMult1Spent = false := by decide
+
+/-- MULT-1 graph node after spend yields zeroed fail-closed plan inventory.
+    Greppable: planFromCompose_mult1_spent_failClosed, MULT-1, FAIL-CLOSED,
+    EMIT-PLAN-THEOREM, HOST-EMIT-PLAN-THEOREM. -/
+theorem planFromCompose_mult1_spent_failClosed :
+    (let p := planFromCompose thmHostMult1Spent
+     !p.valid && !p.ready && p.nodeCount == 0 && p.edgeCount == 0
+       && p.runtimeNodes == 0 && p.erasedNodes == 0) = true := by decide
+
+/-- Consume minted MULT-1 host then plan readiness reject + zeroed inventory.
+    Starts from already-minted fixture; conjoins consume path, planOk false,
+    and fail-closed zeroed plan so a broken intermediate cannot green alone.
+    Live-flag only -- does NOT claim elaborator LINEAR-EXACT-ONCE.
+    Greppable: planOk_mult1_spent_reject, MULT-1, FAIL-CLOSED, EMIT-PLAN-THEOREM,
+    HOST-EMIT-PLAN-THEOREM. -/
+theorem planOk_mult1_spent_reject :
+    (HostCompose.consume thmHostMult1Minted =
+      HostCompose.ConsumeResult.ok thmHostMult1Spent 1)
+      /\ (planOk thmHostMult1Spent = false)
+      /\ ((let p := planFromCompose thmHostMult1Spent
+          !p.valid && !p.ready && p.nodeCount == 0 && p.edgeCount == 0
+            && p.runtimeNodes == 0 && p.erasedNodes == 0) = true) :=
+  And.intro rfl
+    (And.intro planOk_mult1_spent_false planFromCompose_mult1_spent_failClosed)
 
 /-- MULT-0 without mark fails plan (fail-closed).
     Greppable: planOk_mult0_unmarked_false, MULT-0, FAIL-CLOSED, EMIT-PLAN-THEOREM,

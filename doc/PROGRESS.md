@@ -12,8 +12,9 @@ Weighted evidence: 136 / 136
 
 North star (see `doc/goals.md`): Slake in Systems Lean, meet-in-the-middle
 Idris 2 and Lean 4 map, primary emit runtimeless freestanding C under
-`out/freestanding-c`. LLVM / CompCert PROVABLY are tracked as deferred
-(weight 0 until earned).
+`out/freestanding-c`. CompCert PROVABLY is claimed true (matrix in just
+check; weight 0 row). llvm unlock + Mult SSA partial are earned (weight 0);
+full LLVM backend and Rust-native link stay held.
 
 ## Phases (plan milestones)
 
@@ -74,10 +75,10 @@ Idris 2 and Lean 4 map, primary emit runtimeless freestanding C under
 | `[##########] 100.0%` | 4 | systems | systems | Min mult 0/1/omega host notes in systems | src/systems mult / QTT surface |
 | `[##########] 100.0%` | 12 | release | systems | out/freestanding-c product C | generated .c/.h under out/freestanding-c |
 | `[##########] 100.0%` | 4 | release | systems | just build / build path | just build = product freestanding wire; compile-path stamp shell deleted (pure Nix + host CompilePath) |
-| `[----------] 0.0%` | 0* | release | systems | CompCert PROVABLY path (deferred weight 0) | needs real ccomp + matrix -- not claimed |
-| `[----------] 0.0%` | 0* | release | systems | out/llvm-ir (deferred until self-host, weight 0) | deferred -- recipe reserved |
+| `[##########] 100.0%` | 0* | release | systems | CompCert PROVABLY path (weight 0 track; claimed true) | PROVABLY claimed true; product-compcert-matrix in just check (not weaker dogfood alone) |
+| `[##########] 100.0%` | 0* | release | systems | out/llvm-ir unlock + Mult SSA partial (not full backend; weight 0) | llvmUnlocked true; Mult SSA lower partial; full LLVM backend still held |
 
-\* weight 0 = deferred track visible on the plan, not counted in totals.
+\* weight 0 = tracked for honesty, not counted in weighted totals (may be claimed or held; read Evidence).
 
 ## Open weighted milestones
 

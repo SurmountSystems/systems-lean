@@ -27,8 +27,14 @@
     "erasure rule"
     "extract boundary"
   ];
-  unitSurfaceRequiredAll = [
+  # UNIT_SURFACE files must say they are not the freestanding product emit
+  # wire. Product emit modules use "Not freestanding emit". Host elaborator
+  # meet modules (ElabMeet family) already say "(not freestanding C)" in the
+  # header. Either phrase satisfies the walk. Do not require the emit phrase
+  # on every probe; that would farm 200+ headers for one substring.
+  unitSurfaceNotEmitAny = [
     "Not freestanding emit"
+    "not freestanding C"
   ];
   unitSurfaceModuleAny = [
     "module "

@@ -66,20 +66,24 @@ const char *slake_consume_token_host_id(void);
 /* Zero host state (empty). 0 ok; -1 null. */
 int slake_consume_token_init(slake_consume_token *ct);
 
-/* Mint MULT-1 token (JOIN-ALG mkToken shape). Composes slake_linear_token_init.
+/* Mint MULT-1 token (JOIN-ALG mkToken shape). Specialized hot path (E1):
+ * no thin call to is_live / linear_token_init; same fail-closed codes.
  * 0 ok; -1 null or id==0; -2 already holds a live token (fail closed).
- * Live check uses slake_consume_token_is_live (state and token.live).
- * Remint allowed after spent or empty (and after healed desync).
+ * Live check inlined: state==1 and token.live. Remint after spent/empty/heal.
+ * Greppable: HOST-EMIT-LINEAR-MINT-INLINE
  */
 int slake_consume_token_mint(slake_consume_token *ct, uint32_t id);
 
-/* Exact-once consume (JOIN-ALG consume shape). Composes slake_linear_consume.
+/* Exact-once consume (JOIN-ALG consume shape). Specialized hot path (E1):
+ * no thin call to linear_consume; same fail-closed codes + desync heal.
  * 0 success; -1 null or empty; -2 already spent (LINEAR-EXACT-ONCE fail closed).
- * On -2 while host believed live, heals state to spent (still returns -2).
+ * Greppable: HOST-EMIT-LINEAR-CONSUME-INLINE
  */
 int slake_consume_token_consume(slake_consume_token *ct);
 
-/* 1 if host holds a live MULT-1 token (state live and token.live); 0 otherwise. */
+/* 1 if host holds a live MULT-1 token (state live and token.live); 0 otherwise.
+ * Specialized (E1): no thin call to slake_linear_token_is_live.
+ */
 int slake_consume_token_is_live(const slake_consume_token *ct);
 
 /* FAIL_CLOSED_CHECKER_V1 integration: MULT-1 + live token + RUNTIME_FS.
@@ -167,21 +171,19 @@ int slake_consume_token_mint(slake_consume_token *ct, uint32_t id)
   if (id == 0) {
     return -1; /* spent sentinel reserved; fail closed */
   }
-  /* Key off is_live (state + token.live) so remint recovers desync. */
-  if (slake_consume_token_is_live(ct) == 1) {
+  /* E1 specialized: inline is_live (state + token.live) for remint desync heal. */
+  if (ct->state == 1 && ct->token.live != 0) {
     return -2; /* already holds live MULT-1 token */
   }
-  if (slake_linear_token_init(&ct->token, id) != 0) {
-    return -1;
-  }
+  /* E1 specialized: inline linear_token_init (id already non-zero). */
+  ct->token.id = id;
+  ct->token.live = 1;
   ct->state = 1; /* live */
   return 0;
 }
 
 int slake_consume_token_consume(slake_consume_token *ct)
 {
-  int rc;
-
   if (ct == 0) {
     return -1;
   }
@@ -191,15 +193,15 @@ int slake_consume_token_consume(slake_consume_token *ct)
   if (ct->state == 2) {
     return -2; /* already spent -- LINEAR-EXACT-ONCE fail closed */
   }
-  /* state == 1 believed live: compose with linear exact-once consume */
-  rc = slake_linear_consume(&ct->token);
-  if (rc == 0) {
-    ct->state = 2; /* spent */
-  } else if (rc == -2) {
-    /* Heal desync if token already spent under host that believed live. */
+  /* E1 specialized: inline linear_consume + desync heal (state believed live). */
+  if (ct->token.live == 0) {
     ct->state = 2;
+    return -2;
   }
-  return rc;
+  ct->token.live = 0;
+  ct->token.id = 0;
+  ct->state = 2; /* spent */
+  return 0;
 }
 
 int slake_consume_token_is_live(const slake_consume_token *ct)
@@ -210,7 +212,8 @@ int slake_consume_token_is_live(const slake_consume_token *ct)
   if (ct->state != 1) {
     return 0;
   }
-  return (slake_linear_token_is_live(&ct->token) == 1) ? 1 : 0;
+  /* E1 specialized: inline token.live (no thin call). */
+  return (ct->token.live != 0) ? 1 : 0;
 }
 
 int slake_consume_token_check_fail_closed(const slake_consume_token *ct)

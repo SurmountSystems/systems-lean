@@ -22,6 +22,8 @@ import 'just/freestanding-perform-2.just'
 import 'just/freestanding-perform-3.just'
 import 'just/freestanding-complete.just'
 import 'just/llvm.just'
+import 'just/llvm-ssa.just'
+import 'just/llvm-link-smoke.just'
 import 'just/subset-emit.just'
 import 'just/subset-join.just'
 import 'just/host.just'
@@ -31,6 +33,11 @@ import 'just/compcert.just'
 import 'just/subset-rebuild.just'
 import 'just/freestanding-mult.just'
 import 'just/dual-side.just'
+import 'just/bench.just'
+import 'just/bench-runtime.just'
+import 'just/bench-runtime-twins.just'
+import 'just/bench-runtime-report.just'
+import 'just/bench-llvm.just'
 
 # List recipes (default when you run bare `just`).
 default:
@@ -40,16 +47,18 @@ default:
 # Same full suite as just check -- not a second policy mill.
 pre-commit: check
 
-# Full suite: product wire first (just build), then pure gates + flake + process glue.
+# Full suite: product wire first (just build), then pure gates + flake + process glue
+# (elaborators, systems-cc-probe, product CompCert matrix via ccomp).
 # Live pure gates (systems-host, systems-emit-wire, systems-llvm-ir, idris-side,
 # lean-side, hygiene) use impure eval of the worktree and do not require new
 # nix/ files to be git-tracked. nix flake check only sees tracked files -- after
 # adding under nix/ (or related flake copy paths), the human must stage those
 # paths before flake/continuous integration (CI) match. Agents never git add /
 # stage / commit to silence flake WARN (human-in-the-loop (HITL) stage; see
-# AGENTS.md Nix tooling). On flake failure, elaborator/cc recipes still run;
+# AGENTS.md Nix tooling). On flake failure, elaborator/cc/ccomp recipes still run;
 # suite exits non-zero.
-# SYSTEMS_PRODUCT_WIRE_FRESH=1 tells systems-cc-probe to skip a second just build.
+# SYSTEMS_PRODUCT_WIRE_FRESH=1: systems-cc-probe and freestanding-under-ccomp skip
+# a second just build (wire already from check dependency).
 check: build hygiene systems-host systems-emit-wire systems-llvm-ir idris-side lean-side
     #!/usr/bin/env bash
     set -euo pipefail
@@ -72,6 +81,7 @@ check: build hygiene systems-host systems-emit-wire systems-llvm-ir idris-side l
     just lean-elaborate
     just systems-lake
     just systems-cc-probe
+    just product-compcert-matrix
     if [[ "$flake_rc" -ne 0 ]]; then
       echo "check incomplete: flake rc=$flake_rc (live pure gates + elaborator recipes ran)" >&2
       exit "$flake_rc"

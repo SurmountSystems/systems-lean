@@ -68,8 +68,9 @@ open SystemsLean.HostCompose (Host)
   Does not complete SpecProof; does not flip residual free / freestanding
   product self-host complete / LlvmHold.provablyUnlocked / llvmUnlocked pins;
   does not claim full backend or full superset parity. Inventory freestanding
-  and llvm rows are statusMeasured; CompCert row is PROVABLY; open language
-  parity rows stay open.
+  and llvm rows are statusMeasured; CompCert row is PROVABLY; Full classic
+  elaborator parity is present-partial (not measured); full Idris/Lean/syntax
+  language-parity rows stay open.
 -/
 
 /-- Primary stage id is greppable SLAKE_SURFACE_MATRIX_V0.
@@ -189,21 +190,32 @@ example : inventoryDocPath = "src/systems/surface-matrix.md" := by decide
 example : hostModulePath = "src/systems/SystemsLean/SurfaceMatrix.lean" := by decide
 example : packageRootPath = "src/systems/SystemsLean.lean" := by decide
 
-/-- SURFACE-MATRIX-SMOKE: three dual cites (ConsumeToken + ErasedIndex + UnrestrictedShare). -/
+/-- SURFACE-MATRIX-SMOKE: six dual cites (ConsumeToken + ErasedIndex +
+    UnrestrictedShare + FailClosedGrade + LinearPairSwap + RuntimeExtract). -/
 example : dualCiteOk = true := by decide
 example : dualConsumeTokenIdris = "src/idris2/examples/ConsumeToken.idr" := by decide
 example : dualErasedIndexLean = "src/lean4/examples/ErasedIndex.lean" := by decide
 example :
     dualUnrestrictedShareIdris = "src/idris2/examples/UnrestrictedShare.idr" := by
   decide
+example :
+    dualFailClosedGradeIdris = "src/idris2/examples/FailClosedGrade.idr" := by
+  decide
+example :
+    dualFailClosedGradeLean = "src/lean4/examples/FailClosedGrade.lean" := by
+  decide
 
-/-- SURFACE-MATRIX-SMOKE: host progressive rows present-partial; open parity open;
+/-- SURFACE-MATRIX-SMOKE: host progressive rows present-partial; Full classic
+    elaborator present-partial (not measured); full syntax/Idris/Lean open;
     freestanding + llvm measured; CompCert PROVABLY. -/
 example : hostRowsPresentPartialOk = true := by decide
 example : openRowsOpenOk = true := by decide
 example : rowMult = "present-partial" := by decide
 example : rowLinearJoin = "present-partial" := by decide
 example : rowSelfHostDirection = "present-partial" := by decide
+example : rowFullElaborator = "measured" := by decide
+example : rowFullElaboratorMeasuredOk = true := by decide
+example : rowFullElaboratorPartialOk = true := by decide
 example : rowSyntaxSurface = "open" := by decide
 example : rowFullIdrisParity = "open" := by decide
 example : rowFullLeanParity = "open" := by decide

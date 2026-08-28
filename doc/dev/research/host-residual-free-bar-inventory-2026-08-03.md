@@ -1,5 +1,11 @@
 # Host residual free bar inventory (living gap vs section-4)
 
+**Superseded for open-blocker status after A66 (2026-08-07):** use
+`doc/dev/research/host-residual-free-bar-inventory-2026-08-07.md` as the living
+free-bar inventory. This 2026-08-03 note remains historical land-time evidence;
+several open-blocker rows (FullHostElaborateRemains true, BootstrapPrebuildRemains
+true) are **wrong after A8/A66**.
+
 Kind: analysis only. Not residual invent. Not host free forge. Not DualResidual
 pin flip. Not product free re-open. Not Track 4c. ASCII only. Date: 2026-08-03.
 

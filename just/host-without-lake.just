@@ -1085,6 +1085,28 @@ host-import-graph:
     systems_dir="$root/src/systems"
     lean_dir="$systems_dir/SystemsLean"
     mod="$lean_dir/HostImportGraph.lean"
+    mod_seeds="$lean_dir/HostImportGraphSeeds.lean"
+    mod_model="$lean_dir/HostImportGraphModel.lean"
+    mod_mods="$lean_dir/HostImportGraphMods.lean"
+    mod_mods_later="$lean_dir/HostImportGraphModsLater.lean"
+    mod_load="$lean_dir/HostImportGraphLoadOk.lean"
+    mod_thm="$lean_dir/HostImportGraphTheorems.lean"
+    mod_walk="$lean_dir/HostImportGraphWalk.lean"
+    mod_driver="$lean_dir/HostImportGraphDriver.lean"
+    family_mods=(
+      "$mod" "$mod_seeds" "$mod_model" "$mod_mods" "$mod_mods_later"
+      "$mod_load" "$mod_thm" "$mod_walk" "$mod_driver"
+    )
+    grep_hig_family() {
+      local tok="$1"
+      local f
+      for f in "${family_mods[@]}"; do
+        if [[ -f "$f" ]] && grep -qF "$tok" "$f"; then
+          return 0
+        fi
+      done
+      return 1
+    }
     main_mod="$lean_dir/HostImportGraphMain.lean"
     mult_mod="$lean_dir/Mult.lean"
     mult_thm="$lean_dir/MultTheorems.lean"
@@ -1131,7 +1153,7 @@ host-import-graph:
       hostImportGraphGoodMultSeed \
       hostImportGraphGoodExpandSeed \
       hostImportGraphExpandSliceName \
-      Mult+MultTheorems+Linear+LinearTheorems+Types+TypesTheorems+IrProgram+IrProgramTheorems+IrGraph+IrGraphTheorems+HostCompose+HostComposeTheorems+Erasure+ErasureTheorems+Extract+ExtractTheorems+CompilePath+KernelMult+KernelLinear+KernelTypes+KernelProgram+KernelMultTheorems+KernelLinearTheorems+KernelTypesTheorems+KernelProgramTheorems+JoinMap+JoinMapTheorems+SelfHost+SelfHostTheorems+SurfaceMatrix+SurfaceMatrixTheorems+EmitMultScaffold+EmitLinearScaffold+EmitTypesScaffold+EmitProgramScaffold+EmitGraphScaffold+EmitComposeScaffold+EmitPlanScaffold+EmitApplyScaffold+EmitBodyScaffold+EmitErasureScaffold+EmitExtractScaffold+EmitBannerScaffold+KernelSelfApply+KernelSelfApplyTheorems+EmitMult+EmitPlan+EmitApply+EmitBody+KernelEmit+KernelEmitTheorems+ParityMult+ParityMultTheorems+ParityLinear+ParityLinearTheorems+ParityTypes+ParityTypesTheorems+ParityProgram+ParityProgramTheorems+ParityEmit+ParityEmitTheorems+SelfApply+SelfApplyTheorems+EmitLinear+EmitTypes+EmitProgram+EmitGraph+EmitCompose+EmitErasure+EmitExtract+EmitBanner+ProductOutKernel+ProductOutKernelTheorems+BootstrapHonesty+BootstrapHonestyTheorems+ProductPathWriterSurface+ProductPathWriterSurfaceTheorems+ProductPathWriterPathPlan+ProductPathWriterPathPlanTheorems+ProductPathWriterPathExec+ProductPathWriterPathExecTheorems \
+      Mult+MultTheorems+Linear+LinearTheorems+Types+TypesTheorems+IrProgram+IrProgramTheorems+IrGraph+IrGraphTheorems+HostCompose+HostComposeTheorems+Erasure+ErasureTheorems+Extract+ExtractTheorems+CompilePath+KernelMult+KernelLinear+KernelTypes+KernelProgram+KernelMultTheorems+KernelLinearTheorems+KernelTypesTheorems+KernelProgramTheorems+JoinMap+JoinMapTheorems+SelfHost+SelfHostTheorems+SurfaceMatrix+SurfaceMatrixTheorems+EmitMultScaffold+EmitLinearScaffold+EmitTypesScaffold+EmitProgramScaffold+EmitGraphScaffold+EmitComposeScaffold+EmitPlanScaffold+EmitApplyScaffold+EmitBodyScaffold+EmitErasureScaffold+EmitExtractScaffold+EmitBannerScaffold+KernelSelfApply+KernelSelfApplyTheorems+EmitMult+EmitPlan+EmitApply+EmitBody+KernelEmit+KernelEmitTheorems+ParityMult+ParityMultTheorems+ParityLinear+ParityLinearTheorems+ParityTypes+ParityTypesTheorems+ParityProgram+ParityProgramTheorems+ParityEmit+ParityEmitTheorems+SelfApply+SelfApplyTheorems+EmitLinear+EmitTypes+EmitProgram+EmitGraph+EmitCompose+EmitErasure+EmitExtract+EmitBanner+ProductOutKernel+ProductOutKernelTheorems+BootstrapHonesty+BootstrapHonestyTheorems+ProductPathWriterSurface+ProductPathWriterSurfaceTheorems+ProductPathWriterPathPlan+ProductPathWriterPathPlanTheorems+ProductPathWriterPathExec+ProductPathWriterPathExecTheorems+ProductPathOwnershipInputs+ProductPathOwnershipInputsTheorems+ProductPathPerform+ProductPathPerformTheorems+ProductPathPerformStep+ProductPathPerformStepTheorems+ProductPathReadSsot+ProductPathReadSsotTheorems+ProductPathComposePlan+ProductPathComposePlanTheorems+Capable+CapableTheorems+CapableStepContract+CapableStepContractTheorems+InstallOut+InstallOutTheorems+OfficialPath+OfficialPathTheorems+PerformEvidence+PerformEvidenceTheorems+CapableRead+CapableReadTheorems+CapableCompose+CapableComposeTheorems+CapableFullBar+CapableFullBarTheorems+DualEqWriteCapableGap+DualEqWriteCapableGapTheorems+DualEqWriteClosePath+DualEqWriteClosePathTheorems+DualEqWriteParity+DualEqWriteParityTheorems+OfficialRetire+OfficialRetireTheorems+OwnershipClaimed+OwnershipClaimedTheorems+PerformClaimed+PerformClaimedTheorems+StepContractFull+StepContractFullTheorems+SelfHostComplete+SelfHostCompleteTheorems+OfficialPathAlternate+OfficialPathAlternateTheorems+ProductPathOwnershipRegenerate+ProductPathOwnershipRegenerateTheorems+CapableWriteHcLoad+DualEqWriteLoad+CapableWriteHc+DualEqWriteApi+LlvmHold+LlvmHoldTheorems+CapableRegenerate+CapableRegenerateTheorems+FreestandingEmitLoad+FreestandingEmitLoadScaffold+LakeRetireInventory+HostPackageRoots+FreestandingEmit+ProductPathWriteHc+ProductPathWriteHcTheorems+CompilePathMult+CompilePathLinear+CompilePathTypes+CompilePathProgram+CompilePathGraph+CompilePathCompose+CompilePathPlan+CompilePathApply+CompilePathBody+CompilePathErasure+CompilePathExtract+ProductWireWriteTool+HostTerm+LlvmEmitPath+SubsetFront+FirstSurface+LinearSubsetEmit+TypesSubsetEmit+ProgramSubsetEmit+GraphSubsetEmit+ComposeSubsetEmit+ErasureSubsetEmit+ExtractSubsetEmit+MultSubsetEmit+MultSubsetRebuild+LinearSubsetRebuild+TypesSubsetRebuild+ProgramSubsetRebuild+GraphSubsetRebuild+ComposeSubsetRebuild+ErasureSubsetRebuild+ExtractSubsetRebuild+HostFront+LlvmMultText+HostFrontTheorems+HostCheck+HostGraph+LlvmLinearText+MultFsWriteTool+FrontMultPackage+SubsetPackageJoin+HostGraphTheorems+LlvmTypesText+MultFsDeepen+HostPackageWrite+HostPackageWriteTheorems+LlvmProgramText+LlvmGraphText+LlvmComposeText+SelfApplyFs+SelfApplyFsTheorems+InventoryClose+ProductPathBars+InventoryCloseTheorems+ProductPath+ProductPathTheorems+DualResidual+DualResidualTheorems+ProbeWire+SelfHostBody+ProbeWireTheorems+SelfHostBodyTheorems+SpecProof+SpecProofTheorems \
       hostImportGraphBadMissing \
       hostImportGraphBadCycle \
       MISSING-IMPORT \
@@ -1139,28 +1161,28 @@ host-import-graph:
       slake-host-import-graph \
       host-import-graph-without-lake
     do
-      if ! grep -qF "$tok" "$mod"; then
-        echo "error: missing $tok in $mod" >&2
+      if ! grep_hig_family "$tok"; then
+        echo "error: missing $tok in HostImportGraph family" >&2
         exit 1
       fi
     done
-    if ! grep -qF 'Real Mult import graph' "$mod"; then
-      echo "error: missing residual Name Real Mult import graph in $mod" >&2
+    if ! grep_hig_family 'Real Mult import graph'; then
+      echo "error: missing residual Name Real Mult import graph in HostImportGraph family" >&2
       exit 1
     fi
-    if ! grep -qF 'Host library seed expand continue' "$mod"; then
-      echo "error: missing expand Name Host library seed expand continue in $mod" >&2
+    if ! grep_hig_family 'Host library seed expand continue'; then
+      echo "error: missing expand Name Host library seed expand continue in HostImportGraph family" >&2
       exit 1
     fi
-    if ! grep -qE 'def hostImportGraphFinishedClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
+    if ! grep -qE 'def hostImportGraphFinishedClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod_seeds"; then
       echo "error: hostImportGraphFinishedClaimed must be true" >&2
       exit 1
     fi
-    if ! grep -qE 'def hostImportGraphHostElaboratorResidualRemains[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
+    if ! grep -qE 'def hostImportGraphHostElaboratorResidualRemains[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod_seeds"; then
       echo "error: hostImportGraphHostElaboratorResidualRemains must be true" >&2
       exit 1
     fi
-    if ! grep -qE 'def hostImportGraphHostFreeClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*false' "$mod"; then
+    if ! grep -qE 'def hostImportGraphHostFreeClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*false' "$mod_seeds"; then
       echo "error: hostImportGraphHostFreeClaimed must stay false" >&2
       exit 1
     fi
@@ -1230,6 +1252,28 @@ host-import-graph-without-lake:
     lean_dir="$systems_dir/SystemsLean"
     prebuilt="$systems_dir/.lake/build/bin/slake-host-import-graph"
     mod="$lean_dir/HostImportGraph.lean"
+    mod_seeds="$lean_dir/HostImportGraphSeeds.lean"
+    mod_model="$lean_dir/HostImportGraphModel.lean"
+    mod_mods="$lean_dir/HostImportGraphMods.lean"
+    mod_mods_later="$lean_dir/HostImportGraphModsLater.lean"
+    mod_load="$lean_dir/HostImportGraphLoadOk.lean"
+    mod_thm="$lean_dir/HostImportGraphTheorems.lean"
+    mod_walk="$lean_dir/HostImportGraphWalk.lean"
+    mod_driver="$lean_dir/HostImportGraphDriver.lean"
+    family_mods=(
+      "$mod" "$mod_seeds" "$mod_model" "$mod_mods" "$mod_mods_later"
+      "$mod_load" "$mod_thm" "$mod_walk" "$mod_driver"
+    )
+    grep_hig_family() {
+      local tok="$1"
+      local f
+      for f in "${family_mods[@]}"; do
+        if [[ -f "$f" ]] && grep -qF "$tok" "$f"; then
+          return 0
+        fi
+      done
+      return 1
+    }
     mult_mod="$lean_dir/Mult.lean"
     mult_thm="$lean_dir/MultTheorems.lean"
     linear_mod="$lean_dir/Linear.lean"
@@ -1264,29 +1308,29 @@ host-import-graph-without-lake:
       hostImportGraphSeedModules \
       hostImportGraphGoodExpandSeed \
       hostImportGraphExpandSliceName \
-      Mult+MultTheorems+Linear+LinearTheorems+Types+TypesTheorems+IrProgram+IrProgramTheorems+IrGraph+IrGraphTheorems+HostCompose+HostComposeTheorems+Erasure+ErasureTheorems+Extract+ExtractTheorems+CompilePath+KernelMult+KernelLinear+KernelTypes+KernelProgram+KernelMultTheorems+KernelLinearTheorems+KernelTypesTheorems+KernelProgramTheorems+JoinMap+JoinMapTheorems+SelfHost+SelfHostTheorems+SurfaceMatrix+SurfaceMatrixTheorems+EmitMultScaffold+EmitLinearScaffold+EmitTypesScaffold+EmitProgramScaffold+EmitGraphScaffold+EmitComposeScaffold+EmitPlanScaffold+EmitApplyScaffold+EmitBodyScaffold+EmitErasureScaffold+EmitExtractScaffold+EmitBannerScaffold+KernelSelfApply+KernelSelfApplyTheorems+EmitMult+EmitPlan+EmitApply+EmitBody+KernelEmit+KernelEmitTheorems+ParityMult+ParityMultTheorems+ParityLinear+ParityLinearTheorems+ParityTypes+ParityTypesTheorems+ParityProgram+ParityProgramTheorems+ParityEmit+ParityEmitTheorems+SelfApply+SelfApplyTheorems+EmitLinear+EmitTypes+EmitProgram+EmitGraph+EmitCompose+EmitErasure+EmitExtract+EmitBanner+ProductOutKernel+ProductOutKernelTheorems+BootstrapHonesty+BootstrapHonestyTheorems+ProductPathWriterSurface+ProductPathWriterSurfaceTheorems+ProductPathWriterPathPlan+ProductPathWriterPathPlanTheorems+ProductPathWriterPathExec+ProductPathWriterPathExecTheorems \
+      Mult+MultTheorems+Linear+LinearTheorems+Types+TypesTheorems+IrProgram+IrProgramTheorems+IrGraph+IrGraphTheorems+HostCompose+HostComposeTheorems+Erasure+ErasureTheorems+Extract+ExtractTheorems+CompilePath+KernelMult+KernelLinear+KernelTypes+KernelProgram+KernelMultTheorems+KernelLinearTheorems+KernelTypesTheorems+KernelProgramTheorems+JoinMap+JoinMapTheorems+SelfHost+SelfHostTheorems+SurfaceMatrix+SurfaceMatrixTheorems+EmitMultScaffold+EmitLinearScaffold+EmitTypesScaffold+EmitProgramScaffold+EmitGraphScaffold+EmitComposeScaffold+EmitPlanScaffold+EmitApplyScaffold+EmitBodyScaffold+EmitErasureScaffold+EmitExtractScaffold+EmitBannerScaffold+KernelSelfApply+KernelSelfApplyTheorems+EmitMult+EmitPlan+EmitApply+EmitBody+KernelEmit+KernelEmitTheorems+ParityMult+ParityMultTheorems+ParityLinear+ParityLinearTheorems+ParityTypes+ParityTypesTheorems+ParityProgram+ParityProgramTheorems+ParityEmit+ParityEmitTheorems+SelfApply+SelfApplyTheorems+EmitLinear+EmitTypes+EmitProgram+EmitGraph+EmitCompose+EmitErasure+EmitExtract+EmitBanner+ProductOutKernel+ProductOutKernelTheorems+BootstrapHonesty+BootstrapHonestyTheorems+ProductPathWriterSurface+ProductPathWriterSurfaceTheorems+ProductPathWriterPathPlan+ProductPathWriterPathPlanTheorems+ProductPathWriterPathExec+ProductPathWriterPathExecTheorems+ProductPathOwnershipInputs+ProductPathOwnershipInputsTheorems+ProductPathPerform+ProductPathPerformTheorems+ProductPathPerformStep+ProductPathPerformStepTheorems+ProductPathReadSsot+ProductPathReadSsotTheorems+ProductPathComposePlan+ProductPathComposePlanTheorems+Capable+CapableTheorems+CapableStepContract+CapableStepContractTheorems+InstallOut+InstallOutTheorems+OfficialPath+OfficialPathTheorems+PerformEvidence+PerformEvidenceTheorems+CapableRead+CapableReadTheorems+CapableCompose+CapableComposeTheorems+CapableFullBar+CapableFullBarTheorems+DualEqWriteCapableGap+DualEqWriteCapableGapTheorems+DualEqWriteClosePath+DualEqWriteClosePathTheorems+DualEqWriteParity+DualEqWriteParityTheorems+OfficialRetire+OfficialRetireTheorems+OwnershipClaimed+OwnershipClaimedTheorems+PerformClaimed+PerformClaimedTheorems+StepContractFull+StepContractFullTheorems+SelfHostComplete+SelfHostCompleteTheorems+OfficialPathAlternate+OfficialPathAlternateTheorems+ProductPathOwnershipRegenerate+ProductPathOwnershipRegenerateTheorems+CapableWriteHcLoad+DualEqWriteLoad+CapableWriteHc+DualEqWriteApi+LlvmHold+LlvmHoldTheorems+CapableRegenerate+CapableRegenerateTheorems+FreestandingEmitLoad+FreestandingEmitLoadScaffold+LakeRetireInventory+HostPackageRoots+FreestandingEmit+ProductPathWriteHc+ProductPathWriteHcTheorems+CompilePathMult+CompilePathLinear+CompilePathTypes+CompilePathProgram+CompilePathGraph+CompilePathCompose+CompilePathPlan+CompilePathApply+CompilePathBody+CompilePathErasure+CompilePathExtract+ProductWireWriteTool+HostTerm+LlvmEmitPath+SubsetFront+FirstSurface+LinearSubsetEmit+TypesSubsetEmit+ProgramSubsetEmit+GraphSubsetEmit+ComposeSubsetEmit+ErasureSubsetEmit+ExtractSubsetEmit+MultSubsetEmit+MultSubsetRebuild+LinearSubsetRebuild+TypesSubsetRebuild+ProgramSubsetRebuild+GraphSubsetRebuild+ComposeSubsetRebuild+ErasureSubsetRebuild+ExtractSubsetRebuild+HostFront+LlvmMultText+HostFrontTheorems+HostCheck+HostGraph+LlvmLinearText+MultFsWriteTool+FrontMultPackage+SubsetPackageJoin+HostGraphTheorems+LlvmTypesText+MultFsDeepen+HostPackageWrite+HostPackageWriteTheorems+LlvmProgramText+LlvmGraphText+LlvmComposeText+SelfApplyFs+SelfApplyFsTheorems+InventoryClose+ProductPathBars+InventoryCloseTheorems+ProductPath+ProductPathTheorems+DualResidual+DualResidualTheorems+ProbeWire+SelfHostBody+ProbeWireTheorems+SelfHostBodyTheorems+SpecProof+SpecProofTheorems \
       resolveImportGraph \
       MISSING-IMPORT \
       IMPORT-CYCLE
     do
-      if ! grep -qF "$tok" "$mod"; then
-        echo "error: missing $tok in $mod" >&2
+      if ! grep_hig_family "$tok"; then
+        echo "error: missing $tok in HostImportGraph family" >&2
         exit 1
       fi
     done
-    if ! grep -qF 'Host library seed expand continue' "$mod"; then
-      echo "error: missing expand Name Host library seed expand continue in $mod" >&2
+    if ! grep_hig_family 'Host library seed expand continue'; then
+      echo "error: missing expand Name Host library seed expand continue in HostImportGraph family" >&2
       exit 1
     fi
-    if ! grep -qE 'def hostImportGraphWithoutLakeFinished[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
-      echo "error: hostImportGraphWithoutLakeFinished must be true in $mod" >&2
+    if ! grep -qE 'def hostImportGraphWithoutLakeFinished[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod_seeds"; then
+      echo "error: hostImportGraphWithoutLakeFinished must be true in $mod_seeds" >&2
       exit 1
     fi
-    if ! grep -qE 'def hostImportGraphHostElaboratorResidualRemains[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
-      echo "error: host residual honesty must remain true in $mod" >&2
+    if ! grep -qE 'def hostImportGraphHostElaboratorResidualRemains[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod_seeds"; then
+      echo "error: host residual honesty must remain true in $mod_seeds" >&2
       exit 1
     fi
-    if ! grep -qE 'def hostImportGraphHostFreeClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*false' "$mod"; then
+    if ! grep -qE 'def hostImportGraphHostFreeClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*false' "$mod_seeds"; then
       echo "error: hostImportGraphHostFreeClaimed must stay false" >&2
       exit 1
     fi
@@ -1364,6 +1408,230 @@ host-module-check:
     systems_dir="$root/src/systems"
     lean_dir="$systems_dir/SystemsLean"
     mod="$lean_dir/HostModuleCheck.lean"
+    mod_seeds="$lean_dir/HostModuleCheckSeeds.lean"
+    mod_load="$lean_dir/HostModuleCheckLoadOk.lean"
+    mod_driver_io="$lean_dir/HostModuleCheckDriverIO.lean"
+    mod_driver="$lean_dir/HostModuleCheckDriver.lean"
+    mod_surface="$lean_dir/HostModuleCheckSurface.lean"
+    mod_mult_term="$lean_dir/HostModuleCheckMultTerm.lean"
+    mod_linear_term="$lean_dir/HostModuleCheckLinearTerm.lean"
+    mod_types_term="$lean_dir/HostModuleCheckTypesTerm.lean"
+    mod_irprogram_term="$lean_dir/HostModuleCheckIrProgramTerm.lean"
+    mod_irgraph_term="$lean_dir/HostModuleCheckIrGraphTerm.lean"
+    mod_hostcompose_term="$lean_dir/HostModuleCheckHostComposeTerm.lean"
+    mod_erasure_term="$lean_dir/HostModuleCheckErasureTerm.lean"
+    mod_extract_term="$lean_dir/HostModuleCheckExtractTerm.lean"
+    mod_emitplan_term="$lean_dir/HostModuleCheckEmitPlanTerm.lean"
+    mod_emitapply_term="$lean_dir/HostModuleCheckEmitApplyTerm.lean"
+    mod_emitbody_term="$lean_dir/HostModuleCheckEmitBodyTerm.lean"
+    mod_kernelmult_term="$lean_dir/HostModuleCheckKernelMultTerm.lean"
+    mod_kernellinear_term="$lean_dir/HostModuleCheckKernelLinearTerm.lean"
+    mod_kerneltypes_term="$lean_dir/HostModuleCheckKernelTypesTerm.lean"
+    mod_kernelprogram_term="$lean_dir/HostModuleCheckKernelProgramTerm.lean"
+    mod_kernelemit_term="$lean_dir/HostModuleCheckKernelEmitTerm.lean"
+    mod_paritymult_term="$lean_dir/HostModuleCheckParityMultTerm.lean"
+    mod_paritylinear_term="$lean_dir/HostModuleCheckParityLinearTerm.lean"
+    mod_paritytypes_term="$lean_dir/HostModuleCheckParityTypesTerm.lean"
+    mod_emit_mult_scaf_term="$lean_dir/HostModuleCheckEmitMultScaffoldTerm.lean"
+    mod_emit_linear_scaf_term="$lean_dir/HostModuleCheckEmitLinearScaffoldTerm.lean"
+    mod_emit_types_scaf_term="$lean_dir/HostModuleCheckEmitTypesScaffoldTerm.lean"
+    mod_emit_program_scaf_term="$lean_dir/HostModuleCheckEmitProgramScaffoldTerm.lean"
+    mod_emit_graph_scaf_term="$lean_dir/HostModuleCheckEmitGraphScaffoldTerm.lean"
+    mod_emit_compose_scaf_term="$lean_dir/HostModuleCheckEmitComposeScaffoldTerm.lean"
+    mod_emit_erasure_scaf_term="$lean_dir/HostModuleCheckEmitErasureScaffoldTerm.lean"
+    mod_emit_extract_scaf_term="$lean_dir/HostModuleCheckEmitExtractScaffoldTerm.lean"
+    mod_emit_banner_scaf_term="$lean_dir/HostModuleCheckEmitBannerScaffoldTerm.lean"
+    mod_kernel_self_apply_term="$lean_dir/HostModuleCheckKernelSelfApplyTerm.lean"
+    mod_product_out_kernel_term="$lean_dir/HostModuleCheckProductOutKernelTerm.lean"
+    mod_compile_path_term="$lean_dir/HostModuleCheckCompilePathTerm.lean"
+    mod_join_map_term="$lean_dir/HostModuleCheckJoinMapTerm.lean"
+    mod_self_host_term="$lean_dir/HostModuleCheckSelfHostTerm.lean"
+    mod_surface_matrix_term="$lean_dir/HostModuleCheckSurfaceMatrixTerm.lean"
+    mod_spec_proof_term="$lean_dir/HostModuleCheckSpecProofTerm.lean"
+    mod_dual_residual_term="$lean_dir/HostModuleCheckDualResidualTerm.lean"
+    mod_compile_path_mult_term="$lean_dir/HostModuleCheckCompilePathMultTerm.lean"
+    mod_compile_path_linear_term="$lean_dir/HostModuleCheckCompilePathLinearTerm.lean"
+    mod_compile_path_types_term="$lean_dir/HostModuleCheckCompilePathTypesTerm.lean"
+    mod_compile_path_program_term="$lean_dir/HostModuleCheckCompilePathProgramTerm.lean"
+    mod_compile_path_graph_term="$lean_dir/HostModuleCheckCompilePathGraphTerm.lean"
+    mod_compile_path_compose_term="$lean_dir/HostModuleCheckCompilePathComposeTerm.lean"
+    mod_compile_path_erasure_term="$lean_dir/HostModuleCheckCompilePathErasureTerm.lean"
+    mod_compile_path_extract_term="$lean_dir/HostModuleCheckCompilePathExtractTerm.lean"
+    mod_compile_path_plan_term="$lean_dir/HostModuleCheckCompilePathPlanTerm.lean"
+    mod_compile_path_apply_term="$lean_dir/HostModuleCheckCompilePathApplyTerm.lean"
+    mod_compile_path_body_term="$lean_dir/HostModuleCheckCompilePathBodyTerm.lean"
+    mod_first_surface_term="$lean_dir/HostModuleCheckFirstSurfaceTerm.lean"
+    mod_linear_subset_emit_term="$lean_dir/HostModuleCheckLinearSubsetEmitTerm.lean"
+    mod_types_subset_emit_term="$lean_dir/HostModuleCheckTypesSubsetEmitTerm.lean"
+    mod_program_subset_emit_term="$lean_dir/HostModuleCheckProgramSubsetEmitTerm.lean"
+    mod_graph_subset_emit_term="$lean_dir/HostModuleCheckGraphSubsetEmitTerm.lean"
+    mod_compose_subset_emit_term="$lean_dir/HostModuleCheckComposeSubsetEmitTerm.lean"
+    mod_erasure_subset_emit_term="$lean_dir/HostModuleCheckErasureSubsetEmitTerm.lean"
+    mod_extract_subset_emit_term="$lean_dir/HostModuleCheckExtractSubsetEmitTerm.lean"
+    mod_mult_subset_emit_term="$lean_dir/HostModuleCheckMultSubsetEmitTerm.lean"
+    mod_mult_subset_rebuild_term="$lean_dir/HostModuleCheckMultSubsetRebuildTerm.lean"
+    mod_linear_subset_rebuild_term="$lean_dir/HostModuleCheckLinearSubsetRebuildTerm.lean"
+    mod_types_subset_rebuild_term="$lean_dir/HostModuleCheckTypesSubsetRebuildTerm.lean"
+    mod_program_subset_rebuild_term="$lean_dir/HostModuleCheckProgramSubsetRebuildTerm.lean"
+    mod_graph_subset_rebuild_term="$lean_dir/HostModuleCheckGraphSubsetRebuildTerm.lean"
+    mod_compose_subset_rebuild_term="$lean_dir/HostModuleCheckComposeSubsetRebuildTerm.lean"
+    mod_erasure_subset_rebuild_term="$lean_dir/HostModuleCheckErasureSubsetRebuildTerm.lean"
+    mod_extract_subset_rebuild_term="$lean_dir/HostModuleCheckExtractSubsetRebuildTerm.lean"
+    mod_host_front_term="$lean_dir/HostModuleCheckHostFrontTerm.lean"
+    mod_llvm_mult_text_term="$lean_dir/HostModuleCheckLlvmMultTextTerm.lean"
+    mod_host_check_term="$lean_dir/HostModuleCheckHostCheckTerm.lean"
+    mod_host_graph_term="$lean_dir/HostModuleCheckHostGraphTerm.lean"
+    mod_llvm_linear_text_term="$lean_dir/HostModuleCheckLlvmLinearTextTerm.lean"
+    mod_mult_fs_write_tool_term="$lean_dir/HostModuleCheckMultFsWriteToolTerm.lean"
+    mod_front_mult_package_term="$lean_dir/HostModuleCheckFrontMultPackageTerm.lean"
+    mod_subset_package_join_term="$lean_dir/HostModuleCheckSubsetPackageJoinTerm.lean"
+    mod_llvm_types_text_term="$lean_dir/HostModuleCheckLlvmTypesTextTerm.lean"
+    mod_mult_fs_deepen_term="$lean_dir/HostModuleCheckMultFsDeepenTerm.lean"
+    mod_host_package_write_term="$lean_dir/HostModuleCheckHostPackageWriteTerm.lean"
+    mod_llvm_program_text_term="$lean_dir/HostModuleCheckLlvmProgramTextTerm.lean"
+    mod_llvm_graph_text_term="$lean_dir/HostModuleCheckLlvmGraphTextTerm.lean"
+    mod_llvm_compose_text_term="$lean_dir/HostModuleCheckLlvmComposeTextTerm.lean"
+    mod_load_ok_compile_path_units="$lean_dir/HostModuleCheckLoadOkCompilePathUnits.lean"
+    mod_load_ok_later_term="$lean_dir/HostModuleCheckLoadOkLaterTerm.lean"
+    mod_real_module="$lean_dir/HostModuleCheckRealModule.lean"
+    mod_mult_proof="$lean_dir/HostModuleCheckMultProof.lean"
+    mod_linear_proof="$lean_dir/HostModuleCheckLinearProof.lean"
+    mod_types_proof="$lean_dir/HostModuleCheckTypesProof.lean"
+    mod_kernelmult_proof="$lean_dir/HostModuleCheckKernelMultProof.lean"
+    mod_kernellinear_proof="$lean_dir/HostModuleCheckKernelLinearProof.lean"
+    mod_kerneltypes_proof="$lean_dir/HostModuleCheckKernelTypesProof.lean"
+    mod_kernelprogram_proof="$lean_dir/HostModuleCheckKernelProgramProof.lean"
+    mod_kernelemit_proof="$lean_dir/HostModuleCheckKernelEmitProof.lean"
+    mod_package_elab="$lean_dir/HostModuleCheckPackageElab.lean"
+    mod_package_env="$lean_dir/HostModuleCheckPackageEnv.lean"
+    mod_package_env_fixtures="$lean_dir/HostModuleCheckPackageEnvFixtures.lean"
+    mod_package_env_fixtures_u2="$lean_dir/HostModuleCheckPackageEnvFixturesU2.lean"
+    mod_package_env_fixtures_s5="$lean_dir/HostModuleCheckPackageEnvFixturesS5.lean"
+    mod_package_env_evidence="$lean_dir/HostModuleCheckPackageEnvEvidence.lean"
+    mod_checkers="$lean_dir/HostModuleCheckCheckers.lean"
+    mod_checkers_later="$lean_dir/HostModuleCheckCheckersLater.lean"
+    mod_accepts="$lean_dir/HostModuleCheckAccepts.lean"
+    mod_accepts_goods="$lean_dir/HostModuleCheckAcceptsGoods.lean"
+    mod_accepts_proof="$lean_dir/HostModuleCheckAcceptsProof.lean"
+    mod_accepts_later="$lean_dir/HostModuleCheckAcceptsLater.lean"
+    mod_fixtures="$lean_dir/HostModuleCheckFixtures.lean"
+    mod_required_decls="$lean_dir/HostModuleCheckRequiredDecls.lean"
+    mod_required_decls_product="$lean_dir/HostModuleCheckRequiredDeclsProduct.lean"
+    mod_required_decls_later="$lean_dir/HostModuleCheckRequiredDeclsLater.lean"
+    mod_fixture_texts="$lean_dir/HostModuleCheckFixtureTexts.lean"
+    mod_fixture_texts_product="$lean_dir/HostModuleCheckFixtureTextsProduct.lean"
+    mod_fixture_texts_later="$lean_dir/HostModuleCheckFixtureTextsLater.lean"
+    mod_fixture_texts_self_host="$lean_dir/HostModuleCheckFixtureTextsSelfHost.lean"
+    family_mods=(
+      "$mod" "$mod_seeds" "$mod_load" "$mod_driver_io" "$mod_driver" "$mod_surface" "$mod_mult_term"
+      "$mod_linear_term"
+      "$mod_types_term"
+      "$mod_irprogram_term"
+      "$mod_irgraph_term"
+      "$mod_hostcompose_term"
+      "$mod_erasure_term"
+      "$mod_extract_term"
+      "$mod_emitplan_term"
+      "$mod_emitapply_term"
+      "$mod_emitbody_term"
+      "$mod_kernelmult_term"
+      "$mod_kernellinear_term"
+      "$mod_kerneltypes_term"
+      "$mod_kernelprogram_term"
+      "$mod_kernelemit_term"
+      "$mod_paritymult_term"
+      "$mod_paritylinear_term"
+      "$mod_paritytypes_term"
+      "$mod_emit_mult_scaf_term"
+      "$mod_emit_linear_scaf_term"
+      "$mod_emit_types_scaf_term"
+      "$mod_emit_program_scaf_term"
+      "$mod_emit_graph_scaf_term"
+      "$mod_emit_compose_scaf_term"
+      "$mod_emit_erasure_scaf_term"
+      "$mod_emit_extract_scaf_term"
+      "$mod_emit_banner_scaf_term"
+      "$mod_kernel_self_apply_term"
+      "$mod_product_out_kernel_term"
+      "$mod_compile_path_term"
+      "$mod_join_map_term"
+      "$mod_self_host_term"
+      "$mod_surface_matrix_term"
+      "$mod_spec_proof_term"
+      "$mod_dual_residual_term"
+      "$mod_compile_path_mult_term"
+      "$mod_compile_path_linear_term"
+      "$mod_compile_path_types_term"
+      "$mod_compile_path_program_term"
+      "$mod_compile_path_graph_term"
+      "$mod_compile_path_compose_term"
+      "$mod_compile_path_erasure_term"
+      "$mod_compile_path_extract_term"
+      "$mod_compile_path_plan_term"
+      "$mod_compile_path_apply_term"
+      "$mod_compile_path_body_term"
+      "$mod_first_surface_term"
+      "$mod_linear_subset_emit_term"
+      "$mod_types_subset_emit_term"
+      "$mod_program_subset_emit_term"
+      "$mod_graph_subset_emit_term"
+      "$mod_compose_subset_emit_term"
+      "$mod_erasure_subset_emit_term"
+      "$mod_extract_subset_emit_term"
+      "$mod_mult_subset_emit_term"
+      "$mod_mult_subset_rebuild_term"
+      "$mod_linear_subset_rebuild_term"
+      "$mod_types_subset_rebuild_term"
+      "$mod_program_subset_rebuild_term"
+      "$mod_graph_subset_rebuild_term"
+      "$mod_compose_subset_rebuild_term"
+      "$mod_erasure_subset_rebuild_term"
+      "$mod_extract_subset_rebuild_term"
+      "$mod_host_front_term"
+      "$mod_llvm_mult_text_term"
+      "$mod_host_check_term"
+      "$mod_host_graph_term"
+      "$mod_llvm_linear_text_term"
+      "$mod_mult_fs_write_tool_term"
+      "$mod_front_mult_package_term"
+      "$mod_subset_package_join_term"
+      "$mod_llvm_types_text_term"
+      "$mod_mult_fs_deepen_term"
+      "$mod_host_package_write_term"
+      "$mod_llvm_program_text_term"
+      "$mod_llvm_graph_text_term"
+      "$mod_llvm_compose_text_term"
+      "$mod_load_ok_compile_path_units"
+      "$mod_load_ok_later_term"
+      "$mod_real_module"
+      "$mod_mult_proof"
+      "$mod_linear_proof"
+      "$mod_types_proof"
+      "$mod_kernelmult_proof"
+      "$mod_kernellinear_proof" "$mod_kerneltypes_proof"
+      "$mod_kernelprogram_proof"
+      "$mod_kernelemit_proof"
+      "$mod_package_elab"
+      "$mod_package_env"
+      "$mod_package_env_fixtures"
+      "$mod_package_env_fixtures_u2"
+      "$mod_package_env_fixtures_s5"
+      "$mod_package_env_evidence"
+      "$mod_checkers" "$mod_checkers_later" "$mod_accepts" "$mod_accepts_goods" "$mod_accepts_proof" "$mod_accepts_later"
+      "$mod_fixtures"
+      "$mod_required_decls" "$mod_required_decls_product" "$mod_required_decls_later"
+      "$mod_fixture_texts" "$mod_fixture_texts_product" "$mod_fixture_texts_later" "$mod_fixture_texts_self_host"
+    )
+    grep_hmc_family() {
+      local tok="$1"
+      local f
+      for f in "${family_mods[@]}"; do
+        if [[ -f "$f" ]] && grep -qF "$tok" "$f"; then
+          return 0
+        fi
+      done
+      return 1
+    }
     main_mod="$lean_dir/HostModuleCheckMain.lean"
     mult_mod="$lean_dir/Mult.lean"
     mult_thm="$lean_dir/MultTheorems.lean"
@@ -1410,7 +1678,7 @@ host-module-check:
       extractImports \
       hostModuleCheckSeedModules \
       hostModuleCheckExpandSliceName \
-      Mult+MultTheorems+Linear+LinearTheorems+Types+TypesTheorems+IrProgram+IrProgramTheorems+IrGraph+IrGraphTheorems+HostCompose+HostComposeTheorems+Erasure+ErasureTheorems+Extract+ExtractTheorems+CompilePath+KernelMult+KernelLinear+KernelTypes+KernelProgram+KernelMultTheorems+KernelLinearTheorems+KernelTypesTheorems+KernelProgramTheorems+JoinMap+JoinMapTheorems+SelfHost+SelfHostTheorems+SurfaceMatrix+SurfaceMatrixTheorems+EmitMultScaffold+EmitLinearScaffold+EmitTypesScaffold+EmitProgramScaffold+EmitGraphScaffold+EmitComposeScaffold+EmitPlanScaffold+EmitApplyScaffold+EmitBodyScaffold+EmitErasureScaffold+EmitExtractScaffold+EmitBannerScaffold+KernelSelfApply+KernelSelfApplyTheorems+EmitMult+EmitPlan+EmitApply+EmitBody+KernelEmit+KernelEmitTheorems+ParityMult+ParityMultTheorems+ParityLinear+ParityLinearTheorems+ParityTypes+ParityTypesTheorems+ParityProgram+ParityProgramTheorems+ParityEmit+ParityEmitTheorems+SelfApply+SelfApplyTheorems+EmitLinear+EmitTypes+EmitProgram+EmitGraph+EmitCompose+EmitErasure+EmitExtract+EmitBanner+ProductOutKernel+ProductOutKernelTheorems+BootstrapHonesty+BootstrapHonestyTheorems+ProductPathWriterSurface+ProductPathWriterSurfaceTheorems+ProductPathWriterPathPlan+ProductPathWriterPathPlanTheorems+ProductPathWriterPathExec+ProductPathWriterPathExecTheorems \
+      Mult+MultTheorems+Linear+LinearTheorems+Types+TypesTheorems+IrProgram+IrProgramTheorems+IrGraph+IrGraphTheorems+HostCompose+HostComposeTheorems+Erasure+ErasureTheorems+Extract+ExtractTheorems+CompilePath+KernelMult+KernelLinear+KernelTypes+KernelProgram+KernelMultTheorems+KernelLinearTheorems+KernelTypesTheorems+KernelProgramTheorems+JoinMap+JoinMapTheorems+SelfHost+SelfHostTheorems+SurfaceMatrix+SurfaceMatrixTheorems+EmitMultScaffold+EmitLinearScaffold+EmitTypesScaffold+EmitProgramScaffold+EmitGraphScaffold+EmitComposeScaffold+EmitPlanScaffold+EmitApplyScaffold+EmitBodyScaffold+EmitErasureScaffold+EmitExtractScaffold+EmitBannerScaffold+KernelSelfApply+KernelSelfApplyTheorems+EmitMult+EmitPlan+EmitApply+EmitBody+KernelEmit+KernelEmitTheorems+ParityMult+ParityMultTheorems+ParityLinear+ParityLinearTheorems+ParityTypes+ParityTypesTheorems+ParityProgram+ParityProgramTheorems+ParityEmit+ParityEmitTheorems+SelfApply+SelfApplyTheorems+EmitLinear+EmitTypes+EmitProgram+EmitGraph+EmitCompose+EmitErasure+EmitExtract+EmitBanner+ProductOutKernel+ProductOutKernelTheorems+BootstrapHonesty+BootstrapHonestyTheorems+ProductPathWriterSurface+ProductPathWriterSurfaceTheorems+ProductPathWriterPathPlan+ProductPathWriterPathPlanTheorems+ProductPathWriterPathExec+ProductPathWriterPathExecTheorems+ProductPathOwnershipInputs+ProductPathOwnershipInputsTheorems+ProductPathPerform+ProductPathPerformTheorems+ProductPathPerformStep+ProductPathPerformStepTheorems+ProductPathReadSsot+ProductPathReadSsotTheorems+ProductPathComposePlan+ProductPathComposePlanTheorems+Capable+CapableTheorems+CapableStepContract+CapableStepContractTheorems+InstallOut+InstallOutTheorems+OfficialPath+OfficialPathTheorems+PerformEvidence+PerformEvidenceTheorems+CapableRead+CapableReadTheorems+CapableCompose+CapableComposeTheorems+CapableFullBar+CapableFullBarTheorems+DualEqWriteCapableGap+DualEqWriteCapableGapTheorems+DualEqWriteClosePath+DualEqWriteClosePathTheorems+DualEqWriteParity+DualEqWriteParityTheorems+OfficialRetire+OfficialRetireTheorems+OwnershipClaimed+OwnershipClaimedTheorems+PerformClaimed+PerformClaimedTheorems+StepContractFull+StepContractFullTheorems+SelfHostComplete+SelfHostCompleteTheorems+OfficialPathAlternate+OfficialPathAlternateTheorems+ProductPathOwnershipRegenerate+ProductPathOwnershipRegenerateTheorems+CapableWriteHcLoad+DualEqWriteLoad+CapableWriteHc+DualEqWriteApi+LlvmHold+LlvmHoldTheorems+CapableRegenerate+CapableRegenerateTheorems+FreestandingEmitLoad+FreestandingEmitLoadScaffold+LakeRetireInventory+HostPackageRoots+FreestandingEmit+ProductPathWriteHc+ProductPathWriteHcTheorems+CompilePathMult+CompilePathLinear+CompilePathTypes+CompilePathProgram+CompilePathGraph+CompilePathCompose+CompilePathPlan+CompilePathApply+CompilePathBody+CompilePathErasure+CompilePathExtract+ProductWireWriteTool+HostTerm+LlvmEmitPath+SubsetFront+FirstSurface+LinearSubsetEmit+TypesSubsetEmit+ProgramSubsetEmit+GraphSubsetEmit+ComposeSubsetEmit+ErasureSubsetEmit+ExtractSubsetEmit+MultSubsetEmit+MultSubsetRebuild+LinearSubsetRebuild+TypesSubsetRebuild+ProgramSubsetRebuild+GraphSubsetRebuild+ComposeSubsetRebuild+ErasureSubsetRebuild+ExtractSubsetRebuild+HostFront+LlvmMultText+HostFrontTheorems+HostCheck+HostGraph+LlvmLinearText+MultFsWriteTool+FrontMultPackage+SubsetPackageJoin+HostGraphTheorems+LlvmTypesText+MultFsDeepen+HostPackageWrite+HostPackageWriteTheorems+LlvmProgramText+LlvmGraphText+LlvmComposeText+SelfApplyFs+SelfApplyFsTheorems+InventoryClose+ProductPathBars+InventoryCloseTheorems+ProductPath+ProductPathTheorems+DualResidual+DualResidualTheorems+ProbeWire+SelfHostBody+ProbeWireTheorems+SelfHostBodyTheorems+SpecProof+SpecProofTheorems \
       hostModuleCheckGoodMult \
       hostModuleCheckGoodMultTheorems \
       hostModuleCheckGoodLinear \
@@ -1429,28 +1697,28 @@ host-module-check:
       slake-host-module-check \
       host-module-check-without-lake
     do
-      if ! grep -qF "$tok" "$mod"; then
-        echo "error: missing $tok in $mod" >&2
+      if ! grep_hmc_family "$tok"; then
+        echo "error: missing $tok in HostModuleCheck family" >&2
         exit 1
       fi
     done
-    if ! grep -qF 'First real host module check' "$mod"; then
-      echo "error: missing residual Name First real host module check in $mod" >&2
+    if ! grep_hmc_family 'First real host module check'; then
+      echo "error: missing residual Name First real host module check in HostModuleCheck family" >&2
       exit 1
     fi
-    if ! grep -qF 'Host library seed expand continue' "$mod"; then
-      echo "error: missing expand Name Host library seed expand continue in $mod" >&2
+    if ! grep_hmc_family 'Host library seed expand continue'; then
+      echo "error: missing expand Name Host library seed expand continue in HostModuleCheck family" >&2
       exit 1
     fi
-    if ! grep -qE 'def hostModuleCheckFinishedClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
+    if ! grep -qE 'def hostModuleCheckFinishedClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod_seeds"; then
       echo "error: hostModuleCheckFinishedClaimed must be true" >&2
       exit 1
     fi
-    if ! grep -qE 'def hostModuleCheckHostElaboratorResidualRemains[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
+    if ! grep -qE 'def hostModuleCheckHostElaboratorResidualRemains[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod_seeds"; then
       echo "error: hostModuleCheckHostElaboratorResidualRemains must be true" >&2
       exit 1
     fi
-    if ! grep -qE 'def hostModuleCheckHostFreeClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*false' "$mod"; then
+    if ! grep -qE 'def hostModuleCheckHostFreeClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*false' "$mod_seeds"; then
       echo "error: hostModuleCheckHostFreeClaimed must stay false" >&2
       exit 1
     fi
@@ -1556,6 +1824,230 @@ host-module-check-without-lake:
     lean_dir="$systems_dir/SystemsLean"
     prebuilt="$systems_dir/.lake/build/bin/slake-host-module-check"
     mod="$lean_dir/HostModuleCheck.lean"
+    mod_seeds="$lean_dir/HostModuleCheckSeeds.lean"
+    mod_load="$lean_dir/HostModuleCheckLoadOk.lean"
+    mod_driver_io="$lean_dir/HostModuleCheckDriverIO.lean"
+    mod_driver="$lean_dir/HostModuleCheckDriver.lean"
+    mod_surface="$lean_dir/HostModuleCheckSurface.lean"
+    mod_mult_term="$lean_dir/HostModuleCheckMultTerm.lean"
+    mod_linear_term="$lean_dir/HostModuleCheckLinearTerm.lean"
+    mod_types_term="$lean_dir/HostModuleCheckTypesTerm.lean"
+    mod_irprogram_term="$lean_dir/HostModuleCheckIrProgramTerm.lean"
+    mod_irgraph_term="$lean_dir/HostModuleCheckIrGraphTerm.lean"
+    mod_hostcompose_term="$lean_dir/HostModuleCheckHostComposeTerm.lean"
+    mod_erasure_term="$lean_dir/HostModuleCheckErasureTerm.lean"
+    mod_extract_term="$lean_dir/HostModuleCheckExtractTerm.lean"
+    mod_emitplan_term="$lean_dir/HostModuleCheckEmitPlanTerm.lean"
+    mod_emitapply_term="$lean_dir/HostModuleCheckEmitApplyTerm.lean"
+    mod_emitbody_term="$lean_dir/HostModuleCheckEmitBodyTerm.lean"
+    mod_kernelmult_term="$lean_dir/HostModuleCheckKernelMultTerm.lean"
+    mod_kernellinear_term="$lean_dir/HostModuleCheckKernelLinearTerm.lean"
+    mod_kerneltypes_term="$lean_dir/HostModuleCheckKernelTypesTerm.lean"
+    mod_kernelprogram_term="$lean_dir/HostModuleCheckKernelProgramTerm.lean"
+    mod_kernelemit_term="$lean_dir/HostModuleCheckKernelEmitTerm.lean"
+    mod_paritymult_term="$lean_dir/HostModuleCheckParityMultTerm.lean"
+    mod_paritylinear_term="$lean_dir/HostModuleCheckParityLinearTerm.lean"
+    mod_paritytypes_term="$lean_dir/HostModuleCheckParityTypesTerm.lean"
+    mod_emit_mult_scaf_term="$lean_dir/HostModuleCheckEmitMultScaffoldTerm.lean"
+    mod_emit_linear_scaf_term="$lean_dir/HostModuleCheckEmitLinearScaffoldTerm.lean"
+    mod_emit_types_scaf_term="$lean_dir/HostModuleCheckEmitTypesScaffoldTerm.lean"
+    mod_emit_program_scaf_term="$lean_dir/HostModuleCheckEmitProgramScaffoldTerm.lean"
+    mod_emit_graph_scaf_term="$lean_dir/HostModuleCheckEmitGraphScaffoldTerm.lean"
+    mod_emit_compose_scaf_term="$lean_dir/HostModuleCheckEmitComposeScaffoldTerm.lean"
+    mod_emit_erasure_scaf_term="$lean_dir/HostModuleCheckEmitErasureScaffoldTerm.lean"
+    mod_emit_extract_scaf_term="$lean_dir/HostModuleCheckEmitExtractScaffoldTerm.lean"
+    mod_emit_banner_scaf_term="$lean_dir/HostModuleCheckEmitBannerScaffoldTerm.lean"
+    mod_kernel_self_apply_term="$lean_dir/HostModuleCheckKernelSelfApplyTerm.lean"
+    mod_product_out_kernel_term="$lean_dir/HostModuleCheckProductOutKernelTerm.lean"
+    mod_compile_path_term="$lean_dir/HostModuleCheckCompilePathTerm.lean"
+    mod_join_map_term="$lean_dir/HostModuleCheckJoinMapTerm.lean"
+    mod_self_host_term="$lean_dir/HostModuleCheckSelfHostTerm.lean"
+    mod_surface_matrix_term="$lean_dir/HostModuleCheckSurfaceMatrixTerm.lean"
+    mod_spec_proof_term="$lean_dir/HostModuleCheckSpecProofTerm.lean"
+    mod_dual_residual_term="$lean_dir/HostModuleCheckDualResidualTerm.lean"
+    mod_compile_path_mult_term="$lean_dir/HostModuleCheckCompilePathMultTerm.lean"
+    mod_compile_path_linear_term="$lean_dir/HostModuleCheckCompilePathLinearTerm.lean"
+    mod_compile_path_types_term="$lean_dir/HostModuleCheckCompilePathTypesTerm.lean"
+    mod_compile_path_program_term="$lean_dir/HostModuleCheckCompilePathProgramTerm.lean"
+    mod_compile_path_graph_term="$lean_dir/HostModuleCheckCompilePathGraphTerm.lean"
+    mod_compile_path_compose_term="$lean_dir/HostModuleCheckCompilePathComposeTerm.lean"
+    mod_compile_path_erasure_term="$lean_dir/HostModuleCheckCompilePathErasureTerm.lean"
+    mod_compile_path_extract_term="$lean_dir/HostModuleCheckCompilePathExtractTerm.lean"
+    mod_compile_path_plan_term="$lean_dir/HostModuleCheckCompilePathPlanTerm.lean"
+    mod_compile_path_apply_term="$lean_dir/HostModuleCheckCompilePathApplyTerm.lean"
+    mod_compile_path_body_term="$lean_dir/HostModuleCheckCompilePathBodyTerm.lean"
+    mod_first_surface_term="$lean_dir/HostModuleCheckFirstSurfaceTerm.lean"
+    mod_linear_subset_emit_term="$lean_dir/HostModuleCheckLinearSubsetEmitTerm.lean"
+    mod_types_subset_emit_term="$lean_dir/HostModuleCheckTypesSubsetEmitTerm.lean"
+    mod_program_subset_emit_term="$lean_dir/HostModuleCheckProgramSubsetEmitTerm.lean"
+    mod_graph_subset_emit_term="$lean_dir/HostModuleCheckGraphSubsetEmitTerm.lean"
+    mod_compose_subset_emit_term="$lean_dir/HostModuleCheckComposeSubsetEmitTerm.lean"
+    mod_erasure_subset_emit_term="$lean_dir/HostModuleCheckErasureSubsetEmitTerm.lean"
+    mod_extract_subset_emit_term="$lean_dir/HostModuleCheckExtractSubsetEmitTerm.lean"
+    mod_mult_subset_emit_term="$lean_dir/HostModuleCheckMultSubsetEmitTerm.lean"
+    mod_mult_subset_rebuild_term="$lean_dir/HostModuleCheckMultSubsetRebuildTerm.lean"
+    mod_linear_subset_rebuild_term="$lean_dir/HostModuleCheckLinearSubsetRebuildTerm.lean"
+    mod_types_subset_rebuild_term="$lean_dir/HostModuleCheckTypesSubsetRebuildTerm.lean"
+    mod_program_subset_rebuild_term="$lean_dir/HostModuleCheckProgramSubsetRebuildTerm.lean"
+    mod_graph_subset_rebuild_term="$lean_dir/HostModuleCheckGraphSubsetRebuildTerm.lean"
+    mod_compose_subset_rebuild_term="$lean_dir/HostModuleCheckComposeSubsetRebuildTerm.lean"
+    mod_erasure_subset_rebuild_term="$lean_dir/HostModuleCheckErasureSubsetRebuildTerm.lean"
+    mod_extract_subset_rebuild_term="$lean_dir/HostModuleCheckExtractSubsetRebuildTerm.lean"
+    mod_host_front_term="$lean_dir/HostModuleCheckHostFrontTerm.lean"
+    mod_llvm_mult_text_term="$lean_dir/HostModuleCheckLlvmMultTextTerm.lean"
+    mod_host_check_term="$lean_dir/HostModuleCheckHostCheckTerm.lean"
+    mod_host_graph_term="$lean_dir/HostModuleCheckHostGraphTerm.lean"
+    mod_llvm_linear_text_term="$lean_dir/HostModuleCheckLlvmLinearTextTerm.lean"
+    mod_mult_fs_write_tool_term="$lean_dir/HostModuleCheckMultFsWriteToolTerm.lean"
+    mod_front_mult_package_term="$lean_dir/HostModuleCheckFrontMultPackageTerm.lean"
+    mod_subset_package_join_term="$lean_dir/HostModuleCheckSubsetPackageJoinTerm.lean"
+    mod_llvm_types_text_term="$lean_dir/HostModuleCheckLlvmTypesTextTerm.lean"
+    mod_mult_fs_deepen_term="$lean_dir/HostModuleCheckMultFsDeepenTerm.lean"
+    mod_host_package_write_term="$lean_dir/HostModuleCheckHostPackageWriteTerm.lean"
+    mod_llvm_program_text_term="$lean_dir/HostModuleCheckLlvmProgramTextTerm.lean"
+    mod_llvm_graph_text_term="$lean_dir/HostModuleCheckLlvmGraphTextTerm.lean"
+    mod_llvm_compose_text_term="$lean_dir/HostModuleCheckLlvmComposeTextTerm.lean"
+    mod_load_ok_compile_path_units="$lean_dir/HostModuleCheckLoadOkCompilePathUnits.lean"
+    mod_load_ok_later_term="$lean_dir/HostModuleCheckLoadOkLaterTerm.lean"
+    mod_real_module="$lean_dir/HostModuleCheckRealModule.lean"
+    mod_mult_proof="$lean_dir/HostModuleCheckMultProof.lean"
+    mod_linear_proof="$lean_dir/HostModuleCheckLinearProof.lean"
+    mod_types_proof="$lean_dir/HostModuleCheckTypesProof.lean"
+    mod_kernelmult_proof="$lean_dir/HostModuleCheckKernelMultProof.lean"
+    mod_kernellinear_proof="$lean_dir/HostModuleCheckKernelLinearProof.lean"
+    mod_kerneltypes_proof="$lean_dir/HostModuleCheckKernelTypesProof.lean"
+    mod_kernelprogram_proof="$lean_dir/HostModuleCheckKernelProgramProof.lean"
+    mod_kernelemit_proof="$lean_dir/HostModuleCheckKernelEmitProof.lean"
+    mod_package_elab="$lean_dir/HostModuleCheckPackageElab.lean"
+    mod_package_env="$lean_dir/HostModuleCheckPackageEnv.lean"
+    mod_package_env_fixtures="$lean_dir/HostModuleCheckPackageEnvFixtures.lean"
+    mod_package_env_fixtures_u2="$lean_dir/HostModuleCheckPackageEnvFixturesU2.lean"
+    mod_package_env_fixtures_s5="$lean_dir/HostModuleCheckPackageEnvFixturesS5.lean"
+    mod_package_env_evidence="$lean_dir/HostModuleCheckPackageEnvEvidence.lean"
+    mod_checkers="$lean_dir/HostModuleCheckCheckers.lean"
+    mod_checkers_later="$lean_dir/HostModuleCheckCheckersLater.lean"
+    mod_accepts="$lean_dir/HostModuleCheckAccepts.lean"
+    mod_accepts_goods="$lean_dir/HostModuleCheckAcceptsGoods.lean"
+    mod_accepts_proof="$lean_dir/HostModuleCheckAcceptsProof.lean"
+    mod_accepts_later="$lean_dir/HostModuleCheckAcceptsLater.lean"
+    mod_fixtures="$lean_dir/HostModuleCheckFixtures.lean"
+    mod_required_decls="$lean_dir/HostModuleCheckRequiredDecls.lean"
+    mod_required_decls_product="$lean_dir/HostModuleCheckRequiredDeclsProduct.lean"
+    mod_required_decls_later="$lean_dir/HostModuleCheckRequiredDeclsLater.lean"
+    mod_fixture_texts="$lean_dir/HostModuleCheckFixtureTexts.lean"
+    mod_fixture_texts_product="$lean_dir/HostModuleCheckFixtureTextsProduct.lean"
+    mod_fixture_texts_later="$lean_dir/HostModuleCheckFixtureTextsLater.lean"
+    mod_fixture_texts_self_host="$lean_dir/HostModuleCheckFixtureTextsSelfHost.lean"
+    family_mods=(
+      "$mod" "$mod_seeds" "$mod_load" "$mod_driver_io" "$mod_driver" "$mod_surface" "$mod_mult_term"
+      "$mod_linear_term"
+      "$mod_types_term"
+      "$mod_irprogram_term"
+      "$mod_irgraph_term"
+      "$mod_hostcompose_term"
+      "$mod_erasure_term"
+      "$mod_extract_term"
+      "$mod_emitplan_term"
+      "$mod_emitapply_term"
+      "$mod_emitbody_term"
+      "$mod_kernelmult_term"
+      "$mod_kernellinear_term"
+      "$mod_kerneltypes_term"
+      "$mod_kernelprogram_term"
+      "$mod_kernelemit_term"
+      "$mod_paritymult_term"
+      "$mod_paritylinear_term"
+      "$mod_paritytypes_term"
+      "$mod_emit_mult_scaf_term"
+      "$mod_emit_linear_scaf_term"
+      "$mod_emit_types_scaf_term"
+      "$mod_emit_program_scaf_term"
+      "$mod_emit_graph_scaf_term"
+      "$mod_emit_compose_scaf_term"
+      "$mod_emit_erasure_scaf_term"
+      "$mod_emit_extract_scaf_term"
+      "$mod_emit_banner_scaf_term"
+      "$mod_kernel_self_apply_term"
+      "$mod_product_out_kernel_term"
+      "$mod_compile_path_term"
+      "$mod_join_map_term"
+      "$mod_self_host_term"
+      "$mod_surface_matrix_term"
+      "$mod_spec_proof_term"
+      "$mod_dual_residual_term"
+      "$mod_compile_path_mult_term"
+      "$mod_compile_path_linear_term"
+      "$mod_compile_path_types_term"
+      "$mod_compile_path_program_term"
+      "$mod_compile_path_graph_term"
+      "$mod_compile_path_compose_term"
+      "$mod_compile_path_erasure_term"
+      "$mod_compile_path_extract_term"
+      "$mod_compile_path_plan_term"
+      "$mod_compile_path_apply_term"
+      "$mod_compile_path_body_term"
+      "$mod_first_surface_term"
+      "$mod_linear_subset_emit_term"
+      "$mod_types_subset_emit_term"
+      "$mod_program_subset_emit_term"
+      "$mod_graph_subset_emit_term"
+      "$mod_compose_subset_emit_term"
+      "$mod_erasure_subset_emit_term"
+      "$mod_extract_subset_emit_term"
+      "$mod_mult_subset_emit_term"
+      "$mod_mult_subset_rebuild_term"
+      "$mod_linear_subset_rebuild_term"
+      "$mod_types_subset_rebuild_term"
+      "$mod_program_subset_rebuild_term"
+      "$mod_graph_subset_rebuild_term"
+      "$mod_compose_subset_rebuild_term"
+      "$mod_erasure_subset_rebuild_term"
+      "$mod_extract_subset_rebuild_term"
+      "$mod_host_front_term"
+      "$mod_llvm_mult_text_term"
+      "$mod_host_check_term"
+      "$mod_host_graph_term"
+      "$mod_llvm_linear_text_term"
+      "$mod_mult_fs_write_tool_term"
+      "$mod_front_mult_package_term"
+      "$mod_subset_package_join_term"
+      "$mod_llvm_types_text_term"
+      "$mod_mult_fs_deepen_term"
+      "$mod_host_package_write_term"
+      "$mod_llvm_program_text_term"
+      "$mod_llvm_graph_text_term"
+      "$mod_llvm_compose_text_term"
+      "$mod_load_ok_compile_path_units"
+      "$mod_load_ok_later_term"
+      "$mod_real_module"
+      "$mod_mult_proof"
+      "$mod_linear_proof"
+      "$mod_types_proof"
+      "$mod_kernelmult_proof"
+      "$mod_kernellinear_proof" "$mod_kerneltypes_proof"
+      "$mod_kernelprogram_proof"
+      "$mod_kernelemit_proof"
+      "$mod_package_elab"
+      "$mod_package_env"
+      "$mod_package_env_fixtures"
+      "$mod_package_env_fixtures_u2"
+      "$mod_package_env_fixtures_s5"
+      "$mod_package_env_evidence"
+      "$mod_checkers" "$mod_checkers_later" "$mod_accepts" "$mod_accepts_goods" "$mod_accepts_proof" "$mod_accepts_later"
+      "$mod_fixtures"
+      "$mod_required_decls" "$mod_required_decls_product" "$mod_required_decls_later"
+      "$mod_fixture_texts" "$mod_fixture_texts_product" "$mod_fixture_texts_later" "$mod_fixture_texts_self_host"
+    )
+    grep_hmc_family() {
+      local tok="$1"
+      local f
+      for f in "${family_mods[@]}"; do
+        if [[ -f "$f" ]] && grep -qF "$tok" "$f"; then
+          return 0
+        fi
+      done
+      return 1
+    }
     mult_mod="$lean_dir/Mult.lean"
     mult_thm="$lean_dir/MultTheorems.lean"
     linear_mod="$lean_dir/Linear.lean"
@@ -1590,7 +2082,7 @@ host-module-check-without-lake:
       hostModuleCheckLoadOk \
       hostModuleCheckSeedModules \
       hostModuleCheckExpandSliceName \
-      Mult+MultTheorems+Linear+LinearTheorems+Types+TypesTheorems+IrProgram+IrProgramTheorems+IrGraph+IrGraphTheorems+HostCompose+HostComposeTheorems+Erasure+ErasureTheorems+Extract+ExtractTheorems+CompilePath+KernelMult+KernelLinear+KernelTypes+KernelProgram+KernelMultTheorems+KernelLinearTheorems+KernelTypesTheorems+KernelProgramTheorems+JoinMap+JoinMapTheorems+SelfHost+SelfHostTheorems+SurfaceMatrix+SurfaceMatrixTheorems+EmitMultScaffold+EmitLinearScaffold+EmitTypesScaffold+EmitProgramScaffold+EmitGraphScaffold+EmitComposeScaffold+EmitPlanScaffold+EmitApplyScaffold+EmitBodyScaffold+EmitErasureScaffold+EmitExtractScaffold+EmitBannerScaffold+KernelSelfApply+KernelSelfApplyTheorems+EmitMult+EmitPlan+EmitApply+EmitBody+KernelEmit+KernelEmitTheorems+ParityMult+ParityMultTheorems+ParityLinear+ParityLinearTheorems+ParityTypes+ParityTypesTheorems+ParityProgram+ParityProgramTheorems+ParityEmit+ParityEmitTheorems+SelfApply+SelfApplyTheorems+EmitLinear+EmitTypes+EmitProgram+EmitGraph+EmitCompose+EmitErasure+EmitExtract+EmitBanner+ProductOutKernel+ProductOutKernelTheorems+BootstrapHonesty+BootstrapHonestyTheorems+ProductPathWriterSurface+ProductPathWriterSurfaceTheorems+ProductPathWriterPathPlan+ProductPathWriterPathPlanTheorems+ProductPathWriterPathExec+ProductPathWriterPathExecTheorems \
+      Mult+MultTheorems+Linear+LinearTheorems+Types+TypesTheorems+IrProgram+IrProgramTheorems+IrGraph+IrGraphTheorems+HostCompose+HostComposeTheorems+Erasure+ErasureTheorems+Extract+ExtractTheorems+CompilePath+KernelMult+KernelLinear+KernelTypes+KernelProgram+KernelMultTheorems+KernelLinearTheorems+KernelTypesTheorems+KernelProgramTheorems+JoinMap+JoinMapTheorems+SelfHost+SelfHostTheorems+SurfaceMatrix+SurfaceMatrixTheorems+EmitMultScaffold+EmitLinearScaffold+EmitTypesScaffold+EmitProgramScaffold+EmitGraphScaffold+EmitComposeScaffold+EmitPlanScaffold+EmitApplyScaffold+EmitBodyScaffold+EmitErasureScaffold+EmitExtractScaffold+EmitBannerScaffold+KernelSelfApply+KernelSelfApplyTheorems+EmitMult+EmitPlan+EmitApply+EmitBody+KernelEmit+KernelEmitTheorems+ParityMult+ParityMultTheorems+ParityLinear+ParityLinearTheorems+ParityTypes+ParityTypesTheorems+ParityProgram+ParityProgramTheorems+ParityEmit+ParityEmitTheorems+SelfApply+SelfApplyTheorems+EmitLinear+EmitTypes+EmitProgram+EmitGraph+EmitCompose+EmitErasure+EmitExtract+EmitBanner+ProductOutKernel+ProductOutKernelTheorems+BootstrapHonesty+BootstrapHonestyTheorems+ProductPathWriterSurface+ProductPathWriterSurfaceTheorems+ProductPathWriterPathPlan+ProductPathWriterPathPlanTheorems+ProductPathWriterPathExec+ProductPathWriterPathExecTheorems+ProductPathOwnershipInputs+ProductPathOwnershipInputsTheorems+ProductPathPerform+ProductPathPerformTheorems+ProductPathPerformStep+ProductPathPerformStepTheorems+ProductPathReadSsot+ProductPathReadSsotTheorems+ProductPathComposePlan+ProductPathComposePlanTheorems+Capable+CapableTheorems+CapableStepContract+CapableStepContractTheorems+InstallOut+InstallOutTheorems+OfficialPath+OfficialPathTheorems+PerformEvidence+PerformEvidenceTheorems+CapableRead+CapableReadTheorems+CapableCompose+CapableComposeTheorems+CapableFullBar+CapableFullBarTheorems+DualEqWriteCapableGap+DualEqWriteCapableGapTheorems+DualEqWriteClosePath+DualEqWriteClosePathTheorems+DualEqWriteParity+DualEqWriteParityTheorems+OfficialRetire+OfficialRetireTheorems+OwnershipClaimed+OwnershipClaimedTheorems+PerformClaimed+PerformClaimedTheorems+StepContractFull+StepContractFullTheorems+SelfHostComplete+SelfHostCompleteTheorems+OfficialPathAlternate+OfficialPathAlternateTheorems+ProductPathOwnershipRegenerate+ProductPathOwnershipRegenerateTheorems+CapableWriteHcLoad+DualEqWriteLoad+CapableWriteHc+DualEqWriteApi+LlvmHold+LlvmHoldTheorems+CapableRegenerate+CapableRegenerateTheorems+FreestandingEmitLoad+FreestandingEmitLoadScaffold+LakeRetireInventory+HostPackageRoots+FreestandingEmit+ProductPathWriteHc+ProductPathWriteHcTheorems+CompilePathMult+CompilePathLinear+CompilePathTypes+CompilePathProgram+CompilePathGraph+CompilePathCompose+CompilePathPlan+CompilePathApply+CompilePathBody+CompilePathErasure+CompilePathExtract+ProductWireWriteTool+HostTerm+LlvmEmitPath+SubsetFront+FirstSurface+LinearSubsetEmit+TypesSubsetEmit+ProgramSubsetEmit+GraphSubsetEmit+ComposeSubsetEmit+ErasureSubsetEmit+ExtractSubsetEmit+MultSubsetEmit+MultSubsetRebuild+LinearSubsetRebuild+TypesSubsetRebuild+ProgramSubsetRebuild+GraphSubsetRebuild+ComposeSubsetRebuild+ErasureSubsetRebuild+ExtractSubsetRebuild+HostFront+LlvmMultText+HostFrontTheorems+HostCheck+HostGraph+LlvmLinearText+MultFsWriteTool+FrontMultPackage+SubsetPackageJoin+HostGraphTheorems+LlvmTypesText+MultFsDeepen+HostPackageWrite+HostPackageWriteTheorems+LlvmProgramText+LlvmGraphText+LlvmComposeText+SelfApplyFs+SelfApplyFsTheorems+InventoryClose+ProductPathBars+InventoryCloseTheorems+ProductPath+ProductPathTheorems+DualResidual+DualResidualTheorems+ProbeWire+SelfHostBody+ProbeWireTheorems+SelfHostBodyTheorems+SpecProof+SpecProofTheorems \
       hostModuleCheckGoodLinear \
       hostModuleCheckGoodTypes \
       hostModuleCheckGoodIrProgram \
@@ -1598,29 +2090,381 @@ host-module-check-without-lake:
       hostModuleCheckGoodHostCompose \
       checkRealModule \
       PARTIAL-STRUCTURAL \
+      FOUNDATION-KIND-SURFACE \
+      Check depth deepen continue \
+      checkDepthDeepenBar \
+      checkDepthDeepenBand \
+      checkDepthDeepenSliceName \
+      TERM-SURFACE \
+      Mult-only \
+      ILL-TYPED-TERM \
+      checkMultTermDialect \
+      hostModuleCheckTermSurfaceDualOk \
+      hostModuleCheckMultTermSurfaceOk \
+      hostModuleCheckBadMultNameReturnType \
+      hostModuleCheckBadMultIsValidApp \
+      hostModuleCheckBadMultIsValidArm \
+      hostModuleCheckGoodMultTerm \
+      HostModuleCheckMultTerm \
+      Linear-only \
+      checkLinearTermDialect \
+      hostModuleCheckLinearTermSurfaceDualOk \
+      hostModuleCheckLinearTermSurfaceOk \
+      hostModuleCheckBadLinearShareNatReturnType \
+      hostModuleCheckBadLinearPolyIdBody \
+      hostModuleCheckBadLinearMult0ClassId \
+      hostModuleCheckBadLinearRoundTripBody \
+      hostModuleCheckGoodLinearTerm \
+      HostModuleCheckLinearTerm \
+      Types-only \
+      checkTypesTermDialect \
+      hostModuleCheckTypesTermSurfaceDualOk \
+      hostModuleCheckTypesTermSurfaceOk \
+      hostModuleCheckBadTypesNameArm \
+      hostModuleCheckBadTypesExpectedMultArm \
+      hostModuleCheckBadTypesKindMultOkBody \
+      hostModuleCheckBadTypesOfKindTagArm \
+      hostModuleCheckGoodTypesTerm \
+      HostModuleCheckTypesTerm \
+      IrProgram-only \
+      checkIrProgramTermDialect \
+      hostModuleCheckIrProgramTermSurfaceDualOk \
+      hostModuleCheckIrProgramTermSurfaceOk \
+      hostModuleCheckBadIrProgramCap \
+      hostModuleCheckBadIrProgramCheckFailClosed \
+      hostModuleCheckBadIrProgramIsWellTyped \
+      hostModuleCheckBadIrProgramPush \
+      hostModuleCheckGoodIrProgramTerm \
+      HostModuleCheckIrProgramTerm \
+      IrGraph-only \
+      checkIrGraphTermDialect \
+      hostModuleCheckIrGraphTermSurfaceDualOk \
+      hostModuleCheckIrGraphTermSurfaceOk \
+      hostModuleCheckBadIrGraphEdgeMax \
+      hostModuleCheckBadIrGraphCheckFailClosed \
+      hostModuleCheckBadIrGraphIsWellTyped \
+      hostModuleCheckBadIrGraphPushNode \
+      hostModuleCheckGoodIrGraphTerm \
+      HostModuleCheckIrGraphTerm \
+      HostCompose-only \
+      checkHostComposeTermDialect \
+      hostModuleCheckHostComposeTermSurfaceDualOk \
+      hostModuleCheckHostComposeTermSurfaceOk \
+      hostModuleCheckBadHostComposeEmpty \
+      hostModuleCheckBadHostComposeCheckFailClosed \
+      hostModuleCheckBadHostComposeMint \
+      hostModuleCheckBadHostComposePushHostNode \
+      hostModuleCheckGoodHostComposeTerm \
+      HostModuleCheckHostComposeTerm \
+      Erasure-only \
+      checkErasureTermDialect \
+      hostModuleCheckErasureTermSurfaceDualOk \
+      hostModuleCheckErasureTermSurfaceOk \
+      hostModuleCheckBadErasureCheckFailClosed \
+      hostModuleCheckBadErasureIsErasureGrade \
+      hostModuleCheckBadErasureMarkForGrade \
+      hostModuleCheckBadErasureIsRuntimeAbsent \
+      hostModuleCheckGoodErasureTerm \
+      HostModuleCheckErasureTerm \
+      Extract-only \
+      checkExtractTermDialect \
+      hostModuleCheckExtractTermSurfaceDualOk \
+      hostModuleCheckExtractTermSurfaceOk \
+      hostModuleCheckBadExtractCheckFailClosed \
+      hostModuleCheckBadExtractIsFreestandingGoal \
+      hostModuleCheckBadExtractExtractOk \
+      hostModuleCheckBadExtractIsValidRuntimeTag \
+      hostModuleCheckGoodExtractTerm \
+      HostModuleCheckExtractTerm \
+      EmitPlan-only \
+      checkEmitPlanTermDialect \
+      hostModuleCheckEmitPlanTermSurfaceDualOk \
+      hostModuleCheckEmitPlanTermSurfaceOk \
+      hostModuleCheckBadEmitPlanFailClosed \
+      hostModuleCheckBadEmitPlanIsRuntimeMult \
+      hostModuleCheckBadEmitPlanFromCompose \
+      hostModuleCheckBadEmitPlanIsReady \
+      hostModuleCheckGoodEmitPlanTerm \
+      HostModuleCheckEmitPlanTerm \
+      EmitApply-only \
+      checkEmitApplyTermDialect \
+      hostModuleCheckEmitApplyTermSurfaceDualOk \
+      hostModuleCheckEmitApplyTermSurfaceOk \
+      hostModuleCheckBadEmitApplyFailClosed \
+      hostModuleCheckBadEmitApplyCap \
+      hostModuleCheckBadEmitApplyMultCode \
+      hostModuleCheckBadEmitApplyFromCompose \
+      hostModuleCheckGoodEmitApplyTerm \
+      HostModuleCheckEmitApplyTerm \
+      EmitBody-only \
+      checkEmitBodyTermDialect \
+      hostModuleCheckEmitBodyTermSurfaceDualOk \
+      hostModuleCheckEmitBodyTermSurfaceOk \
+      hostModuleCheckBadEmitBodyFailClosed \
+      hostModuleCheckBadEmitBodyCap \
+      hostModuleCheckBadEmitBodyFromCompose \
+      hostModuleCheckBadEmitBodyIsValid \
+      hostModuleCheckGoodEmitBodyTerm \
+      HostModuleCheckEmitBodyTerm \
+      KernelMult-only \
+      checkKernelMultTermDialect \
+      hostModuleCheckKernelMultTermSurfaceDualOk \
+      hostModuleCheckKernelMultTermSurfaceOk \
+      hostModuleCheckBadKernelMultStageId \
+      hostModuleCheckBadKernelMultLower \
+      hostModuleCheckBadKernelMultReady \
+      hostModuleCheckBadKernelMultUnknownTag \
+      hostModuleCheckGoodKernelMultTerm \
+      HostModuleCheckKernelMultTerm \
+      KernelLinear-only \
+      checkKernelLinearTermDialect \
+      hostModuleCheckKernelLinearTermSurfaceDualOk \
+      hostModuleCheckKernelLinearTermSurfaceOk \
+      hostModuleCheckBadKernelLinearStageId \
+      hostModuleCheckBadKernelLinearLower \
+      hostModuleCheckBadKernelLinearReady \
+      hostModuleCheckBadKernelLinearMismatch \
+      hostModuleCheckGoodKernelLinearTerm \
+      HostModuleCheckKernelLinearTerm \
+      KernelTypes-only \
+      checkKernelTypesTermDialect \
+      hostModuleCheckKernelTypesTermSurfaceDualOk \
+      hostModuleCheckKernelTypesTermSurfaceOk \
+      hostModuleCheckBadKernelTypesStageId \
+      hostModuleCheckBadKernelTypesLower \
+      hostModuleCheckBadKernelTypesReady \
+      hostModuleCheckBadKernelTypesUnknownKind \
+      hostModuleCheckGoodKernelTypesTerm \
+      HostModuleCheckKernelTypesTerm \
+      KernelProgram-only \
+      checkKernelProgramTermDialect \
+      hostModuleCheckKernelProgramTermSurfaceDualOk \
+      hostModuleCheckKernelProgramTermSurfaceOk \
+      hostModuleCheckBadKernelProgramStageId \
+      hostModuleCheckBadKernelProgramLower \
+      hostModuleCheckBadKernelProgramReady \
+      hostModuleCheckBadKernelProgramOk \
+      hostModuleCheckGoodKernelProgramTerm \
+      HostModuleCheckKernelProgramTerm \
+      KernelEmit-only \
+      checkKernelEmitTermDialect \
+      hostModuleCheckKernelEmitTermSurfaceDualOk \
+      hostModuleCheckKernelEmitTermSurfaceOk \
+      hostModuleCheckBadKernelEmitStageId \
+      hostModuleCheckBadKernelEmitLower \
+      hostModuleCheckBadKernelEmitReady \
+      hostModuleCheckBadKernelEmitOk \
+      hostModuleCheckGoodKernelEmitTerm \
+      HostModuleCheckKernelEmitTerm \
+      ParityMult-only \
+      checkParityMultTermDialect \
+      hostModuleCheckParityMultTermSurfaceDualOk \
+      hostModuleCheckParityMultTermSurfaceOk \
+      hostModuleCheckBadParityMultStageId \
+      hostModuleCheckBadParityMultReady \
+      hostModuleCheckBadParityMultOk \
+      hostModuleCheckBadParityMultGrade \
+      hostModuleCheckGoodParityMultTerm \
+      HostModuleCheckParityMultTerm \
+      ParityLinear-only \
+      checkParityLinearTermDialect \
+      hostModuleCheckParityLinearTermSurfaceDualOk \
+      hostModuleCheckParityLinearTermSurfaceOk \
+      hostModuleCheckBadParityLinearStageId \
+      hostModuleCheckBadParityLinearReady \
+      hostModuleCheckBadParityLinearOk \
+      hostModuleCheckBadParityLinearContract \
+      hostModuleCheckGoodParityLinearTerm \
+      HostModuleCheckParityLinearTerm \
+      ParityTypes-only \
+      checkParityTypesTermDialect \
+      hostModuleCheckParityTypesTermSurfaceDualOk \
+      hostModuleCheckParityTypesTermSurfaceOk \
+      hostModuleCheckBadParityTypesStageId \
+      hostModuleCheckBadParityTypesReady \
+      hostModuleCheckBadParityTypesOk \
+      hostModuleCheckBadParityTypesContract \
+      hostModuleCheckGoodParityTypesTerm \
+      HostModuleCheckParityTypesTerm \
+      HostModuleCheckRealModule \
+      PROOF-SURFACE \
+      MultTheorems-only \
+      ILL-TYPED-PROOF \
+      checkMultTheoremsProofDialect \
+      hostModuleCheckProofSurfaceDualOk \
+      hostModuleCheckMultProofSurfaceOk \
+      hostModuleCheckBadMultThmWrongStmt \
+      hostModuleCheckBadMultThmSorry \
+      hostModuleCheckGoodMultTheoremsProof \
+      HostModuleCheckMultProof \
+      LinearTheorems-only \
+      checkLinearTheoremsProofDialect \
+      hostModuleCheckLinearProofSurfaceDualOk \
+      hostModuleCheckLinearProofSurfaceOk \
+      hostModuleCheckBadLinearThmWrongStmt \
+      hostModuleCheckBadLinearThmSorry \
+      hostModuleCheckGoodLinearTheoremsProof \
+      HostModuleCheckLinearProof \
+      TypesTheorems-only \
+      checkTypesTheoremsProofDialect \
+      hostModuleCheckTypesProofSurfaceDualOk \
+      hostModuleCheckTypesProofSurfaceOk \
+      hostModuleCheckBadTypesThmWrongStmt \
+      hostModuleCheckBadTypesThmSorry \
+      hostModuleCheckGoodTypesTheoremsProof \
+      HostModuleCheckTypesProof \
+      KernelMultTheorems-only \
+      checkKernelMultTheoremsProofDialect \
+      hostModuleCheckKernelMultProofSurfaceDualOk \
+      hostModuleCheckKernelMultProofSurfaceOk \
+      hostModuleCheckBadKernelMultThmWrongStmt \
+      hostModuleCheckBadKernelMultThmSorry \
+      hostModuleCheckGoodKernelMultTheoremsProof \
+      HostModuleCheckKernelMultProof \
+      KernelLinearTheorems-only \
+      checkKernelLinearTheoremsProofDialect \
+      hostModuleCheckKernelLinearProofSurfaceDualOk \
+      hostModuleCheckKernelLinearProofSurfaceOk \
+      hostModuleCheckBadKernelLinearThmWrongStmt \
+      hostModuleCheckBadKernelLinearThmSorry \
+      hostModuleCheckGoodKernelLinearTheoremsProof \
+      HostModuleCheckKernelLinearProof \
+      KernelTypesTheorems-only \
+      checkKernelTypesTheoremsProofDialect \
+      hostModuleCheckKernelTypesProofSurfaceDualOk \
+      hostModuleCheckKernelTypesProofSurfaceOk \
+      hostModuleCheckBadKernelTypesThmWrongStmt \
+      hostModuleCheckBadKernelTypesThmSorry \
+      hostModuleCheckGoodKernelTypesTheoremsProof \
+      HostModuleCheckKernelTypesProof \
+      KernelProgramTheorems-only \
+      checkKernelProgramTheoremsProofDialect \
+      hostModuleCheckKernelProgramProofSurfaceDualOk \
+      hostModuleCheckKernelProgramProofSurfaceOk \
+      hostModuleCheckBadKernelProgramThmWrongStmt \
+      hostModuleCheckBadKernelProgramThmSorry \
+      hostModuleCheckGoodKernelProgramTheoremsProof \
+      HostModuleCheckKernelProgramProof \
+      KernelEmitTheorems-only \
+      checkKernelEmitTheoremsProofDialect \
+      hostModuleCheckKernelEmitProofSurfaceDualOk \
+      hostModuleCheckKernelEmitProofSurfaceOk \
+      hostModuleCheckBadKernelEmitThmWrongStmt \
+      hostModuleCheckBadKernelEmitThmSorry \
+      hostModuleCheckGoodKernelEmitTheoremsProof \
+      HostModuleCheckKernelEmitProof \
+      PACKAGE-ELABORATE \
+      MultExtractFoundation-only \
+      MultLinearTypesProof-only \
+      KernelEmitParity-only \
+      MultLinearTypesProgramGraphComposeErasureExtractEmitPlanEmitApplyEmitBodyKernelMultLinearTypesProgramEmitParityMultParityLinearParityTypesParityProgramParityEmitEmitMultScaffoldEmitLinearScaffoldEmitTypesScaffoldEmitProgramScaffoldEmitGraphScaffoldEmitComposeScaffoldEmitErasureScaffoldEmitExtractScaffoldEmitBannerScaffoldKernelSelfApplyProductOutKernelCompilePathJoinMapSelfHostSurfaceMatrixEnv-only \
+      PACKAGE-BAND-INCOMPLETE \
+      PACKAGE-ENV-INCOMPLETE \
+      checkPackageFoundationDialect \
+      checkPackageProofDialect \
+      checkPackageKernelDialect \
+      checkPackageEnvDialect \
+      hostModuleCheckPackageElaborateFirstBandDualOk \
+      hostModuleCheckPackageElaborateFirstBandOk \
+      hostModuleCheckPackageElaborateProofBandDualOk \
+      hostModuleCheckPackageElaborateProofBandOk \
+      hostModuleCheckPackageElaborateKernelBandDualOk \
+      hostModuleCheckPackageElaborateKernelBandOk \
+      hostModuleCheckPackageElaborateEnvDualOk \
+      hostModuleCheckPackageElaborateEnvOk \
+      hostModuleCheckGoodPackageFoundationText \
+      hostModuleCheckBadPackageMissingExtractText \
+      hostModuleCheckBadPackageNotReadyText \
+      hostModuleCheckGoodPackageProofText \
+      hostModuleCheckBadPackageMissingTypesProofText \
+      hostModuleCheckBadPackageProofNotReadyText \
+      hostModuleCheckGoodPackageKernelText \
+      hostModuleCheckBadPackageMissingParityEmitText \
+      hostModuleCheckBadPackageKernelNotReadyText \
+      hostModuleCheckGoodPackageEnvText \
+      hostModuleCheckGoodPackageEnvU2Text \
+      hostModuleCheckBadPackageEnvIllTypedMultText \
+      hostModuleCheckBadPackageEnvIllTypedTypesText \
+      hostModuleCheckBadPackageEnvIllTypedProgramText \
+      hostModuleCheckBadPackageEnvIllTypedGraphText \
+      hostModuleCheckBadPackageEnvIllTypedComposeText \
+      hostModuleCheckBadPackageEnvIllTypedErasureText \
+      hostModuleCheckBadPackageEnvIllTypedExtractText \
+      hostModuleCheckBadPackageEnvIllTypedEmitPlanText \
+      hostModuleCheckBadPackageEnvIllTypedEmitApplyText \
+      hostModuleCheckBadPackageEnvIllTypedEmitBodyText \
+      hostModuleCheckBadPackageEnvIllTypedKernelMultText \
+      hostModuleCheckBadPackageEnvIllTypedKernelLinearText \
+      hostModuleCheckBadPackageEnvIllTypedKernelTypesText \
+      hostModuleCheckBadPackageEnvIllTypedKernelProgramText \
+      hostModuleCheckBadPackageEnvIllTypedKernelEmitText \
+      hostModuleCheckBadPackageEnvIllTypedParityMultText \
+      hostModuleCheckBadPackageEnvIllTypedParityMultReadyText \
+      hostModuleCheckBadPackageEnvIllTypedParityLinearText \
+      hostModuleCheckBadPackageEnvIllTypedParityLinearReadyText \
+      hostModuleCheckBadPackageEnvIllTypedParityTypesText \
+      hostModuleCheckBadPackageEnvIllTypedParityTypesReadyText \
+      hostModuleCheckBadPackageEnvIllTypedParityProgramText \
+      hostModuleCheckBadPackageEnvIllTypedParityProgramReadyText \
+      hostModuleCheckBadPackageEnvIllTypedParityEmitText \
+      hostModuleCheckBadPackageEnvIllTypedParityEmitReadyText \
+      hostModuleCheckBadPackageEnvIllTypedEmitMultScaffoldText \
+      hostModuleCheckBadPackageEnvIllTypedEmitLinearScaffoldText \
+      hostModuleCheckBadPackageEnvIllTypedEmitTypesScaffoldText \
+      hostModuleCheckBadPackageEnvIllTypedEmitProgramScaffoldText \
+      hostModuleCheckBadPackageEnvIllTypedEmitGraphScaffoldText \
+      hostModuleCheckBadPackageEnvIllTypedEmitComposeScaffoldText \
+      hostModuleCheckBadPackageEnvIllTypedEmitErasureScaffoldText \
+      hostModuleCheckBadPackageEnvIllTypedEmitExtractScaffoldText \
+      hostModuleCheckBadPackageEnvIllTypedEmitBannerScaffoldText \
+      hostModuleCheckBadPackageEnvIllTypedKernelSelfApplyText \
+      hostModuleCheckBadPackageEnvIllTypedProductOutKernelText \
+      hostModuleCheckBadPackageEnvIllTypedCompilePathText \
+      hostModuleCheckBadPackageEnvIllTypedJoinMapText \
+      hostModuleCheckBadPackageEnvIllTypedSelfHostText \
+      hostModuleCheckBadPackageEnvIllTypedSurfaceMatrixText \
+      hostModuleCheckBadPackageEnvUnresolvedImportText \
+      hostModuleCheckBadPackageEnvNotReadyText \
+      HostModuleCheckPackageElab \
+      HostModuleCheckPackageEnv \
+      HostModuleCheckPackageEnvFixtures \
+      HostModuleCheckPackageEnvFixturesU2 \
+      HostModuleCheckPackageEnvFixturesS5 \
+      HostModuleCheckPackageEnvEvidence \
+      hostModuleCheckBadMissingAxiom \
+      hostModuleCheckBadMissingStructure \
+      hostModuleCheckBadMissingProgramStructure \
+      hostModuleCheckBadMissingErasedStructure \
+      hostModuleCheckBadMissingKernelReady \
+      hostModuleCheckBadMissingPlanStructure \
+      hostModuleCheckBadMissingParityReady \
       MISSING-DECL \
       MISSING-NAMESPACE \
       EMPTY-MODULE
     do
-      if ! grep -qF "$tok" "$mod"; then
-        echo "error: missing $tok in $mod" >&2
+      if ! grep_hmc_family "$tok"; then
+        echo "error: missing $tok in HostModuleCheck family (tip/Seeds/LoadOk/Driver/Surface/MultTerm/Checkers/Accepts/Fixtures/RequiredDecls*/FixtureTexts*)" >&2
         exit 1
       fi
     done
-    if ! grep -qF 'Host library seed expand continue' "$mod"; then
-      echo "error: missing expand Name Host library seed expand continue in $mod" >&2
+    if ! grep_hmc_family 'Host library seed expand continue'; then
+      echo "error: missing expand Name Host library seed expand continue in HostModuleCheck family" >&2
       exit 1
     fi
-    if ! grep -qE 'def hostModuleCheckWithoutLakeFinished[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
-      echo "error: hostModuleCheckWithoutLakeFinished must be true in $mod" >&2
+    if ! grep_hmc_family 'FOUNDATION-KIND-SURFACE'; then
+      echo "error: missing deepen bar FOUNDATION-KIND-SURFACE in HostModuleCheck family" >&2
       exit 1
     fi
-    if ! grep -qE 'def hostModuleCheckHostElaboratorResidualRemains[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
-      echo "error: host residual honesty must remain true in $mod" >&2
+    if ! grep -qE 'def hostModuleCheckWithoutLakeFinished[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod_seeds"; then
+      echo "error: hostModuleCheckWithoutLakeFinished must be true in $mod_seeds" >&2
       exit 1
     fi
-    if ! grep -qE 'def hostModuleCheckHostFreeClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*false' "$mod"; then
-      echo "error: hostModuleCheckHostFreeClaimed must stay false" >&2
+    if ! grep -qE 'def hostModuleCheckHostElaboratorResidualRemains[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod_seeds"; then
+      echo "error: host residual honesty must remain true in $mod_seeds" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckHostFreeClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*false' "$mod_seeds"; then
+      echo "error: hostModuleCheckHostFreeClaimed must stay false in $mod_seeds" >&2
       exit 1
     fi
     for seed in "$mult_mod" "$mult_thm" "$linear_mod" "$linear_thm" "$types_mod" "$types_thm" "$ir_prog" "$ir_prog_thm" "$ir_graph" "$ir_graph_thm" "$host_compose" "$host_compose_thm"; do

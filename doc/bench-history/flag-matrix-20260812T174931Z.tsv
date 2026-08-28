@@ -1,0 +1,4 @@
+stamp	flags	arm	exit	N	ns_median	ns_mean	ns_min	ns_max	status
+20260812T174931Z	-O2	R-free	ok	2000000	2.7198	2.7197	2.7099	2.7296	ok
+20260812T174931Z	-O3	R-free	ok	2000000	2.5378	2.5378	2.0419	3.0337	ok
+20260812T174931Z	-O3 -flto	R-free	ok	2000000	0.7931	0.7931	0.6688	0.9173	ok

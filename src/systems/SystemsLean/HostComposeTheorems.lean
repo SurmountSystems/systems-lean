@@ -9,9 +9,10 @@
 
   Spec (readable):
   - COMPOSE-THEOREM / HOST-COMPOSE-THEOREM: empty compose, mint-consume,
-    multPreScan MULT-1/MULT-0 gap-close, EMIT-BOUNDARY classic/edge reject on
-    non-empty fixtures, markErased idempotence, omega-only, push/edge
-    fail-closed + ok.
+    multPreScan MULT-1/MULT-0 gap-close, spent MULT-1 reject, joint mult1+mult0
+    multi-node extract (minted+marked success; either-side fail-closed),
+    EMIT-BOUNDARY classic/edge reject on non-empty fixtures, markErased
+    idempotence, omega-only, push/edge fail-closed + ok.
   - HOST-SMOKE: behavioral examples over push/mint/mark/extract paths.
 
   Intentional non-claims:
@@ -31,6 +32,13 @@
   mint_consume_exact_once_sequential, pushHostNode_bad_node,
   pushHostNode_value_one_ok, addHostEdge_empty_badEndpoints,
   addHostEdge_two_values_ok, addHostEdge_one_node_badEndpoints,
+  multPreScan_joint_minted_marked_true, extractOkFs_joint_minted_marked_true,
+  checkFailClosed_joint_minted_marked_true,
+  multPreScan_joint_unminted_marked_false, extractOkFs_joint_unminted_marked_false,
+  checkFailClosed_joint_unminted_marked_false,
+  multPreScan_joint_minted_unmarked_false, extractOkFs_joint_minted_unmarked_false,
+  checkFailClosed_joint_minted_unmarked_false,
+  joint_mult1_mult0_extract_ok, joint_mult1_mult0_either_side_fail_closed,
   HostComposeTheorems,
   UNIT_SURFACE host surface. Module: SystemsLean.HostComposeTheorems
   Red/green: just systems-host; lake build SystemsLean.HostComposeTheorems.
@@ -348,6 +356,122 @@ theorem extractOk_edge_mult0_marked_false :
     (extractOkFs thmHostMult0Marked = true)
       /\ (extractOk thmHostMult0Marked RuntimeClaim.edgeRuntime = false) :=
   And.intro extractOkFs_mult0_marked_true rfl
+
+/-! ### Joint MULT-1 + MULT-0 multi-node extract (net-new vs single-grade)
+    Host carries both a MULT-1 graph node and a MULT-0 graph node. Success needs
+    mint AND mark together; either-side fail-closed when unminted (MULT-1) or
+    unmarked (MULT-0). Net-new vs mult1_spent / mult0_marked families alone and
+    vs EmitPlan/EmitBody linear_and_erased inventory alone (those inventory counts;
+    these prove multPreScan / extractOkFs / checkFailClosed on the joint host). -/
+
+/-- Joint graph node list: MULT-1 then MULT-0 (shared by joint fixtures). -/
+private def thmJointNodes : List IrNode := [thmLinearNode, thmErasedNode]
+
+/-- Joint host: minted MULT-1 + marked MULT-0 (joint success path). -/
+private def thmHostJointMintedMarked : Host := {
+  graph := { prog := { nodes := thmJointNodes }, edges := [] }
+  linear := { live := true, id := 1 }
+  erased := Erasure.mark Erasure.unmarked
+}
+
+/-- Joint host: unminted MULT-1 + marked MULT-0 (MULT-1 side fail-closed). -/
+private def thmHostJointUnmintedMarked : Host := {
+  graph := { prog := { nodes := thmJointNodes }, edges := [] }
+  linear := LinearHost.empty
+  erased := Erasure.mark Erasure.unmarked
+}
+
+/-- Joint host: minted MULT-1 + unmarked MULT-0 (MULT-0 side fail-closed). -/
+private def thmHostJointMintedUnmarked : Host := {
+  graph := { prog := { nodes := thmJointNodes }, edges := [] }
+  linear := { live := true, id := 1 }
+  erased := Erasure.unmarked
+}
+
+/-- Joint MULT-1 minted + MULT-0 marked passes multPreScan.
+    Greppable: multPreScan_joint_minted_marked_true, MULT-1, MULT-0,
+    COMPOSE-THEOREM, HOST-COMPOSE-THEOREM. -/
+theorem multPreScan_joint_minted_marked_true :
+    multPreScan thmHostJointMintedMarked = true := rfl
+
+/-- Joint MULT-1 minted + MULT-0 marked extracts under RUNTIME-FS.
+    Greppable: extractOkFs_joint_minted_marked_true, MULT-1, MULT-0, RUNTIME-FS,
+    COMPOSE-THEOREM, HOST-COMPOSE-THEOREM. -/
+theorem extractOkFs_joint_minted_marked_true :
+    extractOkFs thmHostJointMintedMarked = true := rfl
+
+/-- Joint MULT-1 minted + MULT-0 marked passes checkFailClosed.
+    Greppable: checkFailClosed_joint_minted_marked_true, MULT-1, MULT-0,
+    FAIL-CLOSED, COMPOSE-THEOREM, HOST-COMPOSE-THEOREM. -/
+theorem checkFailClosed_joint_minted_marked_true :
+    checkFailClosed thmHostJointMintedMarked = true := rfl
+
+/-- Joint unminted MULT-1 + marked MULT-0 fails multPreScan (MULT-1 side).
+    Greppable: multPreScan_joint_unminted_marked_false, MULT-1, MULT-0,
+    COMPOSE-THEOREM, HOST-COMPOSE-THEOREM. -/
+theorem multPreScan_joint_unminted_marked_false :
+    multPreScan thmHostJointUnmintedMarked = false := rfl
+
+/-- Joint unminted MULT-1 + marked MULT-0 fails extract under RUNTIME-FS.
+    Greppable: extractOkFs_joint_unminted_marked_false, MULT-1, MULT-0,
+    COMPOSE-THEOREM, HOST-COMPOSE-THEOREM. -/
+theorem extractOkFs_joint_unminted_marked_false :
+    extractOkFs thmHostJointUnmintedMarked = false := rfl
+
+/-- Joint unminted MULT-1 + marked MULT-0 fails checkFailClosed.
+    Greppable: checkFailClosed_joint_unminted_marked_false, MULT-1, MULT-0,
+    FAIL-CLOSED, COMPOSE-THEOREM, HOST-COMPOSE-THEOREM. -/
+theorem checkFailClosed_joint_unminted_marked_false :
+    checkFailClosed thmHostJointUnmintedMarked = false := rfl
+
+/-- Joint minted MULT-1 + unmarked MULT-0 fails multPreScan (MULT-0 side).
+    Greppable: multPreScan_joint_minted_unmarked_false, MULT-1, MULT-0,
+    COMPOSE-THEOREM, HOST-COMPOSE-THEOREM. -/
+theorem multPreScan_joint_minted_unmarked_false :
+    multPreScan thmHostJointMintedUnmarked = false := rfl
+
+/-- Joint minted MULT-1 + unmarked MULT-0 fails extract under RUNTIME-FS.
+    Greppable: extractOkFs_joint_minted_unmarked_false, MULT-1, MULT-0,
+    COMPOSE-THEOREM, HOST-COMPOSE-THEOREM. -/
+theorem extractOkFs_joint_minted_unmarked_false :
+    extractOkFs thmHostJointMintedUnmarked = false := rfl
+
+/-- Joint minted MULT-1 + unmarked MULT-0 fails checkFailClosed.
+    Greppable: checkFailClosed_joint_minted_unmarked_false, MULT-1, MULT-0,
+    FAIL-CLOSED, COMPOSE-THEOREM, HOST-COMPOSE-THEOREM. -/
+theorem checkFailClosed_joint_minted_unmarked_false :
+    checkFailClosed thmHostJointMintedUnmarked = false := rfl
+
+/-- Joint success: minted MULT-1 + marked MULT-0 conjoins multPreScan /
+    extractOkFs / checkFailClosed true (no single-surface green alone).
+    Greppable: joint_mult1_mult0_extract_ok, MULT-1, MULT-0, COMPOSE-THEOREM,
+    HOST-COMPOSE-THEOREM. -/
+theorem joint_mult1_mult0_extract_ok :
+    (multPreScan thmHostJointMintedMarked = true)
+      /\ (extractOkFs thmHostJointMintedMarked = true)
+      /\ (checkFailClosed thmHostJointMintedMarked = true) :=
+  And.intro multPreScan_joint_minted_marked_true
+    (And.intro extractOkFs_joint_minted_marked_true
+      checkFailClosed_joint_minted_marked_true)
+
+/-- Either-side fail-closed on joint host: unminted+marked fails AND
+    minted+unmarked fails on multPreScan / extractOkFs / checkFailClosed.
+    Conjoins both sides so a broken single-grade path cannot green alone.
+    Greppable: joint_mult1_mult0_either_side_fail_closed, MULT-1, MULT-0,
+    FAIL-CLOSED, COMPOSE-THEOREM, HOST-COMPOSE-THEOREM. -/
+theorem joint_mult1_mult0_either_side_fail_closed :
+    (multPreScan thmHostJointUnmintedMarked = false)
+      /\ (extractOkFs thmHostJointUnmintedMarked = false)
+      /\ (checkFailClosed thmHostJointUnmintedMarked = false)
+      /\ (multPreScan thmHostJointMintedUnmarked = false)
+      /\ (extractOkFs thmHostJointMintedUnmarked = false)
+      /\ (checkFailClosed thmHostJointMintedUnmarked = false) :=
+  And.intro multPreScan_joint_unminted_marked_false
+    (And.intro extractOkFs_joint_unminted_marked_false
+      (And.intro checkFailClosed_joint_unminted_marked_false
+        (And.intro multPreScan_joint_minted_unmarked_false
+          (And.intro extractOkFs_joint_minted_unmarked_false
+            checkFailClosed_joint_minted_unmarked_false))))
 
 /-! ### Algebraic / fail-closed deepen (beyond empty canaries)
     mark idempotence, MULT-OMEGA-only pre-scan, mint-consume payload honesty. -/

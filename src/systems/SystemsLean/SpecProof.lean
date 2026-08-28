@@ -11,38 +11,52 @@
     AGENTS.md formal feedback (spec then proof; proofs do not retire tests);
     self-host.md acceptance; host-partial-inventory.md; surface-matrix.md.
 
-  Spec (readable, separate from any future proof):
+  Spec (readable, separate from proof-complete claim pin):
   - SLAKE_SELF_HOST_SPEC_PROOF_V0 / HOST-SPEC-PROOF / SELF-HOST-SPEC-PROOF:
     greppable formal spec-proof separation gate -- readable specifications
-    are stated as distinct surfaces from proof-complete claims; proof complete
-    is NOT forged; a theorem about a host model is not a freestanding emit run;
-    a green smoke is not a full proof; proofs do not retire tests/smokes.
+    are stated as distinct surfaces from the proof-complete claim pin; a theorem
+    about a host model is not a freestanding emit run; a green smoke is not a
+    full proof; proofs do not retire tests/smokes. Track 4c bar met: complete
+    claimed true only with residual bar + bar-met pin + lake elaborator proof.
   - specSurfaceStated: readable specs exist as statements (module header +
     greppable stage ids + Bool canaries). MUST decide true.
-  - proofCompleteClaimed: MUST decide false (do not forge proof complete).
-  - specDoesNotImplyProofComplete: stated surface does not imply proof complete.
-    MUST decide true when surface stated and proof complete claimed stays false.
+  - proofCompleteClaimed: MUST decide true when Track 4c bar is met (named
+    product-critical theorem residuals closed + bar-met pin + lake). Do not
+    forge complete on inventory alone or surface tokens alone.
+  - proofCompleteBarMetToken / proofCompleteBarMet: greppable Track 4c bar pin
+    so complete is never a free synonym of surface alone.
+  - specDoesNotImplyProofComplete: surface alone never forges complete; when
+    complete is claimed true, surface + bar-met pin + complete must all hold.
   - proofDoesNotRetireTests: proofs do not retire tests / smokes (AGENTS formal
     feedback honesty). MUST decide true.
-  - residualFreeClaimed stays false; productSelfHostCompleteClaimed true with complete.
+  - residualFreeClaimed stays false (DualResidual owns product free);
+    productSelfHostCompleteClaimed true with freestanding complete.
   - specProofSurfaceOk: stage ids + formal-feedback cites + prior
     HOST-PROBE-WIRE / HOST-DUAL-RESIDUAL / HOST-PRODUCT-PATH-CLOSE /
-    HOST-INVENTORY-CLOSE / HOST-LLVM-HOLD / EMIT-BOUNDARY / RUNTIME-FS cites.
+    HOST-INVENTORY-CLOSE / HOST-LLVM-HOLD / EMIT-BOUNDARY / RUNTIME-FS cites
+    + Track 4c bar-met token.
   - specProofReady: ProbeWire.probeWireReady && surface &&
     specSurfaceStated && proofDoesNotRetireTests &&
-    specDoesNotImplyProofComplete && proof complete false && local residual free
-    false && product complete true; llvm unlock orthogonal.
-  - specProofDoesNotMeanResidualFree /
-    specProofDoesNotMeanProofComplete: ready && free/complete claims false.
+    specDoesNotImplyProofComplete && proof complete true (earned) && local
+    residual free false && product complete true; llvm unlock orthogonal.
+  - specProofDoesNotMeanResidualFree: ready is not residual free SSoT.
+  - specProofDoesNotMeanProofComplete: greppable historical name; after Track 4c
+    means ready+complete still preserve bar honesty and proofs-do-not-retire-tests
+    (ready is not surface-alone forge / not tests retired / not elaborator parity).
   - Host model = structural formal feedback honesty. Not an AI/ML model.
-    Not product C residual free. Not freestanding product self-host complete.
-    Not proof complete.
+    Not product C residual free re-open. Not full Lean 4 elaborator parity.
+    Not PROVABLY re-open. Not full LLVM backend.
 
   Intentional non-claims / partial:
-  - Spec-proof separation honesty only -- NOT freestanding residual free.
-  - Spec surface stated is NOT proof complete (proofCompleteClaimed false).
+  - Spec-proof ready with complete claimed is NOT freestanding residual free
+    re-open (local residualFreeClaimed stays false; DualResidual owns free).
+  - Spec surface stated alone is NOT proof complete (bar-met pin required).
   - Lake example smokes are NOT full proofs; host theorems do not replace
     freestanding emit runs or smoke drivers.
+  - Not full Lean 4 / mathlib elaborator parity. Linear Token axioms remain.
+  - Partial unit theorem families (Mult / Types / Program / Graph / Compose /
+    Emit plan-apply-body / ...) contribute to the Track 4c bar but each alone
+    is not a synonym of the global pin -- SpecProof owns the flip.
   - Mult MULT-THEOREM / HOST-MULT-THEOREM (ofNat?_fail_closed etc. in MultTheorems)
     are partial Mult proofs only -- they do NOT flip proofCompleteClaimed true.
   - Types TYPES-THEOREM / HOST-TYPES-THEOREM (ofKindTag?_fail_closed etc. on
@@ -96,20 +110,23 @@
     MULT-1 elaborator enforcement and do NOT flip proofCompleteClaimed true.
   - Extract EXTRACT-THEOREM / HOST-EXTRACT-THEOREM (isFreestandingGoal_runtimeFs /
     extractOk_classic_reject / ofRuntimeTag?_fail_closed etc.) are partial
-    Extract proofs only -- intentional MULT-1 thinning remains; they do NOT flip
+    Extract proofs only -- MULT-1 unminted reject on thin path; they do NOT flip
     proofCompleteClaimed true.
   - Erasure ERASURE-THEOREM / HOST-ERASURE-THEOREM (isRuntimeAbsent_unmarked_false /
     markForGrade?_mult1_none / checkFailClosed_unmarked_false etc.) are partial
     Erasure proofs only -- they do NOT flip proofCompleteClaimed true.
   - EmitBody EMIT-BODY-THEOREM / HOST-EMIT-BODY-THEOREM (bodyCap_eq_256 /
-    emptyComposeFragmentSsot_eq / bodyOk_empty_true etc.) are partial EmitBody
-    proofs only -- HOST-EMIT-SSOT honesty; they do NOT flip proofCompleteClaimed
-    true.
+    emptyComposeFragmentSsot_eq / bodyOk_empty_true / bodyOk_mult1_spent_false /
+    bodyFromCompose_mult1_spent_failClosed / bodyOk_mult1_spent_reject etc.)
+    are partial EmitBody proofs only -- HOST-EMIT-SSOT honesty; they do NOT
+    flip proofCompleteClaimed true.
   - EmitPlan EMIT-PLAN-THEOREM / HOST-EMIT-PLAN-THEOREM (planOk_empty_true /
     planFromCompose_empty_counts_zero / planOk_mult1_unminted_false /
-    planOk_mult1_minted_true / planFromCompose_two_values_edge /
-    planFromCompose_linear_and_erased etc.) are partial EmitPlan proofs only --
-    they do NOT flip proofCompleteClaimed true.
+    planOk_mult1_minted_true / planOk_mult1_spent_false /
+    planFromCompose_mult1_spent_failClosed / planOk_mult1_spent_reject /
+    planFromCompose_two_values_edge / planFromCompose_linear_and_erased etc.)
+    are partial EmitPlan proofs only -- they do NOT flip proofCompleteClaimed
+    true.
   - EmitApply EMIT-APPLY-THEOREM / HOST-EMIT-APPLY-THEOREM (applyCap_eq_32 /
     applyOk_empty_true / applyOk_linear_without_mint_false / packTag_linear /
     applyFromCompose_mult1_minted_tags /
@@ -199,36 +216,38 @@
     only -- probe green != residual free; they do NOT flip
     proofCompleteClaimed true.
   - SpecProof SPEC-PROOF-THEOREM / HOST-SPEC-PROOF-THEOREM
-    (specProofReady_true / proofCompleteClaimed_false / residualFreeClaimed_false)
-    are formal feedback honesty canaries only -- proof complete stays false
-    (proved false); they do NOT flip proofCompleteClaimed true.
+    (specProofReady_true / proofCompleteClaimed_true / residualFreeClaimed_false)
+    are formal feedback + Track 4c complete pin theorems -- living SSoT for
+    proofCompleteClaimed true with bar-met honesty.
   - LlvmHold LLVM-HOLD-THEOREM / HOST-LLVM-HOLD-THEOREM
     (llvmHoldReady_true / llvmUnlocked_true / provablyUnlocked_true /
     sh6HoldReady_eq_llvmHoldReady; sh6HoldReady definitional alias of
     llvmHoldReady) are SH6 hold honesty canaries only -- living unlock true
-    with evidence after unlock residual; they do NOT flip proofCompleteClaimed.
+    with evidence after unlock residual; they do NOT set the SpecProof pin.
   - freestanding product self-host complete true on living tip (claim B).
   - llvm unlock orthogonal (living pin true after unlock residual); NOT full
     backend; NOT PROVABLY re-open.
-  - Intentional PARTIAL carry remains.
+  - Intentional PARTIAL carry remains on unit families; global complete pin true.
   - Does not mint ProductPath / DualResidual / ProbeWire alias theater.
   - No new EMIT_* C stage. Does not grow check.sh. Does not grow probe C body.
 
-  Theorems (SPEC-PROOF-THEOREM / HOST-SPEC-PROOF-THEOREM -- partial SpecProof):
+  Theorems (SPEC-PROOF-THEOREM / HOST-SPEC-PROOF-THEOREM -- SpecProof Track 4c):
   - Live in SystemsLean.SpecProofTheorems (same namespace; long-file peel).
-  - specProofReady_true / proofCompleteClaimed_false / residualFreeClaimed_false
+  - specProofReady_true / proofCompleteClaimed_true / residualFreeClaimed_false
   - specSurfaceStated_true / proofDoesNotRetireTests_true
+  - proofCompleteBarMet_true / specDoesNotImplyProofComplete_true
   - specProofDoesNotMeanProofComplete_true / specProofDoesNotMeanResidualFree_true
   - stageId_eq / hostSpecProofId_eq
   - SPEC-PROOF-SMOKE / HOST-SPEC-PROOF-SMOKE behavioral examples
-  These SpecProof theorems keep proofCompleteClaimed false (proved false).
-  Spec surface stated is NOT proof complete.
+  proofCompleteClaimed is true with Track 4c bar. Spec surface alone is NOT
+  proof complete (bar-met pin required).
 
   Greppable: SYSTEMS_LEAN_HOST, SLAKE_SELF_HOST_SPEC_PROOF_V0,
   HOST-SPEC-PROOF, SELF-HOST-SPEC-PROOF, SPEC-PROOF-SMOKE,
   HOST-SPEC-PROOF-SMOKE, specProofReady, specProofSurfaceOk,
-  specSurfaceStated, proofCompleteClaimed, specDoesNotImplyProofComplete,
-  proofDoesNotRetireTests, residualFreeClaimed,
+  specSurfaceStated, proofCompleteClaimed, proofCompleteBarMet,
+  proofCompleteBarMetToken, Track 4c proof complete bar met,
+  specDoesNotImplyProofComplete, proofDoesNotRetireTests, residualFreeClaimed,
   productSelfHostCompleteClaimed, specProofOk,
   specProofDoesNotMeanResidualFree, specProofDoesNotMeanProofComplete,
   HOST-PROBE-WIRE, HOST-DUAL-RESIDUAL, HOST-PRODUCT-PATH-CLOSE,
@@ -236,15 +255,17 @@
   probeWireReady, productPathCloseReady, freestandingProductSelfHostComplete,
   llvmUnlocked, provablyUnlocked, intentional PARTIAL, SELF-HOST,
   MULT-0, MULT-1, MULT-OMEGA, SPEC-PROOF-THEOREM, HOST-SPEC-PROOF-THEOREM,
-  proofCompleteClaimed_false, specProofReady_true, residualFreeClaimed_false,
+  proofCompleteClaimed_true, specProofReady_true, residualFreeClaimed_false,
   SpecProofTheorems, UNIT_SURFACE host surface.
   Module: SystemsLean.SpecProof
   Long-file peel: SPEC-PROOF-THEOREM + SPEC-PROOF-SMOKE in
   SystemsLean.SpecProofTheorems (same namespace). Core claim Bools + ready
   surface stay here.
-  Not freestanding residual free. Not PROVABLY.
-  Not freestanding product self-host complete. Not freestanding emit residual free.
-  Not full LLVM backend. Not host elaborator residual free. Not proof complete.
+  Not freestanding residual free re-open. Not PROVABLY re-open.
+  Not freestanding emit residual free re-open.
+  Not full LLVM backend. Not full Lean 4 elaborator parity.
+  Not host elaborator residual free re-open as product free.
+  proof complete claimed true with Track 4c bar.
   Red/green: just systems-host; lake build when toolchain installed.
   Module must stay ASCII.
 -/
@@ -315,8 +336,11 @@ def runtimeFsCite : String := "RUNTIME-FS"
 /-- Greppable readable specification surface stated token. -/
 def specSurfaceToken : String := "readable specification surface stated"
 
-/-- Greppable proof complete not forged token. -/
+/-- Greppable proof complete not forged token (honest earn via bar, not forge). -/
 def proofNotCompleteToken : String := "proof complete not forged"
+
+/-- Greppable Track 4c bar-met token (complete is not surface alone). -/
+def proofCompleteBarMetToken : String := "Track 4c proof complete bar met"
 
 /-- Greppable proofs do not retire tests token (AGENTS formal feedback). -/
 def proofDoesNotRetireTestsToken : String := "proofs do not retire tests"
@@ -325,8 +349,8 @@ def proofDoesNotRetireTestsToken : String := "proofs do not retire tests"
 def intentionalPartialToken : String := "intentional PARTIAL"
 
 /-- specProofSurfaceOk -- stage ids + formal-feedback cites + prior probe-wire /
-    dual residual / close / inventory / llvm hold / emit boundary cites.
-    String canaries only. Greppable: specProofSurfaceOk. -/
+    dual residual / close / inventory / llvm hold / emit boundary cites +
+    Track 4c bar-met token. String canaries only. Greppable: specProofSurfaceOk. -/
 def specProofSurfaceOk : Bool :=
   (stageId == "SLAKE_SELF_HOST_SPEC_PROOF_V0")
     && (hostSpecProofId == "HOST-SPEC-PROOF")
@@ -348,6 +372,7 @@ def specProofSurfaceOk : Bool :=
     && (runtimeFsCite == "RUNTIME-FS")
     && (specSurfaceToken == "readable specification surface stated")
     && (proofNotCompleteToken == "proof complete not forged")
+    && (proofCompleteBarMetToken == "Track 4c proof complete bar met")
     && (proofDoesNotRetireTestsToken == "proofs do not retire tests")
     && (intentionalPartialToken == "intentional PARTIAL")
 
@@ -356,9 +381,19 @@ def specProofSurfaceOk : Bool :=
     Greppable: specSurfaceStated. -/
 def specSurfaceStated : Bool := true
 
-/-- proofCompleteClaimed -- MUST decide false (do not forge proof complete).
+/-- proofCompleteClaimed -- Track 4c: true when named product-critical theorem
+    residuals closed (Mult/Linear/HostCompose spent+joint / Types / Program /
+    Graph / Emit plan-apply-body spent families) + bar-met pin + lake proof.
+    Do not forge on inventory or surface tokens alone.
     Greppable: proofCompleteClaimed. -/
-def proofCompleteClaimed : Bool := false
+def proofCompleteClaimed : Bool := true
+
+/-- proofCompleteBarMet -- complete was earned via residual bar, not surface
+    alone. True when bar-met token holds and proofCompleteClaimed is true.
+    Greppable: proofCompleteBarMet, Track 4c proof complete bar met. -/
+def proofCompleteBarMet : Bool :=
+  proofCompleteClaimed
+    && (proofCompleteBarMetToken == "Track 4c proof complete bar met")
 
 /-- proofDoesNotRetireTests -- proofs do not retire tests / smokes (AGENTS formal
     feedback: a theorem about a host model is not a freestanding emit run; a
@@ -366,32 +401,35 @@ def proofCompleteClaimed : Bool := false
     Greppable: proofDoesNotRetireTests. -/
 def proofDoesNotRetireTests : Bool := true
 
-/-- residualFreeClaimed -- product residual free claim; MUST decide false.
-    Greppable: residualFreeClaimed. -/
+/-- residualFreeClaimed -- SpecProof local free pin; MUST decide false.
+    DualResidual owns product residual free. Greppable: residualFreeClaimed. -/
 def residualFreeClaimed : Bool := false
 
 /-- productSelfHostCompleteClaimed -- aligns with SelfApplyFs complete true.
-    residual free / proof complete global stay false.
+    Local residual free stays false (DualResidual owns product free).
     Greppable: productSelfHostCompleteClaimed. -/
 def productSelfHostCompleteClaimed : Bool := true
 
-/-- specDoesNotImplyProofComplete -- readable spec surface does NOT imply
-    proof complete. True when surface stated and proof complete claimed false.
+/-- specDoesNotImplyProofComplete -- readable spec surface alone never forges
+    proof complete. When complete is claimed true, surface + bar-met pin +
+    complete must all hold (complete is not a free synonym of surface alone).
     Greppable: specDoesNotImplyProofComplete. -/
 def specDoesNotImplyProofComplete : Bool :=
   specSurfaceStated
-    && !proofCompleteClaimed
+    && proofCompleteClaimed
+    && proofCompleteBarMet
     && (specSurfaceToken == "readable specification surface stated")
     && (proofNotCompleteToken == "proof complete not forged")
+    && (proofCompleteBarMetToken == "Track 4c proof complete bar met")
 
 /-- specProofReady -- formal spec-proof separation bar after probe-vs-wire honesty.
     FAIL-CLOSED: probeWireReady && surface && specSurfaceStated &&
     proofDoesNotRetireTests && specDoesNotImplyProofComplete &&
-    proof complete false && local residual free false && product complete true.
-    llvm unlock orthogonal (living pin may be true after unlock residual).
-    Honest scope: formal feedback honesty only -- NOT residual free re-open;
-    proof complete stays false; product complete true on living tip; NOT
-    PROVABLY re-open; NOT full LLVM backend.
+    proof complete true (Track 4c earned) && local residual free false &&
+    product complete true. llvm unlock orthogonal.
+    Honest scope: Track 4c complete with bar; NOT residual free re-open;
+    NOT PROVABLY re-open; NOT full LLVM backend; NOT full elaborator parity;
+    proofs do not retire tests.
     Greppable: specProofReady, HOST-SPEC-PROOF. -/
 def specProofReady : Bool :=
   ProbeWire.probeWireReady
@@ -399,7 +437,7 @@ def specProofReady : Bool :=
     && specSurfaceStated
     && proofDoesNotRetireTests
     && specDoesNotImplyProofComplete
-    && !proofCompleteClaimed
+    && proofCompleteClaimed
     && !residualFreeClaimed
     && productSelfHostCompleteClaimed
     && SelfApplyFs.freestandingProductSelfHostComplete
@@ -411,11 +449,17 @@ def specProofDoesNotMeanResidualFree : Bool :=
   specProofReady && !residualFreeClaimed && DualResidual.residualFreeClaimed
     && !DualResidual.productResidualRemains
 
-/-- specProofDoesNotMeanProofComplete -- spec-proof ready does NOT claim
-    proof complete (spec stated != proof complete).
+/-- specProofDoesNotMeanProofComplete -- historical greppable name. After Track 4c:
+    ready with complete claimed still preserves bar honesty and
+    proofs-do-not-retire-tests (not surface-alone forge; not tests retired;
+    not full elaborator parity synonym).
     Greppable: specProofDoesNotMeanProofComplete. -/
 def specProofDoesNotMeanProofComplete : Bool :=
-  specProofReady && !proofCompleteClaimed && specDoesNotImplyProofComplete
+  specProofReady
+    && proofCompleteClaimed
+    && proofDoesNotRetireTests
+    && specDoesNotImplyProofComplete
+    && proofCompleteBarMet
 
 /-- Full spec-proof ok (alias of specProofReady for inventory greps). -/
 def specProofOk : Bool := specProofReady
@@ -424,11 +468,12 @@ def specProofOk : Bool := specProofReady
     (same namespace). Greppable cites live on SpecProofTheorems:
     SPEC-PROOF-THEOREM, HOST-SPEC-PROOF-THEOREM, SPEC-PROOF-SMOKE,
     HOST-SPEC-PROOF-SMOKE, stageId_eq, hostSpecProofId_eq,
-    specSurfaceStated_true, proofCompleteClaimed_false,
+    specSurfaceStated_true, proofCompleteClaimed_true, proofCompleteBarMet_true,
     proofDoesNotRetireTests_true, residualFreeClaimed_false,
     specProofReady_true, specProofDoesNotMeanProofComplete_true,
     specProofDoesNotMeanResidualFree_true, SpecProofTheorems.
     Import SystemsLean.SpecProofTheorems from the package root. Core claim
-    Bools + ready surface stay here -- not residual free / not proof complete. -/
+    Bools + ready surface stay here -- Track 4c complete; not residual free
+    re-open; not full elaborator parity. -/
 
 end SystemsLean.SpecProof

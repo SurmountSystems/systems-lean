@@ -25,6 +25,7 @@ rec {
     "slake_ir_graph_check_fail_closed"
     "slake_host_compose_id"
     "slake_host_compose_init"
+    "slake_host_compose_reset"
     "slake_host_compose_push_node"
     "slake_host_compose_add_edge"
     "slake_host_compose_mint"

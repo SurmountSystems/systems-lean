@@ -48,18 +48,20 @@ Stable terms for **Systems Lean**. Prefer plain English. Do not invent fashion n
 | **First compiler surface** | S1 product name: short modules prefer `FirstSurface` / `SlakeCompile`; not kitchen-sink ProductPath* basenames |
 | **CompCert path** | Emit C suitable for CompCert (`ccomp`) when PROVABLY is earned with a real resolved compiler |
 | **LLVM path** | Emit LLVM IR for efficient embed and Rust-ecosystem interop |
-| **Rust without classic FFI** | Design bar: happy path is layout-compatible / IR-level interop, not hand-written `extern "C"` glue as the default story |
+| **Rust without classic FFI** | **Measured happy path (completeness C1 end announce):** for Mult through Graph layout and the foreign dual-map consumer path we document, you do **not** need classic foreign-function interface (FFI) ceremony as the happy path. Evidence: Mult..Graph foreign band-local success + `rustIrInteropPartialClaimed` / `rustIrInteropFullClaimed` + `just rust-ir-interop-partial` / `just rust-ir-interop-full`. Dual map is **measured under named bars** (partial + multi-band full true): size/align parity and band-local foreign success for Mult..Graph i32 contracts. **Not** a full isomorphism of Systems Lean with all of Rust; **not** "no FFI ever"; **not** formalized all of rustc; **not** tip fullBackend synonym; **not** product Rust under `src/`. Classic freestanding **C** product wire (`out/freestanding-c/`) remains a permanent valid emit path |
 | **ref/** | Read-only **language/compiler** upstream submodules (`ref/Idris2`, `ref/lean4`, `ref/CompCert`, `ref/rust`) -- not product source |
 | **skills/** | Read-only **agent skill pack** submodules (e.g. `skills/lean4-skills`) -- not product source; not under `ref/` |
 | **Project skill / `.agents/skills/`** | Discovery root hosts walk for project-local skills. Symlinks into `skills/<pack>/...`. Policy and **when to use** map: `AGENTS.md` (**Project agent skills**). Example: `lean4` skill for prove/formalize/review on host Lean residual -- not for inventing residual, Nix mills, or hand-authored freestanding C |
 | **CompCert / ccomp** | Verified C compiler reference; product C path may target it; PROVABLY only with real resolved evidence |
 | **Rust layout reference** | `ref/rust` (rustc_abi / codegen) defines layout-compatible interop; LLVM IR alone is not enough |
-| **iso** | Optional **directory / checkout nickname** only (e.g. path `.../iso`). Not the product name. Prefer **Systems Lean** in prose |
+| **iso / Iso** | **Internal only.** Historical checkout-directory nickname from when this tree first started, and the root Lake umbrella package id. Not the project name. Prefer **Systems Lean** in prose |
+| **SystemsLean** | **Internal** Lake package id for the host under `src/systems/`. Not a second language name. Prose: **Systems Lean** / **Slake** |
+| **SystemsLeanLean4** | **Internal** Lake package id for classic Lean dual examples under `src/lean4/`. Not a product name |
 | **src/idris2/** | Novel Idris-side workspace (isomorphism); not `ref/Idris2` |
 | **src/lean4/** | Novel Lean-side workspace; not `ref/lean4` |
 | **src/systems/** | Freestanding Systems Lean + Slake host; min 0/1/omega; no product GC (garbage collection) |
 | **out/freestanding-c/** | Runtimeless freestanding product C for external consumers. Tracked files are **generator outputs** (not hand-authored). Prefer **subtree release** (or tarball) after green build + emit + check |
-| **out/llvm-ir/** | LLVM IR for Rust-native link; **deferred** until self-hosted Systems Lean / Slake |
+| **out/llvm-ir/** | LLVM IR surface for layout-compatible Rust-ecosystem interop. Unlocked with Mult..Graph unit/compose/SSA partial + foreign dual map + progressive CFG path B. Happy path for Mult..Graph layout / foreign dual map does **not** require classic FFI ceremony (see **Rust without classic FFI**). Not full production opt / machine-code backend alone; freestanding C remains primary product wire |
 | **RC necessity** | Freestanding RC (reference counting) only if proven unavoidable vs linear/affine/arena design |
 | **Host-owned freestanding emit** | Lean modules + durable `emit/host_emit_*.ssot.txt` own selected freestanding C product text; `FreestandingEmit` embeds into templates. Ownership map SSoT: `src/systems/emit/host-owned-emit.md`. Stage ids `HOST-EMIT-*` only -- do not mint residual C ladders (`EMIT_MULT_V0`, `EMIT_ERASURE_V0`, ...) as freestanding residual progress |
 | **HOST-EMIT-ERASURE** | Host-owned mult-0 **absence honesty** on freestanding C (`slake_erased` + mark / is_marked / is_runtime_absent). **Not** elaborator types or a type system written in C. Pair: `EmitErasure.lean` + `host_emit_erasure.ssot.txt` |
@@ -69,6 +71,7 @@ Stable terms for **Systems Lean**. Prefer plain English. Do not invent fashion n
 | **Self-host step readiness** | Same as defined freestanding compile step: readiness fold only. Complete and residual free are separate claim bars (both may be true while Lake host remains) |
 | **MULT-0 / erased** | Quantitative Type Theory (QTT) grade 0: compile-time only; no runtime payload. Product wire may carry a zero-payload **marker** that claims runtime absence after mark -- that is erasure honesty, not "types live in freestanding C" |
 | **Open Name** | Living residual work item title in `RESIDUAL-systems.md` (plain English, 2-6 words). Agents do not invent Open Names when neither Open nor a durable plan names a checkable next residual. Clear plan defaults **are** residual work: open the planned Name (do not park waiting for a human "Open") |
+| **Compile-path bench** | Wall-clock comparison via `just bench` (living report `doc/BENCH-latest.md`): Systems Lean freestanding product path vs classic Lake host elaborate. **Not** PROVABLY and **not** runtime-fastest-C. CompCert PROVABLY stays a correctness seal, not a speed claim. |
 
 ---
 

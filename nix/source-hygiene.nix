@@ -25,9 +25,15 @@ let
     || name == ".cache"
     || name == ".lake"
     || name == "__pycache__"
+    # Compiler local output (Idris dual elaborator under examples/build; Lake uses .lake).
+    || name == "build"
     || lib.hasPrefix "result" name;
 
-  skipFile = name: lib.hasSuffix ".pyc" name || name == "flake.lock";
+  skipFile =
+    name:
+    lib.hasSuffix ".pyc" name
+    || lib.hasSuffix ".ttc" name
+    || name == "flake.lock";
 
   # tab, LF, CR, space..tilde
   printable =

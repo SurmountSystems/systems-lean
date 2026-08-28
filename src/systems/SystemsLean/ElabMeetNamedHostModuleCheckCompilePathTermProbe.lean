@@ -1,0 +1,375 @@
+/-
+  SYSTEMS_LEAN_HOST partial -- HostModuleCheckCompilePathTerm named
+  closed subset probe (plus-one after the ProductOutKernelTerm closed set).
+  Side: classic Lean elaborator under src/systems/ (not freestanding C).
+  Role module extracted so ElabMeetSubset stays under about 880.
+  Same namespace SystemsLean.ElabMeet. CompilePathTerm wrappers live in
+  ElabMeetNamedWalkHostModuleCheckCompilePathTerm. Shared helpers stay in
+  ElabMeetNamedWalk. Do not put this probe back on ElabMeetSubset,
+  Tail, Later, ElabMeetCompile, ElabMeetNamedWalkHostTerm,
+  ElabMeetNamedWalkHostPackageWrite, ElabMeetNamedHostPackageRootsProbe,
+  ElabMeetNamedHostImportGraphSeedsProbe, ElabMeetNamedHostImportGraphModelProbe,
+  ElabMeetNamedHostImportGraphModsProbe,
+  ElabMeetNamedHostImportGraphModsLaterProbe,
+  ElabMeetNamedHostImportGraphLoadOkLaterProbe,
+  ElabMeetNamedHostImportGraphWalkLaterProbe,
+  ElabMeetNamedHostImportGraphWalkProbe,
+  ElabMeetNamedHostModuleCheckRequiredDeclsProbe,
+  ElabMeetNamedHostModuleCheckRequiredDeclsProductProbe,
+  ElabMeetNamedHostModuleCheckRequiredDeclsLaterProbe,
+  ElabMeetNamedHostModuleCheckFixtureTextsProbe,
+  ElabMeetNamedHostModuleCheckFixtureTextsProductProbe,
+  ElabMeetNamedHostModuleCheckFixtureTextsLaterProbe,
+  ElabMeetNamedHostModuleCheckFixtureTextsSelfHostProbe,
+  ElabMeetNamedHostModuleCheckFixtureTextsEmitProbe,
+  ElabMeetNamedHostModuleCheckFixturesProbe,
+  ElabMeetNamedHostModuleCheckSurfaceProbe,
+  ElabMeetNamedHostModuleCheckCheckersProbe,
+  ElabMeetNamedHostModuleCheckCheckersLaterProbe,
+  ElabMeetNamedHostModuleCheckRealModuleProbe,
+  ElabMeetNamedHostModuleCheckEmitBodyTermProbe,
+  ElabMeetNamedHostModuleCheckKernelMultTermProbe,
+  ElabMeetNamedHostModuleCheckKernelLinearTermProbe,
+  ElabMeetNamedHostModuleCheckKernelTypesTermProbe,
+  ElabMeetNamedHostModuleCheckKernelProgramTermProbe,
+  ElabMeetNamedHostModuleCheckKernelEmitTermProbe,
+  ElabMeetNamedHostModuleCheckParityMultTermProbe,
+  ElabMeetNamedHostModuleCheckParityLinearTermProbe,
+  ElabMeetNamedHostModuleCheckParityTypesTermProbe,
+  ElabMeetNamedHostModuleCheckParityProgramTermProbe,
+  ElabMeetNamedHostModuleCheckParityEmitTermProbe,
+  ElabMeetNamedHostModuleCheckEmitMultScaffoldTermProbe,
+  ElabMeetNamedHostModuleCheckEmitLinearScaffoldTermProbe,
+  ElabMeetNamedHostModuleCheckEmitTypesScaffoldTermProbe,
+  ElabMeetNamedHostModuleCheckEmitProgramScaffoldTermProbe,
+  ElabMeetNamedHostModuleCheckEmitGraphScaffoldTermProbe,
+  ElabMeetNamedHostModuleCheckEmitComposeScaffoldTermProbe,
+  ElabMeetNamedHostModuleCheckEmitErasureScaffoldTermProbe,
+  ElabMeetNamedHostModuleCheckEmitExtractScaffoldTermProbe,
+  ElabMeetNamedHostModuleCheckEmitBannerScaffoldTermProbe,
+  ElabMeetNamedHostModuleCheckKernelSelfApplyTermProbe,
+  ElabMeetNamedHostModuleCheckProductOutKernelTermProbe,
+  ElabMeetNamedWalkHostImportGraphWalkLater,
+  ElabMeetNamedWalkHostModuleCheckFixtureTextsEmit,
+  ElabMeetNamedWalkHostModuleCheckCheckersLater,
+  ElabMeetNamedWalkHostModuleCheckKernelMultTerm,
+  ElabMeetNamedWalkHostModuleCheckKernelLinearTerm,
+  ElabMeetNamedWalkHostModuleCheckKernelTypesTerm,
+  ElabMeetNamedWalkHostModuleCheckKernelProgramTerm,
+  ElabMeetNamedWalkHostModuleCheckKernelEmitTerm,
+  ElabMeetNamedWalkHostModuleCheckParityMultTerm,
+  ElabMeetNamedWalkHostModuleCheckParityLinearTerm,
+  ElabMeetNamedWalkHostModuleCheckParityTypesTerm,
+  ElabMeetNamedWalkHostModuleCheckParityProgramTerm,
+  ElabMeetNamedWalkHostModuleCheckParityEmitTerm,
+  ElabMeetNamedWalkHostModuleCheckEmitMultScaffoldTerm,
+  ElabMeetNamedWalkHostModuleCheckEmitLinearScaffoldTerm,
+  ElabMeetNamedWalkHostModuleCheckEmitTypesScaffoldTerm,
+  ElabMeetNamedWalkHostModuleCheckEmitProgramScaffoldTerm,
+  ElabMeetNamedWalkHostModuleCheckEmitGraphScaffoldTerm,
+  ElabMeetNamedWalkHostModuleCheckEmitComposeScaffoldTerm,
+  ElabMeetNamedWalkHostModuleCheckEmitErasureScaffoldTerm,
+  ElabMeetNamedWalkHostModuleCheckEmitExtractScaffoldTerm,
+  ElabMeetNamedWalkHostModuleCheckEmitBannerScaffoldTerm,
+  ElabMeetNamedWalkHostModuleCheckKernelSelfApplyTerm, or
+  ElabMeetNamedWalkHostModuleCheckProductOutKernelTerm.
+  Reuses tryCompileNamedMemberListIO (no cloned walker).
+  Rec-depth 8192 keep on later ElabMeet fold; this extract does not fold.
+
+  Spec (readable):
+  - Named HostModuleCheckCompilePathTerm subset:
+    prior ProductOutKernelTerm closed set plus
+    SystemsLean.HostModuleCheckCompilePathTerm last.
+    Membership list is barrel order among that closed set; skip
+    Linear, skip IrGraph, skip HostGraphMain, skip HostCompose. Compile order is
+    the ProductOutKernelTerm compile order, then HostModuleCheckCompilePathTerm last.
+    EmitPlanTerm is a compile dependency only, not a named plus-one.
+    Dispatcher-split honesty (same as ProductOutKernelTerm): CompilePathTerm
+    imports HostModuleCheckSurface and HostModuleCheckEmitPlanTerm;
+    EmitPlanTerm is not a barrel member and is not a named plus-one.
+    CompilePathTerm walker is a wrapper in
+    ElabMeetNamedWalkHostModuleCheckCompilePathTerm.
+    HostModuleCheckCompilePathTerm probe lives here.
+  - tryCompileNamedHostModuleCheckCompilePathTermSubset is false unless the
+    path is the live lakefile, the parsed library is
+    SystemsLean, and the barrel lists the subset.
+    HostModuleCheckCompilePathTerm bad writes a temp
+    HostModuleCheckCompilePathTerm copy and compiles it after Mult and the
+    HostFront / HostGraph / SubsetEmit / HostPackageWrite /
+    HostPackageWriteTheorems / HostPackageRoots /
+    HostImportGraphSeeds / HostImportGraphModel / HostImportGraphMods /
+    HostImportGraphModsLater / HostImportGraphLoadOkLater /
+    HostImportGraphWalkLater / HostImportGraphWalk /
+    HostModuleCheckRequiredDecls / HostModuleCheckRequiredDeclsProduct /
+    HostModuleCheckRequiredDeclsLater / HostModuleCheckFixtureTexts /
+    HostModuleCheckFixtureTextsProduct / HostModuleCheckFixtureTextsLater /
+    HostModuleCheckFixtureTextsSelfHost /
+    HostModuleCheckFixtureTextsEmit /
+    HostModuleCheckFixtures /
+    HostModuleCheckSurface /
+    HostModuleCheckCheckers /
+    HostModuleCheckCheckersLater /
+    HostModuleCheckRealModule /
+    HostModuleCheckEmitBodyTerm /
+    HostModuleCheckKernelMultTerm /
+    HostModuleCheckKernelLinearTerm /
+    HostModuleCheckKernelTypesTerm /
+    HostModuleCheckKernelProgramTerm /
+    HostModuleCheckKernelEmitTerm /
+    HostModuleCheckParityMultTerm /
+    HostModuleCheckParityLinearTerm /
+    HostModuleCheckParityTypesTerm /
+    HostModuleCheckParityProgramTerm /
+    HostModuleCheckParityEmitTerm /
+    HostModuleCheckEmitMultScaffoldTerm /
+    HostModuleCheckEmitLinearScaffoldTerm /
+    HostModuleCheckEmitTypesScaffoldTerm /
+    HostModuleCheckEmitProgramScaffoldTerm /
+    HostModuleCheckEmitGraphScaffoldTerm /
+    HostModuleCheckEmitComposeScaffoldTerm /
+    HostModuleCheckEmitErasureScaffoldTerm /
+    HostModuleCheckEmitExtractScaffoldTerm /
+    HostModuleCheckEmitBannerScaffoldTerm /
+    HostModuleCheckKernelSelfApplyTerm /
+    HostModuleCheckProductOutKernelTerm oleans, plus EmitPlanTerm and
+    MultTerm compile deps.
+    Isolation names leftover temp good.lean, leftover fake
+    lean_lib ElabMeetRichLib, the prior ProductOutKernelTerm walker
+    tryCompileNamedHostModuleCheckProductOutKernelTermSubset, and that this walk
+    is not an alias of the ProductOutKernelTerm closed set. Linear skipped. IrGraph
+    skipped as a grow-tip Name. HostCompose skipped. Do not plant live
+    HostModuleCheckCompilePathTerm.lean. Do not skip to
+    HostModuleCheckJoinMapTerm.
+  - The drive is good && !bad && isolation.
+  - slakeOwnsPackageTypecheck stays false. FullHost stays false.
+    Do not claim 48. Living tip stays 47 of about 206.
+
+  Greppable: SYSTEMS_LEAN_HOST, HOST-ELAB-MEET, SLAKE_ELAB_MEET,
+  tryCompileOnDiskModule, tryCompileOnDiskModuleIO,
+  findLiveHostModuleCheckCompilePathTermPath,
+  namedClosedHostModuleCheckCompilePathTermSubsetNames,
+  namedClosedHostModuleCheckCompilePathTermCompileOrder,
+  barrelListsNamedHostModuleCheckCompilePathTermSubset,
+  tryCompileNamedHostModuleCheckCompilePathTermSubset,
+  tryCompileAfterHostModuleCheckCompilePathTermDeps,
+  elabMeetDrivesNamedHostModuleCheckCompilePathTermSubset,
+  elabMeetAcceptsGoodNamedHostModuleCheckCompilePathTermSubset,
+  elabMeetRejectsBadNamedHostModuleCheckCompilePathTermSubset,
+  elabMeetRejectsOldWalkAsNamedHostModuleCheckCompilePathTermSubset,
+  #elabMeetNamedHostModuleCheckCompilePathTermSubsetProbe,
+  elabMeetNamedHostModuleCheckCompilePathTermSubsetProbe,
+  SystemsLean.HostModuleCheckCompilePathTerm,
+  ElabMeetNamedHostModuleCheckCompilePathTermProbe,
+  SystemsLean.ElabMeetNamedHostModuleCheckCompilePathTermProbe,
+  UNIT_SURFACE host surface, MULT-0, MULT-1, MULT-OMEGA.
+  Module: SystemsLean.ElabMeetNamedHostModuleCheckCompilePathTermProbe
+  Short role name (not ProductPathFreestanding*).
+  Red/green: lake build SystemsLean.ElabMeetNamedHostModuleCheckCompilePathTermProbe;
+  just systems-host.
+  Module must stay ASCII.
+  Not freestanding residual free. Not PROVABLY. Not llvm unlock.
+  Not FullHost. Not FullHostElaborateRemains true. Not Lake gone.
+  slakeOwnsPackageTypecheck stays false.
+-/
+
+import Lean
+import SystemsLean.ElabMeetLive
+import SystemsLean.ElabMeetNamedWalk
+import SystemsLean.ElabMeetNamedWalkHostPackageWrite
+import SystemsLean.ElabMeetNamedWalkHostImportGraphSeeds
+import SystemsLean.ElabMeetNamedWalkHostImportGraphWalkLater
+import SystemsLean.ElabMeetNamedWalkHostModuleCheckFixtureTexts
+import SystemsLean.ElabMeetNamedWalkHostModuleCheckFixtureTextsEmit
+import SystemsLean.ElabMeetNamedWalkHostModuleCheckCheckersLater
+import SystemsLean.ElabMeetNamedWalkHostModuleCheckKernelMultTerm
+import SystemsLean.ElabMeetNamedWalkHostModuleCheckKernelLinearTerm
+import SystemsLean.ElabMeetNamedWalkHostModuleCheckKernelTypesTerm
+import SystemsLean.ElabMeetNamedWalkHostModuleCheckKernelProgramTerm
+import SystemsLean.ElabMeetNamedWalkHostModuleCheckKernelEmitTerm
+import SystemsLean.ElabMeetNamedWalkHostModuleCheckParityMultTerm
+import SystemsLean.ElabMeetNamedWalkHostModuleCheckParityLinearTerm
+import SystemsLean.ElabMeetNamedWalkHostModuleCheckParityTypesTerm
+import SystemsLean.ElabMeetNamedWalkHostModuleCheckParityProgramTerm
+import SystemsLean.ElabMeetNamedWalkHostModuleCheckParityEmitTerm
+import SystemsLean.ElabMeetNamedWalkHostModuleCheckEmitMultScaffoldTerm
+import SystemsLean.ElabMeetNamedWalkHostModuleCheckEmitLinearScaffoldTerm
+import SystemsLean.ElabMeetNamedWalkHostModuleCheckEmitTypesScaffoldTerm
+import SystemsLean.ElabMeetNamedWalkHostModuleCheckEmitProgramScaffoldTerm
+import SystemsLean.ElabMeetNamedWalkHostModuleCheckEmitGraphScaffoldTerm
+import SystemsLean.ElabMeetNamedWalkHostModuleCheckEmitComposeScaffoldTerm
+import SystemsLean.ElabMeetNamedWalkHostModuleCheckEmitErasureScaffoldTerm
+import SystemsLean.ElabMeetNamedWalkHostModuleCheckEmitExtractScaffoldTerm
+import SystemsLean.ElabMeetNamedWalkHostModuleCheckEmitBannerScaffoldTerm
+import SystemsLean.ElabMeetNamedWalkHostModuleCheckKernelSelfApplyTerm
+import SystemsLean.ElabMeetNamedWalkHostModuleCheckProductOutKernelTerm
+import SystemsLean.ElabMeetNamedWalkHostModuleCheckCompilePathTerm
+
+namespace SystemsLean.ElabMeet
+
+open Lean Elab Command
+
+/-- Record accept / reject for the HostModuleCheckCompilePathTerm named subset.
+    Good compiles live Mult through HostModuleCheckProductOutKernelTerm plus the
+    subset-surface compile closure and HostModuleCheckCompilePathTerm after
+    reading the real lakefile. Bad compiles a temp
+    HostModuleCheckCompilePathTerm copy with a planted type error after Mult
+    and the HostFront / HostGraph / SubsetEmit / HostPackageWrite /
+    HostPackageWriteTheorems / HostPackageRoots /
+    HostImportGraphSeeds / HostImportGraphModel / HostImportGraphMods /
+    HostImportGraphModsLater / HostImportGraphLoadOkLater /
+    HostImportGraphWalkLater / HostImportGraphWalk /
+    HostModuleCheckRequiredDecls / HostModuleCheckRequiredDeclsProduct /
+    HostModuleCheckRequiredDeclsLater / HostModuleCheckFixtureTexts /
+    HostModuleCheckFixtureTextsProduct / HostModuleCheckFixtureTextsLater /
+    HostModuleCheckFixtureTextsSelfHost /
+    HostModuleCheckFixtureTextsEmit /
+    HostModuleCheckFixtures /
+    HostModuleCheckSurface /
+    HostModuleCheckCheckers /
+    HostModuleCheckCheckersLater /
+    HostModuleCheckRealModule /
+    HostModuleCheckEmitBodyTerm /
+    HostModuleCheckKernelMultTerm /
+    HostModuleCheckKernelLinearTerm /
+    HostModuleCheckKernelTypesTerm /
+    HostModuleCheckKernelProgramTerm /
+    HostModuleCheckKernelEmitTerm /
+    HostModuleCheckParityMultTerm /
+    HostModuleCheckParityLinearTerm /
+    HostModuleCheckParityTypesTerm /
+    HostModuleCheckParityProgramTerm /
+    HostModuleCheckParityEmitTerm /
+    HostModuleCheckEmitMultScaffoldTerm /
+    HostModuleCheckEmitLinearScaffoldTerm /
+    HostModuleCheckEmitTypesScaffoldTerm /
+    HostModuleCheckEmitProgramScaffoldTerm /
+    HostModuleCheckEmitGraphScaffoldTerm /
+    HostModuleCheckEmitComposeScaffoldTerm /
+    HostModuleCheckEmitErasureScaffoldTerm /
+    HostModuleCheckEmitExtractScaffoldTerm /
+    HostModuleCheckEmitBannerScaffoldTerm /
+    HostModuleCheckKernelSelfApplyTerm /
+    HostModuleCheckProductOutKernelTerm oleans, plus EmitPlanTerm and
+    MultTerm compile deps.
+    Isolation: leftover temp good.lean and leftover fake lean_lib
+    ElabMeetRichLib stay false; the prior ProductOutKernelTerm walker
+    tryCompileNamedHostModuleCheckProductOutKernelTermSubset still works; this
+    walker is not an alias of the ProductOutKernelTerm closed set. Drive is
+    good && !bad && isolation.
+    Linear skipped. IrGraph skipped as a grow-tip Name. HostCompose skipped.
+    Do not plant live HostModuleCheckCompilePathTerm.lean. Do not skip to
+    HostModuleCheckJoinMapTerm. -/
+elab "#elabMeetNamedHostModuleCheckCompilePathTermSubsetProbe" : command => do
+  let liveLake? <- liftIO findLiveLakefilePath
+  let liveMult? <- liftIO findLiveMultPath
+  let liveThm? <- liftIO findLiveMultTheoremsPath
+  let liveHostModuleCheckCompilePathTerm? <-
+    liftIO findLiveHostModuleCheckCompilePathTermPath
+  let oleanDir <- liftIO IO.FS.createTempDir
+  let badDir <- liftIO IO.FS.createTempDir
+  let isoDir <- liftIO IO.FS.createTempDir
+  let fakeDir <- liftIO IO.FS.createTempDir
+  let good <-
+    match liveLake? with
+    | none => pure false
+    | some liveLake =>
+      tryCompileNamedHostModuleCheckCompilePathTermSubset liveLake oleanDir
+  let badCompiled <-
+    match liveHostModuleCheckCompilePathTerm? with
+    | none =>
+      pure true
+    | some liveHostModuleCheckCompilePathTerm => do
+      let liveText <- liftIO (IO.FS.readFile liveHostModuleCheckCompilePathTerm)
+      let badPath :=
+        badDir / "ElabMeetNamedHostModuleCheckCompilePathTermSubsetBad.lean"
+      let planted := "\ndef plantedTypeError : Nat := true\n"
+      liftIO (IO.FS.writeFile badPath (liveText ++ planted))
+      tryCompileAfterHostModuleCheckCompilePathTermDeps
+        badPath badDir `ElabMeetNamedHostModuleCheckCompilePathTermSubsetBad
+  let liveMultStillOk <-
+    match liveMult? with
+    | none => pure false
+    | some liveMult =>
+      tryCompileLiveModule liveMult isoDir
+  let thmIsoDir <- liftIO IO.FS.createTempDir
+  let liveThmStillOk <-
+    match liveThm? with
+    | none => pure false
+    | some liveThm =>
+      tryCompileLiveTheorems liveThm thmIsoDir
+  let subsetIsoDir <- liftIO IO.FS.createTempDir
+  let priorSubsetStillOk <-
+    match liveLake? with
+    | none => pure false
+    | some liveLake =>
+      tryCompileNamedHostModuleCheckProductOutKernelTermSubset liveLake subsetIsoDir
+  let goodIso := isoDir / "good.lean"
+  liftIO (IO.FS.writeFile goodIso "def n : Nat := 0")
+  let thisOnTempSnippet <-
+    tryCompileNamedHostModuleCheckCompilePathTermSubset goodIso isoDir
+  let fakeLake := fakeDir / "lakefile.lean"
+  liftIO (IO.FS.writeFile fakeLake leftoverFakePackageLakefileText)
+  let thisOnFakePackage <-
+    tryCompileNamedHostModuleCheckCompilePathTermSubset fakeLake fakeDir
+  let notAliasOfProductOutKernelTerm :=
+    namedClosedHostModuleCheckCompilePathTermSubsetNames
+      != namedClosedHostModuleCheckProductOutKernelTermSubsetNames
+      && namedClosedHostModuleCheckCompilePathTermCompileOrder
+           != namedClosedHostModuleCheckProductOutKernelTermCompileOrder
+      && namedClosedHostModuleCheckCompilePathTermSubsetNames.contains
+           "SystemsLean.HostModuleCheckCompilePathTerm"
+      && !namedClosedHostModuleCheckProductOutKernelTermSubsetNames.contains
+           "SystemsLean.HostModuleCheckCompilePathTerm"
+  let isolation :=
+    liveMultStillOk && liveThmStillOk && priorSubsetStillOk
+      && !thisOnTempSnippet && !thisOnFakePackage
+      && notAliasOfProductOutKernelTerm
+  try
+    liftIO (IO.FS.removeDirAll oleanDir)
+  catch _ =>
+    pure ()
+  try
+    liftIO (IO.FS.removeDirAll badDir)
+  catch _ =>
+    pure ()
+  try
+    liftIO (IO.FS.removeDirAll isoDir)
+  catch _ =>
+    pure ()
+  try
+    liftIO (IO.FS.removeDirAll thmIsoDir)
+  catch _ =>
+    pure ()
+  try
+    liftIO (IO.FS.removeDirAll subsetIsoDir)
+  catch _ =>
+    pure ()
+  try
+    liftIO (IO.FS.removeDirAll fakeDir)
+  catch _ =>
+    pure ()
+  let gStx <- if good then `(true) else `(false)
+  let rStx <- if !badCompiled then `(true) else `(false)
+  let iStx <- if isolation then `(true) else `(false)
+  let dStx <-
+    if good && !badCompiled && isolation then
+      `(true)
+    else
+      `(false)
+  let gN := mkIdent `elabMeetAcceptsGoodNamedHostModuleCheckCompilePathTermSubset
+  let rN := mkIdent `elabMeetRejectsBadNamedHostModuleCheckCompilePathTermSubset
+  let iN := mkIdent `elabMeetRejectsOldWalkAsNamedHostModuleCheckCompilePathTermSubset
+  let dN := mkIdent `elabMeetDrivesNamedHostModuleCheckCompilePathTermSubset
+  elabCommand (<- `(def $gN : Bool := $gStx))
+  elabCommand (<- `(def $rN : Bool := $rStx))
+  elabCommand (<- `(def $iN : Bool := $iStx))
+  elabCommand (<- `(def $dN : Bool := $dStx))
+
+#elabMeetNamedHostModuleCheckCompilePathTermSubsetProbe
+
+example : elabMeetAcceptsGoodNamedHostModuleCheckCompilePathTermSubset = true := rfl
+example : elabMeetRejectsBadNamedHostModuleCheckCompilePathTermSubset = true := rfl
+example : elabMeetRejectsOldWalkAsNamedHostModuleCheckCompilePathTermSubset = true := rfl
+example : elabMeetDrivesNamedHostModuleCheckCompilePathTermSubset = true := rfl
+
+end SystemsLean.ElabMeet

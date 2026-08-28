@@ -34,6 +34,9 @@
         "bodyFromCompose_mult0_marked_buf"
         "bodyOk_omega_true"
         "bodyFromCompose_linear_and_erased"
+        "bodyOk_mult1_spent_false"
+        "bodyFromCompose_mult1_spent_failClosed"
+        "bodyOk_mult1_spent_reject"
         # Structural readiness: real theorem forms (AND, not OR anyGroup).
         "theorem bodyCap_eq_256"
         "theorem emptyComposeFragmentSsot_eq"
@@ -44,6 +47,9 @@
         "theorem bodyFromCompose_mult0_marked_buf"
         "theorem bodyOk_omega_true"
         "theorem bodyFromCompose_linear_and_erased"
+        "theorem bodyOk_mult1_spent_false"
+        "theorem bodyFromCompose_mult1_spent_failClosed"
+        "theorem bodyOk_mult1_spent_reject"
         # Host-owned freestanding emit body scaffolding (HOST-EMIT-BODY).
         "SLAKE_SELF_HOST_EMIT_BODY_V0"
         "HOST-EMIT-BODY"

@@ -1,5 +1,8 @@
 # SPDX-License-Identifier: Unlicense
-# Data only: UNIT_DEEPEN_V1 freestanding units + companion notes + README stage light touch.
+# Data only: UNIT_DEEPEN_V1 freestanding units + companion notes.
+# README must exist (requiredDeepenFiles). Stage ids HOST_COMPOSE_V0 /
+# EMIT_PLAN_V0 / EMIT_APPLY_V0 / EMIT_BODY_V0 live on Extract/Types slake+md
+# and emit SSOT, not README archaeology (README min-useful).
 # Imported by ./specs.nix.
 {
   requiredDeepenFiles = [
@@ -274,15 +277,6 @@
         [
           "-2 full"
         ]
-      ];
-    }
-    {
-      rel = "src/systems/README.md";
-      all = [
-        "HOST_COMPOSE_V0"
-        "EMIT_PLAN_V0"
-        "EMIT_APPLY_V0"
-        "EMIT_BODY_V0"
       ];
     }
   ];

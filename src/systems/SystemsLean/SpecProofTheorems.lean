@@ -8,33 +8,40 @@
 
   Spec (readable):
   - SPEC-PROOF-THEOREM / HOST-SPEC-PROOF-THEOREM: stageId_eq /
-    hostSpecProofId_eq / specSurfaceStated_true / proofCompleteClaimed_false /
-    proofDoesNotRetireTests_true / residualFreeClaimed_false /
-    specProofReady_true / specProofDoesNotMeanProofComplete_true /
+    hostSpecProofId_eq / specSurfaceStated_true / proofCompleteClaimed_true /
+    proofCompleteBarMet_true / proofDoesNotRetireTests_true /
+    residualFreeClaimed_false / specProofReady_true /
+    specDoesNotImplyProofComplete_true /
+    specProofDoesNotMeanProofComplete_true /
     specProofDoesNotMeanResidualFree_true.
   - SPEC-PROOF-SMOKE / HOST-SPEC-PROOF-SMOKE: stage / map / surface / ready
     behavioral examples (lake build fails if example fails).
 
-  These SpecProof theorems keep proofCompleteClaimed false (proved false).
-  Spec surface stated is NOT proof complete. residual free stays false.
+  Track 4c: proofCompleteClaimed is true with bar-met pin. Spec surface alone
+  is NOT proof complete. residual free stays false (DualResidual owns free).
+  Proofs do not retire tests. Not full elaborator parity. Not PROVABLY re-open.
+  Not full LLVM backend. Linear Token axioms remain on Linear (honest).
 
   Intentional non-claims:
-  - Formal feedback honesty canaries only -- NOT freestanding residual free.
-  - NOT proof complete (proofCompleteClaimed stays false).
-  - NOT PROVABLY. NOT llvm unlock. NOT freestanding product residual free.
+  - Formal feedback + Track 4c complete pin -- NOT freestanding residual free
+    re-open.
+  - NOT full Lean 4 / mathlib elaborator parity.
+  - NOT PROVABLY re-open. NOT full llvm backend.
   - Lake example smokes are NOT full proofs.
 
   Greppable: SYSTEMS_LEAN_HOST, SPEC-PROOF-THEOREM, HOST-SPEC-PROOF-THEOREM,
   SPEC-PROOF-SMOKE, HOST-SPEC-PROOF-SMOKE, stageId_eq, hostSpecProofId_eq,
-  specSurfaceStated_true, proofCompleteClaimed_false,
+  specSurfaceStated_true, proofCompleteClaimed_true, proofCompleteBarMet_true,
   proofDoesNotRetireTests_true, residualFreeClaimed_false, specProofReady_true,
+  specDoesNotImplyProofComplete_true,
   specProofDoesNotMeanProofComplete_true, specProofDoesNotMeanResidualFree_true,
   SpecProofTheorems, UNIT_SURFACE host surface.
   Module: SystemsLean.SpecProofTheorems
   Red/green: just systems-host; lake build SystemsLean.SpecProofTheorems.
   Module must stay ASCII.
-  Not freestanding residual free. Not PROVABLY. Not freestanding emit residual free.
-  Not proof complete.
+  Not freestanding residual free re-open. Not PROVABLY re-open.
+  Not freestanding emit residual free re-open.
+  proof complete claimed true with Track 4c bar.
 -/
 
 import SystemsLean.ProbeWire
@@ -50,9 +57,9 @@ namespace SystemsLean.SpecProof
 /-! ### SPEC-PROOF-THEOREM / HOST-SPEC-PROOF-THEOREM (readable statements, then proofs)
 
   Real Lean theorems (not only `example` Bool canaries). Scope is formal
-  feedback honesty only. proofCompleteClaimed stays false (proved false --
-  never set true). Does not claim residual free / freestanding product
-  self-host complete / PROVABLY / llvm unlock.
+  feedback honesty + Track 4c complete pin. proofCompleteClaimed is true with
+  bar-met (proved true). Does not claim residual free re-open / PROVABLY
+  re-open / full llvm backend / full elaborator parity.
   maxRecDepth raised for probeWireReady / specProofReady unfolds.
 -/
 
@@ -71,10 +78,14 @@ theorem hostSpecProofId_eq : hostSpecProofId = "HOST-SPEC-PROOF" := rfl
     HOST-SPEC-PROOF-THEOREM. -/
 theorem specSurfaceStated_true : specSurfaceStated = true := rfl
 
-/-- proofCompleteClaimed stays false (do not forge proof complete).
-    Greppable: proofCompleteClaimed_false, SPEC-PROOF-THEOREM,
+/-- proofCompleteClaimed is true (Track 4c bar met; not forged on surface alone).
+    Greppable: proofCompleteClaimed_true, SPEC-PROOF-THEOREM,
     HOST-SPEC-PROOF-THEOREM. -/
-theorem proofCompleteClaimed_false : proofCompleteClaimed = false := rfl
+theorem proofCompleteClaimed_true : proofCompleteClaimed = true := rfl
+
+/-- Track 4c bar-met pin holds with complete claimed.
+    Greppable: proofCompleteBarMet_true, SPEC-PROOF-THEOREM. -/
+theorem proofCompleteBarMet_true : proofCompleteBarMet = true := by decide
 
 /-- Proofs do not retire tests / smokes (formal feedback honesty).
     Greppable: proofDoesNotRetireTests_true, SPEC-PROOF-THEOREM. -/
@@ -84,12 +95,17 @@ theorem proofDoesNotRetireTests_true : proofDoesNotRetireTests = true := rfl
     Greppable: residualFreeClaimed_false, SPEC-PROOF-THEOREM. -/
 theorem residualFreeClaimed_false : residualFreeClaimed = false := rfl
 
-/-- Formal spec-proof separation readiness holds (not proof complete).
+/-- Surface alone never forges complete; bar-met + complete hold together.
+    Greppable: specDoesNotImplyProofComplete_true, SPEC-PROOF-THEOREM. -/
+theorem specDoesNotImplyProofComplete_true :
+    specDoesNotImplyProofComplete = true := by decide
+
+/-- Formal spec-proof separation readiness holds with Track 4c complete.
     Greppable: specProofReady_true, HOST-SPEC-PROOF, SPEC-PROOF-THEOREM,
     HOST-SPEC-PROOF-THEOREM. -/
 theorem specProofReady_true : specProofReady = true := by decide
 
-/-- Spec-proof ready does NOT mean proof complete.
+/-- Ready+complete still preserve bar honesty and proofs-do-not-retire-tests.
     Greppable: specProofDoesNotMeanProofComplete_true, SPEC-PROOF-THEOREM,
     HOST-SPEC-PROOF-THEOREM. -/
 theorem specProofDoesNotMeanProofComplete_true :
@@ -126,13 +142,15 @@ example : emitBoundaryCite = "EMIT-BOUNDARY" := by decide
 example : runtimeFsCite = "RUNTIME-FS" := by decide
 example : specSurfaceToken = "readable specification surface stated" := by decide
 example : proofNotCompleteToken = "proof complete not forged" := by decide
+example : proofCompleteBarMetToken = "Track 4c proof complete bar met" := by decide
 example : proofDoesNotRetireTestsToken = "proofs do not retire tests" := by decide
 example : intentionalPartialToken = "intentional PARTIAL" := by decide
 example : specProofSurfaceOk = true := by decide
 
-/-- SPEC-PROOF-SMOKE: surface stated; proof complete / free / unlock stay false. -/
+/-- SPEC-PROOF-SMOKE: surface stated; Track 4c complete true; free stays false. -/
 example : specSurfaceStated = true := by decide
-example : proofCompleteClaimed = false := by decide
+example : proofCompleteClaimed = true := by decide
+example : proofCompleteBarMet = true := by decide
 example : proofDoesNotRetireTests = true := by decide
 example : residualFreeClaimed = false := by decide
 example : productSelfHostCompleteClaimed = true := by decide
@@ -150,7 +168,7 @@ example : InventoryClose.inventoryCloseReady = true := by decide
 example : LlvmHold.llvmHoldReady = true := by decide
 
 /-- SPEC-PROOF-SMOKE / HOST-SPEC-PROOF-SMOKE: spec-proof ready decides true
-    (not residual free; not proof complete; not product complete; not llvm unlock).
+    (Track 4c complete; not residual free re-open; not tests retired).
     specProofOk is definitional alias of specProofReady (joint-name honesty). -/
 example : specProofReady = true := by decide
 example : specProofDoesNotMeanResidualFree = true := by decide

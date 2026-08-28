@@ -27,10 +27,15 @@ Use these ids on both bridge halves and in coordinator joins.
 | ConsumeToken (MULT-1 focus) | `examples/ConsumeToken.lean` | `examples/ConsumeToken.idr` |
 | ErasedIndex (MULT-0 focus) | `examples/ErasedIndex.lean` | `examples/ErasedIndex.idr` |
 | UnrestrictedShare (MULT-OMEGA focus) | `examples/UnrestrictedShare.lean` | `examples/UnrestrictedShare.idr` |
+| FailClosedGrade (unknown Mult tag reject) | `examples/FailClosedGrade.lean` | `examples/FailClosedGrade.idr` |
+| LinearPairSwap (two MULT-1 pair swap) | `examples/LinearPairSwap.lean` | `examples/LinearPairSwap.idr` |
+| RuntimeExtract (RUNTIME-FS extract honesty) | `examples/RuntimeExtract.lean` | `examples/RuntimeExtract.idr` |
+| AffineDrop (EDGE-AFFINE honesty) | `examples/AffineDrop.lean` | `examples/AffineDrop.idr` |
+| AffineOwn (EDGE-AFFINE product ownership) | `examples/AffineOwn.lean` | `examples/AffineOwn.idr` |
 | Trust notes | `examples/TRUST.md` | `examples/TRUST.md` |
 | Join table | `JOIN.md` | `JOIN.md` |
 
-Idris duals for all three algorithm ids **have landed**. This file tracks correspondence honesty.
+Idris duals for six JOIN-ALG algorithm ids **have landed** (including LinearPairSwap and RuntimeExtract). **AffineDrop** and **AffineOwn** are dual-tree EDGE-AFFINE honesty pairs (not host JOIN-ALG-USE pins; not product affine ABI). AffineOwn deepens product ownership (PRODUCT-OWN). This file tracks correspondence honesty.
 
 ## Correspondence (Lean view)
 
@@ -72,10 +77,14 @@ Idris map names imperfect edges `EDGE-*`. Lean keeps historical greppable ids an
 |---------|---------------|------------------|
 | ERASE-PROP | EDGE-PROP | Lean `Prop` erasure != Idris quantity 0 mechanism |
 | (name note) | EDGE-NAME | Join docs say **omega**; Idris users say **unrestricted** / `RigW` |
-| (affine note) | EDGE-AFFINE | Systems product talk includes affine; Idris public grades are 0 / exact-once 1 / unrestricted |
+| EDGE-AFFINE (+ AffineDrop / AffineOwn duals) | EDGE-AFFINE | Systems product talk includes affine (at most once); Idris public grades are 0 / exact-once 1 / unrestricted; AffineDrop documents single at-most-once; AffineOwn deepens multi-resource PRODUCT-OWN |
 | RUNTIME-CLASSIC | EDGE-RUNTIME (+ EDGE-CLASSIC-LEAN) | Managed runtime in trusted computing base on stock hosts; not freestanding product C |
 
 Keep both naming families greppable until a coordinator join normalizes `doc/divergence.md`.
+
+**AffineDrop status:** dual pair **documented** (checkable). Not freestanding product C. Not full product affine ABI.
+
+**AffineOwn status:** product ownership deepen **documented** (2026-08-11). Not freestanding product C. Not full product affine ABI.
 
 ## What this file does not claim
 

@@ -46,7 +46,7 @@ Idris keeps EDGE-* names. Lean map uses ERASE-* / RUNTIME-*. Both must stay grep
 | EDGE-RUNTIME | RUNTIME-CLASSIC (partial) | Stock Idris backends leave managed runtime in the trusted computing base |
 | EDGE-CLASSIC-LEAN | RUNTIME-FS (out of scope here); classic Lean binder gap | Freestanding product is `src/systems/`; this file only maps the gap |
 | EDGE-NAME | (none on Lean map yet) | Label: omega vs unrestricted / RigW |
-| EDGE-AFFINE | (none on Lean map yet) | Affine (at most once) vs Idris exact-once 1 |
+| EDGE-AFFINE | EDGE-AFFINE + AffineDrop / AffineOwn duals | Affine (at most once) vs Idris exact-once 1; duals document edge + product ownership (not product ABI) |
 
 ## Native dual examples (algorithm ids)
 
@@ -55,8 +55,17 @@ Idris keeps EDGE-* names. Lean map uses ERASE-* / RUNTIME-*. Both must stay grep
 | ConsumeToken | `examples/ConsumeToken.idr` | MULT-1 linear Token + LinearCheck surface |
 | ErasedIndex | `examples/ErasedIndex.idr` | MULT-0 erased length/index on Vect |
 | UnrestrictedShare | `examples/UnrestrictedShare.idr` | MULT-OMEGA unrestricted copy/drop/multi-use |
+| FailClosedGrade | `examples/FailClosedGrade.idr` | FAIL-CLOSED-UNKNOWN-GRADE raw Mult tag reject |
+| LinearPairSwap | `examples/LinearPairSwap.idr` | Two MULT-1 resources (LinPair) swap exact-once |
+| RuntimeExtract | `examples/RuntimeExtract.idr` | RUNTIME-FS product extract vs RUNTIME-CLASSIC / EDGE-RUNTIME |
+| AffineDrop | `examples/AffineDrop.idr` | EDGE-AFFINE honesty: single affine at-most-once vs Idris public grades (not a fourth grade) |
+| AffineOwn | `examples/AffineOwn.idr` | EDGE-AFFINE product ownership deepen: two affine resources (PRODUCT-OWN; use-one-drop-other / drop both) |
 
 Lean duals: same algorithm ids under `src/lean4/examples/`. See `JOIN.md`.
+
+**AffineDrop honesty:** dual pair is **documented** (checkable Idris + Lean sketches). Not freestanding product C. Not full product affine ABI. Not a host JOIN-ALG-USE pin.
+
+**AffineOwn honesty:** product ownership deepen **documented** (2026-08-11). Multi-resource PRODUCT-OWN sketches beyond single AffineDrop. Not freestanding product C. Not full product affine ABI. Not a host JOIN-ALG-USE pin.
 
 ## What this file is not
 

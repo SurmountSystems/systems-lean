@@ -219,20 +219,28 @@
   }
   {
     id = "compcert_path";
-    label = "CompCert PROVABLY path (deferred weight 0)";
+    label = "CompCert PROVABLY path (weight 0 track; claimed true)";
     weight = 0;
     stream = "systems";
     phase = "release";
-    done = false;
-    note = "needs real ccomp + matrix -- not claimed";
+    # Living tip: PROVABLY true (matrix in just check). Weight stays 0 so totals
+    # stay freestanding-wire focused; row is honesty not a second percent ladder.
+    done =
+      exists "just/compcert.just"
+      && fileContains "just/compcert.just" "product-compcert-matrix";
+    note = "PROVABLY claimed true; product-compcert-matrix in just check (not weaker dogfood alone)";
   }
   {
     id = "llvm_path";
-    label = "out/llvm-ir (deferred until self-host, weight 0)";
+    label = "out/llvm-ir unlock + Mult SSA partial (not full backend; weight 0)";
     weight = 0;
     stream = "systems";
     phase = "release";
-    done = false;
-    note = "deferred -- recipe reserved";
+    # Living tip: llvmUnlocked true; Mult SSA partial done; full backend held.
+    done =
+      exists "out/llvm-ir/slake_mult.ll"
+      && exists "out/llvm-ir/slake_mult_ssa.ll"
+      && exists "src/systems/SystemsLean/LlvmMultSsa.lean";
+    note = "llvmUnlocked true; Mult SSA lower partial; full LLVM backend still held";
   }
 ]

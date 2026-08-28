@@ -568,7 +568,7 @@
     }
     {
       # HOST-FRONT: peer elaborator Mult-first host fragment front-end.
-      # Theorems/smoke peeled to HostFrontTheorems (same namespace).
+      # Theorems/smoke peeled to HostFrontTheorems; golden texts to HostFrontGoldens.
       rel = "src/systems/SystemsLean/HostFront.lean";
       all = [
         "SYSTEMS_LEAN_HOST"
@@ -623,10 +623,39 @@
         "isWellFormed"
         "import SystemsLean.HostTerm"
         "import SystemsLean.Mult"
+        "import SystemsLean.HostFrontGoldens"
+        "HostFrontGoldens"
         "UNIT_SURFACE"
         "Not freestanding residual free"
         "Not PROVABLY"
         "MULT-0"
+      ];
+    }
+    {
+      # HostFrontGoldens: dual-pinned golden texts + file names peel.
+      rel = "src/systems/SystemsLean/HostFrontGoldens.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "HostFrontGoldens"
+        "SystemsLean.HostFrontGoldens"
+        "goodG1Text"
+        "goodG2Text"
+        "goodG3Text"
+        "goodG4Text"
+        "goodG5Text"
+        "goodG6Text"
+        "goodG7Text"
+        "badB1Text"
+        "badB2Text"
+        "badB3Text"
+        "badB4Text"
+        "LINEAR-EXACT-ONCE"
+        "TYPED_IR_V0"
+        "IR_PROGRAM_V0"
+        "IR_GRAPH_EDGES_V0"
+        "HOST_COMPOSE_V0"
+        "Not freestanding residual free"
+        "Not PROVABLY"
       ];
     }
     {

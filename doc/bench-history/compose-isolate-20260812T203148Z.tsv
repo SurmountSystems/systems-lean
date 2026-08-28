@@ -1,0 +1,5 @@
+stamp	arm	exit	N	ns_median	iso_well_typed	iso_extract	iso_init	iso_reset	note
+20260812T203148Z	R-free-compose-cold	ok	10000000	17.2105	3.0905	4.5060	3.6766	0.8400	default_cold extract_not_skipped
+20260812T203148Z	R-gc-shape-compose	ok	10000000	9.8852	?	?	?	?	heap_churn allocator
+20260812T203148Z	R-fail-closed-shape	ok	10000000	17.1701	?	?	?	?	protocol_twin not_product_wire
+20260812T203148Z	R-free-compose-reset	ok	10000000	16.0208	3.3172	4.8043	3.6463	0.8279	opt_in_reset not_default

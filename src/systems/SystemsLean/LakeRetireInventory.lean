@@ -3,12 +3,15 @@
   product-path pin honesty). Structural inventory of product-path measured steps
   already Lake-free on the hot path vs remaining Lake host / bootstrap /
   diagnostic needs. After phase 2 pin flip: product StillUsesLake / DependsOnLake
-  false (living tip SSoTs); host elaborator residual remains (DualResidual;
-  free true != Lake gone; host free not claimed). Not freestanding residual free
-  re-open. Not freestanding product self-host complete rebrand. Not
-  freestandingDriverComplete flip (Mult-orthogonal). Not productWire*Finished
-  flip. Not subsetPackageJoin*Finished flip. Not PROVABLY. Not llvm unlock.
-  Not hand-authored product C. Not deleting all lake diagnostic recipes.
+  false (living tip SSoTs). DualResidual host residual free **claimed** (F1;
+  hostElaboratorResidualRemains false / free claimed true; FullHost false).
+  Local lakeRetireHostElaborateRemains stays **true** as free != Lake gone
+  inventory class (bootstrap / diagnostic Lake inventory honesty; not DualResidual
+  free polarity). Not freestanding residual free re-open. Not freestanding product
+  self-host complete rebrand. Not freestandingDriverComplete flip (Mult-orthogonal).
+  Not productWire*Finished flip. Not subsetPackageJoin*Finished flip. Not PROVABLY.
+  Not llvm unlock. Not hand-authored product C. Not deleting all lake diagnostic
+  recipes.
   Greppable: SYSTEMS_LEAN_HOST, LAKE-RETIRE-INVENTORY, SLAKE_LAKE_RETIRE_INVENTORY,
   SLAKE_LAKE_RETIRE_INVENTORY_V0, HOST-LAKE-RETIRE-INVENTORY, lakeRetireInventoryReady,
   lakeRetireInventoryFinishedClaimed, productPathMeasuredStepsLakeFreeEvidence,
@@ -26,7 +29,7 @@
   Short role name (not ProductPath* kitchen-sink).
   Dual evidence: Lean structural pins + just lake-retire-inventory greps of
   pins, justfile Lake-free recipes, SelfHostComplete StillUsesLake false,
-  DualResidual hostElaboratorResidualRemains true.
+  DualResidual free tip (remains false / free claimed true) via free-tip greps.
   Red/green: lake build SystemsLean.LakeRetireInventory; just lake-retire-inventory.
   Design: doc/dev/research/m6-lake-retire-design-2026-08-01.md
   Module must stay ASCII.
@@ -40,7 +43,8 @@ namespace SystemsLean.LakeRetireInventory
 
   Inventory of measured product hot-path Lake-free recipes as evidence pins.
   Phase 2: product StillUsesLake/DependsOnLake false with elaborator proof.
-  Host elaborator residual remains (classic Lake may still elaborate SystemsLean).
+  DualResidual host free claimed (F1). Local lakeRetireHostElaborateRemains stays
+  true: free != Lake gone (bootstrap / diagnostic Lake inventory class).
 -/
 
 /-- Greppable primary stage id (M6 Lake retire inventory gate). -/
@@ -95,8 +99,9 @@ def lakeRetireProductPathLakeRetired : Bool :=
     Greppable: lakeRetireKeepsProductStillUsesLake. -/
 def lakeRetireKeepsProductStillUsesLake : Bool := lakeRetireProductPathLakeRetired
 
-/-- Host elaborator residual remains (DualResidual program; free != Lake gone).
-    Local inventory mirror; just greps DualResidual.hostElaboratorResidualRemains.
+/-- Local inventory: host elaborate still in Lake inventory class (free != Lake gone).
+    DualResidual free tip is separate (F1: remains false / free claimed true).
+    Local pin stays true as bootstrap/diagnostic honesty; not DualResidual free polarity.
     Greppable: lakeRetireHostElaborateRemains. -/
 def lakeRetireHostElaborateRemains : Bool := true
 

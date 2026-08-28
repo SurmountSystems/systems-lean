@@ -2,20 +2,24 @@
   SYSTEMS_LEAN_HOST partial -- Systems Lean package root (classic elaborator).
   Imports Mult + MultTheorems + Linear + LinearTheorems + Types + TypesTheorems + ordered IR program + IrProgramTheorems + Erasure + ErasureTheorems + Extract +
   ExtractTheorems +
-  IrGraph + IrGraphTheorems + HostCompose + HostComposeTheorems + EmitPlan + EmitPlanScaffold + EmitApply + EmitApplyScaffold + EmitBody + EmitBanner + EmitBannerScaffold + CompilePath + CompilePathBody + CompilePathErasure + CompilePathPlan + CompilePathApply + CompilePathGraph + CompilePathCompose + CompilePathMult + FirstSurface + MultSubsetEmit + MultSubsetRebuild + MultFsDeepen + CompilePathLinear + LinearSubsetEmit + LinearSubsetRebuild + CompilePathTypes + TypesSubsetEmit + TypesSubsetRebuild + CompilePathProgram + ProgramSubsetEmit + ProgramSubsetRebuild + CompilePathExtract + ExtractSubsetEmit + ExtractSubsetRebuild + ErasureSubsetEmit + ErasureSubsetRebuild + GraphSubsetEmit + GraphSubsetRebuild + ComposeSubsetEmit + ComposeSubsetRebuild + SubsetFront + SubsetPackageJoin + FrontMultPackage + HostTerm + HostFront +
+  IrGraph + IrGraphTheorems + HostCompose + HostComposeTheorems + HostCost + HostCostTheorems + EmitPlan + EmitPlanScaffold + EmitApply + EmitApplyScaffold + EmitBody + EmitBanner + EmitBannerScaffold + CompilePath + CompilePathBody + CompilePathErasure + CompilePathPlan + CompilePathApply + CompilePathGraph + CompilePathCompose + CompilePathMult + FirstSurface + MultSubsetEmit + MultSubsetRebuild + MultFsDeepen + CompilePathLinear + LinearSubsetEmit + LinearSubsetRebuild + CompilePathTypes + TypesSubsetEmit + TypesSubsetRebuild + CompilePathProgram + ProgramSubsetEmit + ProgramSubsetRebuild + CompilePathExtract + ExtractSubsetEmit + ExtractSubsetRebuild + ErasureSubsetEmit + ErasureSubsetRebuild + GraphSubsetEmit + GraphSubsetRebuild + ComposeSubsetEmit + ComposeSubsetRebuild + SubsetFront + SubsetPackageJoin + FrontMultPackage + HostTerm + HostFrontGoldens + HostFront +
   HostCheck + HostGraph + HostGraphTheorems + HostFrontTheorems + HostPackageWrite + HostPackageWriteTheorems +
-  HostPackageRoots + HostImportGraph + HostModuleCheck + HostModuleCheckFixtures +
-  HostModuleCheckTheorems +
+  HostPackageRoots + HostImportGraph + HostImportGraphSeeds + HostImportGraphModel + HostImportGraphMods + HostImportGraphModsLater + HostImportGraphLoadOk + HostImportGraphLoadOkLater + HostImportGraphTheorems + HostImportGraphWalkLater + HostImportGraphWalk + HostImportGraphDriver + HostModuleCheck + HostModuleCheckFixtures +
+  HostModuleCheckRequiredDecls + HostModuleCheckRequiredDeclsProduct +
+  HostModuleCheckRequiredDeclsLater + HostModuleCheckFixtureTexts +
+  HostModuleCheckFixtureTextsProduct + HostModuleCheckFixtureTextsLater +
+  HostModuleCheckFixtureTextsSelfHost + HostModuleCheckFixtureTextsEmit +
+  HostModuleCheckSurface + HostModuleCheckAccepts + HostModuleCheckTheorems + HostModuleCheckSmoke +
   JoinMap + JoinMapTheorems + SelfHost + SelfHostTheorems + SurfaceMatrix + SurfaceMatrixTheorems + KernelMult + KernelMultTheorems + EmitMult + EmitMultScaffold + EmitLinear + EmitLinearScaffold +
   EmitErasure + EmitErasureScaffold + EmitExtract + EmitExtractScaffold + EmitTypes + EmitTypesScaffold + EmitProgram + EmitProgramScaffold + EmitGraph + EmitGraphScaffold + EmitCompose + EmitComposeScaffold +
   ParityMult + ParityMultTheorems +
   KernelLinear + KernelLinearTheorems + ParityLinear + ParityLinearTheorems + KernelTypes + KernelTypesTheorems + ParityTypes + ParityTypesTheorems + KernelProgram +
   KernelProgramTheorems +
-  ParityProgram + ParityProgramTheorems + KernelEmit + KernelEmitTheorems + ParityEmit + ParityEmitTheorems + SelfApply + SelfApplyTheorems + SelfApplyFs + LlvmHold + LlvmHoldTheorems + LlvmEmitPath + LlvmMultText + LlvmLinearText + LlvmTypesText + LlvmProgramText + LlvmGraphText + LlvmComposeText +
+  ParityProgram + ParityProgramTheorems + KernelEmit + KernelEmitTheorems + ParityEmit + ParityEmitTheorems + SelfApply + SelfApplyTheorems + SelfApplyFs + SelfApplyFsClose + SelfApplyFsTheorems + LlvmHold + LlvmHoldTheorems + LlvmEmitPath + LlvmMultText + LlvmLinearText + LlvmTypesText + LlvmProgramText + LlvmGraphText + LlvmComposeText + LlvmMultSsa + LlvmLinearSsa + LlvmTypesSsa + LlvmProgramSsa + LlvmGraphSsa + LlvmComposeSsa + LlvmCfgHonesty + LlvmCfgMultProduction + LlvmCfgMultDf + LlvmCfgUnitProduction + LlvmCfgGeneral + LlvmCfgFixture + MultForeignLink + LinearForeignLink + TypesForeignLink + ProgramForeignLink + GraphForeignLink + IrNodeLayout + RustIrInterop +
 
   InventoryClose + InventoryCloseTheorems + ProductPath + ProductPathTheorems + DualResidual +
   DualResidualTheorems + ProbeWire + ProbeWireTheorems +
-  SpecProof + SpecProofTheorems + SelfHostBody + SelfHostBodyTheorems host modules
+  SpecProof + SpecProofTheorems + SelfHostBody + SelfHostBodyTheorems + ElabMeet + ElabMeetTheorems + ElabMeetEarly + ElabMeetCompile + ElabMeetProbe + ElabMeetOlean + ElabMeetDesc + ElabMeetExe + ElabMeetImpSrc + ElabMeetImpSrcTwo + ElabMeetExeSrcTwo + ElabMeetDefSrc + ElabMeetExeProbe + ElabMeetLive + ElabMeetNamedWalk + ElabMeetNamedWalkLater + ElabMeetNamedWalkTail + ElabMeetNamedWalkHostTerm + ElabMeetNamedWalkHostGraphTheorems + ElabMeetNamedWalkHostPackageWrite + ElabMeetNamedHostFrontTheoremsProbe + ElabMeetNamedHostCheckProbe + ElabMeetNamedHostGraphProbe + ElabMeetNamedHostGraphTheoremsProbe + ElabMeetNamedHostPackageWriteProbe + ElabMeetSubset host modules
   (unit-surface markers live on those files).
   SKELETON package root only (import shell; not freestanding residual free).
   Not freestanding residual free. Not product C. Not PROVABLY.
@@ -49,6 +53,8 @@ import SystemsLean.Extract
 import SystemsLean.ExtractTheorems
 import SystemsLean.HostCompose
 import SystemsLean.HostComposeTheorems
+import SystemsLean.HostCost
+import SystemsLean.HostCostTheorems
 import SystemsLean.EmitPlan
 import SystemsLean.EmitPlanScaffold
 import SystemsLean.EmitApply
@@ -91,6 +97,7 @@ import SystemsLean.SubsetFront
 import SystemsLean.SubsetPackageJoin
 import SystemsLean.FrontMultPackage
 import SystemsLean.HostTerm
+import SystemsLean.HostFrontGoldens
 import SystemsLean.HostFront
 import SystemsLean.HostFrontTheorems
 import SystemsLean.HostCheck
@@ -99,10 +106,118 @@ import SystemsLean.HostGraphTheorems
 import SystemsLean.HostPackageWrite
 import SystemsLean.HostPackageWriteTheorems
 import SystemsLean.HostPackageRoots
+import SystemsLean.HostImportGraphSeeds
+import SystemsLean.HostImportGraphModel
+import SystemsLean.HostImportGraphMods
+import SystemsLean.HostImportGraphModsLater
+import SystemsLean.HostImportGraphLoadOk
+import SystemsLean.HostImportGraphLoadOkLater
+import SystemsLean.HostImportGraphTheorems
+import SystemsLean.HostImportGraphWalkLater
+import SystemsLean.HostImportGraphWalk
+import SystemsLean.HostImportGraphDriver
 import SystemsLean.HostImportGraph
+import SystemsLean.HostModuleCheckRequiredDecls
+import SystemsLean.HostModuleCheckRequiredDeclsProduct
+import SystemsLean.HostModuleCheckRequiredDeclsLater
+import SystemsLean.HostModuleCheckFixtureTexts
+import SystemsLean.HostModuleCheckFixtureTextsProduct
+import SystemsLean.HostModuleCheckFixtureTextsLater
+import SystemsLean.HostModuleCheckFixtureTextsSelfHost
+import SystemsLean.HostModuleCheckFixtureTextsEmit
 import SystemsLean.HostModuleCheckFixtures
+import SystemsLean.HostModuleCheckSurface
+import SystemsLean.HostModuleCheckCheckers
+import SystemsLean.HostModuleCheckCheckersLater
+import SystemsLean.HostModuleCheckRealModule
+import SystemsLean.HostModuleCheckEmitBodyTerm
+import SystemsLean.HostModuleCheckKernelMultTerm
+import SystemsLean.HostModuleCheckKernelLinearTerm
+import SystemsLean.HostModuleCheckKernelTypesTerm
+import SystemsLean.HostModuleCheckKernelProgramTerm
+import SystemsLean.HostModuleCheckKernelEmitTerm
+import SystemsLean.HostModuleCheckParityMultTerm
+import SystemsLean.HostModuleCheckParityLinearTerm
+import SystemsLean.HostModuleCheckParityTypesTerm
+import SystemsLean.HostModuleCheckParityProgramTerm
+import SystemsLean.HostModuleCheckParityEmitTerm
+import SystemsLean.HostModuleCheckEmitMultScaffoldTerm
+import SystemsLean.HostModuleCheckEmitLinearScaffoldTerm
+import SystemsLean.HostModuleCheckEmitTypesScaffoldTerm
+import SystemsLean.HostModuleCheckEmitProgramScaffoldTerm
+import SystemsLean.HostModuleCheckEmitGraphScaffoldTerm
+import SystemsLean.HostModuleCheckEmitComposeScaffoldTerm
+import SystemsLean.HostModuleCheckEmitErasureScaffoldTerm
+import SystemsLean.HostModuleCheckEmitExtractScaffoldTerm
+import SystemsLean.HostModuleCheckEmitBannerScaffoldTerm
+import SystemsLean.HostModuleCheckKernelSelfApplyTerm
+import SystemsLean.HostModuleCheckProductOutKernelTerm
+import SystemsLean.HostModuleCheckCompilePathTerm
+import SystemsLean.HostModuleCheckJoinMapTerm
+import SystemsLean.HostModuleCheckSelfHostTerm
+import SystemsLean.HostModuleCheckSurfaceMatrixTerm
+import SystemsLean.HostModuleCheckSpecProofTerm
+import SystemsLean.HostModuleCheckDualResidualTerm
+import SystemsLean.HostModuleCheckCompilePathMultTerm
+import SystemsLean.HostModuleCheckCompilePathLinearTerm
+import SystemsLean.HostModuleCheckCompilePathTypesTerm
+import SystemsLean.HostModuleCheckCompilePathProgramTerm
+import SystemsLean.HostModuleCheckCompilePathGraphTerm
+import SystemsLean.HostModuleCheckCompilePathComposeTerm
+import SystemsLean.HostModuleCheckCompilePathErasureTerm
+import SystemsLean.HostModuleCheckCompilePathExtractTerm
+import SystemsLean.HostModuleCheckCompilePathPlanTerm
+import SystemsLean.HostModuleCheckCompilePathApplyTerm
+import SystemsLean.HostModuleCheckCompilePathBodyTerm
+import SystemsLean.HostModuleCheckFirstSurfaceTerm
+import SystemsLean.HostModuleCheckLinearSubsetEmitTerm
+import SystemsLean.HostModuleCheckTypesSubsetEmitTerm
+import SystemsLean.HostModuleCheckProgramSubsetEmitTerm
+import SystemsLean.HostModuleCheckGraphSubsetEmitTerm
+import SystemsLean.HostModuleCheckComposeSubsetEmitTerm
+import SystemsLean.HostModuleCheckErasureSubsetEmitTerm
+import SystemsLean.HostModuleCheckExtractSubsetEmitTerm
+import SystemsLean.HostModuleCheckMultSubsetEmitTerm
+import SystemsLean.HostModuleCheckMultSubsetRebuildTerm
+import SystemsLean.HostModuleCheckLinearSubsetRebuildTerm
+import SystemsLean.HostModuleCheckTypesSubsetRebuildTerm
+import SystemsLean.HostModuleCheckProgramSubsetRebuildTerm
+import SystemsLean.HostModuleCheckGraphSubsetRebuildTerm
+import SystemsLean.HostModuleCheckComposeSubsetRebuildTerm
+import SystemsLean.HostModuleCheckErasureSubsetRebuildTerm
+import SystemsLean.HostModuleCheckExtractSubsetRebuildTerm
+import SystemsLean.HostModuleCheckHostFrontTerm
+import SystemsLean.HostModuleCheckLlvmMultTextTerm
+import SystemsLean.HostModuleCheckHostCheckTerm
+import SystemsLean.HostModuleCheckHostGraphTerm
+import SystemsLean.HostModuleCheckLlvmLinearTextTerm
+import SystemsLean.HostModuleCheckMultFsWriteToolTerm
+import SystemsLean.HostModuleCheckFrontMultPackageTerm
+import SystemsLean.HostModuleCheckSubsetPackageJoinTerm
+import SystemsLean.HostModuleCheckLlvmTypesTextTerm
+import SystemsLean.HostModuleCheckMultFsDeepenTerm
+import SystemsLean.HostModuleCheckHostPackageWriteTerm
+import SystemsLean.HostModuleCheckLlvmProgramTextTerm
+import SystemsLean.HostModuleCheckLlvmGraphTextTerm
+import SystemsLean.HostModuleCheckLlvmComposeTextTerm
+import SystemsLean.HostModuleCheckSelfApplyFsTerm
+import SystemsLean.HostModuleCheckInventoryCloseTerm
+import SystemsLean.HostModuleCheckProductPathBarsTerm
+import SystemsLean.HostModuleCheckProductPathTerm
+import SystemsLean.HostModuleCheckProbeWireTerm
+import SystemsLean.HostModuleCheckSelfHostBodyTerm
+import SystemsLean.HostModuleCheckLoadOkCompilePathUnits
+import SystemsLean.HostModuleCheckLoadOkLaterTerm
+import SystemsLean.HostModuleCheckAcceptsGoods
+import SystemsLean.HostModuleCheckAcceptsGoodsTerm
+import SystemsLean.HostModuleCheckAcceptsLater
+import SystemsLean.HostModuleCheckAccepts
+import SystemsLean.HostModuleCheckSeeds
+import SystemsLean.HostModuleCheckLoadOk
+import SystemsLean.HostModuleCheckDriver
 import SystemsLean.HostModuleCheck
 import SystemsLean.HostModuleCheckTheorems
+import SystemsLean.HostModuleCheckSmoke
 import SystemsLean.JoinMap
 import SystemsLean.JoinMapTheorems
 import SystemsLean.SelfHost
@@ -148,6 +263,8 @@ import SystemsLean.ParityEmitTheorems
 import SystemsLean.SelfApply
 import SystemsLean.SelfApplyTheorems
 import SystemsLean.SelfApplyFs
+import SystemsLean.SelfApplyFsClose
+import SystemsLean.SelfApplyFsTheorems
 import SystemsLean.LlvmHold
 import SystemsLean.LlvmHoldTheorems
 import SystemsLean.LlvmEmitPath
@@ -157,6 +274,25 @@ import SystemsLean.LlvmTypesText
 import SystemsLean.LlvmProgramText
 import SystemsLean.LlvmGraphText
 import SystemsLean.LlvmComposeText
+import SystemsLean.LlvmMultSsa
+import SystemsLean.LlvmLinearSsa
+import SystemsLean.LlvmTypesSsa
+import SystemsLean.LlvmProgramSsa
+import SystemsLean.LlvmGraphSsa
+import SystemsLean.LlvmComposeSsa
+import SystemsLean.LlvmCfgHonesty
+import SystemsLean.LlvmCfgMultProduction
+import SystemsLean.LlvmCfgMultDf
+import SystemsLean.LlvmCfgUnitProduction
+import SystemsLean.LlvmCfgGeneral
+import SystemsLean.LlvmCfgFixture
+import SystemsLean.MultForeignLink
+import SystemsLean.LinearForeignLink
+import SystemsLean.TypesForeignLink
+import SystemsLean.ProgramForeignLink
+import SystemsLean.GraphForeignLink
+import SystemsLean.IrNodeLayout
+import SystemsLean.RustIrInterop
 import SystemsLean.InventoryClose
 import SystemsLean.InventoryCloseTheorems
 import SystemsLean.ProductPath
@@ -169,3 +305,88 @@ import SystemsLean.SpecProof
 import SystemsLean.SpecProofTheorems
 import SystemsLean.SelfHostBody
 import SystemsLean.SelfHostBodyTheorems
+import SystemsLean.ElabMeetCompile
+import SystemsLean.ElabMeetProbe
+import SystemsLean.ElabMeetEarly
+import SystemsLean.ElabMeetOlean
+import SystemsLean.ElabMeetDesc
+import SystemsLean.ElabMeetExe
+import SystemsLean.ElabMeetImpSrc
+import SystemsLean.ElabMeetImpSrcTwo
+import SystemsLean.ElabMeetExeSrcTwo
+import SystemsLean.ElabMeetDefSrc
+import SystemsLean.ElabMeetExeProbe
+import SystemsLean.ElabMeetLive
+import SystemsLean.ElabMeetNamedWalk
+import SystemsLean.ElabMeetNamedWalkLater
+import SystemsLean.ElabMeetNamedWalkTail
+import SystemsLean.ElabMeetNamedWalkHostTerm
+import SystemsLean.ElabMeetNamedWalkHostGraphTheorems
+import SystemsLean.ElabMeetNamedWalkHostPackageWrite
+import SystemsLean.ElabMeetNamedWalkHostImportGraphSeeds
+import SystemsLean.ElabMeetNamedWalkHostImportGraphWalkLater
+import SystemsLean.ElabMeetNamedWalkHostModuleCheckFixtureTexts
+import SystemsLean.ElabMeetNamedWalkHostModuleCheckFixtureTextsEmit
+import SystemsLean.ElabMeetNamedWalkHostModuleCheckCheckersLater
+import SystemsLean.ElabMeetNamedWalkHostModuleCheckKernelMultTerm
+import SystemsLean.ElabMeetNamedWalkHostModuleCheckKernelLinearTerm
+import SystemsLean.ElabMeetNamedWalkHostModuleCheckKernelTypesTerm
+import SystemsLean.ElabMeetNamedWalkHostModuleCheckKernelProgramTerm
+import SystemsLean.ElabMeetNamedWalkHostModuleCheckKernelEmitTerm
+import SystemsLean.ElabMeetNamedWalkHostModuleCheckParityMultTerm
+import SystemsLean.ElabMeetNamedWalkHostModuleCheckParityLinearTerm
+import SystemsLean.ElabMeetNamedHostFrontTheoremsProbe
+import SystemsLean.ElabMeetNamedHostCheckProbe
+import SystemsLean.ElabMeetNamedHostGraphProbe
+import SystemsLean.ElabMeetNamedHostGraphTheoremsProbe
+import SystemsLean.ElabMeetNamedHostPackageWriteProbe
+import SystemsLean.ElabMeetNamedHostPackageWriteTheoremsProbe
+import SystemsLean.ElabMeetNamedHostPackageRootsProbe
+import SystemsLean.ElabMeetNamedHostImportGraphSeedsProbe
+import SystemsLean.ElabMeetNamedHostImportGraphModelProbe
+import SystemsLean.ElabMeetNamedHostImportGraphModsProbe
+import SystemsLean.ElabMeetNamedHostImportGraphModsLaterProbe
+import SystemsLean.ElabMeetNamedHostImportGraphLoadOkLaterProbe
+import SystemsLean.ElabMeetNamedHostImportGraphWalkLaterProbe
+import SystemsLean.ElabMeetNamedHostImportGraphWalkProbe
+import SystemsLean.ElabMeetNamedHostModuleCheckRequiredDeclsProbe
+import SystemsLean.ElabMeetNamedHostModuleCheckRequiredDeclsProductProbe
+import SystemsLean.ElabMeetNamedHostModuleCheckRequiredDeclsLaterProbe
+import SystemsLean.ElabMeetNamedHostModuleCheckFixtureTextsProbe
+import SystemsLean.ElabMeetNamedHostModuleCheckFixtureTextsProductProbe
+import SystemsLean.ElabMeetNamedHostModuleCheckFixtureTextsLaterProbe
+import SystemsLean.ElabMeetNamedHostModuleCheckFixtureTextsSelfHostProbe
+import SystemsLean.ElabMeetNamedHostModuleCheckFixtureTextsEmitProbe
+import SystemsLean.ElabMeetNamedHostModuleCheckFixturesProbe
+import SystemsLean.ElabMeetNamedHostModuleCheckSurfaceProbe
+import SystemsLean.ElabMeetNamedHostModuleCheckCheckersProbe
+import SystemsLean.ElabMeetNamedHostModuleCheckCheckersLaterProbe
+import SystemsLean.ElabMeetNamedHostModuleCheckRealModuleProbe
+import SystemsLean.ElabMeetNamedHostModuleCheckEmitBodyTermProbe
+import SystemsLean.ElabMeetNamedHostModuleCheckKernelMultTermProbe
+import SystemsLean.ElabMeetNamedHostModuleCheckKernelLinearTermProbe
+import SystemsLean.ElabMeetNamedHostModuleCheckKernelTypesTermProbe
+import SystemsLean.ElabMeetNamedHostModuleCheckKernelProgramTermProbe
+import SystemsLean.ElabMeetNamedHostModuleCheckKernelEmitTermProbe
+import SystemsLean.ElabMeetNamedHostModuleCheckParityMultTermProbe
+import SystemsLean.ElabMeetNamedHostModuleCheckParityLinearTermProbe
+import SystemsLean.ElabMeetSubset
+import SystemsLean.ElabMeetReadyHostModuleCheck
+
+import SystemsLean.ElabMeet
+import SystemsLean.ElabMeetTheoremsNamedHostModuleCheckFixtureTexts
+import SystemsLean.ElabMeetTheoremsNamedHostModuleCheckFixtures
+import SystemsLean.ElabMeetTheoremsNamedHostModuleCheckSurface
+import SystemsLean.ElabMeetTheoremsNamedHostModuleCheckCheckers
+import SystemsLean.ElabMeetTheoremsNamedHostModuleCheckCheckersLater
+import SystemsLean.ElabMeetTheoremsNamedHostModuleCheckRealModule
+import SystemsLean.ElabMeetTheoremsNamedHostModuleCheckEmitBodyTerm
+import SystemsLean.ElabMeetTheoremsNamedHostModuleCheckKernelMultTerm
+import SystemsLean.ElabMeetTheoremsNamedHostModuleCheckKernelLinearTerm
+import SystemsLean.ElabMeetTheoremsNamedHostModuleCheckKernelTypesTerm
+import SystemsLean.ElabMeetTheoremsNamedHostModuleCheckKernelProgramTerm
+import SystemsLean.ElabMeetTheoremsNamedHostModuleCheckKernelEmitTerm
+import SystemsLean.ElabMeetTheoremsNamedHostModuleCheckParityMultTerm
+import SystemsLean.ElabMeetTheoremsNamedHostModuleCheckParityLinearTerm
+import SystemsLean.ElabMeetTheorems
+

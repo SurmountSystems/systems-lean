@@ -280,7 +280,7 @@ subset-packages-rebuild-join-without-lake:
 
 # M6 Lake retire inventory (phase 1 inventory + phase 2 product pin honesty).
 # Greps Lean inventory pins + justfile Lake-free product recipes + product
-# StillUsesLake false on SelfHostComplete + DualResidual host residual remains.
+# StillUsesLake false on SelfHostComplete + DualResidual host residual free (F1).
 # Does not run lake build/exe on hot path. Greppable: lake-retire-inventory,
 # LAKE-RETIRE-INVENTORY, lakeRetireInventoryReady,
 # productPathMeasuredStepsLakeFreeEvidence, lakeRetireProductPathLakeRetired,
@@ -366,12 +366,16 @@ lake-retire-inventory:
       echo "error: productPathPerformDependsOnLake must be false in SelfHostComplete (M6)" >&2
       exit 1
     fi
-    # Dual residual host elaborator residual remains true.
-    if ! grep -qE 'def hostElaboratorResidualRemains[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$dual_residual"; then
-      echo "error: hostElaboratorResidualRemains must stay true in DualResidual" >&2
+    # Dual residual host elaborator residual free tip (F1): remains false.
+    if ! grep -qE 'def hostElaboratorResidualRemains[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*false' "$dual_residual"; then
+      echo "error: hostElaboratorResidualRemains must be false in DualResidual (F1 free tip)" >&2
       exit 1
     fi
-    # Free claimed true is orthogonal (not Lake gone).
+    if ! grep -qE 'def hostElaboratorResidualFreeClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$dual_residual"; then
+      echo "error: hostElaboratorResidualFreeClaimed must be true in DualResidual (F1)" >&2
+      exit 1
+    fi
+    # Product free claimed true is orthogonal (not Lake gone).
     if ! grep -qE 'def residualFreeClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$dual_residual"; then
       echo "error: residualFreeClaimed must stay true in DualResidual (free != Lake gone)" >&2
       exit 1
@@ -409,13 +413,17 @@ lake-retire-inventory:
       echo "error: forge ban: productPathOfficialPathStillUsesLake true after M6" >&2
       exit 1
     fi
-    if grep -qE 'def hostElaboratorResidualRemains[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*false' "$dual_residual"; then
-      echo "error: forge ban: hostElaboratorResidualRemains false (host residual remains)" >&2
+    if grep -qE 'def hostElaboratorResidualRemains[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$dual_residual"; then
+      echo "error: forge ban: hostElaboratorResidualRemains true after free claim (F1)" >&2
+      exit 1
+    fi
+    if grep -qE 'def hostElaboratorResidualFreeClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*false' "$dual_residual"; then
+      echo "error: forge ban: hostElaboratorResidualFreeClaimed false after free claim (F1)" >&2
       exit 1
     fi
     echo "  inventory: product measured Lake-free recipes dual-pinned"
-    echo "  honesty: product StillUsesLake false; DependsOnLake false; host residual remains"
-    echo "  non-claims: free/complete/driver unchanged; not PROVABLY/llvm; not host free"
+    echo "  honesty: product StillUsesLake false; DependsOnLake false; host residual free claimed (F1)"
+    echo "  non-claims: product free/complete/driver unchanged; not PROVABLY/llvm rebrand; free != Lake gone"
     echo "lake-retire-inventory: GREEN"
 
 # Peer elaborator step 10: host residual shrink inventory (partial only).

@@ -10,28 +10,32 @@
   - EXTRACT-THEOREM / HOST-EXTRACT-THEOREM: isFreestandingGoal_runtimeFs /
     isFreestandingGoal_classic_false / isFreestandingGoal_edge_false /
     extractOk_eq_checkFailClosed / extractOk_classic_reject /
-    extractOk_edge_reject / extractOk_mult1_fs_true / extractOk_omega_fs_true /
+    extractOk_edge_reject / extractOk_mult1_fs_false / extractOk_omega_fs_true /
     extractOk_mult0_unmarked_false / extractOk_mult0_marked_fs_true /
     ofRuntimeTag?_zero/one/two / ofRuntimeTag?_fail_closed /
     isValidRuntimeTag_eq_ofRuntimeTag?_isSome / isValidRuntimeTag_fail_closed /
     isValidRuntimeTag_zero/one/two / RuntimeClaim.name_* /
     ofRuntimeTag?_some_implies_isValidRuntimeTag /
     extractOkFromTags? known-tag success/fail + unknown none.
-  - Partial Extract only: intentional MULT-1 thinning; not SpecProof complete.
+  - Partial Extract only: MULT-1 unminted reject; not SpecProof complete.
 
-  These Extract theorems do NOT set SpecProof.proofCompleteClaimed true.
+  These Extract theorems do NOT flip SpecProof.proofCompleteClaimed.
+  The living SpecProof pin is already true. Extract theorems do not
+  set that pin.
   Partial theorems on Extract != host proof complete != residual free.
 
   Intentional non-claims:
   - Not freestanding residual free. Not product C residual free.
   - Not PROVABLY. Not freestanding emit residual free.
-  - Not proof complete. Not HOST_COMPOSE_V0 reimplementation.
-  - Not full FAIL_CLOSED_CHECKER_V1 / slake_extract_with_checks parity (MULT-1 gap).
+  - Extract theorems do not flip SpecProof.proofCompleteClaimed
+    (the living pin is already true). Not HOST_COMPOSE_V0 reimplementation.
+  - Not full FAIL_CLOSED_CHECKER_V1 / slake_extract_with_checks parity
+    (thin path has no live token; minted MULT-1 is HostCompose).
 
   Greppable: SYSTEMS_LEAN_HOST, EXTRACT-THEOREM, HOST-EXTRACT-THEOREM,
   isFreestandingGoal_runtimeFs, extractOk_classic_reject,
   ofRuntimeTag?_fail_closed, ofRuntimeTag?_some_implies_isValidRuntimeTag,
-  extractOkFromTags?_mult1_fs_true, extractOkFromTags?_mult0_marked_fs_true,
+  extractOkFromTags?_mult1_fs_false, extractOkFromTags?_mult0_marked_fs_true,
   isValidRuntimeTag_zero, ExtractTheorems, UNIT_SURFACE host surface,
   RUNTIME-FS, EDGE-RUNTIME, RUNTIME-CLASSIC, EMIT-BOUNDARY, FAIL-CLOSED,
   FAIL_CLOSED_CHECKER_V1, MULT-0, MULT-1, MULT-OMEGA.
@@ -54,9 +58,9 @@ open SystemsLean.Erasure (Erased)
 /-! ### EXTRACT-THEOREM / HOST-EXTRACT-THEOREM (readable statements, then proofs)
 
   Real Lean theorems (not only `example` Bool canaries). Scope is RUNTIME-FS-only
-  extract / FAIL-CLOSED-UNKNOWN-RUNTIME and intentional MULT-1 thinning honesty
+  extract / FAIL-CLOSED-UNKNOWN-RUNTIME and MULT-1 unminted reject honesty
   only. Does not complete SpecProof; does not claim residual free / freestanding
-  product self-host complete / PROVABLY. Fuller MULT-1 live path is HostCompose.
+  product self-host complete / PROVABLY. Minted MULT-1 live path is HostCompose.
 -/
 
 /-- RUNTIME-FS is the freestanding product goal.
@@ -96,10 +100,10 @@ theorem extractOk_edge_reject (m : Mult) (e : Erased) :
   unfold extractOk checkFailClosed isFreestandingGoal
   simp
 
-/-- MULT-1 under RUNTIME-FS always passes on thin Extract path (intentional gap).
-    Greppable: extractOk_mult1_fs_true, MULT-1, EXTRACT-THEOREM. -/
-theorem extractOk_mult1_fs_true (e : Erased) :
-    extractOk Mult.mult1 e RuntimeClaim.runtimeFs = true := rfl
+/-- MULT-1 under RUNTIME-FS rejects on thin Extract (no live-token evidence).
+    Greppable: extractOk_mult1_fs_false, MULT-1, EXTRACT-THEOREM. -/
+theorem extractOk_mult1_fs_false (e : Erased) :
+    extractOk Mult.mult1 e RuntimeClaim.runtimeFs = false := rfl
 
 /-- MULT-OMEGA under RUNTIME-FS always passes on thin Extract path.
     Greppable: extractOk_omega_fs_true, MULT-OMEGA, EXTRACT-THEOREM. -/
@@ -207,11 +211,11 @@ theorem ofRuntimeTag?_some_implies_isValidRuntimeTag (n : Nat) (c : RuntimeClaim
   rw [h]
   rfl
 
-/-- Known tags MULT-1 + RUNTIME-FS extract OK (intentional MULT-1 thinning).
-    Greppable: extractOkFromTags?_mult1_fs_true, MULT-1, RUNTIME-FS,
+/-- Known tags MULT-1 + RUNTIME-FS reject (no live-token evidence).
+    Greppable: extractOkFromTags?_mult1_fs_false, MULT-1, RUNTIME-FS,
     EXTRACT-THEOREM, HOST-EXTRACT-THEOREM. -/
-theorem extractOkFromTags?_mult1_fs_true (erasedMarked : Bool) :
-    extractOkFromTags? 1 erasedMarked 0 = some true := by
+theorem extractOkFromTags?_mult1_fs_false (erasedMarked : Bool) :
+    extractOkFromTags? 1 erasedMarked 0 = some false := by
   cases erasedMarked <;> rfl
 
 /-- Known tags MULT-OMEGA + RUNTIME-FS extract OK.

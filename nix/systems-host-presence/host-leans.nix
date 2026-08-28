@@ -26,6 +26,10 @@ hostLeans = [
   "src/systems/SystemsLean/HostCompose.lean"
   # Long-file peel: COMPOSE-THEOREM + HOST-SMOKE (same namespace HostCompose).
   "src/systems/SystemsLean/HostComposeTheorems.lean"
+  # HOST-COST Nat step accounting (Track L L1; not wall-clock / not PROVABLY speed).
+  "src/systems/SystemsLean/HostCost.lean"
+  # Long-file split: HOST-COST-THEOREM L1-L9 (same namespace HostCost).
+  "src/systems/SystemsLean/HostCostTheorems.lean"
   "src/systems/SystemsLean/EmitPlan.lean"
   # Long-file peel: HOST-EMIT-PLAN scaffolding (same namespace EmitPlan).
   "src/systems/SystemsLean/EmitPlanScaffold.lean"
@@ -87,6 +91,7 @@ hostLeans = [
   "src/systems/SystemsLean/FrontMultPackageMain.lean"
   "src/systems/SystemsLean/HostTerm.lean"
   "src/systems/SystemsLean/HostFront.lean"
+  "src/systems/SystemsLean/HostFrontGoldens.lean"
   # Long-file peel: HOST-FRONT-THEOREM + HOST-FRONT-SMOKE
   # (same namespace HostFront).
   "src/systems/SystemsLean/HostFrontTheorems.lean"
@@ -106,12 +111,157 @@ hostLeans = [
   "src/systems/SystemsLean/HostPackageRoots.lean"
   "src/systems/SystemsLean/HostPackageRootsMain.lean"
   "src/systems/SystemsLean/HostImportGraph.lean"
+  # Long-file peel companions (same namespace HostImportGraph).
+  "src/systems/SystemsLean/HostImportGraphSeeds.lean"
+  "src/systems/SystemsLean/HostImportGraphModel.lean"
+  "src/systems/SystemsLean/HostImportGraphMods.lean"
+  "src/systems/SystemsLean/HostImportGraphModsLater.lean"
+  "src/systems/SystemsLean/HostImportGraphLoadOk.lean"
+  "src/systems/SystemsLean/HostImportGraphLoadOkLater.lean"
+  "src/systems/SystemsLean/HostImportGraphTheorems.lean"
+  "src/systems/SystemsLean/HostImportGraphWalk.lean"
+  "src/systems/SystemsLean/HostImportGraphWalkLater.lean"
+  "src/systems/SystemsLean/HostImportGraphDriver.lean"
   "src/systems/SystemsLean/HostImportGraphMain.lean"
   "src/systems/SystemsLean/HostModuleCheck.lean"
   "src/systems/SystemsLean/HostModuleCheckFixtures.lean"
+  "src/systems/SystemsLean/HostModuleCheckRequiredDecls.lean"
+  "src/systems/SystemsLean/HostModuleCheckRequiredDeclsProduct.lean"
+  "src/systems/SystemsLean/HostModuleCheckRequiredDeclsLater.lean"
+  "src/systems/SystemsLean/HostModuleCheckFixtureTexts.lean"
+  "src/systems/SystemsLean/HostModuleCheckFixtureTextsProduct.lean"
+  "src/systems/SystemsLean/HostModuleCheckFixtureTextsLater.lean"
+  "src/systems/SystemsLean/HostModuleCheckFixtureTextsSelfHost.lean"
+  "src/systems/SystemsLean/HostModuleCheckFixtureTextsEmit.lean"
+  "src/systems/SystemsLean/HostModuleCheckSurface.lean"
+  "src/systems/SystemsLean/HostModuleCheckMultTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckLinearTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckTypesTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckIrProgramTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckIrGraphTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckHostComposeTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckErasureTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckExtractTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckEmitPlanTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckEmitApplyTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckEmitBodyTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckKernelMultTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckKernelLinearTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckKernelTypesTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckKernelProgramTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckKernelEmitTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckParityMultTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckParityLinearTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckParityTypesTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckParityProgramTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckParityEmitTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckEmitMultScaffoldTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckEmitLinearScaffoldTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckEmitTypesScaffoldTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckEmitProgramScaffoldTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckEmitGraphScaffoldTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckEmitComposeScaffoldTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckEmitErasureScaffoldTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckEmitExtractScaffoldTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckEmitBannerScaffoldTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckKernelSelfApplyTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckProductOutKernelTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckCompilePathTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckJoinMapTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckSelfHostTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckSurfaceMatrixTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckSpecProofTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckDualResidualTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckCompilePathMultTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckCompilePathLinearTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckCompilePathTypesTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckCompilePathProgramTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckCompilePathGraphTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckCompilePathComposeTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckCompilePathErasureTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckCompilePathExtractTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckCompilePathPlanTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckCompilePathApplyTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckCompilePathBodyTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckFirstSurfaceTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckLinearSubsetEmitTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckTypesSubsetEmitTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckProgramSubsetEmitTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckGraphSubsetEmitTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckComposeSubsetEmitTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckErasureSubsetEmitTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckExtractSubsetEmitTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckMultSubsetEmitTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckMultSubsetRebuildTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckLinearSubsetRebuildTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckTypesSubsetRebuildTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckProgramSubsetRebuildTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckGraphSubsetRebuildTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckComposeSubsetRebuildTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckErasureSubsetRebuildTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckExtractSubsetRebuildTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckHostFrontTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckLlvmMultTextTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckHostCheckTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckHostGraphTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckLlvmLinearTextTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckMultFsWriteToolTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckFrontMultPackageTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckSubsetPackageJoinTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckLlvmTypesTextTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckMultFsDeepenTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckHostPackageWriteTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckLlvmProgramTextTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckLlvmGraphTextTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckLlvmComposeTextTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckSelfApplyFsTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckInventoryCloseTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckProductPathBarsTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckProductPathTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckProbeWireTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckSelfHostBodyTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckLoadOkCompilePathUnits.lean"
+  "src/systems/SystemsLean/HostModuleCheckLoadOkLaterTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckRealModule.lean"
+  "src/systems/SystemsLean/HostModuleCheckMultProof.lean"
+  "src/systems/SystemsLean/HostModuleCheckLinearProof.lean"
+  "src/systems/SystemsLean/HostModuleCheckTypesProof.lean"
+  "src/systems/SystemsLean/HostModuleCheckKernelMultProof.lean"
+  "src/systems/SystemsLean/HostModuleCheckKernelLinearProof.lean"
+  "src/systems/SystemsLean/HostModuleCheckKernelTypesProof.lean"
+  "src/systems/SystemsLean/HostModuleCheckKernelProgramProof.lean"
+  "src/systems/SystemsLean/HostModuleCheckKernelEmitProof.lean"
+  "src/systems/SystemsLean/HostModuleCheckPackageElab.lean"
+  "src/systems/SystemsLean/HostModuleCheckPackageEnvFixtures.lean"
+  "src/systems/SystemsLean/HostModuleCheckPackageEnvFixturesU2.lean"
+  "src/systems/SystemsLean/HostModuleCheckPackageEnvFixturesS5.lean"
+  "src/systems/SystemsLean/HostModuleCheckPackageEnvFixturesLater.lean"
+  "src/systems/SystemsLean/HostModuleCheckPackageEnvFixturesS30.lean"
+  "src/systems/SystemsLean/HostModuleCheckPackageEnvFixturesTail.lean"
+  "src/systems/SystemsLean/HostModuleCheckPackageEnvImports.lean"
+  "src/systems/SystemsLean/HostModuleCheckPackageEnvDialectTail.lean"
+  "src/systems/SystemsLean/HostModuleCheckPackageEnv.lean"
+  "src/systems/SystemsLean/HostModuleCheckPackageEnvEvidence.lean"
+  "src/systems/SystemsLean/HostModuleCheckPackageEnvEvidenceLater.lean"
+  "src/systems/SystemsLean/HostModuleCheckAccepts.lean"
+  "src/systems/SystemsLean/HostModuleCheckAcceptsGoods.lean"
+  "src/systems/SystemsLean/HostModuleCheckAcceptsGoodsTerm.lean"
+  "src/systems/SystemsLean/HostModuleCheckAcceptsProof.lean"
+  "src/systems/SystemsLean/HostModuleCheckAcceptsLater.lean"
+  "src/systems/SystemsLean/HostModuleCheckCheckersLater.lean"
+  "src/systems/SystemsLean/HostModuleCheckCheckers.lean"
+  "src/systems/SystemsLean/HostModuleCheckDriverIO.lean"
+  "src/systems/SystemsLean/HostModuleCheckDriver.lean"
+  "src/systems/SystemsLean/HostModuleCheckLoadOk.lean"
+  "src/systems/SystemsLean/HostModuleCheckSeeds.lean"
   "src/systems/SystemsLean/HostModuleCheckTheorems.lean"
+  "src/systems/SystemsLean/HostModuleCheckSmoke.lean"
   "src/systems/SystemsLean/HostModuleCheckMain.lean"
   "src/systems/SystemsLean/HostResidualShrink.lean"
+  "src/systems/SystemsLean/HostResidualShrinkTermOk.lean"
+  # Long-file split: HOST-RESIDUAL-SHRINK-THEOREM + HOST-RESIDUAL-SHRINK-SMOKE
+  # (same namespace HostResidualShrink).
+  "src/systems/SystemsLean/HostResidualShrinkTheorems.lean"
   "src/systems/SystemsLean/LlvmEmitPath.lean"
   "src/systems/SystemsLean/LlvmMultText.lean"
   "src/systems/SystemsLean/LlvmMultTextMain.lean"
@@ -232,6 +382,7 @@ hostLeans = [
   # Long-file split: theorems + smoke (same namespace SelfApply).
   "src/systems/SystemsLean/SelfApplyTheorems.lean"
   "src/systems/SystemsLean/SelfApplyFs.lean"
+  "src/systems/SystemsLean/SelfApplyFsClose.lean"
   "src/systems/SystemsLean/SelfApplyFsTheorems.lean"
   "src/systems/SystemsLean/SelfHostComplete.lean"
   "src/systems/SystemsLean/LlvmHold.lean"
@@ -257,5 +408,172 @@ hostLeans = [
   "src/systems/SystemsLean/SelfHostBody.lean"
   # Long-file peel: theorems + smoke (same namespace SelfHostBody).
   "src/systems/SystemsLean/SelfHostBodyTheorems.lean"
+  # Long-file split: older one-command probes (same namespace ElabMeet).
+  "src/systems/SystemsLean/ElabMeetEarly.lean"
+  # Long-file split: on-disk compile helpers (same namespace ElabMeet).
+  "src/systems/SystemsLean/ElabMeetCompile.lean"
+  # Long-file split: probe snippets (same namespace ElabMeet).
+  "src/systems/SystemsLean/ElabMeetProbe.lean"
+  # Long-file split: compiled-olean reuse (same namespace ElabMeet).
+  "src/systems/SystemsLean/ElabMeetOlean.lean"
+  # Richer library-target package description (same namespace ElabMeet).
+  "src/systems/SystemsLean/ElabMeetDesc.lean"
+  # Executable-target package description (same namespace ElabMeet).
+  "src/systems/SystemsLean/ElabMeetExe.lean"
+  # Executable import from a listed source directory.
+  "src/systems/SystemsLean/ElabMeetImpSrc.lean"
+  # Two-library executable import from a listed source directory.
+  "src/systems/SystemsLean/ElabMeetImpSrcTwo.lean"
+  # Two executable targets from a listed source directory.
+  "src/systems/SystemsLean/ElabMeetExeSrcTwo.lean"
+  # Default executable from a listed source directory.
+  "src/systems/SystemsLean/ElabMeetDefSrc.lean"
+  # Live SystemsLean.Mult typecheck (same namespace ElabMeet).
+  "src/systems/SystemsLean/ElabMeetLive.lean"
+  # Named-walk compile helper.
+  "src/systems/SystemsLean/ElabMeetNamedWalk.lean"
+  # Leftover three-through-nine wrappers (through IrProgram), leftover
+  # ExtractTheorems probe. Leftover Extract/IrProgram probes live on Tail.
+  "src/systems/SystemsLean/ElabMeetNamedWalkLater.lean"
+  # Leftover Extract and IrProgram probes plus tenth wrapper.
+  "src/systems/SystemsLean/ElabMeetNamedWalkTail.lean"
+  # Eleventh HostTerm named-walk wrapper.
+  "src/systems/SystemsLean/ElabMeetNamedWalkHostTerm.lean"
+  # Seventeenth HostGraphTheorems named-walk wrapper.
+  "src/systems/SystemsLean/ElabMeetNamedWalkHostGraphTheorems.lean"
+  # Eighteenth HostPackageWrite named-walk wrapper.
+  "src/systems/SystemsLean/ElabMeetNamedWalkHostPackageWrite.lean"
+  # Twenty-first HostImportGraphSeeds named-walk wrapper.
+  "src/systems/SystemsLean/ElabMeetNamedWalkHostImportGraphSeeds.lean"
+  # Twenty-sixth HostImportGraphWalkLater named-walk wrapper.
+  "src/systems/SystemsLean/ElabMeetNamedWalkHostImportGraphWalkLater.lean"
+  # Thirty-first HostModuleCheckFixtureTexts named-walk wrapper.
+  "src/systems/SystemsLean/ElabMeetNamedWalkHostModuleCheckFixtureTexts.lean"
+  # Thirty-fifth HostModuleCheckFixtureTextsEmit named-walk wrapper.
+  "src/systems/SystemsLean/ElabMeetNamedWalkHostModuleCheckFixtureTextsEmit.lean"
+  # Thirty-ninth HostModuleCheckCheckersLater named-walk wrapper.
+  "src/systems/SystemsLean/ElabMeetNamedWalkHostModuleCheckCheckersLater.lean"
+  # Forty-second HostModuleCheckKernelMultTerm named-walk wrapper.
+  "src/systems/SystemsLean/ElabMeetNamedWalkHostModuleCheckKernelMultTerm.lean"
+  # Forty-third HostModuleCheckKernelLinearTerm named-walk wrapper.
+  "src/systems/SystemsLean/ElabMeetNamedWalkHostModuleCheckKernelLinearTerm.lean"
+  # Forty-fourth HostModuleCheckKernelTypesTerm named-walk wrapper.
+  "src/systems/SystemsLean/ElabMeetNamedWalkHostModuleCheckKernelTypesTerm.lean"
+  # Forty-fifth HostModuleCheckKernelProgramTerm named-walk wrapper.
+  "src/systems/SystemsLean/ElabMeetNamedWalkHostModuleCheckKernelProgramTerm.lean"
+  # Forty-sixth HostModuleCheckKernelEmitTerm named-walk wrapper.
+  "src/systems/SystemsLean/ElabMeetNamedWalkHostModuleCheckKernelEmitTerm.lean"
+  # Forty-seventh HostModuleCheckParityMultTerm named-walk wrapper.
+  "src/systems/SystemsLean/ElabMeetNamedWalkHostModuleCheckParityMultTerm.lean"
+  # Forty-eighth HostModuleCheckParityLinearTerm named-walk wrapper.
+  "src/systems/SystemsLean/ElabMeetNamedWalkHostModuleCheckParityLinearTerm.lean"
+  # Fourteenth HostFrontTheorems named closed subset probe.
+  "src/systems/SystemsLean/ElabMeetNamedHostFrontTheoremsProbe.lean"
+  # Fifteenth HostCheck named closed subset probe.
+  "src/systems/SystemsLean/ElabMeetNamedHostCheckProbe.lean"
+  # Sixteenth HostGraph named closed subset probe.
+  "src/systems/SystemsLean/ElabMeetNamedHostGraphProbe.lean"
+  # Seventeenth HostGraphTheorems named closed subset probe.
+  "src/systems/SystemsLean/ElabMeetNamedHostGraphTheoremsProbe.lean"
+  # Eighteenth HostPackageWrite named closed subset probe.
+  "src/systems/SystemsLean/ElabMeetNamedHostPackageWriteProbe.lean"
+  # Nineteenth HostPackageWriteTheorems named closed subset probe.
+  "src/systems/SystemsLean/ElabMeetNamedHostPackageWriteTheoremsProbe.lean"
+  # Twentieth HostPackageRoots named closed subset probe.
+  "src/systems/SystemsLean/ElabMeetNamedHostPackageRootsProbe.lean"
+  # Twenty-first HostImportGraphSeeds named closed subset probe.
+  "src/systems/SystemsLean/ElabMeetNamedHostImportGraphSeedsProbe.lean"
+  # Twenty-second HostImportGraphModel named closed subset probe.
+  "src/systems/SystemsLean/ElabMeetNamedHostImportGraphModelProbe.lean"
+  # Twenty-third HostImportGraphMods named closed subset probe.
+  "src/systems/SystemsLean/ElabMeetNamedHostImportGraphModsProbe.lean"
+  # Twenty-fourth HostImportGraphModsLater named closed subset probe.
+  "src/systems/SystemsLean/ElabMeetNamedHostImportGraphModsLaterProbe.lean"
+  # Twenty-fifth HostImportGraphLoadOkLater named closed subset probe.
+  "src/systems/SystemsLean/ElabMeetNamedHostImportGraphLoadOkLaterProbe.lean"
+  # Twenty-sixth HostImportGraphWalkLater named closed subset probe.
+  "src/systems/SystemsLean/ElabMeetNamedHostImportGraphWalkLaterProbe.lean"
+  # Twenty-seventh HostImportGraphWalk named closed subset probe.
+  "src/systems/SystemsLean/ElabMeetNamedHostImportGraphWalkProbe.lean"
+  # Twenty-eighth HostModuleCheckRequiredDecls named closed subset probe.
+  "src/systems/SystemsLean/ElabMeetNamedHostModuleCheckRequiredDeclsProbe.lean"
+  # Twenty-ninth HostModuleCheckRequiredDeclsProduct named closed subset probe.
+  "src/systems/SystemsLean/ElabMeetNamedHostModuleCheckRequiredDeclsProductProbe.lean"
+  # Thirtieth HostModuleCheckRequiredDeclsLater named closed subset probe.
+  "src/systems/SystemsLean/ElabMeetNamedHostModuleCheckRequiredDeclsLaterProbe.lean"
+  # Thirty-first HostModuleCheckFixtureTexts named closed subset probe.
+  "src/systems/SystemsLean/ElabMeetNamedHostModuleCheckFixtureTextsProbe.lean"
+  # Thirty-second HostModuleCheckFixtureTextsProduct named closed subset probe.
+  "src/systems/SystemsLean/ElabMeetNamedHostModuleCheckFixtureTextsProductProbe.lean"
+  # Thirty-third HostModuleCheckFixtureTextsLater named closed subset probe.
+  "src/systems/SystemsLean/ElabMeetNamedHostModuleCheckFixtureTextsLaterProbe.lean"
+  # Thirty-fourth HostModuleCheckFixtureTextsSelfHost named closed subset probe.
+  "src/systems/SystemsLean/ElabMeetNamedHostModuleCheckFixtureTextsSelfHostProbe.lean"
+  # Thirty-fifth HostModuleCheckFixtureTextsEmit named closed subset probe.
+  "src/systems/SystemsLean/ElabMeetNamedHostModuleCheckFixtureTextsEmitProbe.lean"
+  # Thirty-sixth HostModuleCheckFixtures named closed subset probe.
+  "src/systems/SystemsLean/ElabMeetNamedHostModuleCheckFixturesProbe.lean"
+  # Thirty-seventh HostModuleCheckSurface named closed subset probe.
+  "src/systems/SystemsLean/ElabMeetNamedHostModuleCheckSurfaceProbe.lean"
+  # Thirty-eighth HostModuleCheckCheckers named closed subset probe.
+  "src/systems/SystemsLean/ElabMeetNamedHostModuleCheckCheckersProbe.lean"
+  # Thirty-ninth HostModuleCheckCheckersLater named closed subset probe.
+  "src/systems/SystemsLean/ElabMeetNamedHostModuleCheckCheckersLaterProbe.lean"
+  # Fortieth HostModuleCheckRealModule named closed subset probe.
+  "src/systems/SystemsLean/ElabMeetNamedHostModuleCheckRealModuleProbe.lean"
+  # Forty-first HostModuleCheckEmitBodyTerm named closed subset probe.
+  "src/systems/SystemsLean/ElabMeetNamedHostModuleCheckEmitBodyTermProbe.lean"
+  # Forty-second HostModuleCheckKernelMultTerm named closed subset probe.
+  "src/systems/SystemsLean/ElabMeetNamedHostModuleCheckKernelMultTermProbe.lean"
+  # Forty-third HostModuleCheckKernelLinearTerm named closed subset probe.
+  "src/systems/SystemsLean/ElabMeetNamedHostModuleCheckKernelLinearTermProbe.lean"
+  # Forty-fourth HostModuleCheckKernelTypesTerm named closed subset probe.
+  "src/systems/SystemsLean/ElabMeetNamedHostModuleCheckKernelTypesTermProbe.lean"
+  # Forty-fifth HostModuleCheckKernelProgramTerm named closed subset probe.
+  "src/systems/SystemsLean/ElabMeetNamedHostModuleCheckKernelProgramTermProbe.lean"
+  # Forty-sixth HostModuleCheckKernelEmitTerm named closed subset probe.
+  "src/systems/SystemsLean/ElabMeetNamedHostModuleCheckKernelEmitTermProbe.lean"
+  # Forty-seventh HostModuleCheckParityMultTerm named closed subset probe.
+  "src/systems/SystemsLean/ElabMeetNamedHostModuleCheckParityMultTermProbe.lean"
+  # Forty-eighth HostModuleCheckParityLinearTerm named closed subset probe.
+  "src/systems/SystemsLean/ElabMeetNamedHostModuleCheckParityLinearTermProbe.lean"
+  # Named closed subset from the real package description.
+  "src/systems/SystemsLean/ElabMeetSubset.lean"
+  # Long-file split: HostModuleCheck half of elabMeetReady.
+  "src/systems/SystemsLean/ElabMeetReadyHostModuleCheck.lean"
+
+  # Long-file split: older exe and disk-import probes.
+  "src/systems/SystemsLean/ElabMeetExeProbe.lean"
+  "src/systems/SystemsLean/ElabMeet.lean"
+  # Long-file split: FixtureTexts / Product native_decide theorems.
+  "src/systems/SystemsLean/ElabMeetTheoremsNamedHostModuleCheckFixtureTexts.lean"
+  # Long-file split: HostModuleCheckFixtures named-subset native_decide theorems.
+  "src/systems/SystemsLean/ElabMeetTheoremsNamedHostModuleCheckFixtures.lean"
+  # Long-file split: HostModuleCheckSurface named-subset native_decide theorems.
+  "src/systems/SystemsLean/ElabMeetTheoremsNamedHostModuleCheckSurface.lean"
+  # Long-file split: HostModuleCheckCheckers named-subset native_decide theorems.
+  "src/systems/SystemsLean/ElabMeetTheoremsNamedHostModuleCheckCheckers.lean"
+  # Long-file split: HostModuleCheckCheckersLater named-subset native_decide theorems.
+  "src/systems/SystemsLean/ElabMeetTheoremsNamedHostModuleCheckCheckersLater.lean"
+  # Long-file split: HostModuleCheckRealModule named-subset native_decide theorems.
+  "src/systems/SystemsLean/ElabMeetTheoremsNamedHostModuleCheckRealModule.lean"
+  # Long-file split: HostModuleCheckEmitBodyTerm named-subset native_decide theorems.
+  "src/systems/SystemsLean/ElabMeetTheoremsNamedHostModuleCheckEmitBodyTerm.lean"
+  # Long-file split: HostModuleCheckKernelMultTerm named-subset native_decide theorems.
+  "src/systems/SystemsLean/ElabMeetTheoremsNamedHostModuleCheckKernelMultTerm.lean"
+  # Long-file split: HostModuleCheckKernelLinearTerm named-subset native_decide theorems.
+  "src/systems/SystemsLean/ElabMeetTheoremsNamedHostModuleCheckKernelLinearTerm.lean"
+  # Long-file split: HostModuleCheckKernelTypesTerm named-subset native_decide theorems.
+  "src/systems/SystemsLean/ElabMeetTheoremsNamedHostModuleCheckKernelTypesTerm.lean"
+  # Long-file split: HostModuleCheckKernelProgramTerm named-subset native_decide theorems.
+  "src/systems/SystemsLean/ElabMeetTheoremsNamedHostModuleCheckKernelProgramTerm.lean"
+  # Long-file split: HostModuleCheckKernelEmitTerm named-subset native_decide theorems.
+  "src/systems/SystemsLean/ElabMeetTheoremsNamedHostModuleCheckKernelEmitTerm.lean"
+  # Long-file split: HostModuleCheckParityMultTerm named-subset native_decide theorems.
+  "src/systems/SystemsLean/ElabMeetTheoremsNamedHostModuleCheckParityMultTerm.lean"
+  # Long-file split: HostModuleCheckParityLinearTerm named-subset native_decide theorems.
+  "src/systems/SystemsLean/ElabMeetTheoremsNamedHostModuleCheckParityLinearTerm.lean"
+  # Long-file split: native_decide drive theorems (same namespace ElabMeet).
+  "src/systems/SystemsLean/ElabMeetTheorems.lean"
 ];
 }

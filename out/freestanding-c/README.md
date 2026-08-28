@@ -6,45 +6,52 @@ Name emphasizes **runtimeless / freestanding**, not classic AOT (ahead-of-time) 
 
 ## Generated only (do not hand-author)
 
-- Tracked `*.c` / `*.h` here are **generator outputs** copied from `src/systems/emit/` (Lean `SystemsLean.FreestandingEmit`, stage **SLAKE_EMIT_FREESTANDING_C_V0**).
-- Hand-written product C is **forbidden** as Systems Lean implementation. Do not invent features by editing this tree; re-emit will overwrite.
-- This directory is **not** a place to author residual progress. Systems Lean lives in Lean under `src/systems/`.
-- Lake `.lake/build/ir/*.c` is classic Lean AOT IR with managed runtime -- **not** this freestanding surface; keep it untracked.
-- Policy SSoT (source of truth): `AGENTS.md` (**Three languages only**, **Freestanding / ahead-of-time (AOT) C git policy**). Ownership map: `src/systems/emit/host-owned-emit.md`.
+Tracked `*.c` / `*.h` here are **generator outputs** copied from `src/systems/emit/` (Lean `SystemsLean.FreestandingEmit`). Hand-written product C is **forbidden**; re-emit will overwrite. Systems Lean lives in Lean under `src/systems/`. Lake `.lake/build/ir/*.c` is classic Lean AOT with a managed runtime, **not** this surface. Policy: `AGENTS.md`. Ownership: `src/systems/emit/host-owned-emit.md`.
 
 ## Policy
 
-- Contents come from freestanding emit under `src/systems/` only.
-- No host elaborator residual, no `libleanshared` expectation, no product GC.
-- Refresh: `just build` (Lean freestanding emit + copy into this tree).
-- Honesty: product residual free on this release surface; host elaborator residual remains (Lake still elaborates Systems Lean). Free is not "Lake is gone." Not PROVABLY; not LLVM unlock. Living tip: `doc/SESSION-HANDOFF.md`.
+No Lean managed runtime. **No product GC.** Refresh with `just build`. Product residual **free** and freestanding self-host **complete** are **true**. That is **not** "Lake is gone." **PROVABLY** is the CompCert product matrix in `just check`, not a speed claim. LLVM work is under `out/llvm-ir/`, not this tree. Living tip: `doc/SESSION-HANDOFF.md`. Claim board: `RESIDUAL-systems.md`.
+
+## PROVABLY / CompCert (how to verify)
+
+**PROVABLY** means a real resolved CompCert `ccomp` fail-closed product matrix.
+
+**CompCert license (separate from product C):** research / non-commercial `ccomp` by default (`ref/CompCert`). Commercial CompCert needs AbsInt. Novel product C here is **Unlicense**; that does **not** license CompCert. Inventory: [LICENSES.md](../../LICENSES.md).
+
+| Step | What |
+|------|------|
+| Full suite | From monorepo root: `just check` (includes `product-compcert-matrix`) |
+| Matrix alone | `just product-compcert-matrix` |
+| Requires | CompCert `ccomp` on `PATH` (see `doc/compcert-entry.md`) |
+
+Do **not** treat a single object compile as PROVABLY without the matrix.
+
+## Runtime evidence (monorepo)
+
+No GC library and no Lean managed runtime on a consumer link. Wall-clock comparison: [doc/BENCH-RUNTIME-latest.md](../../doc/BENCH-RUNTIME-latest.md) (`just bench-runtime`). PROVABLY is wire correctness, not speed.
 
 ## Release process (minimum)
 
-1. `just build` -- product freestanding wire: regenerate emit under `src/systems/emit/` and populate this tree.
-2. `just check` -- full suite green (`just build` first; no second full regenerate). Human stages new `nix/` paths for flake match when needed.
-3. Publish **this directory** so consumers need not clone `ref/*` or the full host monorepo.
-4. Notes: freestanding bar + Unlicense on novel emit; CompCert (if used) keeps its own license.
+1. `just build`: regenerate emit and populate this tree.
+2. `just check`: full suite green.
+3. Publish **this directory** so consumers need not clone `ref/*` or the host.
+4. Novel emit is Unlicense. CompCert keeps its own license.
 
 ### Consumer publish options
 
-**Preferred: git subtree** (long-lived consumer repo, history of the release surface only):
+**Preferred: git subtree:**
 
 ```bash
 # From monorepo root after green just build + just check:
 git subtree push --prefix=out/freestanding-c <consumer-remote> main
-# Or split once to a branch for review:
 git subtree split --prefix=out/freestanding-c -b freestanding-c-release
 ```
 
-**Tarball** (one-shot drop; no git required on the consumer side):
+**Tarball:**
 
 ```bash
 just export-freestanding-c
 # -> .cache/systems-lean-freestanding-c-<UTC>.tar.gz
-# Unpack and build with a normal C toolchain (see header comments in slake_freestanding.h).
 ```
 
-Consumers should treat `*.c` / `*.h` as **generated product wire**. Do not fork residual progress into a second hand-edited C tree.
-
-**Optional later:** stop tracking monorepo dogfood `emit/*.c` after CI always regenerates; default remains tracked dogfood for local red/green.
+Treat `*.c` / `*.h` as **generated product wire**.

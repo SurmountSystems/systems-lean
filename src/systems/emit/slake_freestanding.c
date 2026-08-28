@@ -171,21 +171,19 @@ int slake_consume_token_mint(slake_consume_token *ct, uint32_t id)
   if (id == 0) {
     return -1; /* spent sentinel reserved; fail closed */
   }
-  /* Key off is_live (state + token.live) so remint recovers desync. */
-  if (slake_consume_token_is_live(ct) == 1) {
+  /* E1 specialized: inline is_live (state + token.live) for remint desync heal. */
+  if (ct->state == 1 && ct->token.live != 0) {
     return -2; /* already holds live MULT-1 token */
   }
-  if (slake_linear_token_init(&ct->token, id) != 0) {
-    return -1;
-  }
+  /* E1 specialized: inline linear_token_init (id already non-zero). */
+  ct->token.id = id;
+  ct->token.live = 1;
   ct->state = 1; /* live */
   return 0;
 }
 
 int slake_consume_token_consume(slake_consume_token *ct)
 {
-  int rc;
-
   if (ct == 0) {
     return -1;
   }
@@ -195,15 +193,15 @@ int slake_consume_token_consume(slake_consume_token *ct)
   if (ct->state == 2) {
     return -2; /* already spent -- LINEAR-EXACT-ONCE fail closed */
   }
-  /* state == 1 believed live: compose with linear exact-once consume */
-  rc = slake_linear_consume(&ct->token);
-  if (rc == 0) {
-    ct->state = 2; /* spent */
-  } else if (rc == -2) {
-    /* Heal desync if token already spent under host that believed live. */
+  /* E1 specialized: inline linear_consume + desync heal (state believed live). */
+  if (ct->token.live == 0) {
     ct->state = 2;
+    return -2;
   }
-  return rc;
+  ct->token.live = 0;
+  ct->token.id = 0;
+  ct->state = 2; /* spent */
+  return 0;
 }
 
 int slake_consume_token_is_live(const slake_consume_token *ct)
@@ -214,7 +212,8 @@ int slake_consume_token_is_live(const slake_consume_token *ct)
   if (ct->state != 1) {
     return 0;
   }
-  return (slake_linear_token_is_live(&ct->token) == 1) ? 1 : 0;
+  /* E1 specialized: inline token.live (no thin call). */
+  return (ct->token.live != 0) ? 1 : 0;
 }
 
 int slake_consume_token_check_fail_closed(const slake_consume_token *ct)
@@ -521,8 +520,16 @@ int slake_ir_program_check_fail_closed(const slake_ir_program *p,
 {
   uint8_t i;
 
-  /* Null, empty, or ill-typed -> FAIL_CLOSED. */
-  if (slake_ir_program_is_well_typed(p) != 1) {
+  /* Single fail-closed walk: guards then one live-node pass.
+   * Does not call slake_ir_program_is_well_typed (that re-walks node
+   * well-typed before each node_check does it again). Empty / null /
+   * invalid / over-cap -> FAIL_CLOSED. Each live node still requires
+   * well-typed (public slake_ir_node_check_fail_closed semantics).
+   * Greppable: SINGLE_FAIL_CLOSED_WALK */
+  if (p == 0 || p->valid == 0) {
+    return (int)SLAKE_EXTRACT_FAIL_CLOSED;
+  }
+  if (p->count == 0 || p->count > (uint8_t)SLAKE_IR_PROGRAM_CAP) {
     return (int)SLAKE_EXTRACT_FAIL_CLOSED;
   }
   for (i = 0; i < p->count; i++) {
@@ -635,13 +642,32 @@ int slake_ir_graph_check_fail_closed(const slake_ir_graph *g,
     const slake_linear_token *linear,
     const slake_erased *erased)
 {
-  /* Ill-typed / null graph -> FAIL_CLOSED before program call-through. */
-  if (slake_ir_graph_is_well_typed(g) != 1) {
+  uint8_t i;
+
+  /* Single fail-closed walk: edge soundness then program check.
+   * Does not call slake_ir_graph_is_well_typed (that re-walks program
+   * well-typed; program check types and fail-closes live nodes once).
+   * Ill-typed / null -> FAIL_CLOSED. Empty graph -> OK.
+   * Greppable: SINGLE_FAIL_CLOSED_WALK */
+  if (g == 0 || g->valid == 0) {
     return (int)SLAKE_EXTRACT_FAIL_CLOSED;
   }
-  /* Empty well-typed graph: no nodes to check. */
+  if (g->edge_count > (uint8_t)SLAKE_IR_EDGE_MAX) {
+    return (int)SLAKE_EXTRACT_FAIL_CLOSED;
+  }
   if (g->prog.count == 0) {
+    if (g->edge_count != 0) {
+      return (int)SLAKE_EXTRACT_FAIL_CLOSED;
+    }
     return (int)SLAKE_EXTRACT_OK;
+  }
+  for (i = 0; i < g->edge_count; i++) {
+    if (g->edges[i].valid != 1) {
+      return (int)SLAKE_EXTRACT_FAIL_CLOSED;
+    }
+    if (g->edges[i].from >= g->prog.count || g->edges[i].to >= g->prog.count) {
+      return (int)SLAKE_EXTRACT_FAIL_CLOSED;
+    }
   }
   return slake_ir_program_check_fail_closed(&g->prog, linear, erased);
 }
@@ -649,10 +675,13 @@ int slake_ir_graph_check_fail_closed(const slake_ir_graph *g,
 /* ---- HOST_COMPOSE_V0 (host + IR graph composition; not residual free) ----
  * Mutators (mint/consume/push/add_edge/mark_erased) are thin call-throughs.
  * check_fail_closed: intentional mult pre-scan for host ownership, then
- * graph check (see header). MULT-1 needs live host; MULT-0 needs marked erased.
+ * one graph check walk (see header; no graph is_well_typed re-call).
+ * MULT-1 needs live host; MULT-0 needs marked erased.
+ * extract: single-walk fuse (E2). reset: multi-op count clear (E3).
  * Live-flag honesty: mint/consume track host live state; not elaborator MULT-1.
  * Greppable: HOST_COMPOSE_V0, CONSUME_TOKEN_HOST_V0, IR_GRAPH_EDGES_V0,
- * EMIT-BOUNDARY, RUNTIME-FS.
+ * EMIT-BOUNDARY, RUNTIME-FS, HOST_COMPOSE_EXTRACT_FUSE, HOST_COMPOSE_RESET,
+ * HOST_COMPOSE_SINGLE_WALK.
  * HOST-EMIT-COMPOSE: dialect from SystemsLean.EmitCompose + host_emit_compose.ssot.txt
  * (Lean FreestandingEmit embeds this host compose product text).
  */
@@ -675,6 +704,22 @@ int slake_host_compose_init(slake_host_compose *hc)
   }
   hc->erased.marked = 0;
   hc->valid = 1;
+  return 0;
+}
+
+int slake_host_compose_reset(slake_host_compose *hc)
+{
+  if (hc == 0 || hc->valid == 0) {
+    return -1;
+  }
+  /* E3: clear live counts only; dead slots overwritten by later push/add. */
+  hc->graph.prog.count = 0;
+  hc->graph.edge_count = 0;
+  if (slake_consume_token_init(&hc->host) != 0) {
+    return -1;
+  }
+  hc->erased.marked = 0;
+  /* valid and nested graph/program valid flags stay set from cold init. */
   return 0;
 }
 
@@ -733,15 +778,17 @@ int slake_host_compose_check_fail_closed(const slake_host_compose *hc)
   uint8_t i;
   int needs_mult1;
   int needs_mult0;
+  int host_live;
+  int erased_absent;
   const slake_linear_token *linear;
   const slake_erased *erased;
 
   if (hc == 0 || hc->valid == 0) {
     return (int)SLAKE_EXTRACT_FAIL_CLOSED;
   }
-  if (slake_ir_graph_is_well_typed(&hc->graph) != 1) {
-    return (int)SLAKE_EXTRACT_FAIL_CLOSED;
-  }
+  /* No slake_ir_graph_is_well_typed here: graph check does edge
+   * soundness + one program fail-closed walk. Ill-typed still
+   * FAIL_CLOSED. Greppable: HOST_COMPOSE_SINGLE_WALK */
 
   /* Intentional mult pre-scan (compose owns host+erasure; fail closed here
    * before pointer selection). Graph check also enforces MULT-1/0 when
@@ -756,21 +803,23 @@ int slake_host_compose_check_fail_closed(const slake_host_compose *hc)
       needs_mult0 = 1;
     }
   }
-  if (needs_mult1 != 0 && slake_consume_token_is_live(&hc->host) != 1) {
+  /* Single is_live / is_runtime_absent (E2 path cost); reuse for pointer select. */
+  host_live = (slake_consume_token_is_live(&hc->host) == 1) ? 1 : 0;
+  erased_absent = (slake_erasure_is_runtime_absent(&hc->erased) == 1) ? 1 : 0;
+  if (needs_mult1 != 0 && host_live == 0) {
     return (int)SLAKE_EXTRACT_FAIL_CLOSED;
   }
-  if (needs_mult0 != 0
-      && slake_erasure_is_runtime_absent(&hc->erased) != 1) {
+  if (needs_mult0 != 0 && erased_absent == 0) {
     return (int)SLAKE_EXTRACT_FAIL_CLOSED;
   }
 
   /* Public field: host embeds slake_linear_token token. */
   linear = 0;
-  if (slake_consume_token_is_live(&hc->host) == 1) {
+  if (host_live != 0) {
     linear = &hc->host.token;
   }
   erased = 0;
-  if (slake_erasure_is_runtime_absent(&hc->erased) == 1) {
+  if (erased_absent != 0) {
     erased = &hc->erased;
   }
   return slake_ir_graph_check_fail_closed(&hc->graph, linear, erased);
@@ -779,7 +828,9 @@ int slake_host_compose_check_fail_closed(const slake_host_compose *hc)
 int slake_host_compose_extract(const slake_host_compose *hc,
     enum slake_runtime_class *out_rt)
 {
-  /* Fail closed first; leave *out_rt untouched on fail. */
+  /* E2 fuse: one check_fail_closed walk then write; leave *out_rt on fail.
+   * Prefer this alone when both status and out_rt are needed (no second walk).
+   * Greppable: HOST_COMPOSE_EXTRACT_FUSE */
   if (slake_host_compose_check_fail_closed(hc) != (int)SLAKE_EXTRACT_OK) {
     return (int)SLAKE_EXTRACT_FAIL_CLOSED;
   }

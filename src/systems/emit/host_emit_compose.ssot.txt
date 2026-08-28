@@ -18,11 +18,16 @@ HOST_COMPOSE_V0
 /* ---- HOST_COMPOSE_V0 -- freestanding host + IR graph composition (not residual free).
  * Owns IR graph + ConsumeToken host + erasure mark.
  * Mutators (mint/push/add_edge/consume/mark_erased) are thin call-throughs;
- * check_fail_closed is intentional mult pre-scan then graph check (not pure
- * call-through). not residual free; not PROVABLY; no product GC; not full CFG/SSA.
+ * check_fail_closed is intentional mult pre-scan then one graph check walk
+ * (not pure call-through; does not re-call graph is_well_typed).
+ * extract is single-walk fuse (E2: do not call check then extract).
+ * reset is multi-op fast re-init (E3; cold first use still init).
+ * not residual free; not PROVABLY; no product GC; not full CFG/SSA.
  * Live-flag honesty: mint/consume track host live state; not elaborator MULT-1.
  * Greppable: HOST_COMPOSE_V0, CONSUME_TOKEN_HOST_V0, IR_GRAPH_EDGES_V0,
- * FAIL_CLOSED_CHECKER_V1, EMIT-BOUNDARY, RUNTIME-FS
+ * FAIL_CLOSED_CHECKER_V1, EMIT-BOUNDARY, RUNTIME-FS,
+ * HOST_COMPOSE_EXTRACT_FUSE, HOST_COMPOSE_RESET,
+ * HOST_COMPOSE_SINGLE_WALK
  * HOST-EMIT-COMPOSE: dialect from SystemsLean.EmitCompose + host_emit_compose.ssot.txt
  * (Lean FreestandingEmit embeds this host compose product text).
  */
@@ -37,10 +42,17 @@ typedef struct slake_host_compose {
 const char *slake_host_compose_id(void);
 
 /* 0 ok; -1 null.
- * Inits graph via slake_ir_graph_init; host via slake_consume_token_init;
- * erased.marked=0; valid=1.
+ * Cold full init: graph via slake_ir_graph_init; host via slake_consume_token_init;
+ * erased.marked=0; valid=1. Prefer reset for multi-op reuse after first init.
  */
 int slake_host_compose_init(slake_host_compose *hc);
+
+/* Multi-op fast re-init (E3). Clears node/edge counts and host/erased only;
+ * does not zero dead node/edge slots (safe: push/add overwrite live slots).
+ * Requires prior successful init (valid==1). 0 ok; -1 null/invalid.
+ * Cold first use still slake_host_compose_init. Greppable: HOST_COMPOSE_RESET
+ */
+int slake_host_compose_reset(slake_host_compose *hc);
 
 /* Thin call-through to slake_ir_graph_push_node after valid guard.
  * 0 ok; -1 null/invalid compose or graph push fail (null/bad mult/kind);
@@ -80,8 +92,8 @@ int slake_host_compose_is_well_typed(const slake_host_compose *hc);
 
 /* Fail-closed composition (0 OK / 1 FAIL_CLOSED). Header must match body.
  *
- * Orchestration (honest non-thin mult pre-scan, then graph check):
- * 1) null/invalid/ill-typed graph -> FAIL_CLOSED
+ * Orchestration (honest non-thin mult pre-scan, then one graph check walk):
+ * 1) null/invalid -> FAIL_CLOSED (ill-typed still FAIL_CLOSED in graph check)
  * 2) Mult pre-scan of owned graph nodes (intentional; not pure call-through):
  *    - any MULT-1 node requires slake_consume_token_is_live(&hc->host)==1
  *    - any MULT-0 node requires erased marked (slake_erasure_is_runtime_absent)
@@ -90,14 +102,18 @@ int slake_host_compose_is_well_typed(const slake_host_compose *hc);
  *    MULT-1/0 when linear/erased are null; pre-scan is redundant-safe today
  *    and documents host ownership at this layer. Behavioral smoke locks both.
  * 3) Select linear = &hc->host.token when live else null; erased = &hc->erased
- *    when marked else null; call slake_ir_graph_check_fail_closed.
- * Greppable: HOST_COMPOSE_V0, FAIL_CLOSED_CHECKER_V1, RUNTIME-FS
+ *    when marked else null; call slake_ir_graph_check_fail_closed
+ *    (edge soundness + one program fail-closed walk; does not re-call
+ *    graph is_well_typed). Public is_well_typed / extract / check stay.
+ * Greppable: HOST_COMPOSE_V0, FAIL_CLOSED_CHECKER_V1, RUNTIME-FS,
+ * HOST_COMPOSE_SINGLE_WALK
  */
 int slake_host_compose_check_fail_closed(const slake_host_compose *hc);
 
-/* Extract path: run check_fail_closed; on OK write *out_rt = SLAKE_RUNTIME_FS and return OK;
- * on fail leave *out_rt untouched; null out_rt on success path is FAIL_CLOSED.
- * Greppable: HOST_COMPOSE_V0, EMIT-BOUNDARY, RUNTIME-FS
+/* Extract path (E2 fuse): single fail-closed walk then write *out_rt = RUNTIME_FS.
+ * Prefer extract alone over check_fail_closed + extract (second walk).
+ * On fail leave *out_rt untouched; null out_rt on success path is FAIL_CLOSED.
+ * Greppable: HOST_COMPOSE_V0, EMIT-BOUNDARY, RUNTIME-FS, HOST_COMPOSE_EXTRACT_FUSE
  */
 int slake_host_compose_extract(const slake_host_compose *hc,
     enum slake_runtime_class *out_rt);
@@ -106,10 +122,13 @@ int slake_host_compose_extract(const slake_host_compose *hc,
 /* ---- HOST_COMPOSE_V0 (host + IR graph composition; not residual free) ----
  * Mutators (mint/consume/push/add_edge/mark_erased) are thin call-throughs.
  * check_fail_closed: intentional mult pre-scan for host ownership, then
- * graph check (see header). MULT-1 needs live host; MULT-0 needs marked erased.
+ * one graph check walk (see header; no graph is_well_typed re-call).
+ * MULT-1 needs live host; MULT-0 needs marked erased.
+ * extract: single-walk fuse (E2). reset: multi-op count clear (E3).
  * Live-flag honesty: mint/consume track host live state; not elaborator MULT-1.
  * Greppable: HOST_COMPOSE_V0, CONSUME_TOKEN_HOST_V0, IR_GRAPH_EDGES_V0,
- * EMIT-BOUNDARY, RUNTIME-FS.
+ * EMIT-BOUNDARY, RUNTIME-FS, HOST_COMPOSE_EXTRACT_FUSE, HOST_COMPOSE_RESET,
+ * HOST_COMPOSE_SINGLE_WALK.
  * HOST-EMIT-COMPOSE: dialect from SystemsLean.EmitCompose + host_emit_compose.ssot.txt
  * (Lean FreestandingEmit embeds this host compose product text).
  */
@@ -132,6 +151,22 @@ int slake_host_compose_init(slake_host_compose *hc)
   }
   hc->erased.marked = 0;
   hc->valid = 1;
+  return 0;
+}
+
+int slake_host_compose_reset(slake_host_compose *hc)
+{
+  if (hc == 0 || hc->valid == 0) {
+    return -1;
+  }
+  /* E3: clear live counts only; dead slots overwritten by later push/add. */
+  hc->graph.prog.count = 0;
+  hc->graph.edge_count = 0;
+  if (slake_consume_token_init(&hc->host) != 0) {
+    return -1;
+  }
+  hc->erased.marked = 0;
+  /* valid and nested graph/program valid flags stay set from cold init. */
   return 0;
 }
 
@@ -190,15 +225,17 @@ int slake_host_compose_check_fail_closed(const slake_host_compose *hc)
   uint8_t i;
   int needs_mult1;
   int needs_mult0;
+  int host_live;
+  int erased_absent;
   const slake_linear_token *linear;
   const slake_erased *erased;
 
   if (hc == 0 || hc->valid == 0) {
     return (int)SLAKE_EXTRACT_FAIL_CLOSED;
   }
-  if (slake_ir_graph_is_well_typed(&hc->graph) != 1) {
-    return (int)SLAKE_EXTRACT_FAIL_CLOSED;
-  }
+  /* No slake_ir_graph_is_well_typed here: graph check does edge
+   * soundness + one program fail-closed walk. Ill-typed still
+   * FAIL_CLOSED. Greppable: HOST_COMPOSE_SINGLE_WALK */
 
   /* Intentional mult pre-scan (compose owns host+erasure; fail closed here
    * before pointer selection). Graph check also enforces MULT-1/0 when
@@ -213,21 +250,23 @@ int slake_host_compose_check_fail_closed(const slake_host_compose *hc)
       needs_mult0 = 1;
     }
   }
-  if (needs_mult1 != 0 && slake_consume_token_is_live(&hc->host) != 1) {
+  /* Single is_live / is_runtime_absent (E2 path cost); reuse for pointer select. */
+  host_live = (slake_consume_token_is_live(&hc->host) == 1) ? 1 : 0;
+  erased_absent = (slake_erasure_is_runtime_absent(&hc->erased) == 1) ? 1 : 0;
+  if (needs_mult1 != 0 && host_live == 0) {
     return (int)SLAKE_EXTRACT_FAIL_CLOSED;
   }
-  if (needs_mult0 != 0
-      && slake_erasure_is_runtime_absent(&hc->erased) != 1) {
+  if (needs_mult0 != 0 && erased_absent == 0) {
     return (int)SLAKE_EXTRACT_FAIL_CLOSED;
   }
 
   /* Public field: host embeds slake_linear_token token. */
   linear = 0;
-  if (slake_consume_token_is_live(&hc->host) == 1) {
+  if (host_live != 0) {
     linear = &hc->host.token;
   }
   erased = 0;
-  if (slake_erasure_is_runtime_absent(&hc->erased) == 1) {
+  if (erased_absent != 0) {
     erased = &hc->erased;
   }
   return slake_ir_graph_check_fail_closed(&hc->graph, linear, erased);
@@ -236,7 +275,9 @@ int slake_host_compose_check_fail_closed(const slake_host_compose *hc)
 int slake_host_compose_extract(const slake_host_compose *hc,
     enum slake_runtime_class *out_rt)
 {
-  /* Fail closed first; leave *out_rt untouched on fail. */
+  /* E2 fuse: one check_fail_closed walk then write; leave *out_rt on fail.
+   * Prefer this alone when both status and out_rt are needed (no second walk).
+   * Greppable: HOST_COMPOSE_EXTRACT_FUSE */
   if (slake_host_compose_check_fail_closed(hc) != (int)SLAKE_EXTRACT_OK) {
     return (int)SLAKE_EXTRACT_FAIL_CLOSED;
   }

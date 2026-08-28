@@ -384,7 +384,7 @@ in
     unitWalkSkipDirs
     unitWalkExtensions
     unitSurfaceRequiredAny
-    unitSurfaceRequiredAll
+    unitSurfaceNotEmitAny
     unitSurfaceModuleAny
     ;
 

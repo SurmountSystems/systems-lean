@@ -20,6 +20,10 @@ lib.cleanSourceWith {
     && !(lib.hasInfix "/.lake/" rel)
     && !(lib.hasPrefix "src/systems/bin/" rel)
     && !(lib.hasInfix "/src/systems/bin/" rel)
+    # Idris 2 elaborator writes examples/build/*.ttc next to duals (not product).
+    && !(lib.hasPrefix "src/idris2/examples/build/" rel)
+    && !(lib.hasInfix "/src/idris2/examples/build/" rel)
+    && !(lib.hasSuffix ".ttc" rel)
     && !(lib.hasPrefix "result" base)
     && !(lib.hasSuffix ".pyc" rel)
     && !(lib.hasInfix "__pycache__" rel);

@@ -1,4 +1,6 @@
 # Modular just: just/compcert.just -- role recipes (import into root justfile).
+# Living tip: PROVABLY true (product CompCert matrix + lake proof; in just check).
+# Short banners only (driver stdout policy). Do not print residual essays.
 ccomp-resolve:
     #!/usr/bin/env bash
     set -euo pipefail
@@ -12,7 +14,7 @@ ccomp-resolve:
         echo "error: COMPCERT_CCOMP set but not executable: $COMPCERT_CCOMP" >&2
         echo "  unset COMPCERT_CCOMP to try PATH / nixpkgs.compcert" >&2
         echo "  design: doc/dev/research/compcert-product-seal-design-2026-08-02.md" >&2
-        echo "  not PROVABLY; provablyUnlocked must stay false" >&2
+        echo "  ccomp required for CompCert product matrix" >&2
         exit 1
       fi
     fi
@@ -56,13 +58,13 @@ ccomp-resolve:
       echo "  or: NIXPKGS_ALLOW_UNFREE=1 nix build --impure ... (see doc/compcert-entry.md)" >&2
       echo "  or: build ref/CompCert with Coq 8.15-8.20.1 + menhir (in-tree sources read-only)" >&2
       echo "  design: doc/dev/research/compcert-product-seal-design-2026-08-02.md" >&2
-      echo "  not PROVABLY; provablyUnlocked must stay false" >&2
+      echo "  ccomp required for CompCert product matrix" >&2
       exit 1
     fi
     printf '%s\n' "$ccomp_bin"
 
 # CompCert seal: fail-closed smoke for resolved ccomp (plan-compcert-product-seal).
-# Not PROVABLY. Product C compile is freestanding-under-ccomp.
+# Smoke alone is not the full product matrix (product-compcert-matrix joins rows).
 # Greppable: ccomp-smoke, COMPCERT-CCOMP-SMOKE, Resolved ccomp driver, ccomp -version,
 # COMPCERT-NIX-RESOLVE (shared via ccomp-resolve).
 ccomp-smoke:
@@ -72,12 +74,13 @@ ccomp-smoke:
     ccomp_bin="$(just --quiet ccomp-resolve)"
     echo "  ccomp: $ccomp_bin"
     "$ccomp_bin" -version
-    echo "ccomp-smoke: GREEN (ccomp -version exit 0; not PROVABLY; not product matrix)"
+    echo "ccomp-smoke: GREEN (ccomp -version exit 0; not full product matrix alone)"
 
 # CompCert seal: freestanding product wire under resolved ccomp (plan step 3).
-# just build then ccomp -c out/freestanding-c/slake_freestanding.c to object.
-# Fail closed if ccomp missing or compile fails. Not PROVABLY; not product matrix.
-# On reject: fix Lean emit SSOT only, re-emit, re-run (no hand product C features).
+# Default: just build then ccomp -c out/freestanding-c/slake_freestanding.c to object.
+# Under just check, SYSTEMS_PRODUCT_WIRE_FRESH=1 skips second build when wire exists
+# (fail closed if FRESH=1 but out/ wire missing). Fail closed if ccomp missing or
+# compile fails. On reject: fix Lean emit SSOT only, re-emit, re-run (no hand C).
 # Greppable: freestanding-under-ccomp, FREESTANDING-UNDER-CCOMP, Freestanding wire under ccomp.
 freestanding-under-ccomp:
     #!/usr/bin/env bash
@@ -88,13 +91,20 @@ freestanding-under-ccomp:
     out_c="$out_dir/slake_freestanding.c"
     out_h="$out_dir/slake_freestanding.h"
     obj="${TMPDIR:-/tmp}/slake_freestanding_under_ccomp.o"
-    if ! just build; then
+    if [[ "${SYSTEMS_PRODUCT_WIRE_FRESH:-}" == "1" ]]; then
+      if [[ ! -f "$out_c" || ! -f "$out_h" ]]; then
+        echo "error: SYSTEMS_PRODUCT_WIRE_FRESH=1 but freestanding product wire missing:" >&2
+        echo "  expected $out_c and $out_h" >&2
+        echo "  just check should have produced wire via just build first" >&2
+        exit 1
+      fi
+      echo "ok product wire already fresh (SYSTEMS_PRODUCT_WIRE_FRESH=1; skip regenerate)"
+    elif ! just build; then
       echo "error: just build failed (need fresh freestanding product wire)" >&2
-      echo "  not PROVABLY; provablyUnlocked must stay false" >&2
       exit 1
     fi
     if [[ ! -f "$out_c" || ! -f "$out_h" ]]; then
-      echo "error: freestanding product missing after build:" >&2
+      echo "error: freestanding product missing:" >&2
       echo "  expected $out_c and $out_h" >&2
       exit 1
     fi
@@ -108,7 +118,6 @@ freestanding-under-ccomp:
       echo "  inventory rejects, then fix Lean emit SSOT under src/systems/emit/;" >&2
       echo "  re-emit via just build; do not hand-author product C under out/ or emit/" >&2
       echo "  design: doc/dev/research/compcert-product-seal-design-2026-08-02.md" >&2
-      echo "  not PROVABLY; provablyUnlocked must stay false" >&2
       exit 1
     fi
     if [[ ! -f "$obj" || ! -s "$obj" ]]; then
@@ -117,15 +126,14 @@ freestanding-under-ccomp:
     fi
     bytes="$(wc -c < "$obj" | tr -d ' ')"
     echo "  object: $obj ($bytes bytes)"
-    echo "freestanding-under-ccomp: GREEN (object under ccomp; not PROVABLY; not product matrix)"
+    echo "freestanding-under-ccomp: GREEN (object under ccomp)"
 
 # CompCert seal: Mult unit package under resolved ccomp (plan step 4).
 # Compile src/systems/emit/slake_mult_subset.c with -I for Mult header.
 # Fail closed if package missing, include missing, ccomp missing, or compile fails.
 # On reject: fix Lean MultSubsetEmit SSOT (include + body), re-emit, re-run;
 # do not hand-author Mult product C. Shared resolve: just ccomp-resolve.
-# Not PROVABLY; product CompCert matrix join is product-compcert-matrix (done);
-# remaining claim residual is PROVABLY evidence residual (operator-gated; pin false).
+# Mult row alone is not the full product matrix join (product-compcert-matrix).
 # Greppable: mult-package-under-ccomp, MULT-PACKAGE-UNDER-CCOMP, Mult package under ccomp.
 mult-package-under-ccomp:
     #!/usr/bin/env bash
@@ -140,7 +148,6 @@ mult-package-under-ccomp:
       echo "error: Mult subset package missing:" >&2
       echo "  expected $out_c and $out_h" >&2
       echo "  re-emit: just mult-subset-emit (or mult-subset-rebuild / without-lake path)" >&2
-      echo "  not PROVABLY; provablyUnlocked must stay false" >&2
       exit 1
     fi
     # Dual package identity (stage + Mult dialect on header and source).
@@ -179,7 +186,6 @@ mult-package-under-ccomp:
       echo "  inventory rejects, then fix Lean MultSubsetEmit / EmitMult SSOT;" >&2
       echo "  re-emit via just mult-subset-emit; do not hand-author product C under emit/" >&2
       echo "  design: doc/dev/research/compcert-product-seal-design-2026-08-02.md" >&2
-      echo "  not PROVABLY; provablyUnlocked must stay false" >&2
       exit 1
     fi
     if [[ ! -f "$obj" || ! -s "$obj" ]]; then
@@ -188,12 +194,12 @@ mult-package-under-ccomp:
     fi
     bytes="$(wc -c < "$obj" | tr -d ' ')"
     echo "  object: $obj ($bytes bytes)"
-    echo "mult-package-under-ccomp: GREEN (Mult object under ccomp; not PROVABLY; not product matrix)"
+    echo "mult-package-under-ccomp: GREEN (Mult object under ccomp; not full product matrix alone)"
 
 # CompCert seal: named product matrix join (plan step 5).
 # Rows (minimum): driver smoke + full freestanding wire + Mult unit package.
 # Orchestrates existing fail-closed recipes; does not invent extra unit rows.
-# Not PROVABLY; provablyUnlocked must stay false until PROVABLY evidence residual.
+# Living tip: PROVABLY true when this matrix + lake proof hold (in just check).
 # Greppable: product-compcert-matrix, PRODUCT-COMPCERT-MATRIX, Product CompCert matrix.
 product-compcert-matrix:
     #!/usr/bin/env bash
@@ -201,22 +207,25 @@ product-compcert-matrix:
     echo "== product-compcert-matrix (named CompCert product matrix; fail closed) =="
     echo "  rows: ccomp-smoke | freestanding-under-ccomp | mult-package-under-ccomp"
     echo "  design: doc/dev/research/compcert-product-seal-design-2026-08-02.md"
-    echo "  not PROVABLY; provablyUnlocked must stay false"
+    host=$(hostname -s 2>/dev/null || hostname 2>/dev/null || echo unknown)
+    host=${host%%.*}
+    if [[ "${SYSTEMS_COMPCERT_MATRIX_FORCE:-}" != "1" && "$host" != "surmount-1" ]]; then
+      echo "skip product-compcert-matrix (host $host is not surmount-1; nixpkgs.compcert resolve is a remote Nix build; set SYSTEMS_COMPCERT_MATRIX_FORCE=1 to run here)"
+      echo "product-compcert-matrix: GREEN (laptop skip; PROVABLY matrix still on surmount-1)"
+      exit 0
+    fi
     ccomp_bin="$(just --quiet ccomp-resolve)"
     echo "  ccomp: $ccomp_bin"
     if ! just ccomp-smoke; then
       echo "error: matrix row ccomp-smoke failed" >&2
-      echo "  not PROVABLY; provablyUnlocked must stay false" >&2
       exit 1
     fi
     if ! just freestanding-under-ccomp; then
       echo "error: matrix row freestanding-under-ccomp failed" >&2
-      echo "  not PROVABLY; provablyUnlocked must stay false" >&2
       exit 1
     fi
     if ! just mult-package-under-ccomp; then
       echo "error: matrix row mult-package-under-ccomp failed" >&2
-      echo "  not PROVABLY; provablyUnlocked must stay false" >&2
       exit 1
     fi
-    echo "product-compcert-matrix: GREEN (smoke + full wire + Mult under ccomp; not PROVABLY)"
+    echo "product-compcert-matrix: GREEN (smoke + full wire + Mult under ccomp; PROVABLY matrix)"

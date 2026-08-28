@@ -168,7 +168,8 @@ false at module land; do **not** re-decide living pins from this archive.
   applyOk_linear_without_mint_false; proofCompleteClaimed stays false);
   JoinMap JOIN-MAP-THEOREM / HOST-JOIN-MAP-THEOREM landed
   (joinUnitCompileReady_empty_true + joinProgramCompileReady_empty_false +
-  joinAlgContractOk_true + joinAlgUseOk_true; three dual host uses;
+  joinAlgContractOk_true + joinAlgUseOk_true; dual host uses at land-time
+  (four pairs after Phase C FailClosedGrade 2026-08-08);
   stated map join-map.md; surface canaries not formal duals;
   proofCompleteClaimed stays false);
   SelfHost SELF-HOST-THEOREM / HOST-SELF-HOST-THEOREM landed

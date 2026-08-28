@@ -184,6 +184,9 @@ unitSurfaceSpecs = [
       "ConsumeToken"
       "ErasedIndex"
       "UnrestrictedShare"
+      "FailClosedGrade"
+      "LinearPairSwap"
+      "RuntimeExtract"
     ];
   }
   {

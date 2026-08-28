@@ -8,7 +8,8 @@
 #   -> { ok, violations, summary }
 #
 # Specs data: ./specs.nix (hold / emit-path / unit-text / unit-package /
-# compose-text / as-smoke / abi-parity / layout-ir-dual-pin slices).
+# compose-text / as-smoke / abi-parity / layout-ir-dual-pin /
+# ir-node-layout slices).
 # Flake: checks.systems-llvm-ir-presence.
 # Live gate (does not require git-tracked flake store): just systems-llvm-ir
 { lib, root }:
@@ -86,7 +87,7 @@ let
     if n > maxShow then "\n... and ${toString (n - maxShow)} more" else "";
   summary =
     if ok then
-      "systems-llvm-ir-presence OK (${toString (builtins.length requiredFiles)} required paths; hold unlock true; emit-path + Mult..Graph unit text; unit-package artifacts; compose text; optional as-smoke honesty; abi-parity Mult fixture/header/IR; layout-ir-dual-pin Mult IR tags vs fixture)"
+      "systems-llvm-ir-presence OK (${toString (builtins.length requiredFiles)} required paths; hold unlock true; emit-path + Mult..Graph unit text; unit-package artifacts; compose text; Mult+Linear+Types+Program+Graph+Compose SSA partial; Mult CFG fixture deepen partial; Production CFG deepen (Mult SSA dual-pin); Mult dominance frontier partial + Cytron deepen (structural DF table + multDfComputed dual-pin; DominanceClaimed false); multi-unit Mult..Graph DF Cytron deepen (linear/types/program/graphDominanceFrontierDeepen + multiUnitDominanceFrontierDeepen; DominanceClaimed false); Linear CFG production dual-pin (multi-unit Mult+Linear); Types CFG production dual-pin (multi-unit Mult+Linear+Types); Program CFG production dual-pin (multi-unit Mult..Program); Graph CFG production dual-pin (multi-unit Mult..Graph); general program CFG partial (compose multi-merge beyond unit diamonds; fixture tip fullBackend true A-light); optional as-smoke honesty; abi-parity Mult fixture/header/IR; layout-ir-dual-pin Mult IR tags vs fixture; Mult layout consumer; Mult link readiness partial; Mult layout/IR consumer success partial; Mult foreign link success; Linear foreign link success; Types foreign link success; Program foreign link success; Graph foreign link success; Rust IR interop partial + full multi-band joint consumer (rustIrInteropFullClaimed true; multiBandJointConsumerOk; not formalized all of rustc; band FullBackendClaimed false; fixture tip fullBackend true A-light); richer-than-i32 IrNodeLayout + llvm-link-smoke just module)"
     else
       "systems-llvm-ir-presence FAILED:\n" + lib.concatStringsSep "\n" shown + more;
 in

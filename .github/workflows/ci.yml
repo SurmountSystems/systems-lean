@@ -1,6 +1,8 @@
-# Same suite as local `just check` (product wire build + pure flake hygiene + residual gates).
+# Same suite as local `just check` (product wire build + pure flake hygiene + residual
+# gates + elaborators/cc probe + product CompCert matrix via ccomp).
 # Environment: flake default devShell (just, scc, elan, idris2, ripgrep, git, nixfmt)
 # plus host cc from ubuntu-latest for lake link and the behavioral probe.
+# CompCert is unfree (nixpkgs.compcert); ccomp-resolve uses NIXPKGS_ALLOW_UNFREE=1.
 name: ci
 
 on:
@@ -59,10 +61,15 @@ jobs:
           fi
 
       - name: just check (full suite)
+        env:
+          # Belt-and-suspenders for flake-locked nixpkgs.compcert (unfree).
+          # Recipe ccomp-resolve also sets NIXPKGS_ALLOW_UNFREE=1 on its nix build.
+          NIXPKGS_ALLOW_UNFREE: "1"
         run: |
           # Full local suite: just check -> build (lake freestanding-capable-regenerate)
           # + hygiene + systems-host + systems-emit-wire + idris-side + lean-side
-          # + nix flake check + residual check.sh (idris2/lean4/systems elaborators).
-          # No invented gate skips. Host cc stays on PATH for lake link + probe.
+          # + nix flake check + elaborators + systems-cc-probe
+          # + product-compcert-matrix (ccomp smoke + freestanding + Mult under ccomp).
+          # No invented gate skips. Host cc on PATH for lake link + probe.
           # Quoting: --command just check (two args), not --command "just check".
           nix develop . --command just check

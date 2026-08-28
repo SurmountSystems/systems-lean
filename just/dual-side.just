@@ -3,10 +3,27 @@ idris-elaborate:
     #!/usr/bin/env bash
     set -euo pipefail
     fail=0
+    ex=src/idris2/examples
+    # idris2 --check drops build/*.ttc next to duals; always remove before exit.
+    cleanup_idris_build() {
+      rm -rf "$ex/build"
+    }
+    trap cleanup_idris_build EXIT
     if command -v idris2 >/dev/null 2>&1; then
-      echo "== idris2 --check (optional when binary present) =="
-      for f in ConsumeToken.idr ErasedIndex.idr UnrestrictedShare.idr; do
-        if ! (cd src/idris2/examples && idris2 --check "$f"); then
+      echo "== idris2 --check (optional when binary present; JOIN-ALG + EDGE-AFFINE duals) =="
+      # JOIN-ALG algorithm ids + EDGE-AFFINE duals: keep list in sync with
+      # src/idris2/examples/*.idr duals.
+      for f in \
+        ConsumeToken.idr \
+        ErasedIndex.idr \
+        UnrestrictedShare.idr \
+        FailClosedGrade.idr \
+        LinearPairSwap.idr \
+        RuntimeExtract.idr \
+        AffineDrop.idr \
+        AffineOwn.idr
+      do
+        if ! (cd "$ex" && idris2 --check "$f"); then
           echo "RED: idris2 --check failed on $f" >&2
           fail=1
         else
@@ -39,11 +56,20 @@ _elan-has-toolchain want:
 
 # Shared: optional lake build under dir when lean+lake and pin ready (or SYSTEMS_LEAN_LAKE=1).
 # Skip is GREEN. Avoids network toolchain download when pin not installed.
+# Lake host is surmount-1. On any other hostname (including the laptop
+# horizon) skip GREEN so just check cannot start lake build locally.
+# Override: SYSTEMS_LEAN_LAKE_FORCE=1.
 _lake-if-pin dir label:
     #!/usr/bin/env bash
     set -euo pipefail
     here="{{dir}}"
     label="{{label}}"
+    host=$(hostname -s 2>/dev/null || hostname 2>/dev/null || echo unknown)
+    host=${host%%.*}
+    if [[ "${SYSTEMS_LEAN_LAKE_FORCE:-}" != "1" && "$host" != "surmount-1" ]]; then
+      echo "skip $label elaborator (host $host is not surmount-1; set SYSTEMS_LEAN_LAKE_FORCE=1 to run lake here)"
+      exit 0
+    fi
     run_lake=0
     if command -v lean >/dev/null 2>&1 && command -v lake >/dev/null 2>&1; then
       want=$(tr -d '[:space:]' < "$here/lean-toolchain")
@@ -81,6 +107,11 @@ lean-elaborate:
 
 # Optional lake build in src/systems (host bootstrap elaborator). Same elan skip rules.
 # CompilePath presence is pure Nix (just systems-host); not re-checked here.
+# Named isolation prove is not this recipe. Use one serial niced
+# lake build of the current probe only, LEAN_NUM_THREADS=1.
+# Never lake build SystemsLean.ElabMeetTheorems or SystemsLean.ElabMeet.
+# MemoryMax 192 GiB. floor(192/167)=1 fat Lean. Do not set jobs from
+# core count (64 * 10 GiB = 640 GiB is not a budget we have).
 systems-lake:
     #!/usr/bin/env bash
     set -euo pipefail

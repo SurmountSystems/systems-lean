@@ -1,6 +1,6 @@
 # AGENTS.md -- Systems Lean
 
-Policy for humans and coding agents working on the **Systems Lean** project (checkout may live under a path like `.../iso`; the project name is Systems Lean).
+Policy for humans and coding agents working on the **Systems Lean** project (checkout may live under a path like `.../iso`; **iso / Iso / SystemsLean / SystemsLeanLean4** are internal Lake or directory ids only, from when this tree first started; the project name is Systems Lean).
 
 Global rules in `~/.grok/AGENTS.md` still apply (subagents, multi-chat, GPG). This file is project-specific and wins on conflict for work **in this tree**.
 
@@ -310,6 +310,69 @@ Chat replies, plans, residual Names, watcher text, and handoff status use **plai
 
 Write **thoughtful, concise, natural language**. This is not a jargon dump or acronym soup.
 
+- **Low time preference (operator 2026-08-12):** Surmount Systems finishes work
+  that is already in flight. Completeness over park. Do not leave a half-done
+  writer sitting while you ask another confirm. Do not rewrite a working
+  mid-flight module when running it will finish the artifact. Dual-pin:
+  `~/.grok/AGENTS.md` section *Low time preference and completeness*.
+- **Operator questions use ordinary names (operator 2026-08-12):** never ask
+  the human about residual queue numbers (for example "Name 10") or bare
+  claim-bool identifiers. Ask the real product thing: "Should we unroll cold
+  compose init?" Dual-pin: `~/.grok/AGENTS.md` section *Operator questions use
+  ordinary names*.
+- **Status reports in ordinary English (operator 2026-08-13; re-pinned
+  2026-08-14):** **open every parent chat reply** with a complete
+  ordinary-English progress report. Do not wait to be asked. Do not skip
+  the report because you are only waiting on a mop or a review. Do not
+  bury it after tool waits or end with a one-line "still waiting." After
+  compaction or a continued session, the first text the operator sees
+  must still be that report. A tool-only first turn is a miss. Lead
+  with the real job (which compiler piece, what just compiled, what is
+  running, what is next). Residual queue codes, harness counts, and
+  claim-bool names belong in residual files, not as the body of a chat
+  status. When they ask how much work something is, answer in ordinary
+  units (one agent slice / hours / how many host modules still lack the
+  check), not a decoder-ring count. Dual-pin: `~/.grok/AGENTS.md`
+  section *Status reports in ordinary English*.
+- **Progress every turn (operator 2026-08-14):** every parent turn and
+  every implement slice starts with that natural-language progress
+  report: what compiled, what still does not, and what is next. Keep a
+  living remaining-work metric table in ordinary English: how many real
+  modules Slake typechecks (today **47 of about 206**, SystemsLean.Mult
+  through SystemsLean.HostModuleCheckParityMultTerm on the Slake
+  path; next remaining work is Grow HostModuleCheckParityLinearTerm subset,
+  **blocked** by operator STOP: never `lake build SystemsLean.ElabMeetTheorems`
+  or ElabMeet (hub fan-out); MemoryMax 192 GiB is the ceiling; next prove
+  if any is one serial niced isolation probe only after pgrep lake is
+  empty; leakEnv false must be on the nixbuilder tree; tip stays 47; do not
+  claim 48; do not fold ParityTypesTerm while this Name is red);
+  skip SystemsLean.Linear as a named membership member and skip IrGraph; FullHost stays false;
+  extract first already on disk for ParityLinearTerm: probe 299 helper 63 walk 175;
+  fold on disk again after probe GREEN; do not claim 48;
+  Tail is 863 and Later is 785 and cannot absorb another leftover
+  wrapper without passing about 880; CheckersLater walk
+  ElabMeetNamedWalkHostModuleCheckCheckersLater is 617 lines, under
+  about 780; KernelMultTerm walk is 162; KernelLinearTerm walk is 167; KernelTypesTerm walk is 168; KernelProgramTerm walk is 170; KernelEmitTerm walk is 171; ParityMultTerm walk is 173; Emit walk stays 693; ElabMeetSubset is 865; NamedWalk is
+  322; ElabMeetReadyHostModuleCheck is 132;
+  helper ElabMeetTheoremsNamedHostModuleCheckParityMultTerm is 63;
+  probe ElabMeetNamedHostModuleCheckParityMultTermProbe is 294;
+  ElabMeetCompile is 916 and must not grow; Next extract none after SelfHostBodyTerm); how many real host tools
+  build
+  without Lake on the step (today **0 of about 69**); linear use-check
+  status (today **not started**); same-job time (cite
+  `doc/BENCH-SAME-JOB-latest.md` idle-hot **0.459 s**; Slake cannot do
+  that full-package job; do not invent a fake Slake wall-clock). Same
+  spirit as the Status reports in ordinary English rule in
+  `~/.grok/AGENTS.md`. Documented in `AGENTS.md`.
+- **Do not grow hand-written smoke C (operator 2026-08-13):** runtime
+  bench twins under `src/systems/smoke/` are hand-written measurement C,
+  not Slake emit. Do not add more of them unless the human explicitly
+  orders a named bench. Prefer Lean-owned emit and existing probes.
+- **Reports stay short (operator 2026-08-13):** `.agents/reports/` is a
+  closeout, not a second documentation tree. Product truth lives in
+  living docs (`emit/host-owned-emit.md`, residual, handoff, user-facing
+  `doc/`). Do not farm markdown novels to look busy.
+
 - Prefer full words. Do not invent or drop in obscure short forms (e.g. never bare **TCB** -- write **trusted computing base**).
 - **First use of any acronym or short form in a reply or durable doc:** unpack in parentheses. Example: Quantitative Type Theory (QTT), garbage collection (GC). After compaction, treat the next use as a new first use.
 - If a word is jargon or has multiple meanings, unpack what you mean **here** in a short parenthetical.
@@ -425,7 +488,7 @@ Every open Systems residual item is a named accomplishment:
 
 **Focus:** bootstrap freestanding **Slake** under `src/systems/` (Lean host + freestanding emit toward `out/freestanding-c`). Prefer product surface growth over host canary theorems.
 
-**Autonomy (walk-away loops):** when Open has Name + checkable Done when, chain short implement loops via `WATCHER.md` without inventing work and without waiting for re-confirmation of non-claims already documented. When Done when is not checkable, **BLOCKED** with one concrete need. Cap concurrent subagents (~1 implementer + ~1 reviewer at effort 1; raise only with clean disjoint scopes). Parent stays thin; subagents own depth (fresh context, no compaction of child work).
+**Autonomy (walk-away loops):** when Open has Name + checkable Done when, chain short implement loops via `WATCHER.md` without inventing work and without waiting for re-confirmation of non-claims already documented. When Done when is not checkable, **BLOCKED** with one concrete need. Cap concurrent subagents (~1 implementer + ~1 reviewer at effort 1; raise only with clean disjoint scopes, including one extract-first on new files while a Lake occupies surmount-1). Parent stays thin; subagents own depth (fresh context, no compaction of child work).
 
 **Plan defaults are residual work (hard ban on false park):** if a durable plan under `.agents/plans/` (or residual Open) already names the next residual with **checkable Done when**, agents **must** open that Name in `RESIDUAL-systems.md` and implement. **Do not** empty Open, write **done-for-now**, or park with "wait for the human to Open the next Name" while a plan default still has a checkable next phase (e.g. plan-close-six-claims Track 3 B, Phase 2 A). **Do not** park between sequential planned phases when the next phase Done when is already checkable -- open the next Name or leave remaining Done when on the current Name and put `/implement` in `WATCHER.md`. Empty-Open **done-for-now** is only honest when **no** plan (and no Open queue) still names a checkable next residual. Still do not invent unrelated Names or forge free/complete/PROVABLY/llvm.
 
@@ -488,6 +551,19 @@ Product and workspace **README** files are short **maps + links**, not residual 
 
 Do **not** bulk-rewrite historical research under `doc/dev/research/` for this rule.
 
+### Benchmarks and user-facing docs (hard rule)
+
+When a benchmark run shows a **real improvement** (or the first solid win vs a named baseline), agents **must** update user-facing living docs in the **same slice**:
+
+| Must update | Role |
+|-------------|------|
+| `doc/BENCH-RUNTIME-latest.md` | Living runtime report (regenerate via `just bench-runtime`; report leads with plain **How much faster**) |
+| Root `README.md` living tip (or the consumer surface that claims the win) | One plain line + link to the living report with the headline win |
+| `doc/SESSION-HANDOFF.md` | Reseed tip when the digest is stale |
+| Optional | `out/freestanding-c/README.md` Runtime evidence when the consumer surface is in scope; `just/README.md` recipe row |
+
+**Honesty:** never invent improvement. If freestanding is **slower** vs a baseline, user-facing docs must **not** claim "faster" for that baseline. Multipliers use "Nx faster" / "Nx slower" (not bare ratios alone as the only human phrase). **PROVABLY** remains wire correctness, not speed. Compile-path suite (`just bench` / `doc/BENCH-latest.md`) is **secondary**; the runtime question (`just bench-runtime`) remains **primary** for the linear / no-GC story. Do not leave speed wins only in research notes or chat.
+
 ### File extensions (hard rule)
 
 Every novel prose, config, and source file gets a **real extension** (`.md`, `.lean`, `.idr`, `.nix`, `.toml`, `.c`, `.h`, `.txt`, ...).
@@ -534,6 +610,21 @@ Examples of rules worth documenting:
 - Human-in-the-loop (HITL) flake staging; professional tone / no profanity
 - Slice decisions + residual status that must survive compaction (see **Document slices so they survive compaction** above)
 - Product ownership maps (e.g. host-owned freestanding emit) when they change
+- **Explain A/B decisions and claim tables in plain English** (operator 2026-08-10): when a residual closes by choosing among announce rules, pin flips, or "held" lists, final reports and plan living tips must unpack **why** in complete American English (what each option meant, what evidence forced the choice, what public language may and may not say). Status tables and residual codes alone are not enough. Durable home for full-readiness announce-bar B: `.agents/plans/plan-full-readiness-2026-08-09.md` section **Plain English**.
+- **Low time preference / completeness** (operator 2026-08-12): finish
+  mid-flight product work; do not park for another confirm.
+- **Ordinary names in operator questions** (operator 2026-08-12): no residual
+  queue numbers as the question.
+- **Do the named edit** (operator 2026-08-28): when the operator already
+  named the change (`_lake-if-pin` skip, `AGENTS.md` no-kill, a file and
+  line), implement it in that turn. Restating it as "what I will do next"
+  is not the work. Status may use Job / State / You / Next; the Next line
+  must match an edit already in progress or just landed, not a promise
+  instead of the edit.
+- **Name the recipe and host** (operator 2026-08-28): say `just systems-lake`
+  via `_lake-if-pin` in `just/dual-side.just`, `justfile` calling it after
+  flake check, hostname **horizon** vs **surmount-1**, skip vs run. Do not
+  say only "the local build."
 
 Do **not** wait to be told "document that." Do **not** only fix the immediate file and forget the preference. The goal is fewer repeat mistakes and better agent UX after compaction.
 
@@ -556,6 +647,7 @@ When you finish a planned slice:
    - **Still forbidden:** invent unrelated Names; forge free/complete/PROVABLY/llvm; start deferred tracks the plan holds.
 4. If **blocked or ambiguous** (no plan default and no checkable Done when), put a short blocked note in `WATCHER.md` (what is unclear); do not invent fake work. The blocked fence and the reply final section must **not** contain the implement slash-command token (even as "do not auto-run ..." prose) -- the harness will re-queue it as a new implement pass.
 5. Never use the loop to race git, forge freestanding/PROVABLY claims, or start deferred tracks (e.g. `out/llvm-ir` before self-host).
+6. **While a niced Lake occupies surmount-1, keep a parallel extract-first agent on the next named subset** (operator 2026-08-24; restated 2026-08-25). New probe / helper / walk files only. No second Lake. No shared-fold edits until the occupying lakes exit 0. Detail: section **Lake host and niceness**.
 6. Keep `RESIDUAL.md` as the join board (Open Names); `RESIDUAL-systems.md` as Systems detail; `WATCHER.md` as only the **next action**.
 
 ### Forks (Idris side / Lean side / Systems / Coordinator)
@@ -608,14 +700,16 @@ session is mid-slice.
 
 ### Finish line: Slake does everything Lake does (host develop)
 
-**Project finish on the host side** means Slake owns every job Lake does today for Systems Lean under `src/systems/`: load the package, follow imports, elaborate and check modules (including theorems), and build the host tools we currently build with Lake. Durable program: `.agents/plans/plan-slake-replaces-lake.md`. Goals: `doc/goals.md` (north-star items 6-7).
+**Project finish on the host side** means Slake owns every job Lake does today for Systems Lean under `src/systems/`: load the package, follow imports, elaborate and check modules (including theorems), and build the host tools we currently build with Lake. Durable program: `.agents/plans/plan-slake-replaces-lake.md`. Goals: `doc/goals.md` (north-star items 6-7). Living claim board: `RESIDUAL-systems.md`.
 
-| Already true (do not re-open without cause) | Still false until checklist met |
-|---------------------------------------------|----------------------------------|
-| Freestanding product residual free; freestanding product self-host complete; product path without Lake on the normal step | Host develop still uses classic Lake for full SystemsLean elaborate |
-| Six-unit Mult / Linear / Types / Program / Graph / Compose checkers and package writers (foundation harness) | Six units alone are **not** "Slake does everything Lake does" |
+| Already true (do not re-open without cause) | Still unclaimed / false |
+|---------------------------------------------|-------------------------|
+| Freestanding product residual **free**; freestanding product self-host **complete**; product path does **not** require Lake on the normal step (product StillUsesLake / DependsOnLake **false**) | Full Lean 4 / mathlib elaborator parity (held; plan layers preserve) |
+| Host elaborator residual free **claimed** under free-bar choice **(a)** (day-to-day host tools without Lake on the step; DualResidual remains false / free claimed true) | FullHostElaborateRemains stays **false** -- free claimed is **not** "full host package elaborate done" |
+| Six-unit Mult / Linear / Types / Program / Graph / Compose checkers and package writers (foundation harness only) | Six units alone are **not** "Slake does everything Lake does" |
+| PROVABLY true (CompCert product matrix); llvm unlocked with partial unit SSA (not full backend) | "Lake is gone" -- host free claimed is **not** Lake gone; cold / diagnostic Lake may still elaborate for bootstrap and claim proof |
 
-Do **not** empty residual Open with done-for-now while that plan still names checkable next work. Do **not** flip DualResidual host residual free until the **full** host checklist is met with elaborator proof.
+**Honesty:** free claimed under free bar (a) is a measured host residual-free claim for day-to-day develop tools. It is **not** product free re-open, **not** Lake gone, **not** FullHostElaborateRemains true, and **not** full Lean 4 / mathlib parity. Do **not** empty residual Open with done-for-now while a durable plan still names checkable next work. Do **not** forge free / complete / PROVABLY / FullHost claim bools.
 
 ### Multi-language print policy (three stories -- keep separate)
 
@@ -804,6 +898,89 @@ Keep this map current when dirs move. README has a short tree; **this section is
 
 **Pattern:** presence/token algorithms live in `nix/<module>/`; just only `nix eval --impure` or thin lake/exe. Growing a pure Nix file past 1000 lines is residual (split data/eval slices).
 
+## Lake host and niceness (operator 2026-08-17)
+
+Run **Lake on surmount-1**, not on the laptop (**horizon**). **surmount-1**
+is the allowed remote Nix builder and Lake host. Mail and Lean share that
+host. That is why niceness matters.
+
+**Laptop skip (operator 2026-08-28):** `_lake-if-pin` in `just/dual-side.just`
+skips `lake build` unless `hostname -s` is `surmount-1`. `just check` on
+**horizon** still calls `just lean-elaborate` (`justfile` after flake check)
+and `just systems-lake`; those recipes print skip and exit 0. Pure Nix
+presence gates still run. To run Lake on this laptop anyway:
+`SYSTEMS_LEAN_LAKE_FORCE=1 just systems-lake`. Do not treat a screenshot of
+laptop CPU as a reason to start Lake here.
+
+**Laptop CompCert skip (operator 2026-08-28):** `just product-compcert-matrix`
+in `just/compcert.just` is the last step of `just check` / `just pre-commit`.
+On **horizon** it must not run `ccomp-resolve`'s `nix build` of
+`nixpkgs.compcert` (that is a remote Coq/CompCert compile with no progress
+line after `trying flake-locked nixpkgs.compcert`). Skip GREEN unless
+hostname is `surmount-1`. Force: `SYSTEMS_COMPCERT_MATRIX_FORCE=1`. The
+running pre-commit still uses the old recipe until the operator stops it;
+agents do not kill that job.
+
+**Never kill host processes (operator 2026-08-28):** Agents must not `kill`,
+`pkill`, `killall`, or otherwise stop host processes unless the operator
+names the PID or job in this chat. A screenshot of load, a complaint that
+`just check` ran Lake locally, or leftover text about fan-out is **not** a
+kill order. The operator already stopped the laptop Lake storm that
+`just systems-lake` started.
+
+Lake and other dev builds are always maximally nice: `nice -n 19` and idle
+ionice when practical. Prefer a niced Lake wrapper and a niced remote-build
+path. Do **not** restart a fat Lake job on **horizon**.
+
+**Wait on Lake, still start the next extract (operator 2026-08-24):** a
+niced Lake on **surmount-1** is one process and exclusive. It is **not**
+a pause on every other file. While that Lake is running, the parent
+**must** start the next named closed-subset extract-first on **disjoint
+new files** (new probe, new helper, new walk when the 780-line bar
+requires it). Do **not** start a second Lake. Do **not** edit the
+occupying writer's shared fold (`ElabMeet.lean`, `ElabMeetTheorems.lean`,
+`ElabMeetCompile.lean`, lakefile, Nix presence, residual, `WATCHER.md`,
+handoff, living metric) until that Lake exits 0 and lockstep lands.
+Then fold the prepared next-module files in a later slice. Same-file
+race still serializes. This does not raise the one-Lake cap.
+
+**Never theorems-hub fan-out (operator 2026-08-27; math 2026-08-28):**
+do **not** run `lake build SystemsLean.ElabMeetTheorems` or
+`lake build SystemsLean.ElabMeet` as the prove for a named isolation
+Name. Isolation theorems live on the probe modules and named helpers.
+`ElabMeetTheorems.lean` must not import `SystemsLean.ElabMeetNamed*Probe`
+modules. Prove with one serial niced
+`lake build SystemsLean.ElabMeetNamedHostModuleCheckParityLinearTermProbe`
+(or the current Name's probe), `LEAN_NUM_THREADS=1`. If more than one
+`lean` process appears during that prove, **stop starting jobs**. Tell
+the operator the recipe and host. Do **not** kill processes unless the
+operator names the PID or job.
+
+**MemoryMax 192 GiB is the ceiling.** Never raise it. 256 GiB is the
+box, not the Lean budget. One isolation probe measured about **167 GiB**
+RSS. Max concurrent fat Leans is `floor(192/167) = 1`. Do **not** set
+jobs from core count. 64 Xeon cores times about 10 GiB is 640 GiB,
+which is not a budget we have. About 18 probes at about 10 GiB already
+filled about 187 GiB of 192 while the host still had about 65 GiB free.
+Mail stayed up. That is fan-out, not "need more RAM." If a hub fan-out
+would start, **do not start** `lake build SystemsLean.ElabMeetTheorems`.
+Do not kill a running job unless the operator names the PID or job.
+Deaths at 32 / 64 / 128 GiB were a **single Name** filling the cap. The
+last death was fan-out.
+
+**Next prove, if any:** wait until `pgrep lake` is empty. Then **one**
+serial niced isolation probe only (same Name, or a smaller closed set),
+`LEAN_NUM_THREADS=1`, one niced Lake, one lean. Not the theorems hub.
+Not FullHost. Not folding the next Name while this one is red.
+`leakEnv := false` on multi-module helpers must be in the tree Lake
+actually builds (`/home/nixbuilder/iso`), not only on the laptop. If a
+hub job started without that, it does not count as the fix being live.
+Named closed subset stays **47 of about 206**. Do not claim **48**.
+
+Do **not** flip `FullHost` or package-typecheck pins. Skip **Linear** and
+**IrGraph** unless living residual already requires them. This pin does not
+open those tracks.
+
 ## License (our novel work)
 
 - Root dedication: `UNLICENSE.md` + narrative/inventory in `LICENSES.md`.
@@ -865,3 +1042,7 @@ Later: real builds and tests as defined in residual -- not vibes.
 - Smuggle tool logic through bash-in-Nix / shell-in-Nix / Python-in-Nix or flake apps that are only shell farms
 - Grow kitchen-sink `flake.nix`, mega `nix/` modules, or restore multi-thousand-line `check.sh` / emit shell instead of Lean or pure Nix
 - Hide project skills only under host home dirs when the pack is already a repo submodule -- keep discovery under `.agents/skills/`
+- Run a fat Lake job on the laptop (**horizon**) when **surmount-1** is the Lake host
+- Restart a fat Lake job on **horizon**
+- Kill, `pkill`, or stop host processes unless the operator names the PID or job
+- Flip `FullHost` or package-typecheck pins, or open Linear / IrGraph unless residual already requires them

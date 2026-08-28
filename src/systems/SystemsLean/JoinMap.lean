@@ -2,8 +2,8 @@
   SYSTEMS_LEAN_HOST partial -- host-side dual / JOIN map into compile-path readiness.
   Side: classic Lean elaborator under src/systems/ (not freestanding C).
   Dual cite inventory (read-only; do not reimplement duals here):
-    src/idris2/examples/{ConsumeToken,ErasedIndex,UnrestrictedShare}.idr
-    src/lean4/examples/{ConsumeToken,ErasedIndex,UnrestrictedShare}.lean
+    src/idris2/examples/{ConsumeToken,ErasedIndex,UnrestrictedShare,FailClosedGrade,LinearPairSwap,RuntimeExtract}.idr
+    src/lean4/examples/{ConsumeToken,ErasedIndex,UnrestrictedShare,FailClosedGrade,LinearPairSwap,RuntimeExtract}.lean
   Companion map: src/systems/join-map.md (stated dual -> Slake use table).
 
   Stated map (dual algorithm -> Systems / Slake use; dual-cite alone is not enough):
@@ -12,20 +12,26 @@
   | ConsumeToken       | HostCompose mint/consume + LinearHost empty   | slake_consume_token_* / linear_token|
   | ErasedIndex        | Erasure mark / isRuntimeAbsent + MULT-0       | slake_erasure_is_runtime_absent     |
   | UnrestrictedShare  | Mult multOmega / name MULT-OMEGA + shareNat   | MULT-OMEGA grade surface            |
+  | FailClosedGrade    | Mult.ofNat? / isValidTag unknown reject       | closed Mult enum tags 0/1/2 only    |
+  | LinearPairSwap     | PARTIAL: single live-token + remint reject    | multi-token product C not claimed   |
+  | RuntimeExtract     | Extract RuntimeClaim FS-only accept/reject    | RUNTIME-FS product extract path     |
   Note: Linear.Token / mkToken / consume / roundTrip remain dual-cite axioms on
   Linear.lean (classic elaborator cannot enforce MULT-1); joinAlgUseOk does NOT
   pin those axioms (noncomputable). ConsumeToken use evidence is HostCompose
   live-flag mint/consume only. shareNat is UnrestrictedShare only (not
-  ConsumeToken).
+  ConsumeToken). FailClosedGrade use is Mult fail-closed raw-tag decode only.
+  LinearPairSwap host use is PARTIAL (HostCompose one live at a time).
 
   Spec (readable, separate from any future proof):
   - SLAKE_JOIN_MAP_V0 / HOST-JOIN-MAP / JOIN-MAP: host map from dual-pair
     JOIN-ALG honesty into Slake compile-path readiness composition.
-  - joinDualCiteOk: surface dual-path inventory for all three JOIN-ALG examples.
+  - joinDualCiteOk: surface dual-path inventory for all six JOIN-ALG examples.
     Not a filesystem walk of dual trees.
   - joinAlgUseOk: host module *use* pins (HostCompose, Erasure, Mult +
-    Linear.shareNat for UnrestrictedShare only), not dual-example path strings
-    alone. Greppable: joinAlgUseOk, JOIN-ALG-USE.
+    Linear.shareNat for UnrestrictedShare; Mult fail-closed for FailClosedGrade;
+    PARTIAL single-live remint reject for LinearPairSwap; Extract RuntimeClaim
+    FS-only for RuntimeExtract),
+    not dual-example path strings alone. Greppable: joinAlgUseOk, JOIN-ALG-USE.
   - joinAlgContractOk: joinDualCiteOk && joinAlgUseOk && stage/map ids.
     Surface canary, not formal dual-bridge theorems.
   - joinUnitCompileReady hc: CompilePath.unitCompileReady && joinAlgContractOk
@@ -63,12 +69,15 @@
 
   Greppable: SYSTEMS_LEAN_HOST, SLAKE_JOIN_MAP_V0, HOST-JOIN-MAP, JOIN-MAP,
   JOIN-ALG, JOIN-ALG-USE, ConsumeToken, ErasedIndex, UnrestrictedShare,
+  FailClosedGrade, FAIL-CLOSED-UNKNOWN-GRADE, LinearPairSwap, RuntimeExtract,
+  RUNTIME-FS, RUNTIME-CLASSIC, EDGE-RUNTIME,
   LINEAR-EXACT-ONCE, MULT-1, MULT-0, MULT-OMEGA, HOST-COMPILE-PATH,
   SLAKE_COMPILE_PATH_V1, joinUnitCompileReady, joinProgramCompileReady,
   joinCompileReady, joinAlgContractOk, joinAlgUseOk, joinDualCiteOk,
   JOIN-MAP-SMOKE, EMPTY-PROGRAM-FAIL-CLOSED, FAIL-CLOSED,
   JOIN-MAP-THEOREM, HOST-JOIN-MAP-THEOREM, JoinMapTheorems,
-  consumeTokenHostUseOk, erasedIndexHostUseOk, unrestrictedShareHostUseOk
+  consumeTokenHostUseOk, erasedIndexHostUseOk, unrestrictedShareHostUseOk,
+  failClosedGradeHostUseOk, linearPairSwapHostUseOk, runtimeExtractHostUseOk
   UNIT_SURFACE host surface. Module: SystemsLean.JoinMap
   Long-file peel: JOIN-MAP-THEOREM + JOIN-MAP-SMOKE in SystemsLean.JoinMapTheorems
   (same namespace). Core dialect stays here.
@@ -80,6 +89,7 @@ import SystemsLean.Mult
 import SystemsLean.Linear
 import SystemsLean.IrProgram
 import SystemsLean.Erasure
+import SystemsLean.Extract
 import SystemsLean.HostCompose
 import SystemsLean.CompilePath
 
@@ -98,7 +108,7 @@ def hostJoinMapId : String := "HOST-JOIN-MAP"
 /-- Greppable short map id (JOIN-MAP). -/
 def joinMapId : String := "JOIN-MAP"
 
-/-- JOIN-ALG algorithm family id (three dual-pair examples). -/
+/-- JOIN-ALG algorithm family id (six dual-pair examples). -/
 def joinAlgId : String := "JOIN-ALG"
 
 /-- JOIN-ALG-USE: host *use* surface id (distinct from dual-path inventory). -/
@@ -112,6 +122,15 @@ def erasedIndexAlgId : String := "ErasedIndex"
 
 /-- UnrestrictedShare dual algorithm name. -/
 def unrestrictedShareAlgId : String := "UnrestrictedShare"
+
+/-- FailClosedGrade dual algorithm name. -/
+def failClosedGradeAlgId : String := "FailClosedGrade"
+
+/-- LinearPairSwap dual algorithm name. -/
+def linearPairSwapAlgId : String := "LinearPairSwap"
+
+/-- RuntimeExtract dual algorithm name. -/
+def runtimeExtractAlgId : String := "RuntimeExtract"
 
 /-! ### Dual path inventory (read-only cites; not host use evidence alone) -/
 
@@ -133,6 +152,24 @@ def dualUnrestrictedShareIdris : String := "src/idris2/examples/UnrestrictedShar
 /-- Read-only dual path cite (Lean UnrestrictedShare). -/
 def dualUnrestrictedShareLean : String := "src/lean4/examples/UnrestrictedShare.lean"
 
+/-- Read-only dual path cite (Idris FailClosedGrade). -/
+def dualFailClosedGradeIdris : String := "src/idris2/examples/FailClosedGrade.idr"
+
+/-- Read-only dual path cite (Lean FailClosedGrade). -/
+def dualFailClosedGradeLean : String := "src/lean4/examples/FailClosedGrade.lean"
+
+/-- Read-only dual path cite (Idris LinearPairSwap). -/
+def dualLinearPairSwapIdris : String := "src/idris2/examples/LinearPairSwap.idr"
+
+/-- Read-only dual path cite (Lean LinearPairSwap). -/
+def dualLinearPairSwapLean : String := "src/lean4/examples/LinearPairSwap.lean"
+
+/-- Read-only dual path cite (Idris RuntimeExtract). -/
+def dualRuntimeExtractIdris : String := "src/idris2/examples/RuntimeExtract.idr"
+
+/-- Read-only dual path cite (Lean RuntimeExtract). -/
+def dualRuntimeExtractLean : String := "src/lean4/examples/RuntimeExtract.lean"
+
 /-- Legacy alias: ConsumeToken Idris path (kept for prior greppable surface). -/
 def dualIdrisPath : String := dualConsumeTokenIdris
 
@@ -140,23 +177,33 @@ def dualIdrisPath : String := dualConsumeTokenIdris
 def dualLeanPath : String := dualConsumeTokenLean
 
 /-- joinLinearCiteOk -- ConsumeToken dual path inventory only (legacy name).
-    Prefer joinDualCiteOk for the three-algorithm inventory. -/
+    Prefer joinDualCiteOk for the six-algorithm inventory. -/
 def joinLinearCiteOk : Bool :=
   (dualConsumeTokenIdris == "src/idris2/examples/ConsumeToken.idr")
     && (dualConsumeTokenLean == "src/lean4/examples/ConsumeToken.lean")
 
-/-- joinDualCiteOk -- three JOIN-ALG dual-pair path cites match layout.
+/-- joinDualCiteOk -- six JOIN-ALG dual-pair path cites match layout.
     Surface inventory only (not FS walk; not host use).
-    Greppable: joinDualCiteOk, ConsumeToken, ErasedIndex, UnrestrictedShare. -/
+    Greppable: joinDualCiteOk, ConsumeToken, ErasedIndex, UnrestrictedShare,
+    FailClosedGrade, LinearPairSwap, RuntimeExtract. -/
 def joinDualCiteOk : Bool :=
   joinLinearCiteOk
     && (dualErasedIndexIdris == "src/idris2/examples/ErasedIndex.idr")
     && (dualErasedIndexLean == "src/lean4/examples/ErasedIndex.lean")
     && (dualUnrestrictedShareIdris == "src/idris2/examples/UnrestrictedShare.idr")
     && (dualUnrestrictedShareLean == "src/lean4/examples/UnrestrictedShare.lean")
+    && (dualFailClosedGradeIdris == "src/idris2/examples/FailClosedGrade.idr")
+    && (dualFailClosedGradeLean == "src/lean4/examples/FailClosedGrade.lean")
+    && (dualLinearPairSwapIdris == "src/idris2/examples/LinearPairSwap.idr")
+    && (dualLinearPairSwapLean == "src/lean4/examples/LinearPairSwap.lean")
+    && (dualRuntimeExtractIdris == "src/idris2/examples/RuntimeExtract.idr")
+    && (dualRuntimeExtractLean == "src/lean4/examples/RuntimeExtract.lean")
     && (consumeTokenAlgId == "ConsumeToken")
     && (erasedIndexAlgId == "ErasedIndex")
     && (unrestrictedShareAlgId == "UnrestrictedShare")
+    && (failClosedGradeAlgId == "FailClosedGrade")
+    && (linearPairSwapAlgId == "LinearPairSwap")
+    && (runtimeExtractAlgId == "RuntimeExtract")
 
 /-! ### Host use pins (stated map into Slake -- not dual path strings alone)
 
@@ -221,14 +268,81 @@ def unrestrictedShareHostUseOk : Bool :=
     && (Linear.shareNat 3 == 6)
     && (productMultOmegaGrade == "MULT-OMEGA")
 
-/-- joinAlgUseOk -- three dual algorithms have host *use* pins (not path cite only).
+/-- Product honesty pin for FAIL-CLOSED-UNKNOWN-GRADE (Mult raw-tag reject). -/
+def productFailClosedUnknownGradeId : String := "FAIL-CLOSED-UNKNOWN-GRADE"
+
+/-- failClosedGradeHostUseOk -- FailClosedGrade via Mult.ofNat? / isValidTag.
+    Known tags 0/1/2 decode; unknown tags reject (none / false). Typed Mult
+    constructors stay valid. Greppable: failClosedGradeHostUseOk, FailClosedGrade,
+    FAIL-CLOSED-UNKNOWN-GRADE. -/
+def failClosedGradeHostUseOk : Bool :=
+  (Mult.ofNat? 0 == some Mult.mult0)
+    && (Mult.ofNat? 1 == some Mult.mult1)
+    && (Mult.ofNat? 2 == some Mult.multOmega)
+    && (Mult.ofNat? 3 == none)
+    && (Mult.isValidTag 0 == true)
+    && (Mult.isValidTag 3 == false)
+    && Mult.isValid Mult.mult0
+    && (productFailClosedUnknownGradeId == "FAIL-CLOSED-UNKNOWN-GRADE")
+
+/-- Host honesty: second concurrent mint while already live is rejected.
+    Models that HostCompose holds one live MULT-1 token only (pair not yet
+    multi-token product wire). Greppable: hostSingleLiveRemintRejectOk. -/
+def hostSingleLiveRemintRejectOk : Bool :=
+  match HostCompose.mint HostCompose.empty 1 with
+  | HostCompose.MintResult.ok hc =>
+    match HostCompose.mint hc 2 with
+    | HostCompose.MintResult.alreadyLive => true
+    | HostCompose.MintResult.ok _ => false
+    | HostCompose.MintResult.badId => false
+  | HostCompose.MintResult.badId => false
+  | HostCompose.MintResult.alreadyLive => false
+
+/-- linearPairSwapHostUseOk -- LinearPairSwap host use is PARTIAL.
+    Dual cites two MULT-1 resources; HostCompose is single live-token today.
+    Evidence: mint/consume once still works AND remint while live is rejected
+    (cannot hold a concurrent pair). Not multi-token product C stages.
+    Greppable: linearPairSwapHostUseOk, LinearPairSwap, hostSingleLiveRemintRejectOk. -/
+def linearPairSwapHostUseOk : Bool :=
+  hostMintConsumeOnceOk
+    && hostSingleLiveRemintRejectOk
+    && (linearPairSwapAlgId == "LinearPairSwap")
+
+/-- Product honesty pin for freestanding extract claim name. -/
+def productRuntimeFsId : String := "RUNTIME-FS"
+
+/-- runtimeExtractHostUseOk -- RuntimeExtract via Extract.RuntimeClaim honesty.
+    RUNTIME-FS is freestanding goal; RUNTIME-CLASSIC / EDGE-RUNTIME reject.
+    Tag 0/1/2 decode; unknown tag rejects. Does not claim stock hosts freestanding.
+    Greppable: runtimeExtractHostUseOk, RuntimeExtract, RUNTIME-FS, RUNTIME-CLASSIC,
+    EDGE-RUNTIME. -/
+def runtimeExtractHostUseOk : Bool :=
+  (Extract.isFreestandingGoal Extract.RuntimeClaim.runtimeFs == true)
+    && (Extract.isFreestandingGoal Extract.RuntimeClaim.runtimeClassic == false)
+    && (Extract.isFreestandingGoal Extract.RuntimeClaim.edgeRuntime == false)
+    && (Extract.RuntimeClaim.name Extract.RuntimeClaim.runtimeFs == "RUNTIME-FS")
+    && (Extract.RuntimeClaim.name Extract.RuntimeClaim.runtimeClassic
+        == "RUNTIME-CLASSIC")
+    && (Extract.RuntimeClaim.name Extract.RuntimeClaim.edgeRuntime == "EDGE-RUNTIME")
+    && (Extract.ofRuntimeTag? 0 == some Extract.RuntimeClaim.runtimeFs)
+    && (Extract.ofRuntimeTag? 1 == some Extract.RuntimeClaim.runtimeClassic)
+    && (Extract.ofRuntimeTag? 3 == none)
+    && (Extract.isValidRuntimeTag 0 == true)
+    && (Extract.isValidRuntimeTag 3 == false)
+    && (productRuntimeFsId == "RUNTIME-FS")
+    && (runtimeExtractAlgId == "RuntimeExtract")
+
+/-- joinAlgUseOk -- six dual algorithms have host *use* pins (not path cite only).
     Greppable: joinAlgUseOk, JOIN-ALG-USE, ConsumeToken, ErasedIndex,
-    UnrestrictedShare. -/
+    UnrestrictedShare, FailClosedGrade, LinearPairSwap, RuntimeExtract. -/
 def joinAlgUseOk : Bool :=
   (joinAlgUseId == "JOIN-ALG-USE")
     && consumeTokenHostUseOk
     && erasedIndexHostUseOk
     && unrestrictedShareHostUseOk
+    && failClosedGradeHostUseOk
+    && linearPairSwapHostUseOk
+    && runtimeExtractHostUseOk
 
 /-- joinAlgContractOk -- JOIN-ALG dual-cite inventory + host use into Slake.
     Surface-level: algorithm ids + dual path cites + host module use pins.

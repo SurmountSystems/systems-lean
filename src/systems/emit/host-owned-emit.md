@@ -166,19 +166,26 @@ IR program on freestanding C is fixed-capacity ordered list of well-typed nodes
 wire stage id remains `IR_PROGRAM_V0` (map only). Host ownership uses
 HOST-EMIT-PROGRAM / SLAKE_SELF_HOST_EMIT_PROGRAM_V0. Contiguous after Types
 (depends on typed nodes). Not CFG/edges (graph is separate HOST-EMIT-GRAPH).
+`check_fail_closed` is one live-node walk (does not re-call program
+`is_well_typed`; public `is_well_typed` stays).
 
 IR graph on freestanding C is fixed-capacity edge list over nested program
 (`SLAKE_IR_EDGE_MAX` 16; init/push_node/add_edge/is_well_typed/check_fail_closed).
 Product wire stage id remains `IR_GRAPH_EDGES_V0` (map only). Host ownership uses
 HOST-EMIT-GRAPH / SLAKE_SELF_HOST_EMIT_GRAPH_V0. Contiguous after Program
-(depends on ordered program). Not full CFG/SSA.
+(depends on ordered program). Not full CFG/SSA. `check_fail_closed` is edge
+soundness then one program fail-closed walk (does not re-call graph
+`is_well_typed`; public `is_well_typed` stays).
 
 Host compose on freestanding C is graph + ConsumeToken host + erasure mark
 (init/push/add_edge/mint/consume/mark_erased/is_well_typed/check_fail_closed/extract).
 Product wire stage id remains `HOST_COMPOSE_V0` (map only). Host ownership uses
 HOST-EMIT-COMPOSE / SLAKE_SELF_HOST_EMIT_COMPOSE_V0. Contiguous after Graph
 (depends on IR graph). Live-flag honesty: mint/consume track host live state;
-not elaborator MULT-1.
+not elaborator MULT-1. `check_fail_closed` is one mult pre-scan then one
+graph check walk (does not re-call graph `is_well_typed`). Extract stays
+the E2 fuse (one check then write `RUNTIME_FS`). Public extract / check
+meanings unchanged.
 
 Emit plan on freestanding C is readiness inventory from checked host compose
 (node/edge/runtime/erased counts + ready/valid). Product wire stage id remains

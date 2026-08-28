@@ -7,6 +7,11 @@
 | ConsumeToken | `src/idris2/examples/ConsumeToken.idr` |
 | ErasedIndex | `src/idris2/examples/ErasedIndex.idr` |
 | UnrestrictedShare | `src/idris2/examples/UnrestrictedShare.idr` |
+| FailClosedGrade | `src/idris2/examples/FailClosedGrade.idr` |
+| LinearPairSwap | `src/idris2/examples/LinearPairSwap.idr` |
+| RuntimeExtract | `src/idris2/examples/RuntimeExtract.idr` |
+| AffineDrop | `src/idris2/examples/AffineDrop.idr` |
+| AffineOwn | `src/idris2/examples/AffineOwn.idr` |
 
 **Pair:** same algorithm ids under `src/lean4/examples/`, plus `src/lean4/examples/TRUST.md`.
 

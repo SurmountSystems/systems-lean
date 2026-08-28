@@ -1,0 +1,155 @@
+# Implement report: Wave 1 tools T1 T2 T4
+
+**Date:** 2026-08-12
+**Repo:** `/home/hunter/Projects/ai/iso`
+**IMPL_ID:** 5aac7784
+**Kind:** measurement tooling (smoke C + just process glue + living report). Not claim flips.
+**Status:** **GREEN**
+
+ASCII only. Plain American English.
+
+---
+
+## Goal
+
+Close residual Names **T1 Compose stage timers**, **T2 Runtime run spread stats**, and
+**T4 Machine-readable arm metrics** (Wave 1 tools track). Leave L0/L1 to peer Lean track
+(already **done** when this report closed). No free/complete/PROVABLY/FullHost forge.
+
+---
+
+## Before (notes)
+
+| Surface | Before |
+|---------|--------|
+| Compose arm | Whole-op `ns_per_op` only; no stage attribution |
+| Suite scrape | median + mean ns/op; first sample dropped when multi-run |
+| Living report | mint/Lean/compose tables without min/max/stdev |
+| Machine metrics | Markdown + `/tmp` log only; no stable TSV beside doc |
+| Product wire | No timers (must stay that way) |
+
+Explore authority: `.agents/reports/explore-perf-bench-tools-2026-08-12.md`.
+
+---
+
+## Done when (met)
+
+| # | Name | Outcome | Evidence |
+|---|------|---------|----------|
+| T1 | Compose stage timers | Separate stage pass prints `stage_ns_per_op_*` + groups; product wire untouched | smoke driver + living report section |
+| T2 | Runtime run spread stats | min/max/sample stdev in scrape and living tables | `just/bench-runtime-report.just` + `doc/BENCH-RUNTIME-latest.md` |
+| T3 | (out of this slice) | -- | Wave 2 |
+| T4 | Machine-readable arm metrics | `doc/BENCH-RUNTIME-metrics.tsv` each suite; soft-skips as exit | suite writer + TSV on disk |
+
+---
+
+## Implementation
+
+### T1 Compose stage timers
+
+- File: `src/systems/smoke/slake_runtime_bench_freestanding_compose.c`
+- Primary timed loop still whole-op (clean `ns_per_op`).
+- After status=ok: optional stage-attribution pass (default **ON**).
+  - `BENCH_RUNTIME_STAGE_TIMERS=0` / `off` / `false` disables.
+  - `BENCH_RUNTIME_STAGE_N` caps stage N (default `min(N, 200000)`).
+- Stages: init, push_nodes, edges, mint, mark, well_typed, check_fail_closed,
+  extract, consume, post_check.
+- Groups: setup, mint_mark, check, extract_consume.
+- Keys: `stage_ns_sum_*`, `stage_ns_per_op_*`, `stage_pct_*`, `stage_group_ns_per_op_*`.
+- Report scrapes last measured process stage keys into **Compose stage timers** section.
+- Research note updated: `doc/dev/research/linear-freestanding-runtime-bench-2026-08-08.md`.
+- Honesty: stage ns includes `clock_gettime` overhead; relative attribution only.
+
+### T2 Runtime run spread stats
+
+- `scrape_arm` in `just/bench-runtime-report.just` now emits `*_ns_min`, `*_ns_max`,
+  `*_ns_stdev` after first-sample drop when multi-run.
+- Sample stdev: `sqrt(sum((x-mean)^2)/(n-1))` when n>=2 after drop; `?` if single sample.
+- Living report tables (mint, Lean, compose) columns: median | mean | min | max | stdev | ...
+- Methods section documents formula; default `BENCH_RUNTIME_RUNS=3` unchanged.
+
+### T4 Machine-readable arm metrics
+
+- Each full `just bench-runtime` writes `doc/BENCH-RUNTIME-metrics.tsv`.
+- Header:
+  `stamp arm exit job_class N ns_median ns_mean ns_min ns_max ns_stdev wall_median ops_mean outer_real`
+- One row per arm (R-free, R-gc-shape, R-boehm, R-lean, R-free-compose, R-gc-shape-compose).
+- Soft-skip / fail exit values preserved in `exit` column.
+- Human `doc/BENCH-RUNTIME-latest.md` remains primary.
+
+---
+
+## Commands and exit codes
+
+| Command | Exit | Notes |
+|---------|-----:|-------|
+| `BENCH_RUNTIME_COMPOSE_N=50000 BENCH_RUNTIME_RUNS=2 just bench-runtime-freestanding-compose` | 0 | stage_timers=on; stage keys present |
+| `BENCH_RUNTIME_STAGE_TIMERS=0 BENCH_RUNTIME_COMPOSE_N=1000 BENCH_RUNTIME_RUNS=1 just bench-runtime-freestanding-compose` | 0 | stage_timers=off |
+| `BENCH_RUNTIME_N=2000000 BENCH_RUNTIME_COMPOSE_N=50000 BENCH_RUNTIME_LEAN_N=500000 BENCH_RUNTIME_RUNS=3 just bench-runtime` | 0 | short calibration; metrics TSV written |
+| `just bench-runtime` (defaults N_mint=2e8 compose=1e7 lean=5e7 runs=3) | 0 | living report + metrics at production N |
+| Our touched paths ASCII / trailing-ws check | ok | smoke + just + md + tsv |
+| `just hygiene` | **red** peer | fails on `src/systems/SystemsLean/HostCost.lean` non-ASCII (L1 peer track); **not** introduced by this tools slice |
+
+Default suite stamp: **2026-08-12 17:39:34 UTC**
+Log: `/tmp/systems-lean-bench-runtime-20260812T173934Z.log`
+
+Sample headline (default N this host): freestanding mint ~1.89 ns/op vs Boehm ~18.0 (~9.5x faster);
+compose free ~39.8 ns/op vs gcomp ~10.1; stage_N=200000 on free-compose.
+
+---
+
+## Paths touched
+
+| Path | Change |
+|------|--------|
+| `src/systems/smoke/slake_runtime_bench_freestanding_compose.c` | T1 stage pass |
+| `just/bench-runtime.just` | stage env comments on compose arm |
+| `just/bench-runtime-report.just` | T2 scrape/spread; T1 stage scrape; T4 TSV; report sections |
+| `doc/BENCH-RUNTIME-latest.md` | regenerated by suite |
+| `doc/BENCH-RUNTIME-metrics.tsv` | new; regenerated by suite |
+| `doc/dev/research/linear-freestanding-runtime-bench-2026-08-08.md` | T1/T2/T4 methods |
+| `RESIDUAL-systems.md` | T1 T2 T4 **done**; Wave 1 complete; Done archive |
+| `RESIDUAL.md` | join tip + Open Names |
+| `WATCHER.md` | Wave 2 `/implement` (T3 first) |
+| `doc/SESSION-HANDOFF.md` | Active open Wave 1 complete |
+| `.agents/reports/impl-wave1-tools-t1t2t4-5aac7784-2026-08-12.md` | this report |
+
+---
+
+## Pins (unchanged)
+
+| Pin | Status |
+|-----|--------|
+| free / complete / PROVABLY | true |
+| FullHostElaborateRemains | false |
+| DominanceClaimed / band FullBackend | false |
+| seed / harness | 206 / 99 |
+| TERM dual-ok | 46 |
+| FULLHOST_FLIP | no |
+
+---
+
+## Out of scope (honored)
+
+- Always-on product wire timers
+- Claim-bool flips
+- T3 flag matrix / T5 snapshot / T6 regression / T7 perf / T8 / T9
+- L0/L1 product Lean (peer already closed)
+- Git add/commit
+- Project Python / new shell mills under `script/`
+
+---
+
+## Residual lockstep
+
+- T1 T2 T4 **done** in `RESIDUAL-systems.md` + Done archive row
+- L0 L1 remain **done** (not re-opened; not marked by this agent as product Lean work)
+- WATCHER: Wave 1 tools done; Wave 1 Lean done; **Wave 2 next** (T3 first)
+- SESSION-HANDOFF Active open updated
+
+---
+
+## Next
+
+`/implement` Wave 2: **T3 Runtime flag matrix** (or parallel T5 / T8 / L2 / L3 / L4).
+See `WATCHER.md` fenced block.

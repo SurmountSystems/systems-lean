@@ -15,16 +15,17 @@
   - Rules enforced here (fail closed, not residual free):
       MULT-0 needs marked erased; claimed runtime must be freestanding (RUNTIME-FS);
       unknown mult/runtime tags fail on raw-tag path.
-  - MULT-1 / MULT-OMEGA under RUNTIME-FS: host passes grade alone (no live-token
-    evidence). Frozen C slake_check_fail_closed requires a live token for MULT-1;
-    fuller host path is SystemsLean.HostCompose (intentional Extract thinning).
+  - MULT-1 under RUNTIME-FS: thin path rejects (no live-token evidence on this
+    API). Matches HostCompose / frozen C unminted MULT-1 reject. Minted MULT-1
+    extract stays on SystemsLean.HostCompose (linear.live).
+  - MULT-OMEGA under RUNTIME-FS: host passes grade alone.
 
   Theorems (EXTRACT-THEOREM / HOST-EXTRACT-THEOREM -- partial Extract only):
   - Live in SystemsLean.ExtractTheorems (same namespace; long-file split).
   - isFreestandingGoal_runtimeFs / isFreestandingGoal_classic_false /
     isFreestandingGoal_edge_false (RUNTIME-FS only is freestanding goal)
   - extractOk_classic_reject / extractOk_edge_reject (EMIT-BOUNDARY reject)
-  - extractOk_mult1_fs_true / extractOk_omega_fs_true (intentional MULT-1 gap)
+  - extractOk_mult1_fs_false / extractOk_omega_fs_true (MULT-1 unminted reject)
   - extractOk_mult0_unmarked_false / extractOk_mult0_marked_fs_true
   - ofRuntimeTag?_zero/one/two / ofRuntimeTag?_fail_closed /
     isValidRuntimeTag_fail_closed / isValidRuntimeTag_zero/one/two
@@ -32,17 +33,21 @@
   - ofRuntimeTag?_some_implies_isValidRuntimeTag (success implies valid tag)
   - extractOkFromTags? known-tag success/fail paths + unknown none
   - extractOk_eq_checkFailClosed / RuntimeClaim.name_* honesty
-  These Extract theorems do NOT set SpecProof.proofCompleteClaimed true.
+  These Extract theorems do NOT flip SpecProof.proofCompleteClaimed.
+  The living SpecProof pin is already true. Extract theorems do not
+  set that pin.
   Partial theorems on Extract != host proof complete != residual free.
-  Intentional MULT-1 thinning remains (no live-token evidence here).
+  Thin MULT-1 unminted reject is closed; minted MULT-1 stays HostCompose.
 
   Intentional non-claims:
   - Not freestanding residual free. Not product C residual free.
   - Not PROVABLY. Not freestanding emit residual free.
-  - Not proof complete (SpecProof.proofCompleteClaimed stays false).
+  - Extract theorems do not flip SpecProof.proofCompleteClaimed
+    (the living pin is already true).
   - Classic Lean elaborator still has managed runtime residual (host != product wire).
   - Not a full compiler body. Not HOST_COMPOSE_V0 reimplementation.
-  - Not full FAIL_CLOSED_CHECKER_V1 / slake_extract_with_checks parity (MULT-1 gap).
+  - Not full FAIL_CLOSED_CHECKER_V1 / slake_extract_with_checks parity
+    (thin path has no live token; minted MULT-1 is HostCompose).
   - Not residual free.
   - Frozen C enum collapses CLASSIC / EDGE-RUNTIME into one wire tag; host keeps
     three claims for honesty (raw tag 1 classic, 2 edge; both fail product extract).
@@ -50,7 +55,7 @@
   Greppable: SYSTEMS_LEAN_HOST, EMIT-BOUNDARY, RUNTIME-FS, EDGE-RUNTIME, RUNTIME-CLASSIC,
   FAIL-CLOSED, FAIL_CLOSED_CHECKER_V1, EXTRACT-THEOREM, HOST-EXTRACT-THEOREM,
   isFreestandingGoal_runtimeFs, extractOk_classic_reject, ofRuntimeTag?_fail_closed,
-  ofRuntimeTag?_some_implies_isValidRuntimeTag, extractOkFromTags?_mult1_fs_true,
+  ofRuntimeTag?_some_implies_isValidRuntimeTag, extractOkFromTags?_mult1_fs_false,
   extractOkFromTags?_mult0_marked_fs_true, isValidRuntimeTag_zero,
   extractOkFromTags?_omega_fs_true, extractOkFromTags?_mult0_unmarked_fs_false,
   extractOkFromTags?_classic_reject, extractOkFromTags?_edge_reject,
@@ -115,9 +120,10 @@ def isValidRuntimeTag (n : Nat) : Bool := (ofRuntimeTag? n).isSome
     Fail closed when:
       - MULT-0 without marked erased (ERASE-RULE-MULT-0 / ERASE-NO-RUNTIME)
       - claimed runtime is not RUNTIME-FS (EDGE-RUNTIME / RUNTIME-CLASSIC reject)
-    MULT-1 / MULT-OMEGA under RUNTIME-FS: always true here (erasure handle ignored).
-    Intentional gap: frozen C slake_check_fail_closed requires a live linear token
-    for MULT-1; this Extract path does not. Fuller host: HostCompose.checkFailClosed.
+    MULT-1 under RUNTIME-FS: false (no live-token evidence on this path).
+    MULT-OMEGA under RUNTIME-FS: true (erasure handle ignored).
+    Matches frozen C / HostCompose unminted MULT-1 reject. Minted path:
+    HostCompose.checkFailClosed (multPreScan requires hc.linear.live).
     EMIT-BOUNDARY honesty only. -/
 def checkFailClosed (m : Mult) (e : Erased) (claim : RuntimeClaim) : Bool :=
   if !isFreestandingGoal claim then
@@ -125,16 +131,16 @@ def checkFailClosed (m : Mult) (e : Erased) (claim : RuntimeClaim) : Bool :=
   else
     match m with
     | Mult.mult0 => SystemsLean.Erasure.checkFailClosed m e
-    | Mult.mult1 => true
+    | Mult.mult1 => false
     | Mult.multOmega => true
 
 /-- extractOk -- same bar as checkFailClosed (PARTIAL host extract path honesty).
-    Not full C slake_extract_with_checks parity: MULT-1 always passes when claim is
-    RUNTIME-FS (no live-token evidence). Fuller host: HostCompose.extractOk requires
-    RuntimeClaim.runtimeFs and HostCompose.checkFailClosed, which runs multPreScan:
-    any MULT-1 graph node needs a live LinearHost (hc.linear.live); any MULT-0 needs
-    marked erased; empty compose / MULT-OMEGA-only may extract without mint.
-    Emit map name only: wire checker also needs live token for MULT-1; this path does not.
+    MULT-1 under RUNTIME-FS rejects (no live-token evidence). Fuller host:
+    HostCompose.extractOk requires RuntimeClaim.runtimeFs and
+    HostCompose.checkFailClosed, which runs multPreScan: any MULT-1 graph node
+    needs a live LinearHost (hc.linear.live); any MULT-0 needs marked erased;
+    empty compose / MULT-OMEGA-only may extract without mint.
+    Frozen C slake_extract_with_checks also needs a live token for MULT-1.
     On OK product wire sets out_rt to RUNTIME-FS (not modeled as mutation here). -/
 def extractOk (m : Mult) (e : Erased) (claim : RuntimeClaim) : Bool :=
   checkFailClosed m e claim
@@ -142,7 +148,8 @@ def extractOk (m : Mult) (e : Erased) (claim : RuntimeClaim) : Bool :=
 /-- Raw-tag extract path: fail closed on unknown mult or runtime tags.
     Erased marked flag is host Bool (no null pointer on host).
     none = unknown tag (cannot decide); some false = known inputs that fail closed;
-    some true = partial host extract OK under RUNTIME-FS (same MULT-1 gap as extractOk). -/
+    some true = partial host extract OK under RUNTIME-FS (MULT-0 marked or
+    MULT-OMEGA). MULT-1 is some false (no live-token evidence). -/
 def extractOkFromTags? (multTag : Nat) (erasedMarked : Bool) (runtimeTag : Nat) : Option Bool :=
   match Mult.ofNat? multTag, ofRuntimeTag? runtimeTag with
   | some m, some claim =>

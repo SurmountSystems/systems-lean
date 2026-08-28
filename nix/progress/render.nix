@@ -63,8 +63,9 @@ let
 
     North star (see `doc/goals.md`): Slake in Systems Lean, meet-in-the-middle
     Idris 2 and Lean 4 map, primary emit runtimeless freestanding C under
-    `out/freestanding-c`. LLVM / CompCert PROVABLY are tracked as deferred
-    (weight 0 until earned).
+    `out/freestanding-c`. CompCert PROVABLY is claimed true (matrix in just
+    check; weight 0 row). llvm unlock + Mult SSA partial are earned (weight 0);
+    full LLVM backend and Rust-native link stay held.
 
     ## Phases (plan milestones)
 
@@ -82,7 +83,7 @@ let
     | Meter | Weight | Phase | Stream | Milestone | Evidence |
     |-------|--------|-------|--------|-----------|----------|
     ${milestoneRows}
-    \* weight 0 = deferred track visible on the plan, not counted in totals.
+    \* weight 0 = tracked for honesty, not counted in weighted totals (may be claimed or held; read Evidence).
 
     ## Open weighted milestones
 

@@ -113,21 +113,49 @@ This is a **working map with listed exceptions**, not a formal isomorphism and n
 | EDGE-NAME | Join docs say **omega**; Idris users say **unrestricted** / compiler `RigW`. Same three-way shape, different labels. |
 | EDGE-AFFINE | Systems Lean product talk includes affine (at most once). Idris public grades are 0 / exact-once 1 / unrestricted -- no first-class affine quantity. |
 
-### Dual example join
+### Dual example join (JOIN-ALG -- six algorithm ids + EDGE-AFFINE duals)
 
-| Id | Path / claim |
-|----|----------------|
-| JOIN-ALG | Algorithm id `ConsumeToken` |
-| EX-CONSUME (Idris side) | `src/idris2/examples/ConsumeToken.idr` -- native Idris; LinearCheck surface; not freestanding |
-| EX-CONSUME (Lean side) | `src/lean4/examples/ConsumeToken.lean` -- classic Lean dual sketch; not freestanding |
+**CHI readiness (2026-08-11):** Idris-Lean JOIN-ALG correspondence interfaces are
+ready under the honesty bar -- six real dual pairs, EDGE-AFFINE dual-tree
+honesty documented, pure Nix presence gates green (`just idris-side`,
+`just lean-side`) -- without claiming full formal isomorphism.
+
+All six JOIN-ALG algorithm ids have a real Idris source and a real Lean source.
+**AffineDrop** and **AffineOwn** are separate dual-tree EDGE-AFFINE honesty pairs
+(not host JOIN-ALG-USE pins). Paths below. This is a working dual map, not a
+finished proof that the two languages are the same.
+
+| Algorithm id | Grade / focus | Idris side | Lean side |
+|--------------|---------------|------------|-----------|
+| **ConsumeToken** | MULT-1 linear token mint and consume | `src/idris2/examples/ConsumeToken.idr` | `src/lean4/examples/ConsumeToken.lean` |
+| **ErasedIndex** | MULT-0 erased length / index | `src/idris2/examples/ErasedIndex.idr` | `src/lean4/examples/ErasedIndex.lean` |
+| **UnrestrictedShare** | MULT-OMEGA unrestricted share | `src/idris2/examples/UnrestrictedShare.idr` | `src/lean4/examples/UnrestrictedShare.lean` |
+| **FailClosedGrade** | unknown Mult tag reject | `src/idris2/examples/FailClosedGrade.idr` | `src/lean4/examples/FailClosedGrade.lean` |
+| **LinearPairSwap** | two MULT-1 resources swap | `src/idris2/examples/LinearPairSwap.idr` | `src/lean4/examples/LinearPairSwap.lean` |
+| **RuntimeExtract** | RUNTIME-FS vs classic / edge extract | `src/idris2/examples/RuntimeExtract.idr` | `src/lean4/examples/RuntimeExtract.lean` |
+| **AffineDrop** | EDGE-AFFINE honesty (single affine at most once vs Idris public grades) | `src/idris2/examples/AffineDrop.idr` | `src/lean4/examples/AffineDrop.lean` |
+| **AffineOwn** | EDGE-AFFINE product ownership deepen (two affine resources; use one drop other; drop both) | `src/idris2/examples/AffineOwn.idr` | `src/lean4/examples/AffineOwn.lean` |
+
+| Supporting | Path / claim |
+|------------|----------------|
+| JOIN-ALG (greppable id) | Six foundation names above; both JOINs under `src/idris2/JOIN.md` and `src/lean4/JOIN.md` |
+| JOIN-EDGE AffineDrop | Dual-tree EDGE-AFFINE honesty; **documented** (2026-08-10 Wave 1 B); not host JOIN-ALG-USE; not freestanding affine ABI |
+| JOIN-EDGE AffineOwn | Product ownership deepen of EDGE-AFFINE; **documented** (2026-08-11); multi-resource PRODUCT-OWN sketches; not host JOIN-ALG-USE; not freestanding affine ABI |
 | EX-TRUST (Idris side) | `src/idris2/examples/TRUST.md` -- trusted computing base notes for the dual |
 | EX-TRUST (Lean side) | `src/lean4/examples/TRUST.md` -- trusted computing base notes for the dual |
 
+**Honesty:** dual examples are managed-host sketches (or native Idris under a stock backend). They are **not** freestanding product C. Classic Lean duals do **not** enforce exact-once use the way Idris LinearCheck does. Host formal map of dual uses is **present-partial** (two named edges on the Systems host), not isomorphism complete. **AffineDrop** documents single-resource EDGE-AFFINE: product talk includes affine (at most once); Idris public grades have no first-class affine quantity (`AFFINE-NOT-FIRST-CLASS`). **AffineOwn** deepens that with multi-resource product ownership (`PRODUCT-OWN`: use-one-drop-other, drop both). Behavioral sketches are not freestanding product affine ABI.
+
+**R4 sufficient pair (2026-08-11):** AffineDrop + AffineOwn are the sufficient product EDGE-AFFINE dual-tree pair for dual honesty. Single-resource inventory plus multi-resource ownership choices cover freestanding affine product talk without inventing share/copy duals (MULT-OMEGA already has UnrestrictedShare) or freestanding affine ABI. Next affine work is product residual on freestanding wire / JOIN-ALG-USE only if operator opens it -- not a third dual-tree theater Name.
+
 ### What this section does not claim
 
-- Freestanding product residual free of managed runtime
-- CompCert PROVABLY
-- Complete formal isomorphism of erasure or runtime models
+- Freestanding product residual free of managed runtime (product residual free is a separate Systems claim elsewhere)
+- That dual examples equal freestanding emit under `out/freestanding-c`
+- CompCert PROVABLY as a dual-side property
+- Complete formal isomorphism of erasure or runtime models ("Idris = Lean")
+- Full product affine ABI on freestanding wire or host JOIN-ALG-USE pins for AffineDrop / AffineOwn
+- A third EDGE-AFFINE dual beyond AffineDrop+AffineOwn without product affine ABI residual
 - Permission for side forks to implement freestanding body under `src/systems/`
 
 ---

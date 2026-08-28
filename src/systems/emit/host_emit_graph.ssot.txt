@@ -67,11 +67,14 @@ int slake_ir_graph_add_edge(slake_ir_graph *g, uint8_t from, uint8_t to);
  */
 int slake_ir_graph_is_well_typed(const slake_ir_graph *g);
 
-/* Requires well-typed graph. Empty graph -> SLAKE_EXTRACT_OK.
- * Non-empty: call-through slake_ir_program_check_fail_closed(&g->prog, ...).
+/* Single fail-closed walk: edge soundness then program check.
+ * Does not re-call slake_ir_graph_is_well_typed (public is_well_typed stays).
+ * Empty graph -> SLAKE_EXTRACT_OK.
+ * Non-empty: slake_ir_program_check_fail_closed (one live-node walk).
  * Ill-typed / null -> SLAKE_EXTRACT_FAIL_CLOSED.
  * Returns SLAKE_EXTRACT_OK (0) or FAIL_CLOSED (1). Header must match body.
- * Greppable: IR_GRAPH_EDGES_V0, FAIL_CLOSED_CHECKER_V1, RUNTIME-FS
+ * Greppable: IR_GRAPH_EDGES_V0, FAIL_CLOSED_CHECKER_V1, RUNTIME-FS,
+ * SINGLE_FAIL_CLOSED_WALK
  */
 int slake_ir_graph_check_fail_closed(const slake_ir_graph *g,
     const slake_linear_token *linear,
@@ -179,13 +182,32 @@ int slake_ir_graph_check_fail_closed(const slake_ir_graph *g,
     const slake_linear_token *linear,
     const slake_erased *erased)
 {
-  /* Ill-typed / null graph -> FAIL_CLOSED before program call-through. */
-  if (slake_ir_graph_is_well_typed(g) != 1) {
+  uint8_t i;
+
+  /* Single fail-closed walk: edge soundness then program check.
+   * Does not call slake_ir_graph_is_well_typed (that re-walks program
+   * well-typed; program check types and fail-closes live nodes once).
+   * Ill-typed / null -> FAIL_CLOSED. Empty graph -> OK.
+   * Greppable: SINGLE_FAIL_CLOSED_WALK */
+  if (g == 0 || g->valid == 0) {
     return (int)SLAKE_EXTRACT_FAIL_CLOSED;
   }
-  /* Empty well-typed graph: no nodes to check. */
+  if (g->edge_count > (uint8_t)SLAKE_IR_EDGE_MAX) {
+    return (int)SLAKE_EXTRACT_FAIL_CLOSED;
+  }
   if (g->prog.count == 0) {
+    if (g->edge_count != 0) {
+      return (int)SLAKE_EXTRACT_FAIL_CLOSED;
+    }
     return (int)SLAKE_EXTRACT_OK;
+  }
+  for (i = 0; i < g->edge_count; i++) {
+    if (g->edges[i].valid != 1) {
+      return (int)SLAKE_EXTRACT_FAIL_CLOSED;
+    }
+    if (g->edges[i].from >= g->prog.count || g->edges[i].to >= g->prog.count) {
+      return (int)SLAKE_EXTRACT_FAIL_CLOSED;
+    }
   }
   return slake_ir_program_check_fail_closed(&g->prog, linear, erased);
 }

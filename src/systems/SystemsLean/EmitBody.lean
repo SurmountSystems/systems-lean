@@ -36,6 +36,8 @@
   - Non-empty fixtures: bodyOk_mult1_unminted_false / bodyOk_mult1_minted_true /
     bodyFromCompose_mult1_minted_buf / bodyFromCompose_mult0_marked_buf /
     bodyOk_omega_true / bodyFromCompose_linear_and_erased
+  - bodyOk_mult1_spent_false / bodyFromCompose_mult1_spent_failClosed /
+    bodyOk_mult1_spent_reject (spent MULT-1 body reject; mint then consume)
   These EmitBody theorems do NOT set SpecProof.proofCompleteClaimed true.
   Partial theorems on EmitBody != host proof complete != residual free.
   Does not invent a second fragment dialect; does not grow product C beyond
@@ -81,6 +83,8 @@
   EMIT-BODY-THEOREM, HOST-EMIT-BODY-THEOREM, bodyCap_eq_256,
   emptyComposeFragmentSsot_eq, bodyOk_empty_true, bodyOk_mult1_unminted_false,
   bodyOk_mult1_minted_true, bodyFromCompose_linear_and_erased,
+  bodyOk_mult1_spent_false, bodyFromCompose_mult1_spent_failClosed,
+  bodyOk_mult1_spent_reject,
   SLAKE_SELF_HOST_EMIT_BODY_V0, HOST-EMIT-BODY, SELF-HOST-EMIT-BODY,
   bodyHeaderFragment, bodyBodyFragment, emitBodyReady, NON-SSOT,
   EMIT-BODY-PRODUCT-SMOKE, HOST-EMIT-BODY-SMOKE, EmitBodyScaffold,
@@ -401,6 +405,59 @@ theorem bodyFromCompose_linear_and_erased :
        && b.buf ==
          "/* EMIT_BODY_V0 RUNTIME-FS r=1 e=1 */\n/* t0 mult=1 kind=1 */\n/* t1 mult=0 kind=2 */\n")
       = true := by decide
+
+/-! ### Spent MULT-1 body reject (mint then consume; fail-closed readiness)
+
+  Net-new vs bodyOk_mult1_minted_true alone and vs EmitPlan / HostCompose spent
+  mult1 reject alone (this is EmitBody fragment readiness layer). Live-flag only.
+-/
+
+/-- One MULT-1 node with live token (mint evidence; local fixture for spend). -/
+private def thmHostMult1Minted : Host :=
+  { HostCompose.empty with
+    graph := { prog := { nodes := [thmLinearNode] }, edges := [] }
+    linear := { live := true, id := 1 } }
+
+/-- One MULT-1 node after spend: live scrubbed false, id scrubbed 0; graph
+    still carries the MULT-1 node (mint then consume shape; net-new vs empty
+    host consume scrub alone). Local mirror of EmitPlan / HostCompose spent. -/
+private def thmHostMult1Spent : Host :=
+  { HostCompose.empty with
+    graph := { prog := { nodes := [thmLinearNode] }, edges := [] } }
+
+/-- MULT-1 graph node after spend fails bodyOk (live cleared; node remains).
+    Net-new vs bodyOk_mult1_minted_true alone and vs EmitPlan spent mult1
+    reject alone (this is EmitBody readiness layer).
+    Greppable: bodyOk_mult1_spent_false, MULT-1, FAIL-CLOSED, EMIT-BODY-THEOREM,
+    HOST-EMIT-BODY-THEOREM. -/
+theorem bodyOk_mult1_spent_false :
+    bodyOk thmHostMult1Spent = false := by decide
+
+/-- MULT-1 graph node after spend yields zeroed fail-closed body inventory.
+    Greppable: bodyFromCompose_mult1_spent_failClosed, MULT-1, FAIL-CLOSED,
+    EMIT-BODY-THEOREM, HOST-EMIT-BODY-THEOREM. -/
+theorem bodyFromCompose_mult1_spent_failClosed :
+    (let b := bodyFromCompose thmHostMult1Spent
+     !b.valid && b.len == 0 && b.runtimeNodes == 0 && b.erasedNodes == 0
+       && b.tagCount == 0 && !b.hasEmitBodyMarker && !b.hasRuntimeFsMarker) =
+      true := by decide
+
+/-- Consume minted MULT-1 host then body readiness reject + zeroed inventory.
+    Starts from already-minted fixture; conjoins consume path, bodyOk false,
+    and fail-closed zeroed body so a broken intermediate cannot green alone.
+    Live-flag only -- does NOT claim elaborator LINEAR-EXACT-ONCE.
+    Greppable: bodyOk_mult1_spent_reject, MULT-1, FAIL-CLOSED, EMIT-BODY-THEOREM,
+    HOST-EMIT-BODY-THEOREM. -/
+theorem bodyOk_mult1_spent_reject :
+    (HostCompose.consume thmHostMult1Minted =
+      HostCompose.ConsumeResult.ok thmHostMult1Spent 1)
+      /\ (bodyOk thmHostMult1Spent = false)
+      /\ ((let b := bodyFromCompose thmHostMult1Spent
+          !b.valid && b.len == 0 && b.runtimeNodes == 0 && b.erasedNodes == 0
+            && b.tagCount == 0 && !b.hasEmitBodyMarker && !b.hasRuntimeFsMarker) =
+        true) :=
+  And.intro rfl
+    (And.intro bodyOk_mult1_spent_false bodyFromCompose_mult1_spent_failClosed)
 
 /-! ### Emit body smoke (behavioral; lake build fails if an example does not hold)
     Greppable: EMIT-BODY-SMOKE. Exercises empty ok, markers from buf, multi-node. -/

@@ -24,7 +24,7 @@ let
     unitWalkSkipDirs
     unitWalkExtensions
     unitSurfaceRequiredAny
-    unitSurfaceRequiredAll
+    unitSurfaceNotEmitAny
     unitSurfaceModuleAny
     emitH
     emitC
@@ -420,7 +420,7 @@ let
       unitWalkSkipDirs
       unitWalkExtensions
       unitSurfaceRequiredAny
-      unitSurfaceRequiredAll
+      unitSurfaceNotEmitAny
       unitSurfaceModuleAny
       ;
   };

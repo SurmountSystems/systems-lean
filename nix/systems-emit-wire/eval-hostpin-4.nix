@@ -11,7 +11,12 @@ rec {
   productPathOfficialPathRetireOfficialViolations =
     let
       accept = readRel "src/systems/self-host.md";
-      hostPin = readRel "src/systems/SystemsLean/SelfApplyFs.lean";
+      # B34+ close-path folds live in SelfApplyFsClose (same namespace); tip holds
+      # living claim bools. Dual-pin hostPin is tip + close for greppable tokens.
+      hostPin =
+        (readRel "src/systems/SystemsLean/SelfApplyFs.lean")
+        + "\n"
+        + (readRel "src/systems/SystemsLean/SelfApplyFsClose.lean");
       retireMod = readRel productPathOfficialPathRetireOfficialModulePath;
       lakeToml = readRel productPathOfficialPathRetireOfficialLakefilePath;
       justFile = readRel productPathOfficialPathRetireOfficialJustPath;
@@ -96,7 +101,10 @@ rec {
   productPathFreestandingPerformClaimedViolations =
     let
       accept = readRel "src/systems/self-host.md";
-      hostPin = readRel "src/systems/SystemsLean/SelfApplyFs.lean";
+      hostPin =
+        (readRel "src/systems/SystemsLean/SelfApplyFs.lean")
+        + "\n"
+        + (readRel "src/systems/SystemsLean/SelfApplyFsClose.lean");
       claimedMod = readRel productPathFreestandingPerformClaimedModulePath;
       lakeToml = readRel productPathFreestandingPerformClaimedLakefilePath;
       justFile = readRel productPathFreestandingPerformClaimedJustPath;
@@ -177,7 +185,10 @@ rec {
   productPathFreestandingOwnershipClaimedViolations =
     let
       accept = readRel "src/systems/self-host.md";
-      hostPin = readRel "src/systems/SystemsLean/SelfApplyFs.lean";
+      hostPin =
+        (readRel "src/systems/SystemsLean/SelfApplyFs.lean")
+        + "\n"
+        + (readRel "src/systems/SystemsLean/SelfApplyFsClose.lean");
       claimedMod = readRel productPathFreestandingOwnershipClaimedModulePath;
       lakeToml = readRel productPathFreestandingOwnershipClaimedLakefilePath;
       justFile = readRel productPathFreestandingOwnershipClaimedJustPath;
@@ -259,7 +270,10 @@ rec {
   stepContractFullViolations =
     let
       accept = readRel "src/systems/self-host.md";
-      hostPin = readRel "src/systems/SystemsLean/SelfApplyFs.lean";
+      hostPin =
+        (readRel "src/systems/SystemsLean/SelfApplyFs.lean")
+        + "\n"
+        + (readRel "src/systems/SystemsLean/SelfApplyFsClose.lean");
       claimedMod = readRel stepContractFullModulePath;
       lakeToml = readRel stepContractFullLakefilePath;
       justFile = readRel stepContractFullJustPath;
@@ -342,7 +356,10 @@ rec {
   selfHostCompleteViolations =
     let
       accept = readRel "src/systems/self-host.md";
-      hostPin = readRel "src/systems/SystemsLean/SelfApplyFs.lean";
+      hostPin =
+        (readRel "src/systems/SystemsLean/SelfApplyFs.lean")
+        + "\n"
+        + (readRel "src/systems/SystemsLean/SelfApplyFsClose.lean");
       claimedMod = readRel selfHostCompleteModulePath;
       lakeToml = readRel selfHostCompleteLakefilePath;
       justFile = readRel selfHostCompleteJustPath;

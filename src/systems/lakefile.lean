@@ -2,13 +2,16 @@ import Lake
 open Lake DSL
 
 /-
-SystemsLean host Lake package.
+SystemsLean host Lake package (SPDX: Unlicense -- see monorepo LICENSES.md).
 Offline: lake-manifest.json packages []. No mathlib / no remote deps.
-Not freestanding residual free. Not product C. Host elaborator only.
+Host elaborator package only: classic Lean/Lake bootstrap for Systems Lean
+sources under this tree. Not product freestanding C (that wire is emit /
+out/freestanding-c, generated; product residual free and self-host complete
+are true on that wire -- separate from this package's elaborator role).
 Config: lakefile.lean (lakefile.toml retired).
-SKELETON honesty marker (unit walk; not freestanding residual free).
+SKELETON honesty marker (unit walk; host elaborator package).
 
-lean_exe inventory (51). All thin mains: supportInterpreter := true.
+lean_exe inventory. All thin mains: supportInterpreter := true.
 Table-driven registration below: one uniform lean_exe block per row.
 ASCII string names (hyphenated); no guillemet identifiers.
   slake-emit-freestanding-c -> SystemsLean.FreestandingEmitMain
@@ -71,10 +74,21 @@ ASCII string names (hyphenated); no guillemet identifiers.
   slake-llvm-program-text -> SystemsLean.LlvmProgramTextMain
   slake-llvm-graph-text -> SystemsLean.LlvmGraphTextMain
   slake-llvm-compose-text -> SystemsLean.LlvmComposeTextMain
+  slake-llvm-mult-ssa -> SystemsLean.LlvmMultSsaMain
+  slake-llvm-linear-ssa -> SystemsLean.LlvmLinearSsaMain
+  slake-llvm-types-ssa -> SystemsLean.LlvmTypesSsaMain
+  slake-llvm-program-ssa -> SystemsLean.LlvmProgramSsaMain
+  slake-llvm-graph-ssa -> SystemsLean.LlvmGraphSsaMain
+  slake-llvm-compose-ssa -> SystemsLean.LlvmComposeSsaMain
+  slake-runtime-bench-lean -> SystemsLean.RuntimeBenchLeanMain
+  slake-runtime-bench-stack-twin -> SystemsLean.RuntimeBenchStackTwinMain
+  slake-runtime-bench-fail-closed-shape -> SystemsLean.RuntimeBenchFailClosedShapeMain
 -/
 
 package SystemsLean where
   version := v!"0.1.0"
+  -- SPDX id for novel work; monorepo SSoT: LICENSES.md / UNLICENSE.md
+  license := "Unlicense"
 
 @[default_target]
 lean_lib SystemsLean
@@ -318,4 +332,40 @@ lean_exe "slake-llvm-graph-text" where
 
 lean_exe "slake-llvm-compose-text" where
   root := `SystemsLean.LlvmComposeTextMain
+  supportInterpreter := true
+
+lean_exe "slake-llvm-mult-ssa" where
+  root := `SystemsLean.LlvmMultSsaMain
+  supportInterpreter := true
+
+lean_exe "slake-llvm-linear-ssa" where
+  root := `SystemsLean.LlvmLinearSsaMain
+  supportInterpreter := true
+
+lean_exe "slake-llvm-types-ssa" where
+  root := `SystemsLean.LlvmTypesSsaMain
+  supportInterpreter := true
+
+lean_exe "slake-llvm-program-ssa" where
+  root := `SystemsLean.LlvmProgramSsaMain
+  supportInterpreter := true
+
+lean_exe "slake-llvm-graph-ssa" where
+  root := `SystemsLean.LlvmGraphSsaMain
+  supportInterpreter := true
+
+lean_exe "slake-llvm-compose-ssa" where
+  root := `SystemsLean.LlvmComposeSsaMain
+  supportInterpreter := true
+
+lean_exe "slake-runtime-bench-lean" where
+  root := `SystemsLean.RuntimeBenchLeanMain
+  supportInterpreter := true
+
+lean_exe "slake-runtime-bench-stack-twin" where
+  root := `SystemsLean.RuntimeBenchStackTwinMain
+  supportInterpreter := true
+
+lean_exe "slake-runtime-bench-fail-closed-shape" where
+  root := `SystemsLean.RuntimeBenchFailClosedShapeMain
   supportInterpreter := true

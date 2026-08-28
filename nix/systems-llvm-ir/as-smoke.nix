@@ -25,6 +25,12 @@
         "slake_types.ll"
         "slake_program.ll"
         "slake_graph.ll"
+        "slake_compose_ssa.ll"
+        "slake_mult_ssa.ll"
+        "slake_linear_ssa.ll"
+        "slake_types_ssa.ll"
+        "slake_program_ssa.ll"
+        "slake_graph_ssa.ll"
       ];
     }
   ];

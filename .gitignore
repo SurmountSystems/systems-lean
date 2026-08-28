@@ -65,6 +65,10 @@ temp/
 # --- Lake / Lean local build (src/lean4 package) ---
 **/.lake/
 
+# --- Idris 2 dual elaborator output (just idris-elaborate; cleaned by recipe trap) ---
+src/idris2/examples/build/
+*.ttc
+
 # --- Host-cc Mult package writer binary (Path A measured Mult write; rebuild via just) ---
 src/systems/bin/
 

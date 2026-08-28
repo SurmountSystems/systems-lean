@@ -272,10 +272,12 @@ self-application of every product source).
 
 **Capability status (short, living):** Mult..Body host-owned emit + freestanding
 path parity (partial growth); SelfApplyFs claim B complete true; LlvmHold unlock
-true; DualResidual free true with host residual remains; SelfHostBody defined
-compile step under gates; product path Lake pins false after M6. Detail essays:
-product-path archive + host-surface archive. Next residual: see residual Open
-(**Superset surface inventory**).
+true; DualResidual product free true + host residual free claimed (F1 dual-ok;
+remains false; FullHost false); SelfHostBody defined compile step under gates;
+product path Lake pins false after M6. Detail essays: product-path archive +
+host-surface archive. Host-surface Open is empty done-for-now under
+free bar choice (a). That empty-Open is host-surface only, not the
+living ElabMeet named-subset Open (Grow HostFrontTheorems subset).
 
 Related: `SystemsLean/SelfHost.lean` (direction canary only),
 `SystemsLean/KernelMult.lean` (first kernel IR fixture),
@@ -309,12 +311,12 @@ local residual free false; product free owned by DualResidual),
 emit/join/self-host/matrix path readiness; product complete true on living tip;
 local residual free false; unlock orthogonal; further alias theater held),
 `SystemsLean/DualResidual.lean` (HOST-DUAL-RESIDUAL: residualFreeClaimed **true**;
-productResidualRemains **false**; hostElaboratorResidualRemains **true**; host free
-claimed false; does not forge host free),
+productResidualRemains **false**; hostElaboratorResidualRemains **false**; host free
+claimed **true** F1 dual-ok; FullHost stays false; does not re-open product free),
 `SystemsLean/ProbeWire.lean` (HOST-PROBE-WIRE: probe smoke debt vs product wire;
 local residual free false; product complete true on living tip),
-`SystemsLean/SpecProof.lean` (HOST-SPEC-PROOF: proofCompleteClaimed **false**;
-local residual free false; product complete true on living tip),
+`SystemsLean/SpecProof.lean` (HOST-SPEC-PROOF: proofCompleteClaimed **true**
+Track 4c bar met; local residual free false; product complete true on living tip),
 `SystemsLean/SelfHostBody.lean` (HOST-SELF-HOST-BODY / SELF-HOST-BODY: defined
 freestanding compile step; selfHostBodyReady folds Mult..Body emit readiness +
 freestanding emit stage cite; product complete true on living tip; local residual
@@ -345,8 +347,8 @@ Living tip table below wins.
 | Freestanding product self-host **complete** (claim B) | **true** |
 | Product residual free (claim A) | **true** |
 | Product path StillUsesLake / DependsOnLake | **false** (M6 phase 2; lake proof) |
-| Host elaborator residual | **remains** (DualResidual; not host free) |
-| Host finish line: Slake does everything Lake does for host develop | **claim false; living work program true** -- not finished on host until Slake owns Lake's host jobs for `src/systems/` (load package, imports, elaborate/check modules including theorems, build host tools). Full goal chain also keeps Systems Lean linear types, freestanding C, CompCert `ccomp` validate. Program: `.agents/plans/plan-slake-replaces-lake.md`. A1-A31 L20 foundation done (seed modules=81 Mult..Compose+Erasure/Extract+CompilePath+Kernel+Kernel *Theorems+JoinMap/SelfHost+SurfaceMatrix+Emit scaffolds+KernelSelfApply+EmitMult+EmitPlan+EmitApply+EmitBody+KernelEmit+KernelEmitTheorems+ParityMult+ParityMultTheorems+ParityLinear+ParityLinearTheorems+ParityTypes+ParityTypesTheorems+ParityProgram+ParityProgramTheorems+ParityEmit+ParityEmitTheorems+SelfApply+SelfApplyTheorems+EmitLinear+EmitTypes+EmitProgram+EmitGraph+EmitCompose+EmitErasure+EmitExtract+EmitBanner+ProductOutKernel+ProductOutKernelTheorems+BootstrapHonesty+BootstrapHonestyTheorems+ProductPathWriterSurface+ProductPathWriterSurfaceTheorems+ProductPathWriterPathPlan+ProductPathWriterPathPlanTheorems+ProductPathWriterPathExec+ProductPathWriterPathExecTheorems); day-to-day develop candidates empty; **Open primary: Host library seed expand continue** beyond modules=81 (next coherent band; SelfApplyFs still held on remaining ProductPath/Capable). DualResidual host residual remains / free claimed false -- do not flip |
+| Host elaborator residual free | **claimed** (F1 dual-ok; DualResidual remains **false** / free claimed **true**; HostResidualShrink mirror; FullHostElaborateRemains **false**; diagnostic Lake remain true; not product free re-open; not full Lean 4 / mathlib elaborator parity) |
+| Host finish line (host-surface only; not "Slake does everything Lake does") | **host residual free claimed under free bar choice (a)** (F1 dual-ok 2026-08-07); **not** full Lean 4 / mathlib elaborator parity; **not** whole-package typecheck. Program: `.agents/plans/plan-slake-replaces-lake.md`. Seed modules=206 harness=**44** PARTIAL-STRUCTURAL; FOUNDATION-KIND-SURFACE Mult..Extract + Kernel Mult..KernelEmit + EmitPlan+EmitApply+EmitBody + Parity Mult..Emit (gapc2026 kind-surface); FullHostElaborateRemains **false**; judgments design done; Mult L2 TERM-SURFACE Mult-only dual-ok; Linear L2 TERM-SURFACE Linear-only dual-ok; Types L2 TERM-SURFACE Types-only dual-ok; IrProgram L2 TERM-SURFACE IrProgram-only dual-ok; IrGraph L2 TERM-SURFACE IrGraph-only dual-ok; HostCompose L2 TERM-SURFACE HostCompose-only dual-ok; Erasure L2 TERM-SURFACE Erasure-only dual-ok; Extract L2 TERM-SURFACE Extract-only dual-ok; EmitPlan L2 TERM-SURFACE EmitPlan-only dual-ok (Package 2a); EmitApply L2 TERM-SURFACE EmitApply-only dual-ok (Package 2b); EmitBody L2 TERM-SURFACE EmitBody-only dual-ok (Package 2c); MultTheorems L3 PROOF-SURFACE MultTheorems-only dual-ok; LinearTheorems L3 PROOF-SURFACE LinearTheorems-only dual-ok; TypesTheorems L3 PROOF-SURFACE TypesTheorems-only dual-ok; package L4 MultExtractFoundation-only + MultLinearTypesProof-only + KernelEmitParity-only PACKAGE-ELABORATE dual-ok (not package L4 complete; R4 done under named bar); Living Open **empty done-for-now**; Package 3 held. Seed harness=**44**. Reports `.agents/reports/impl-emitbody-term-surface-2026-08-10.md`, `.agents/reports/impl-emitapply-term-surface-2026-08-10.md`, `.agents/reports/impl-emitplan-term-surface-2026-08-10.md`, `.agents/reports/impl-package-elaborate-l4-kernel-emit-parity-2026-08-09.md`, `.agents/reports/impl-package-elaborate-l4-remaining-2026-08-09.md`, `.agents/reports/impl-package-elaborate-l4-2026-08-09.md` |
 | Six-unit Mult..Compose checkers and package writers | **foundation only** (measured harness; Mult+Linear+Types+Program+Graph+Compose dual success under recipes that avoid Lake on those steps). **Not** "Slake does everything Lake does." **Not** host free |
 | Package roots without Lake (A3 / S1) | **done** -- package name/library root dual-pin + live SystemsLean module list/count without Lake on measured step; not full elaborate; host residual remains |
 | Real Mult import graph (A4 / S2) | **done** -- Mult + MultTheorems real `.lean` import edges without Lake on measured step; MISSING-IMPORT / IMPORT-CYCLE fail-closed; not full library graph; host residual remains |
@@ -395,7 +397,8 @@ re-list of Mult..Emit / ProductPath / SelfApply.
 3. Host pin `SystemsLean/SelfHostBody.lean` states this path and proves body
    path readiness (`selfHostBodyReady`); product complete **true** on living tip
    (SelfApplyFs claim B); local residual free **false** on this module;
-   DualResidual product residual free **true** (claim A; host residual remains).
+   DualResidual product residual free **true** (claim A); host residual free
+   **claimed** separately (F1 dual-ok; remains false; FullHost false).
 
 ### Output artifacts
 
@@ -432,9 +435,9 @@ Does **not** re-fold ProductPath / SelfApply readiness theater.
 | freestandingProductSelfHostComplete | **true** (claim B; SelfApplyFs living tip; SelfHostBody folds complete true) |
 | residual free (product side) | **true** (2026-08-01 Step 3; DualResidual product residual remains false; host elaborator residual remains) |
 | Full Slake self-application of product compiler sources | **not** claimed |
-| llvm unlock / `out/llvm-ir` | **unlocked with evidence** (LlvmHold; `llvmUnlocked` **true** + lake blast-radius proof 2026-08-03); Mult..Graph IR text ladder + unit package expand **done** (`just llvm-unit-package`); compose emit **done** (`LlvmComposeText` / `slake_compose.ll` / `just llvm-compose-text`; Track 2d); optional llvm-as smoke **done** (`just llvm-as-smoke`; skip-if-missing / RED when present; pure Nix as-smoke honesty; not production); unlock design **done** (`doc/dev/research/llvm-ir-unlock-design-2026-08-03.md`); Rust-native layout design **done** (Track 2f; `doc/dev/research/rust-native-layout-design-2026-08-03.md`); Layout size/align fixture **done** (`doc/dev/research/layout-size-align-fixture-2026-08-03.md`); ABI parity smoke **done** (`just abi-parity-smoke`); Layout IR tag dual-pin **done** (`just layout-ir-dual-pin`; Mult-first layout ladder closed); next residual **Superset surface inventory** (see residual Open); first residual design+stub **done** (`LlvmEmitPath` / MEASURED-STUB); **not** full CFG/SSA / production backend / Rust-native link |
+| llvm unlock / `out/llvm-ir` | **unlocked with evidence** (LlvmHold; `llvmUnlocked` **true** + lake blast-radius proof 2026-08-03); Mult..Graph IR text ladder + unit package expand **done** (`just llvm-unit-package`); compose emit **done** (`LlvmComposeText` / `slake_compose.ll` / `just llvm-compose-text`; Track 2d); optional llvm-as smoke **done** (`just llvm-as-smoke`; skip-if-missing / RED when present; pure Nix as-smoke honesty; not production); unlock design **done** (`doc/dev/research/llvm-ir-unlock-design-2026-08-03.md`); Rust-native layout design **done** (Track 2f; `doc/dev/research/rust-native-layout-design-2026-08-03.md`); Layout size/align fixture **done** (`doc/dev/research/layout-size-align-fixture-2026-08-03.md`); ABI parity smoke **done** (`just abi-parity-smoke`); Layout IR tag dual-pin **done** (`just layout-ir-dual-pin`; Mult-first layout ladder closed); Mult SSA lower partial **done** (Phase L; `LlvmMultSsa` / `slake_mult_ssa.ll`; `llvmMultSsaPartialClaimed` true / `llvmMultSsaFullBackendClaimed` false; `just llvm-mult-ssa`); first residual design+stub **done** (`LlvmEmitPath` / MEASURED-STUB); Open empty done-for-now (held only: full CFG/production SSA backend / elaborator parity / Rust-native link) |
 | PROVABLY / CompCert seal | **claimed** (`provablyUnlocked` true; green product matrix + lake proof; 2026-08-02) |
-| proof complete | **false** (SpecProof) |
+| proof complete | **true** (Track 4c 2026-08-07; SpecProof `proofCompleteClaimed` + `proofCompleteBarMet`; lake SpecProof + SpecProofTheorems; report `.agents/reports/impl-proof-complete-residual-2026-08-07.md`; not full elaborator parity) |
 
 ---
 
@@ -450,8 +453,9 @@ need **no** path retarget. Full narrative: `self-host-product-path-archive.md`,
 **Land-time non-claim phrases (gate tokens only; living tip table wins):** pure
 Nix host presence still greps these exact historical strings. They are **not**
 the living claim voice. Living tip: residual free **true**, PROVABLY **true**,
-complete **true**, llvm unlock **true**, host residual remains, proof complete
-false. Real remaining non-claims: host free, proof complete, full backend.
+complete **true**, llvm unlock **true**, host residual free **claimed** (F1;
+remains false; FullHost false), proof complete **true** (Track 4c). Real remaining
+non-claims: full Lean 4 / mathlib elaborator parity, full backend, Rust-native link.
 
 Not residual free. Not PROVABLY. Not full self-host complete. Not llvm unlocked.
 Not proof complete.
@@ -627,10 +631,11 @@ UNIT_SURFACE
 with Full bar evidence. `SelfApplyFs.freestandingProductSelfHostComplete` is
 **true**. Short role module `SelfHostComplete.lean` dual-pins complete true with
 Full + ownership-claimed + perform-claimed + official dual-eq WRITE. residual
-free **true** (claim A; host residual remains); llvm **true** (unlock residual; not full backend); PROVABLY
+free **true** (claim A); host residual free **claimed** (F1 dual-ok; remains false;
+FullHost false); llvm **true** (unlock residual; not full backend); PROVABLY
 **true** after evidence residual (product CompCert matrix + lake pin proof).
 Product path StillUsesLake/DependsOnLake **false** after M6 phase 2 lake proof.
-Host elaborator residual may remain for development; FreestandingEmit is **not**
+Diagnostic / bootstrap Lake may still elaborate host; FreestandingEmit is **not**
 the official product writer.
 
 ### Flip policy status
@@ -639,8 +644,8 @@ the official product writer.
 |------|--------|
 | 1. Named kernel inputs on freestanding product path (Mult+Linear+Erasure+Types+IR program) | **MET** |
 | 2. Path rebuilds kernel freestanding C on emit/ and out with greppable evidence | **MET** |
-| 3. Product wire freestanding story does not depend on classic Lean **as the product path** (Lake may bootstrap host tools) | **MET** (StillUsesFreestandingEmit false; StillUsesLake/DependsOnLake false after M6; host residual remains) |
-| 4. residual free / proof complete / llvm / PROVABLY are separate bars | **MET** residual free true; llvm unlock true; PROVABLY true (2026-08-02); proof complete stays false; host residual remains |
+| 3. Product wire freestanding story does not depend on classic Lean **as the product path** (Lake may bootstrap host tools) | **MET** (StillUsesFreestandingEmit false; StillUsesLake/DependsOnLake false after M6; host residual free claimed F1 separately) |
+| 4. residual free / proof complete / llvm / PROVABLY are separate bars | **MET** residual free true; host free claimed F1; llvm unlock true; PROVABLY true (2026-08-02); proof complete **true** (Track 4c 2026-08-07); FullHost false |
 
 ### Bootstrap honesty (B4 cleanup)
 
@@ -676,13 +681,13 @@ just build                                    # official dual-eq WRITE path
 | Proved (claim B complete + living tip) | Still false / not claimed |
 |---------------------------------------|---------------------------|
 | freestandingProductSelfHostComplete true (SelfApplyFs SSoT) | proof complete global |
-| stepContractFull true remains (Full) | host free (hostElaboratorResidualRemains true) |
+| stepContractFull true remains (Full) | full Lean 4 / mathlib elaborator parity |
 | ownership claimed true remains (B40) | full CFG/SSA / production LLVM backend / Rust-native link |
 | perform claimed true remains (B39) | full Slake self-application of every product source |
 | StillUsesFreestandingEmit false / Blocks false / RetireRequired false | |
 | UsesDualEqualityWrite true; StillUsesLake false; DependsOnLake false (M6) | |
-| residual free / residualFreeClaimed true (claim A; host residual remains) | |
-| DualResidual dualResidualReady green with complete true + free true + host residual remains | |
+| residual free / residualFreeClaimed true (claim A; host free claimed separately F1) | |
+| DualResidual dualResidualReady green with complete true + product free true + host free claimed (remains false) | |
 | PROVABLY / `provablyUnlocked` true (product CompCert matrix + lake proof) | |
 | llvm unlock / `llvmUnlocked` true (unlock residual 2026-08-03; not full backend) | |
 | pure Nix fail-closed: complete true; Full true; llvm true (unlock residual); PROVABLY true | |
@@ -693,8 +698,8 @@ just build                                    # official dual-eq WRITE path
 |-----|---------|
 | SELF-HOST-PRODUCT-PATH-STEP-CONTRACT-FULL | Full step-contract (`stepContractFull` true) |
 | SELF-HOST-FREESTANDING-PRODUCT-COMPLETE (this section) | Claim B complete with Full bar evidence |
-| residual free (Track 4 / claim A) | **true** (2026-08-01 Step 3; host residual remains) |
-| llvm | **Unlocked with evidence** (LlvmHold; `llvmUnlocked` **true** + lake blast-radius proof 2026-08-03); Mult..Graph IR text ladder + unit package expand **done** (`just llvm-unit-package`); compose emit **done** (`LlvmComposeText` / `slake_compose.ll` / `just llvm-compose-text`; Track 2d); optional llvm-as smoke **done** (`just llvm-as-smoke`; skip-if-missing; not production); unlock design **done** (`doc/dev/research/llvm-ir-unlock-design-2026-08-03.md`); Rust-native layout design **done** (Track 2f; `doc/dev/research/rust-native-layout-design-2026-08-03.md`); Layout size/align fixture **done** (`doc/dev/research/layout-size-align-fixture-2026-08-03.md`); ABI parity smoke **done** (`just abi-parity-smoke`); Layout IR tag dual-pin **done** (`just layout-ir-dual-pin`; Mult-first layout ladder closed); next residual **Superset surface inventory** (north-star); **not** full backend / CFG/SSA / Rust-native link |
+| residual free (Track 4 / claim A) | **true** (2026-08-01 Step 3; host free claimed separately F1) |
+| llvm | **Unlocked with evidence** (LlvmHold; `llvmUnlocked` **true** + lake blast-radius proof 2026-08-03); Mult..Graph IR text ladder + unit package expand **done** (`just llvm-unit-package`); compose emit **done** (`LlvmComposeText` / `slake_compose.ll` / `just llvm-compose-text`; Track 2d); optional llvm-as smoke **done** (`just llvm-as-smoke`; skip-if-missing; not production); unlock design **done** (`doc/dev/research/llvm-ir-unlock-design-2026-08-03.md`); Rust-native layout design **done** (Track 2f; `doc/dev/research/rust-native-layout-design-2026-08-03.md`); Layout size/align fixture **done** (`doc/dev/research/layout-size-align-fixture-2026-08-03.md`); ABI parity smoke **done** (`just abi-parity-smoke`); Layout IR tag dual-pin **done** (`just layout-ir-dual-pin`; Mult-first layout ladder closed); Mult SSA lower partial **done** (Phase L; `LlvmMultSsa` / `slake_mult_ssa.ll`; partial true / full backend false; `just llvm-mult-ssa`); Open empty done-for-now; **not** full production CFG/SSA backend / elaborator parity / Rust-native link (held) |
 | PROVABLY | Claimed (2026-08-02; `provablyUnlocked` true; not llvm) |
 
 ---
@@ -740,10 +745,10 @@ separate true bars; free does not own them.)
 
 | Pin | Value / rule |
 |-----|----------------|
-| `hostElaboratorResidualRemains` | **true** (Lake managed residual remains) |
+| `hostElaboratorResidualRemains` | **false** (day-to-day host elaborator residual retired under free bar choice (a); F1) |
 | `productResidualRemains` | **false** (product residual free claimed) |
 | `residualFreeClaimed` | **true** (claim A; product side only) |
-| `hostElaboratorResidualFreeClaimed` | **false** (do not forge host free) |
+| `hostElaboratorResidualFreeClaimed` | **true** (host residual free deliberately claimed F1; not product free re-open; FullHost stays false) |
 | Measure green | Managed residual tokens **absent** on release; required honesty present |
 
 ### Flip policy (product residual free)
@@ -756,7 +761,8 @@ Flip `residualFreeClaimed` to **true** only when **all** hold (met 2026-08-01):
    for proof complete / llvm / PROVABLY as appropriate; complete may stay true.
 3. Product wire honesty records product residual free (emit SSOT / DualResidual
    agree; no green-wash).
-4. Host elaborator residual free is a **separate** program (stays unclaimed).
+4. Host elaborator residual free is a **separate** program (claimed F1 dual-ok;
+   not a synonym for product free; FullHost stays false).
 
 ### Commands (measurement + claim loop)
 
@@ -771,10 +777,11 @@ just freestanding-self-host-complete  # complete + free living tip; lake when PA
 
 | Proved / claimed | Still false / not claimed |
 |------------------|---------------------------|
-| `residualFreeClaimed` true (product residual free) | Host elaborator residual free |
+| `residualFreeClaimed` true (product residual free) | Full Lean 4 / mathlib elaborator parity |
 | pure Nix measure green (forbidden + honesty) | proof complete global |
 | freestandingProductSelfHostComplete true (claim B) | Affine first-class product ABI |
-| DualResidual host residual remains true | full LLVM backend / Rust-native link |
+| DualResidual host residual free claimed (F1; remains false) | full LLVM backend / Rust-native link |
+| Host free dual-ok; FullHostElaborateRemains false | Delete Lake / product free re-open |
 | PROVABLY / `provablyUnlocked` true (orthogonal claim) | |
 | llvm unlock / `llvmUnlocked` true (unlock residual; not full backend) | |
 | Product path DependsOnLake / StillUsesLake false (M6) | |
@@ -841,13 +848,13 @@ Canonical terms also live in `doc/vocabulary.md` (**Wire / product wire**,
 | **SH3e** | Emit freestanding path parity | Mult+Linear+Types+Program+Emit freestanding path honesty -- **done (partial)** in `ParityEmit.lean` HOST-PARITY-EMIT / `emitParityReady` / `multLinearTypesProgramEmitParityReady` + probe EMIT_PLAN / EMIT_APPLY / EMIT_BODY labels; composes KernelEmit + ParityProgram; no new EMIT_* C stage; not freestanding product self-host complete |
 | **SH4** | Grow ladder | Linear / types / program / compose / emit path as real codegen -- **done (partial growth)**: `KernelLinear.lean` Linear ordered IR + HostCompose mint/consume path; `KernelTypes.lean` Types / typed IR ordered IR + program-path fold honesty; `KernelProgram.lean` ordered IR program + graph edges + HostCompose path honesty; `KernelEmit.lean` host-owned emit plan/apply/body path over program kernel + Mult emit honesty (`emitKernelReady`); product wire bulk still frozen at EMIT_BODY_V0 except HOST-EMIT-SSOT + HOST-EMIT-BODY + HOST-EMIT-MULT + HOST-EMIT-LINEAR + HOST-EMIT-ERASURE + HOST-EMIT-EXTRACT + HOST-EMIT-TYPES + HOST-EMIT-PROGRAM + HOST-EMIT-GRAPH + HOST-EMIT-COMPOSE + HOST-EMIT-PLAN + HOST-EMIT-APPLY (no new EMIT_* C residual stage) |
 | **SH5** | Compiler self-application | **done (partial)** + **freestanding deepen (partial)**: `SelfApply.lean` host self-application readiness (`selfApplyReady` / `kernelRebuildsKernel` = Mult closed loop + Linear + Types + Program + Emit kernel); SELF-APPLY-THEOREM (`selfApplyReady_true`, `kernelRebuildsKernel_true`); structural host kernel-rebuilds-kernel only. **SH5 freestanding deepen:** `SelfApplyFs.lean` HOST-SELF-APPLY-FS / SELF-HOST-SELF-APPLY-FS / `SLAKE_SELF_HOST_SELF_APPLY_FS_V0` (`freestandingExtractPathReady` RUNTIME-FS extract on kernel emit compose; `freestandingBodyPathReady` HOST-EMIT-SSOT body + EmitMult; `freestandingParityLadderReady` = ParityEmit.multLinearTypesProgramEmitParityReady (Mult..Emit freestanding parity compose; dual alias freestandingEmitParityReady = emitParityReady -- equivalent under folds, not a stronger gate); `freestandingSelfApplyReady` = selfApplyReady && path && freestandingParityLadderReady && surface && !complete; `freestandingProductSelfHostComplete` = false; SELF-APPLY-FS-SMOKE; SELF-APPLY-FS-THEOREM (`freestandingSelfApplyReady_true`, `freestandingProductSelfHostComplete_false` at land; living tip complete true later)) -- SH6 unlock residual **done** (orthogonal; not full backend) |
-| **SH6** | llvm / PROVABLY | **llvm unlocked with evidence (2026-08-03); PROVABLY claimed (2026-08-02).** Living tip: `LlvmHold` (`llvmHoldReady` / `sh6HoldReady` true; `llvmUnlocked` **true** + lake blast-radius proof; `provablyUnlocked` **true**, orthogonal); host elaborator residual remains. **LLVM IR Mult..Graph unit text ladder + unit package expand done** (EmitPath + Mult/Linear/Types/Program/Graph; `out/llvm-ir/slake_*.ll`; just `llvm-*-text` / `llvm-unit-package` Mult..Graph). **Compose emit done** (`LlvmComposeText` / `slake_compose.ll` / `just llvm-compose-text`; host compose + program+graph SSOT; Track 2d). **Optional llvm-as smoke done** (`just llvm-as-smoke`; skip-if-missing / RED when present; pure Nix as-smoke honesty; Track 2e; not production backend). **Unlock design done** (`doc/dev/research/llvm-ir-unlock-design-2026-08-03.md`; blast-radius section 7b). **Unlock residual done** (pin true + lake; not greps-only). **Unit package expand done** (Track 2c). **Rust-native layout design done** (Track 2f; `doc/dev/research/rust-native-layout-design-2026-08-03.md`). **Layout size/align fixture done** (`doc/dev/research/layout-size-align-fixture-2026-08-03.md`). **ABI parity smoke done** (`just abi-parity-smoke`; pure Nix Mult fixture/header/IR). **Layout IR tag dual-pin done** (`just layout-ir-dual-pin`; Mult-first layout ladder closed). **Open primary next: Superset surface inventory** (residual Open). **Not** full CFG/SSA; **not** production backend; **not** Rust-native link. Hold gate tokens: HOST-LLVM-HOLD / HOST-PROVABLY-HOLD. Detail map: residual Open + layout design note + fixture (prefer over re-stacking ladder history here). |
+| **SH6** | llvm / PROVABLY | **llvm unlocked with evidence (2026-08-03); PROVABLY claimed (2026-08-02).** Living tip: `LlvmHold` (`llvmHoldReady` / `sh6HoldReady` true; `llvmUnlocked` **true** + lake blast-radius proof; `provablyUnlocked` **true**, orthogonal); host elaborator residual free **claimed** (F1 dual-ok; remains false / free claimed true; FullHost false). **LLVM IR Mult..Graph unit text ladder + unit package expand done** (EmitPath + Mult/Linear/Types/Program/Graph; `out/llvm-ir/slake_*.ll`; just `llvm-*-text` / `llvm-unit-package` Mult..Graph). **Compose emit done** (`LlvmComposeText` / `slake_compose.ll` / `just llvm-compose-text`; host compose + program+graph SSOT; Track 2d). **Optional llvm-as smoke done** (`just llvm-as-smoke`; skip-if-missing / RED when present; pure Nix as-smoke honesty; Track 2e; not production backend). **Unlock design done** (`doc/dev/research/llvm-ir-unlock-design-2026-08-03.md`; blast-radius section 7b). **Unlock residual done** (pin true + lake; not greps-only). **Unit package expand done** (Track 2c). **Rust-native layout design done** (Track 2f; `doc/dev/research/rust-native-layout-design-2026-08-03.md`). **Layout size/align fixture done** (`doc/dev/research/layout-size-align-fixture-2026-08-03.md`). **ABI parity smoke done** (`just abi-parity-smoke`; pure Nix Mult fixture/header/IR). **Layout IR tag dual-pin done** (`just layout-ir-dual-pin`; Mult-first layout ladder closed). **Mult SSA lower partial done** (Phase L; `LlvmMultSsa` / `slake_mult_ssa.ll`; `llvmMultSsaPartialClaimed` true / `llvmMultSsaFullBackendClaimed` false; `just llvm-mult-ssa`). **Superset surface inventory done** (Track 1a). Open empty done-for-now. **Not** full production CFG/SSA backend; **not** Rust-native link (held). Hold gate tokens: HOST-LLVM-HOLD / HOST-PROVABLY-HOLD. Detail: residual living tip + `out/llvm-ir/README.md` (prefer over re-stacking ladder history). |
 | **Inventory close** | Host inventory close readiness | **done (partial)**: `InventoryClose.lean` HOST-INVENTORY-CLOSE / SELF-HOST-INVENTORY-CLOSE / `SLAKE_SELF_HOST_INVENTORY_CLOSE_V0` (`inventoryCloseReady` = freestandingSelfApplyReady && llvmHoldReady && surface && partialCarry && SelfApplyFs product complete true; local residual free false; llvm unlock orthogonal living true after unlock residual; `inventoryCloseDoesNotMeanResidualFree`; INVENTORY-CLOSE-SMOKE; INVENTORY-CLOSE-THEOREM (`inventoryCloseReady_true`, `residualFreeClaimed_false`)) -- Mult..LlvmHold ladder + CLOSABLE-MISS-COUNT-0 compose; **not** residual free re-open on this module; intentional PARTIAL carry remains |
 | **Product path** | Freestanding product path readiness | **done (partial, self-host-program+matrix deepen)**: `ProductPath.lean` HOST-PRODUCT-PATH / SELF-HOST-PRODUCT-PATH / `SLAKE_SELF_HOST_PRODUCT_PATH_V0` (`productPathReady` = inventoryCloseReady && freestanding unit/program/emit/join/self-host/matrix paths && surface && local residual free false && product complete claimed true && SelfApplyFs complete true; llvm unlock orthogonal living true; `freestandingUnitProductPathReady` unitCompileReady / extractOkFs on empty/unminted/lowerEmitCompose; sibling program/emit/join/self-host/matrix path folds; `productPathDoesNotComplete` / `productPathDoesNotMeanResidualFree`; PRODUCT-PATH-SMOKE; PRODUCT-PATH-THEOREM (`productPathReady_true`, `residualFreeClaimed_false`)) -- local residual free false; product complete true on living tip; unlock orthogonal; intentional PARTIAL carry remains |
 | **Product path close** | Structural product path ladder close | **done (partial)**: same `ProductPath.lean` HOST-PRODUCT-PATH-CLOSE / SELF-HOST-PRODUCT-PATH-CLOSE / `SLAKE_SELF_HOST_PRODUCT_PATH_CLOSE_V0` (`productPathCloseReady` / `productPathLadderClosedOk` = productPathReady && productPathCloseSurfaceOk && productPathFurtherAliasTheaterHeld && local residual free false && product complete claimed true && SelfApplyFs complete true; llvm unlock orthogonal; `productPathCloseDoesNotMeanResidualFree`; structural product path ladder closed token; intentional PARTIAL carry; `productPathFurtherAliasTheaterHeld` holds further inventoryCloseReady-implied ProductPath conjunct-only re-asserts as theater; PRODUCT-PATH-CLOSE-SMOKE; PRODUCT-PATH-THEOREM (`productPathCloseReady_true`, `productPathFurtherAliasTheaterHeld_true`)) -- local residual free false; product complete true; unlock orthogonal; further ProductPath alias theater held |
-| **Dual residual** | Host elaborator residual vs product residual honesty | **done (partial at land; living tip free true 2026-08-01)**: `DualResidual.lean` HOST-DUAL-RESIDUAL / SELF-HOST-DUAL-RESIDUAL / `SLAKE_SELF_HOST_DUAL_RESIDUAL_V0`. Land-time ready shape (product residual remains + free false) superseded by Step 3: `residualFreeClaimed` **true**; `productResidualRemains` **false**; `hostElaboratorResidualRemains` **true**; `hostElaboratorResidualFreeClaimed` false; dualResidualReady free-true shape (llvm unlock orthogonal living true after unlock residual); `dualResidualDoesNotForgeHostFree`; DUAL-RESIDUAL-SMOKE; DUAL-RESIDUAL-THEOREM (`residualFreeClaimed_true`, `productResidualRemains_false`, host remains). Free is **not** host free, **not** Lake gone, **not** proof complete, **not** PROVABLY re-open, **not** full LLVM backend |
+| **Dual residual** | Host elaborator residual vs product residual honesty | **done (living tip F1 2026-08-07)**: `DualResidual.lean` HOST-DUAL-RESIDUAL / SELF-HOST-DUAL-RESIDUAL / `SLAKE_SELF_HOST_DUAL_RESIDUAL_V0`. Product free Step 3: `residualFreeClaimed` **true**; `productResidualRemains` **false**. Host free F1: `hostElaboratorResidualRemains` **false**; `hostElaboratorResidualFreeClaimed` **true**; free dual-ok (llvm unlock orthogonal living true; FullHost stays false); `dualResidualDoesNotForgeHostFree` free-honest body; DUAL-RESIDUAL-SMOKE; DUAL-RESIDUAL-THEOREM (`residualFreeClaimed_true`, `productResidualRemains_false`, `hostElaboratorResidualRemains_false`, `hostElaboratorResidualFreeClaimed_true`). Host free is **not** product free re-open, **not** Lake gone, **not** proof complete, **not** PROVABLY re-open, **not** full LLVM backend, **not** full Lean 4 / mathlib elaborator parity |
 | **Probe-vs-wire** | Hosted behavioral probe vs product freestanding wire honesty | **done (partial)**: `ProbeWire.lean` HOST-PROBE-WIRE / SELF-HOST-PROBE-WIRE / `SLAKE_SELF_HOST_PROBE_WIRE_V0` (`probeWireReady` = dualResidualReady && surface && probeWireSurfacesDistinct && behavioralProbeIsSmokeDebt && behavioralProbeIsNotProductWire && productWireIsEmitPath && probeDoesNotReplaceProductWire && local residual free false && product complete claimed true && SelfApplyFs complete true; llvm unlock orthogonal; `behavioralProbeIsSmokeDebt` true; `behavioralProbeIsNotProductWire` true; `productWireIsEmitPath` true; `probeDoesNotReplaceProductWire` true; local residualFreeClaimed false; `probeWireDoesNotMeanResidualFree` / `probeWireDoesNotMeanProductComplete`; PROBE-WIRE-SMOKE; PROBE-WIRE-THEOREM (`probeWireReady_true`, `behavioralProbeIsSmokeDebt_true`)) -- probe-vs-wire honesty only; probe under `smoke/` is smoke debt; product wire is `emit/` + `out/freestanding-c/`; probe green is **not** residual free re-open; **not** full LLVM backend |
-| **Spec-proof** | Formal specification vs proof separation honesty | **done (partial)**: `SpecProof.lean` HOST-SPEC-PROOF / SELF-HOST-SPEC-PROOF / `SLAKE_SELF_HOST_SPEC_PROOF_V0` (`specProofReady` = probeWireReady && surface && specSurfaceStated && proofDoesNotRetireTests && specDoesNotImplyProofComplete && proofCompleteClaimed false && local residual free false && product complete claimed true && SelfApplyFs complete true; llvm unlock orthogonal; `specSurfaceStated` true; `proofCompleteClaimed` false; `proofDoesNotRetireTests` true; `specProofDoesNotMeanResidualFree` / `specProofDoesNotMeanProofComplete`; SPEC-PROOF-SMOKE; SPEC-PROOF-THEOREM (`specProofReady_true`, `proofCompleteClaimed_false`)) -- formal feedback honesty only; readable specs stated; proof complete **not** forged; proofs do not retire tests/smokes; **not** residual free re-open; **not** full LLVM backend |
+| **Spec-proof** | Formal specification vs proof separation honesty | **done (Track 4c complete claimed 2026-08-07)**: `SpecProof.lean` HOST-SPEC-PROOF / SELF-HOST-SPEC-PROOF / `SLAKE_SELF_HOST_SPEC_PROOF_V0` (`specProofReady` = probeWireReady && surface && specSurfaceStated && proofDoesNotRetireTests && specDoesNotImplyProofComplete && proofCompleteClaimed true && local residual free false && product complete claimed true && SelfApplyFs complete true; llvm unlock orthogonal; `specSurfaceStated` true; `proofCompleteClaimed` **true** with `proofCompleteBarMet` / Track 4c bar-met pin; `proofDoesNotRetireTests` true; `specProofDoesNotMeanResidualFree` / `specProofDoesNotMeanProofComplete` bar-honesty; SPEC-PROOF-SMOKE; SPEC-PROOF-THEOREM (`specProofReady_true`, `proofCompleteClaimed_true`)) -- Track 4c bar met (Mult/Linear/HostCompose spent+joint + Types/Program/Graph + Emit plan/apply/body spent families); readable specs stated; complete earned not forged on surface alone; proofs do not retire tests/smokes; **not** residual free re-open; **not** full elaborator parity; **not** PROVABLY re-open; **not** full LLVM backend; Linear Token axioms remain |
 | **Self-host body** | Defined freestanding compile step (acceptance first) | **done (partial)**: plain-English acceptance above (SELF-HOST-BODY); `SelfHostBody.lean` HOST-SELF-HOST-BODY / SELF-HOST-BODY / `SLAKE_SELF_HOST_BODY_V0` (`selfHostBodyReady` = emitMultReady && emitLinearReady && emitErasureReady && emitExtractReady && emitTypesReady && emitProgramReady && emitGraphReady && emitComposeReady && emitPlanReady && emitApplyReady && emitBodyReady && surface && freestanding emit stage cite && local residual free false && product complete claimed true && SelfApplyFs complete true; llvm unlock orthogonal; Mult..Body host SSOT + HOST-EMIT-EXTRACT / HOST-EMIT-PLAN / HOST-EMIT-APPLY / HOST-EMIT-BODY; local freestanding complete pin may differ from living tip; residual free local false; SELF-HOST-BODY-SMOKE; SELF-HOST-BODY-THEOREM); E2E path under gates via FreestandingEmit + `just build` -- **not** residual free re-open; **not** full product compiler self-application; **not** full LLVM backend |
 
 Defaults (open questions answered by plan defaults until human overrides):

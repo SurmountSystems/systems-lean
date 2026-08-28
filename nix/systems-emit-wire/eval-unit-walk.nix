@@ -11,7 +11,7 @@
   unitWalkSkipDirs,
   unitWalkExtensions,
   unitSurfaceRequiredAny,
-  unitSurfaceRequiredAll,
+  unitSurfaceNotEmitAny,
   unitSurfaceModuleAny,
 }:
 rec {
@@ -66,9 +66,14 @@ rec {
         [ ]
       else
         [ "${rel}: UNIT_SURFACE missing module/namespace name" ])
-      ++ (lib.concatMap (
-        t: if has t content then [ ] else [ "${rel}: UNIT_SURFACE missing '${t}'" ]
-      ) unitSurfaceRequiredAll)
+      ++ (
+        if lib.any (t: has t content) unitSurfaceNotEmitAny then
+          [ ]
+        else
+          [
+            "${rel}: UNIT_SURFACE missing not-emit honesty (Not freestanding emit | not freestanding C)"
+          ]
+      )
       ++ (
         if lib.any (t: has t content) unitSurfaceRequiredAny then
           [ ]

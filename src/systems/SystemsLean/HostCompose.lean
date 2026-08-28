@@ -35,6 +35,13 @@
   - consume_mult1_minted / multPreScan_mult1_spent_false /
     extractOkFs_mult1_spent_false / checkFailClosed_mult1_spent_false /
     mult1_spent_scrub / consume_mult1_spent_reject (spent MULT-1 graph)
+  - joint mult1+mult0 multi-node: multPreScan_joint_minted_marked_true /
+    extractOkFs_joint_minted_marked_true / checkFailClosed_joint_minted_marked_true /
+    multPreScan_joint_unminted_marked_false / extractOkFs_joint_unminted_marked_false /
+    checkFailClosed_joint_unminted_marked_false /
+    multPreScan_joint_minted_unmarked_false / extractOkFs_joint_minted_unmarked_false /
+    checkFailClosed_joint_minted_unmarked_false /
+    joint_mult1_mult0_extract_ok / joint_mult1_mult0_either_side_fail_closed
   - markErased_idempotent / multPreScan_omega_only_true / mint_consume_roundtrip
   - pushHostNode_* / addHostEdge_* fail-closed + ok; HOST-SMOKE examples
   These HostCompose theorems do NOT set SpecProof.proofCompleteClaimed true.
@@ -182,7 +189,7 @@ def addHostEdge (hc : Host) (fromIdx toIdx : Nat) : HostAddEdgeResult :=
 
 /-- nodeMultOk n hc -- mult pre-scan for one owned node (HOST-COMPOSE boundary).
     MULT-0 needs marked erased; MULT-1 needs hc.linear.live; MULT-OMEGA always ok.
-    Closes the Extract.lean MULT-1 live-token gap for nodes present in the graph. -/
+    Minted MULT-1 live-token path for nodes present in the graph. -/
 def nodeMultOk (n : IrNode) (hc : Host) : Bool :=
   match n.mult with
   | Mult.mult0 => Erasure.isRuntimeAbsent hc.erased

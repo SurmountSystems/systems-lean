@@ -52,13 +52,17 @@ int slake_ir_program_push(slake_ir_program *p, uint32_t type_tag,
  */
 int slake_ir_program_is_well_typed(const slake_ir_program *p);
 
-/* Fail-closed check over all live nodes. For MULT-1 nodes require non-null live
- * linear token (shared host token for V0 is OK -- not consumed by check).
+/* Fail-closed check over all live nodes (single walk).
+ * Does not call slake_ir_program_is_well_typed first (public is_well_typed
+ * stays). Each live node check still requires well-typed.
+ * For MULT-1 nodes require non-null live linear token (shared host token
+ * for V0 is OK -- not consumed by check).
  * MULT-0 nodes need marked erased when checked.
  * claimed_runtime always RUNTIME_FS.
  * Empty / ill-typed program -> FAIL_CLOSED.
  * Returns SLAKE_EXTRACT_OK (0) or FAIL_CLOSED (1). Header must match body.
- * Greppable: IR_PROGRAM_V0, FAIL_CLOSED_CHECKER_V1, RUNTIME-FS
+ * Greppable: IR_PROGRAM_V0, FAIL_CLOSED_CHECKER_V1, RUNTIME-FS,
+ * SINGLE_FAIL_CLOSED_WALK
  */
 int slake_ir_program_check_fail_closed(const slake_ir_program *p,
     const slake_linear_token *linear,
@@ -147,8 +151,16 @@ int slake_ir_program_check_fail_closed(const slake_ir_program *p,
 {
   uint8_t i;
 
-  /* Null, empty, or ill-typed -> FAIL_CLOSED. */
-  if (slake_ir_program_is_well_typed(p) != 1) {
+  /* Single fail-closed walk: guards then one live-node pass.
+   * Does not call slake_ir_program_is_well_typed (that re-walks node
+   * well-typed before each node_check does it again). Empty / null /
+   * invalid / over-cap -> FAIL_CLOSED. Each live node still requires
+   * well-typed (public slake_ir_node_check_fail_closed semantics).
+   * Greppable: SINGLE_FAIL_CLOSED_WALK */
+  if (p == 0 || p->valid == 0) {
+    return (int)SLAKE_EXTRACT_FAIL_CLOSED;
+  }
+  if (p->count == 0 || p->count > (uint8_t)SLAKE_IR_PROGRAM_CAP) {
     return (int)SLAKE_EXTRACT_FAIL_CLOSED;
   }
   for (i = 0; i < p->count; i++) {

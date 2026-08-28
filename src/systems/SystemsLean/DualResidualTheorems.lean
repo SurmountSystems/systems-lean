@@ -8,27 +8,31 @@
 
   Spec (readable):
   - DUAL-RESIDUAL-THEOREM / HOST-DUAL-RESIDUAL-THEOREM: stageId_eq /
-    hostElaboratorResidualRemains_true / productResidualRemains_false /
-    residualFreeClaimed_true / productResidualFreeMeasureCited_true /
-    residualFreeMeasureAgreesFree_true / dualResidualReady_true /
-    dualResidualDoesNotForgeHostFree_true / dualResidualOk_eq_ready.
+    hostElaboratorResidualRemains_false / hostElaboratorResidualFreeClaimed_true /
+    productResidualRemains_false / residualFreeClaimed_true /
+    productResidualFreeMeasureCited_true / residualFreeMeasureAgreesFree_true /
+    dualResidualReady_true / dualResidualDoesNotForgeHostFree_true /
+    dualResidualOk_eq_ready.
   - DUAL-RESIDUAL-SMOKE / HOST-DUAL-RESIDUAL-SMOKE: stage / map / surface /
     residual / ready behavioral examples (lake build fails if example fails).
 
-  Product residual free claimed (claim A). Host elaborator residual remains.
-  freestanding product self-host complete true (claim B; SelfApplyFs alias).
-  Dual residual honesty is NOT host residual free and NOT llvm / PROVABLY unlock.
+  Product residual free claimed (claim A). Host elaborator residual free claimed
+  (F1). freestanding product self-host complete true (claim B; SelfApplyFs alias).
+  Dual residual honesty free dual-ok; NOT llvm / PROVABLY unlock re-open.
 
   Intentional non-claims:
-  - Host elaborator residual is NOT forged free.
-  - NOT PROVABLY. NOT llvm unlock.
+  - Host free does not re-open product residual free.
+  - Host free does not re-true FullHostElaborateRemains.
+  - NOT PROVABLY. NOT llvm unlock rebrand.
   - Free != Lake gone; free != proof complete; free != PROVABLY; free != LLVM.
   - Lake example smokes are NOT full proofs.
-  - Not proof complete (SpecProof.proofCompleteClaimed stays false).
+  - Free does not flip SpecProof.proofCompleteClaimed (Track 4c may claim
+    proof complete true; DualResidualTheorems does not set it).
 
   Greppable: SYSTEMS_LEAN_HOST, DUAL-RESIDUAL-THEOREM,
   HOST-DUAL-RESIDUAL-THEOREM, DUAL-RESIDUAL-SMOKE, HOST-DUAL-RESIDUAL-SMOKE,
-  stageId_eq, hostElaboratorResidualRemains_true, productResidualRemains_false,
+  stageId_eq, hostElaboratorResidualRemains_false,
+  hostElaboratorResidualFreeClaimed_true, productResidualRemains_false,
   residualFreeClaimed_true, productResidualFreeMeasureCited_true,
   residualFreeMeasureAgreesFree_true, dualResidualReady_true,
   dualResidualDoesNotForgeHostFree_true, dualResidualOk_eq_ready,
@@ -36,9 +40,10 @@
   Module: SystemsLean.DualResidualTheorems
   Red/green: just systems-host; lake build SystemsLean.DualResidualTheorems.
   Module must stay ASCII.
-  Product residual free claimed. Host elaborator residual remains. Not PROVABLY.
+  Product residual free claimed. Host elaborator residual free claimed. Not PROVABLY.
   Not freestanding emit residual free alone. Not full LLVM backend.
-  Not host elaborator residual free. Not proof complete.
+  Host elaborator residual free claimed. Not proof complete (SpecProof Track 4c
+  owns proofCompleteClaimed true; DualResidualTheorems does not set it).
 -/
 
 import SystemsLean.ProductPath
@@ -53,7 +58,7 @@ namespace SystemsLean.DualResidual
     then proofs)
 
   Real Lean theorems (not only `example` Bool canaries). Scope is dual residual
-  honesty with product free claimed and host free not forged.
+  honesty with product free claimed and host free claimed under free dual-ok.
   maxRecDepth raised for productPathCloseReady / dualResidualReady unfolds.
 -/
 
@@ -63,11 +68,17 @@ set_option maxRecDepth 16384
     Greppable: stageId_eq, DUAL-RESIDUAL-THEOREM, HOST-DUAL-RESIDUAL-THEOREM. -/
 theorem stageId_eq : stageId = "SLAKE_SELF_HOST_DUAL_RESIDUAL_V0" := rfl
 
-/-- Host elaborator residual still remains (Lake managed / RUNTIME-CLASSIC).
-    Greppable: hostElaboratorResidualRemains_true, DUAL-RESIDUAL-THEOREM,
+/-- Host elaborator residual retired (day-to-day free bar; F1).
+    Greppable: hostElaboratorResidualRemains_false, DUAL-RESIDUAL-THEOREM,
     HOST-DUAL-RESIDUAL-THEOREM. -/
-theorem hostElaboratorResidualRemains_true :
-    hostElaboratorResidualRemains = true := rfl
+theorem hostElaboratorResidualRemains_false :
+    hostElaboratorResidualRemains = false := rfl
+
+/-- Host elaborator residual free deliberately claimed (F1).
+    Greppable: hostElaboratorResidualFreeClaimed_true, DUAL-RESIDUAL-THEOREM,
+    HOST-DUAL-RESIDUAL-THEOREM. -/
+theorem hostElaboratorResidualFreeClaimed_true :
+    hostElaboratorResidualFreeClaimed = true := rfl
 
 /-- Product freestanding wire residual is gone (product residual free claimed).
     Greppable: productResidualRemains_false, DUAL-RESIDUAL-THEOREM,
@@ -89,12 +100,12 @@ theorem productResidualFreeMeasureCited_true :
 theorem residualFreeMeasureAgreesFree_true :
     residualFreeMeasureAgreesFree = true := by decide
 
-/-- Dual residual honesty readiness holds (product free claimed; host remains).
+/-- Dual residual honesty readiness holds (product free + host free dual-ok).
     Greppable: dualResidualReady_true, HOST-DUAL-RESIDUAL,
     DUAL-RESIDUAL-THEOREM, HOST-DUAL-RESIDUAL-THEOREM. -/
 theorem dualResidualReady_true : dualResidualReady = true := by decide
 
-/-- Dual residual ready does NOT forge host elaborator residual free.
+/-- Dual residual ready host free dual-ok does not re-open product residual.
     Greppable: dualResidualDoesNotForgeHostFree_true, DUAL-RESIDUAL-THEOREM,
     HOST-DUAL-RESIDUAL-THEOREM. -/
 theorem dualResidualDoesNotForgeHostFree_true :
@@ -135,17 +146,17 @@ example : residualFreeMeasureSelfHostCite =
     "SELF-HOST-RESIDUAL-FREE-MEASURE" := by decide
 example : residualFreeMeasureNixPath =
     "nix/systems-emit-wire/residual-free-measure.nix" := by decide
-example : hostElaboratorResidualToken = "host elaborator residual remains" := by decide
+example : hostElaboratorResidualToken = "host elaborator residual free" := by decide
 example : productResidualToken = "product residual free" := by decide
 example : intentionalPartialToken = "intentional PARTIAL" := by decide
 example : dualResidualSurfaceOk = true := by decide
 example : productResidualFreeMeasureCited = true := by decide
 example : residualFreeMeasureAgreesFree = true := by decide
 
-/-- DUAL-RESIDUAL-SMOKE: host residual remains; product free claimed; unlocks false. -/
-example : hostElaboratorResidualRemains = true := by decide
+/-- DUAL-RESIDUAL-SMOKE: host free claimed; product free claimed; unlocks true. -/
+example : hostElaboratorResidualRemains = false := by decide
 example : productResidualRemains = false := by decide
-example : hostElaboratorResidualFreeClaimed = false := by decide
+example : hostElaboratorResidualFreeClaimed = true := by decide
 example : residualFreeClaimed = true := by decide
 example : productSelfHostCompleteClaimed = true := by decide
 example : SelfApplyFs.freestandingProductSelfHostComplete = true := by decide
@@ -159,7 +170,7 @@ example : InventoryClose.inventoryCloseReady = true := by decide
 example : LlvmHold.llvmHoldReady = true := by decide
 
 /-- DUAL-RESIDUAL-SMOKE / HOST-DUAL-RESIDUAL-SMOKE: dual residual ready decides
-    true (product free claimed; host residual remains; not llvm / PROVABLY).
+    true (product free claimed; host free claimed; free dual-ok).
     dualResidualOk is definitional alias of dualResidualReady (joint-name honesty). -/
 example : dualResidualReady = true := by decide
 example : dualResidualDoesNotForgeHostFree = true := by decide

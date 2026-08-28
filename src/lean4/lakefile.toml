@@ -3,7 +3,7 @@
 # No freestanding product claim. No remote dependencies.
 name = "SystemsLeanLean4"
 version = "0.1.0"
-defaultTargets = ["ConsumeToken", "ErasedIndex", "UnrestrictedShare"]
+defaultTargets = ["ConsumeToken", "ErasedIndex", "UnrestrictedShare", "FailClosedGrade", "LinearPairSwap", "RuntimeExtract", "AffineDrop", "AffineOwn"]
 
 [[lean_lib]]
 name = "ConsumeToken"
@@ -19,3 +19,28 @@ roots = ["ErasedIndex"]
 name = "UnrestrictedShare"
 srcDir = "examples"
 roots = ["UnrestrictedShare"]
+
+[[lean_lib]]
+name = "FailClosedGrade"
+srcDir = "examples"
+roots = ["FailClosedGrade"]
+
+[[lean_lib]]
+name = "LinearPairSwap"
+srcDir = "examples"
+roots = ["LinearPairSwap"]
+
+[[lean_lib]]
+name = "RuntimeExtract"
+srcDir = "examples"
+roots = ["RuntimeExtract"]
+
+[[lean_lib]]
+name = "AffineDrop"
+srcDir = "examples"
+roots = ["AffineDrop"]
+
+[[lean_lib]]
+name = "AffineOwn"
+srcDir = "examples"
+roots = ["AffineOwn"]

@@ -38,6 +38,7 @@
 -/
 
 import SystemsLean.SelfApplyFs
+import SystemsLean.SelfApplyFsClose
 
 namespace SystemsLean.SelfApplyFs
 

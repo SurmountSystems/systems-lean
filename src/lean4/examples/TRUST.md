@@ -7,6 +7,11 @@
 | ConsumeToken | `src/lean4/examples/ConsumeToken.lean` |
 | ErasedIndex | `src/lean4/examples/ErasedIndex.lean` |
 | UnrestrictedShare | `src/lean4/examples/UnrestrictedShare.lean` |
+| FailClosedGrade | `src/lean4/examples/FailClosedGrade.lean` |
+| LinearPairSwap | `src/lean4/examples/LinearPairSwap.lean` |
+| RuntimeExtract | `src/lean4/examples/RuntimeExtract.lean` |
+| AffineDrop | `src/lean4/examples/AffineDrop.lean` |
+| AffineOwn | `src/lean4/examples/AffineOwn.lean` |
 
 **Pair:** same algorithm ids under `src/idris2/examples/`, plus `src/idris2/examples/TRUST.md`.
 

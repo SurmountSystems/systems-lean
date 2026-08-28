@@ -20,6 +20,126 @@ LLVM **text** ladder as the next queue (those are **closed**). Historical:
 
 ---
 
+## Living tip (2026-08-11 post S1-S8; residual authority wins)
+
+Authoritative short reseed: free/complete/PROVABLY **true**; FullHostElaborateRemains
+**false** (S7 FULLHOST_FLIP=no; U3 prior); DominanceClaimed **false**; band FullBackend **false**;
+tip fullBackend A-light **true**; multiUnit Mult..Graph DF deepen **true**; seed **206**
+harness **99**; TERM dual-ok **46**; package-env Mult..**ParityEmit**+U2 Emit*Scaffold
++KernelSelfApply+ProductOutKernel+S5 CompilePathJoinMapSelfHostSurfaceMatrix; systems-emit-wire
+**green**. Hierarchical N1-N4 / W1-W5 / R1-R5 closed (R2 FULLHOST_FLIP=no). Completeness wave
+**U1-U7 closed** archive (U1/U3 done partial OK). Continue completeness **S1-S8 done**
+(headroom; TERM CompilePath/JoinMap/SelfHost/SurfaceMatrix; PE39..PE42; SpecProof+DualResidual
+TERM; FullHost reseed no flip; CompilePath unit Mult..Extract TERM 8/8). Living Open **empty
+done-for-now**. WATCHER **DONE-FOR-NOW**. C4 mathlib **non-goal**. H2 still **partial** vs
+seed 206. Status inventory `.agents/reports/plan-remaining-smallest-first-2026-08-11.md`.
+Disk residual + `WATCHER.md` win if this section ever lags. Full status:
+`.agents/plans/plan-full-readiness-2026-08-09.md` / `plan-completeness-remaining-2026-08-10.md`.
+
+**Short companion:** `.agents/plans/plan-remaining-residual-2026-08-08.md`.
+**Session plan (phases D/M/C/B/L/P):** under the active iso session `plan.md`
+(historical; living tip wins).
+**Host finish program:** `.agents/plans/plan-slake-replaces-lake.md`.
+**Full readiness + origin (Formal Vibefication):** `.agents/plans/plan-full-readiness-2026-08-09.md` (inspiration for this entire project; not Keags endorsement).
+
+### Accomplished (closed programs + recent work)
+
+| Area | Status | Evidence / note |
+|------|--------|-----------------|
+| Freestanding product self-host complete (claim B) | **true** | Residual living tip; SelfApplyFs |
+| Product residual free (claim A) | **true** | Free is not "Lake gone" forever |
+| Product StillUsesLake / DependsOnLake | **false** | M6 phase 2 + lake proof |
+| Freestanding path M0-M6 | **closed** | Official product wire without Lake on hot path |
+| CompCert product seal + PROVABLY | **true** | `provablyUnlocked`; `product-compcert-matrix` in `just check` |
+| llvmUnlocked | **true** | Unlock residual; Mult SSA partial **done**; tip fullBackend **true** A-light; band FullBackend **false** |
+| Host elaborator residual free (bar a) | **claimed** | F1 dual-ok; remains false / free claimed true |
+| FullHostElaborateRemains | **false** | A66; cold full Lake is bootstrap / emergency / claim-proof |
+| proofCompleteClaimed | **true** | Track 4c bar-met + SpecProof lake |
+| Peer elaborator Mult..Compose foundation | **done** | Six-unit checkers/writers; not full Lean 4 parity |
+| LLVM IR text ladder Mult..Graph + compose | **done** | Unit package, compose emit, optional llvm-as smoke |
+| Mult SSA lower partial (Phase L) | **done** | `LlvmMultSsa` / `slake_mult_ssa.ll`; report impl-phase-l |
+| Mult-first layout ladder | **closed** | Layout fixture + ABI parity + IR tag dual-pin |
+| Host library seed expand L1-L44 + band | **done** | modules=**206**; living harness=**45** (after KernelMult TERM) |
+| A1-A66 + F0 + F0b + F1 | **done** | Free checklist, design, free dual-ok |
+| R1 full elaborator parity design | **done** | Analysis only; parity claim **unclaimed** |
+| HostResidualShrink long-file split | **done** | tip 1260->825; Theorems role module |
+| HostModuleCheck family long-file campaign | **done** | tip hub 2489->43; all family under 1000; harness 8->20 |
+| HostImportGraph long-file split | **done** | tip hub 4875->43; eight companions under 1000; harness 20->28; seed=206 |
+| Phase D docs honesty | **done** | report `.agents/reports/impl-part3-phase-d-reverify-2026-08-08.md` |
+| Phase M benchmarks | **done** | `hot-cold-benchmarks-2026-08-08.md`; report impl-phase-m |
+| Phase C dual deepen | **done** | FailClosedGrade JOIN-ALG; report impl-phase-c |
+| Phase B bootstrap measure | **done** (met-in-M) | Without-Lake vs Lake tables in Phase M note |
+| Phase P inventories polish | **done** | report `.agents/reports/impl-phase-p-inventories-polish-2026-08-08.md` |
+| Shell/C scheduled-deletion mills | **gone** | Three languages only; process glue only |
+| Dual JOIN-ALG usable core | **done** six pairs | ConsumeToken / ErasedIndex / UnrestrictedShare / FailClosedGrade / LinearPairSwap / RuntimeExtract |
+| Mult..Graph foreign + progressive path B | **done** | Band-local foreign; `fullLlvmBarEvidencePartial` true |
+| Rust IR interop partial + multi-band full | **done** | `rustIrInteropPartialClaimed` / `rustIrInteropFullClaimed`; not tip fullBackend synonym |
+| Full readiness announce bar B | **done** | Announce under bar B with tip fullBackend true A-light |
+| Package 0 residual lag honesty mop | **done** | 2026-08-10 |
+| Package 1 fullBackend tip (A-light) | **done** | fixture tip true with lake; report impl-full-backend-claim-true |
+| Package 2a/2b/2c Emit* TERM | **done** | harness **44** at EmitBody land |
+| Completeness C0 honesty mop | **done** | living inventory match |
+| Completeness C1 without-classic-FFI announce | **done** | surface-matrix measured; public prose |
+| C2a KernelMult TERM-SURFACE | **done** | harness **45**; report impl-kernelmult-term-surface |
+
+### Remaining residual tasks (ranked)
+
+**Status (2026-08-11 post S1-S8; residual authority wins):** Packages 0-2c + Package 1 +
+C0 + C1 + full C2 Kernel Mult..Emit TERM ladder + P5 honest stop + hierarchical
+N1-N4 / W1-W5 / R1-R5 + completeness **U1-U7** + continue **S1-S8** are **done** /
+done partial. Living Open **empty done-for-now**. Mult SSA partial + progressive path B
+**done** are still not band FullBackend true. FullHostElaborateRemains stays **false**
+(S7 FULLHOST_FLIP=no).
+
+| Rank | Work package | Status | Notes |
+|-----:|--------------|--------|-------|
+| -- | Operator program D/M/C/B/L/P | **all DONE** (historical 2026-08-08) | Not next work |
+| 0 | Residual lag honesty mop | **done** (2026-08-10) | Living tips match residual authority |
+| 1 | Full backend claim true (A-light) | **done** (2026-08-10) | Fixture tip true; band FullBackend false |
+| 2a/2b/2c | EmitPlan / EmitApply / EmitBody TERM | **done** | harness climbed to **44** at 2c |
+| C0 | Completeness honesty mop | **done** | inventory + pin glossary |
+| C1 | Without-classic-FFI end announce | **done** | measured; not Package 3 living residual |
+| C2 | Kernel Mult..Emit TERM ladder + P5 | **done** | progressive C2 closed under FullHost false |
+| U1-U7 | Completeness wave | **closed** archive | U1/U3 done partial OK; tip after U2 harness **78**; TERM dual-ok **32** |
+| S1-S4 | Continue smallest-first | **done** | harness **87** at S4; TERM dual-ok **36** |
+| S5 | Package env after new TERM | **done** | PE39..PE42; harness **88**; report `impl-package-env-s5-2026-08-11.md` |
+| S6 | TERM SpecProof + DualResidual | **done** | dual-ok **38**; harness **90**; report `impl-term-specproof-dualresidual-s6-2026-08-11.md` |
+| S7 | FullHost meet reseed no flip | **done** | FULLHOST_FLIP=no; H2/H3 partial; H5 unmet |
+| S8 | CompilePath unit modules TERM | **done** | 8/8 Mult..Extract; dual-ok **46**; harness **99** |
+| -- | Living Open product residual | **empty done-for-now** | No invent Open Names; process mop / review optional |
+| 3 | Promote-later only | operator redesign | FullHost true; Dominance/band FullBackend true; seed-wide H2; mathlib C4 **non-goal** |
+| -- | Standing Sub-1-KLOC + hygiene | always | on-touch; `just hygiene` |
+| -- | Full elaborator parity / mathlib | **held** (Package 3 / C4 non-goal) | Measured under M1-M6; not seed-wide mathlib day-one |
+| -- | Rust IR multi-band | **done** | Not fullBackend synonym; not formalized all of rustc |
+
+### Claim honesty pins
+
+| Claim | Living tip |
+|-------|------------|
+| free / complete / PROVABLY | **true** |
+| product Lake pins | **false** |
+| host free | **claimed** (F1); not product free re-open |
+| FullHostElaborateRemains | **false** (S7 FULLHOST_FLIP=no) |
+| proofCompleteClaimed | **true** (not full elaborator parity) |
+| llvmUnlocked | **true** (Mult SSA partial + path B done) |
+| fullBackend tip / band FullBackend | tip **true** A-light; band **false** |
+| DominanceClaimed | **false** (multiUnit Mult..Graph DF deepen **true**) |
+| Mult..Graph foreign / rustIrInterop | **done** band-local / partial+full true |
+| Open residual queue | **empty done-for-now** (S1-S8 **done**) |
+| seed / harness | modules=**206**, harness=**99** |
+| TERM dual-ok / package-env | **46** / Mult..ParityEmit+U2+S5 |
+| Progress meters ~100% foundation | promote-later held tracks remain; not invent Open Names |
+
+### Process stop rules
+
+- **Do not auto-open** Package 3 held tracks (mathlib day-one, AffineDrop dual) without explicit operator promote. Without-classic-FFI end announce is **already C1 done** -- do not re-list as living Package 3 Open.
+- Package 1 Full backend claim true is **done** (A-light); do not re-queue as Open or start-at-R1 progressive treadmill.
+- **Do not invent Open Names** for theorem canaries or to exercise the lean4 skill.
+- **Do not forge** free / complete / PROVABLY / FullHost / tip fullBackend / band FullBackend from progressive pins alone.
+- Living residual + `WATCHER.md` drive the next `/implement`; historical track ladders below are archaeology when they disagree.
+
+---
+
 ## Context (do not re-open without cause)
 
 | Area | Status |
@@ -31,9 +151,9 @@ LLVM **text** ladder as the next queue (those are **closed**). Historical:
 | CompCert seal + PROVABLY | **claimed** (`provablyUnlocked` true; matrix + lake proof) |
 | Peer elaborator steps 1-10 | **done** (host residual **partial** shrink only) |
 | LLVM IR text ladder | **done** (emit path + Mult/Linear/Types join + Program + Graph); living `llvmUnlocked` **true** (unlock residual 2026-08-03; not full backend) |
-| Open queue | **living (after P1):** primary **Package roots without Lake** (A3); A2 design **done**; P1 Host-cc helper tools without C printed from Lean **done**; finish line plan `.agents/plans/plan-slake-replaces-lake.md`; operator choice (a) full host develop; Mult..Compose foundation done not host free; Track 3c held; DualResidual remains true / free false; A1 docs + multi-language print inventory **done**; HostPackageWrite/Front/Graph long-file splits **done**; Peer Mult..Compose package dual-ok **done**; Host residual free design + free bar inventory **done**; Tracks 1-2 / 4a-4b inventory/deepens as prior Done archive |
-| Host modules | ~256 `SystemsLean/*.lean` |
-| Dual JOIN-ALG examples | **done** first cut (ConsumeToken / ErasedIndex / UnrestrictedShare both sides) |
+| Open queue | Free-bar Open **empty done-for-now**; operator program D/M/C/B/L/P **all done** (Phase P close). Host residual free **claimed** (F1); FullHostElaborateRemains **false**; proofCompleteClaimed **true**; Mult SSA partial **done**; HMC + HIG Sub-1-KLOC **done**. Held: full elaborator parity / Full LLVM / Rust-native / mathlib. Standing headroom + on-touch Sub-1-KLOC. Disk residual + WATCHER win over archaeology rows below. |
+| Host modules | seed modules=**206** + Main 59 + harness **40** (disk partition); more on-disk companions |
+| Dual JOIN-ALG examples | **done** six pairs (ConsumeToken / ErasedIndex / UnrestrictedShare / FailClosedGrade / LinearPairSwap / RuntimeExtract both sides) |
 
 ### Honesty floor (always)
 
@@ -134,7 +254,7 @@ non-goal forever.
 | 2e Optional llvm-as smoke | **done** (`just llvm-as-smoke`; skip-if-missing) |
 | 2f Rust-native layout design | **done** (`doc/dev/research/rust-native-layout-design-2026-08-03.md`) |
 | Layout size/align fixture | **done** (`doc/dev/research/layout-size-align-fixture-2026-08-03.md`) |
-| Primary next (living) | **HostFront long-file split** (tip **1215**; HostPackageWrite long-file split **done** tip **1015->784** + Theorems **299**; free bar inventory **done**; section-4 not met; hold 3c; Peer Compose unit package expand **done** 3b-9 Mult+Linear+Types+Program+Graph+Compose dual-ok; Peer Graph unit package expand **done** 3b-8 Mult+Linear+Types+Program+Graph dual-ok; Peer Program unit package expand **done** 3b-7 Mult+Linear+Types+Program dual-ok; Peer Types unit package expand **done** 3b-6 Mult+Linear+Types dual-ok; Host residual shrink inventory reseed **done** 3b-N; Peer unit package expand beyond Mult **done** 3b-5 Linear dual-ok; Host Compose fragment expand **done** 3b-4; Host Graph fragment expand **done** 3b-3; Host Program fragment expand **done** 3b-2; Host Types fragment expand **done** 3b-1; Host residual free design **done** 3a; Types multi-node mixed kind **done** 4b-cont3; EmitApply desync / IrGraph capacity / HostCompose spent mult1 **done**; Track 4a inventory **done**; Track 1b Matrix claim-row honesty **done**; Track 6 SelfApplyFs + Self-host map long-file splits **done**; section-4 free bar not met -- do not open 3c yet) |
+| Primary next (living) | Track 2 text ladder **closed** through 2f + layout ladder. Host free F1 **claimed**. Long-file HMC + HIG **done**. Next product backend step is operator program **Phase L** (LLVM SSA lower partial) after Phase M; full backend stays **held**. Living tip at top of this plan + `WATCHER.md` win over this row's archaeology. |
 | Local text-module unlock pins | Stay **false** (module non-ownership); living SSoT is `LlvmHold.llvmUnlocked` **true** |
 
 **Status: Track 2 residual program done through 2f + Layout size/align fixture.**
@@ -148,7 +268,7 @@ Open: residual + `WATCHER.md`.
 - Mult/Linear/Types/Program/Graph IR text + unit package join done
 - Compose emit + optional llvm-as smoke done
 - `LlvmHold.llvmUnlocked` **true** (unlock residual); text modules keep **local** unlock false
-- Rust-native layout design done; Layout size/align fixture done; ABI parity smoke done; Layout IR tag dual-pin done; Mult-first layout ladder closed; SelfApplyFs long-file split Open next
+- Rust-native layout design done; Layout size/align fixture done; ABI parity smoke done; Layout IR tag dual-pin done; Mult-first layout ladder closed; SelfApplyFs / Host tips long-file **done**; next SSA partial is Phase L (held full backend)
 
 ### Residual program (Names) -- land-time order (status: done through 2f)
 
@@ -254,10 +374,12 @@ surface. Six-unit foundation green is **not** success for Track 3 end claim.
 Living `proofCompleteClaimed` (SpecProof tip) true only when the **named** proof
 bar is met. Continuous theorem deepen is allowed; pin flip is rare and late.
 
-### Already true
+### Already true (living tip)
 
 - Many `*Theorems.lean` modules partial; unit theorem ids exist
-- SpecProof honesty: proof does not retire tests; complete stays false
+- SpecProof honesty: proof does not retire tests; `proofCompleteClaimed` **true**
+  (Track 4c 2026-08-07; bar-met + lake SpecProof + SpecProofTheorems)
+- Open empty done-for-now after 4c; Full LLVM / full elaborator parity remain held
 
 ### Residual program (Names)
 
@@ -274,12 +396,13 @@ bar is met. Continuous theorem deepen is allowed; pin flip is rare and late.
 | 4b-cont3 | **Types multi-node mixed kind program** | Multi-node mixed NodeKind well-typed / foldWellTyped (net-new vs VALUE-only) | Named theorems + lake TypesTheorems / IrProgramTheorems; residual; proofCompleteClaimed stays false | Mass canary renames; complete flip; full elaborator type checker |
 | 4b-cont3 status | **done** (2026-08-03) | `isWellTyped_mixed_kinds` + `length_mixed_kinds` + `foldWellTyped_mixed_kinds_some` + `isWellTyped_mixed_bad_false`; lake IrProgramTheorems exit 0 | join `/tmp/grok-1000/grok-impl-summary-44784b63.md` | -- |
 | 4c | **Proof complete residual** | Flip living SpecProof complete only if inventory bar met | `proofCompleteClaimed` true + lake proof + residual honesty | Forging complete while inventory incomplete |
+| 4c status | **done** (2026-08-07) | `proofCompleteClaimed` **true** + `proofCompleteBarMet` + SpecProof rewrite + lake SpecProof/Theorems exit 0; residual Open empty done-for-now | report `.agents/reports/impl-proof-complete-residual-2026-08-07.md` | -- |
 
 **lean4 skill:** draft/prove/review for theorem residuals under `src/systems/` and
 `src/lean4/` when formal duals are in scope.
 
-**Success metric:** either complete true with inventory closed, or continuous
-Open queue of named proof residuals without a false global complete.
+**Success metric (met for Track 4c):** complete true with named bar met + residual
+lockstep; further continuous deepen is optional, not a second global complete synonym.
 
 ---
 
@@ -314,26 +437,40 @@ Make long host files maintainable without naive cuts. Parked hygiene becomes an
 
 ### Live sizes (re-verify at slice start)
 
-| Path | ~Lines (2026-08-03 sample) | Class |
-|------|----------------------------:|-------|
-| `SystemsLean/SelfApplyFs.lean` | ~1922 (was multi-k; still P0) | Gate-first dual-pin thin / smoke split |
-| `SystemsLean/CompilePath.lean` | ~458 (below 1k; watch growth) | Responsibility seams if it grows |
+| Path | ~Lines (2026-08-08 living tip) | Class |
+|------|-------------------------------:|-------|
+| `SystemsLean/HostImportGraph.lean` | **43** hub (was ~4875) | **H-opt done**; companions all under 1000 |
+| `SystemsLean/HostImportGraphWalk.lean` | **999** | Standing headroom stop rule |
+| `SystemsLean/HostImportGraphLoadOk.lean` | **995** | Standing headroom stop rule |
+| `SystemsLean/HostModuleCheck*.lean` | all under **1000** | Family campaign **done** |
+| `SystemsLean/HostModuleCheckFixtureTextsLater.lean` | **999** | Standing headroom stop rule |
+| `SystemsLean/HostResidualShrink.lean` | **825** | R4 done |
+| `SystemsLean/SelfApplyFs.lean` | re-`wc -l` (prior tip under 1000 via Theorems) | On-touch only |
 | Nix host-specs / emit-wire | re-`wc -l` | Pure Nix data slices |
 | `self-host.md` / justfile | re-`wc -l` | Prose archive / thin recipes |
 
-Plan body: `.agents/plans/plan-long-file-refactor.md` (update living sizes on first
-hygiene residual; claim flags in that plan file are **stale** -- free/complete/
-PROVABLY true now; llvm still held until Track 2).
+Plan body: `.agents/plans/plan-long-file-refactor.md` (claim flags in that plan
+file may be stale -- free/complete/PROVABLY true; llvm **unlocked** not full
+backend; free bar (a) claimed F1).
 
 ### Residual program (Names)
 
 | Order | Name | Goal | Done when | Out of scope |
 |------:|------|------|-----------|--------------|
 | 6a | **Long-file inventory reseed** | Fresh `wc -l` + priority table | Research or plan update; Open first seam residual | Product claim flips |
+| 6a status | **done** (prior) | Inventory + priority long-file splits driven residual | see residual Done archive | -- |
 | 6b | **SelfApplyFs dual-pin thin batch N** | Move greppable dual-pins home; coherent seams | lake green; no stitch markers; presence dual-pin still green | `/tmp` full-file rebuild |
+| 6b status | **done** (SelfApplyFs + self-host map splits) | Tips under 1000 via role companions | residual Done | -- |
+| 6-hmc | **HostModuleCheck family Sub-1-KLOC** | All HostModuleCheck*.lean under 1000 | Family campaign; harness 8->20 | Full elaborator parity; pin forge |
+| 6-hmc status | **done** (2026-08-08) | tip hub ~43; companions under 1000 | report `impl-host-module-check-family-long-file-campaign-2026-08-08.md` | -- |
+| 6-hig | **HostImportGraph long-file split** | Pay Sub-1-KLOC on HostImportGraph (~4875) | Coherent companions; harness 20->28; gates green | Full elaborator; full LLVM; free forge |
+| 6-hig status | **done** (2026-08-08) | tip hub **4875->43**; eight companions under 1000 | report `impl-host-import-graph-long-file-split-2026-08-08.md` | -- |
 | 6c | **Nix presence long-file split N** | Pure Nix data slice under systems-host / emit-wire | just systems-host / emit-wire green | Bash-in-Nix |
+| 6 standing | **Headroom stop rules** | Not Open Names | FixtureTextsLater ~999; Walk ~999; LoadOk ~995; on-touch Sub-1-KLOC | Invent long-file-split Open without operator |
 
 **Hard rules:** no half-file cuts; stop on lake red / cycle / stitch; human owns git.
+**Living tip:** HMC + HIG family long-file splits **done**. Open empty done-for-now for Track 6
+unless operator Opens a named over-bar long-file split.
 
 ---
 
@@ -379,15 +516,16 @@ Land-time seed list (kept for archaeology only):
 5. **Proof complete inventory** (Track 4a) -- continuous formal; **done** (2026-08-03)
 6. **Host residual free design** (Track 3a) -- **done** (2026-08-03; was parallel; research `doc/dev/research/host-residual-free-design-2026-08-03.md`)
 
-**Living WATCHER primary:** `/implement` **Host residual shrink inventory reseed**
-(Track 3b-N). Peer unit package expand beyond Mult **done** (3b-5; Linear dual-ok;
-join `/tmp/grok-1000/grok-impl-summary-c8e3b74b.md`). Host Compose fragment expand
-**done** (3b-4). Host Graph fragment expand **done** (3b-3). Host Program fragment
-expand **done** (3b-2). Host Types fragment expand **done** (3b-1). Host residual
-free design **done** (3a). Types multi-node mixed kind program **done** (4b-cont3).
-EmitApply desync fail-closed deepen **done**. IrGraph edge capacity full reject
-**done**. HostCompose spent mult1 reject **done**. Do not invent Track 4c. Do not
-flip DualResidual host free.
+**Living WATCHER primary (2026-08-08):** free-bar Open is empty done-for-now, but
+operator program **Phase M** benchmarks is next (`WATCHER.md` `/implement`).
+Phase D docs honesty **done**. Track 4c Proof complete residual **done**
+(2026-08-07). Host residual free claimed F1; FullHost false. HostModuleCheck
+family Sub-1-KLOC **done**. HostImportGraph long-file split **done** (report
+`.agents/reports/impl-host-import-graph-long-file-split-2026-08-08.md`). Standing
+stop rules: FixtureTextsLater ~999; HostImportGraphWalk ~999 / LoadOk ~995;
+on-touch Sub-1-KLOC. Held only: Full LLVM backend / full elaborator parity /
+Rust-native link / mathlib. Do not invent canary-only Open Names. Do not re-open
+product free or re-true FullHost. See Living tip (2026-08-08) at top of this plan.
 
 ---
 

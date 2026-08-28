@@ -37,38 +37,26 @@
       ];
     }
     {
-      # Full step-contract living tip (after B40 OWNERSHIP-CLAIMED).
-      # Batch-2 split: PartialReady bulk authority in StepContractFull; tip re-exports.
-      # Dual-pin thin batch 32: tip keeps Full honesty + chain fold;
-      # Ok/stage/recipe/exe/FREESTANDING-STEP-CONTRACT-FULL-* home-primary.
+      # Full step-contract close-path fold (after B40 OWNERSHIP-CLAIMED).
+      # PartialReady fold lives in SelfApplyFsClose; claim bool SSoT on tip.
       # Short role name stepContractFull; complete true after claim B.
-      rel = "src/systems/SystemsLean/SelfApplyFs.lean";
+      rel = "src/systems/SystemsLean/SelfApplyFsClose.lean";
       all = [
         "SYSTEMS_LEAN_HOST"
         "SELF-HOST-PRODUCT-PATH-STEP-CONTRACT-FULL"
         "stepContractFullPartialReady"
         "def stepContractFullMeasured : Bool := true"
         "def stepContractFullStepAdvanced : Bool := true"
-        "def stepContractFull : Bool := true"
-        "def productPathFreestandingOwnershipClaimed : Bool := true"
-        "def productPathFreestandingPerformClaimed : Bool := true"
         "FREESTANDING-DUAL-EQUALITY-WRITE-CLOSE-STEP-FULL"
-        "FULL-BAR-REQ-OWNERSHIP-CLAIMED-WITH-EVIDENCE"
         "StepContractFull"
         "product path freestanding step contract full"
-      ];
-      anyGroups = [
-        [
-          "selfApplyFsSurfaceOk"
-          "freestandingSelfApplyPathReady"
-          "freestandingParityLadderReady"
-        ]
+        "SelfApplyFsClose"
       ];
     }
     {
       # Full step-contract short module (after B40 OWNERSHIP-CLAIMED).
       # Batch-2 split: PartialReady bulk authority lives here; SelfApplyFs re-exports.
-      # Long-file peel: STEP-CONTRACT-FULL-THEOREM + SMOKE in
+      # Long-file role module: STEP-CONTRACT-FULL-THEOREM + SMOKE in
       # StepContractFullTheorems (same namespace).
       rel = "src/systems/SystemsLean/StepContractFull.lean";
       all = [
@@ -220,17 +208,29 @@
       ];
     }
     {
-      # SelfApplyFs living tip complete dual-pin (claim B after Full).
-      # Dual-pin thin batch 33: tip keeps complete honesty + Full chain fold;
-      # Ok/stage/recipe/exe/FREESTANDING-PRODUCT-SELF-HOST-COMPLETE-* home-primary.
-      rel = "src/systems/SystemsLean/SelfApplyFs.lean";
+      # SelfApplyFsClose complete PartialReady fold (claim B after Full).
+      # Living complete bool SSoT stays on SelfApplyFs tip.
+      rel = "src/systems/SystemsLean/SelfApplyFsClose.lean";
       all = [
         "freestandingProductSelfHostCompletePartialReady"
         "def freestandingProductSelfHostCompleteMeasured : Bool := true"
         "def freestandingProductSelfHostCompleteStepAdvanced : Bool := true"
-        "def freestandingProductSelfHostComplete : Bool := true"
         "SELF-HOST-FREESTANDING-PRODUCT-COMPLETE"
         "SelfHostComplete"
+        "SelfApplyFsClose"
+      ];
+    }
+    {
+      # SelfApplyFs tip still owns living claim bool SSoT (complete / Full / ownership / perform).
+      rel = "src/systems/SystemsLean/SelfApplyFs.lean";
+      all = [
+        "def freestandingProductSelfHostComplete : Bool := true"
+        "def stepContractFull : Bool := true"
+        "def productPathFreestandingOwnershipClaimed : Bool := true"
+        "def productPathFreestandingPerformClaimed : Bool := true"
+        "FULL-BAR-REQ-OWNERSHIP-CLAIMED-WITH-EVIDENCE"
+        "SelfApplyFsClose"
+        "selfApplyFsCloseModuleCite"
       ];
     }
   ];

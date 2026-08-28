@@ -469,7 +469,12 @@ rec {
   productPathFreestandingPerformDualEqualityWriteParityViolations =
     let
       accept = readRel "src/systems/self-host.md";
-      hostPin = readRel "src/systems/SystemsLean/SelfApplyFs.lean";
+      # B34+ close-path folds live in SelfApplyFsClose (same namespace); tip holds
+      # living claim bools. Dual-pin hostPin is tip + close for greppable tokens.
+      hostPin =
+        (readRel "src/systems/SystemsLean/SelfApplyFs.lean")
+        + "\n"
+        + (readRel "src/systems/SystemsLean/SelfApplyFsClose.lean");
       parityMod = readRel productPathFreestandingPerformDualEqualityWriteParityModulePath;
       lakeToml = readRel productPathFreestandingPerformDualEqualityWriteParityLakefilePath;
       justFile = readRel productPathFreestandingPerformDualEqualityWriteParityJustPath;
@@ -552,7 +557,10 @@ rec {
   productPathFreestandingPerformDualEqualityWriteClosePathViolations =
     let
       accept = readRel "src/systems/self-host.md";
-      hostPin = readRel "src/systems/SystemsLean/SelfApplyFs.lean";
+      hostPin =
+        (readRel "src/systems/SystemsLean/SelfApplyFs.lean")
+        + "\n"
+        + (readRel "src/systems/SystemsLean/SelfApplyFsClose.lean");
       closeMod = readRel productPathFreestandingPerformDualEqualityWriteClosePathModulePath;
       lakeToml = readRel productPathFreestandingPerformDualEqualityWriteClosePathLakefilePath;
       justFile = readRel productPathFreestandingPerformDualEqualityWriteClosePathJustPath;
@@ -636,7 +644,10 @@ rec {
   productPathFreestandingPerformDualEqualityWriteApiViolations =
     let
       accept = readRel "src/systems/self-host.md";
-      hostPin = readRel "src/systems/SystemsLean/SelfApplyFs.lean";
+      hostPin =
+        (readRel "src/systems/SystemsLean/SelfApplyFs.lean")
+        + "\n"
+        + (readRel "src/systems/SystemsLean/SelfApplyFsClose.lean");
       apiMod = readRel productPathFreestandingPerformDualEqualityWriteApiModulePath;
       apiLoad = readRel productPathFreestandingPerformDualEqualityWriteApiLoadPath;
       lakeToml = readRel productPathFreestandingPerformDualEqualityWriteApiLakefilePath;
@@ -727,7 +738,10 @@ rec {
   productPathFreestandingPerformDualEqualityWriteCapableGapViolations =
     let
       accept = readRel "src/systems/self-host.md";
-      hostPin = readRel "src/systems/SystemsLean/SelfApplyFs.lean";
+      hostPin =
+        (readRel "src/systems/SystemsLean/SelfApplyFs.lean")
+        + "\n"
+        + (readRel "src/systems/SystemsLean/SelfApplyFsClose.lean");
       gapMod = readRel productPathFreestandingPerformDualEqualityWriteCapableGapModulePath;
       lakeToml = readRel productPathFreestandingPerformDualEqualityWriteCapableGapLakefilePath;
       justFile = readRel productPathFreestandingPerformDualEqualityWriteCapableGapJustPath;

@@ -129,6 +129,27 @@
       ];
     }
     {
+      # HOST-MODULE-CHECK FirstSurface L2 term-surface companion.
+      rel = "src/systems/SystemsLean/HostModuleCheckFirstSurfaceTerm.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "SystemsLean.HostModuleCheckFirstSurfaceTerm"
+        "HOST-MODULE-CHECK"
+        "namespace SystemsLean.HostModuleCheck"
+        "TERM-SURFACE"
+        "FirstSurface-only"
+        "ILL-TYPED-TERM"
+        "checkFirstSurfaceTermDialect"
+        "hostModuleCheckFirstSurfaceTermSurfaceDualOk"
+        "hostModuleCheckFirstSurfaceTermSurfaceOk"
+        "HostModuleCheckFirstSurfaceTerm"
+        "import SystemsLean.HostModuleCheckSurface"
+        "PARTIAL-STRUCTURAL"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+      ];
+    }
+    {
       # Thin Lake main for slake-first-surface (SKELETON).
       rel = "src/systems/SystemsLean/FirstSurfaceMain.lean";
       all = [
@@ -477,6 +498,27 @@
       ];
     }
     {
+      # HOST-MODULE-CHECK LinearSubsetEmit L2 term-surface companion.
+      rel = "src/systems/SystemsLean/HostModuleCheckLinearSubsetEmitTerm.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "SystemsLean.HostModuleCheckLinearSubsetEmitTerm"
+        "HOST-MODULE-CHECK"
+        "namespace SystemsLean.HostModuleCheck"
+        "TERM-SURFACE"
+        "LinearSubsetEmit-only"
+        "ILL-TYPED-TERM"
+        "checkLinearSubsetEmitTermDialect"
+        "hostModuleCheckLinearSubsetEmitTermSurfaceDualOk"
+        "hostModuleCheckLinearSubsetEmitTermSurfaceOk"
+        "HostModuleCheckLinearSubsetEmitTerm"
+        "import SystemsLean.HostModuleCheckSurface"
+        "PARTIAL-STRUCTURAL"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+      ];
+    }
+    {
       # Thin Lake main for slake-linear-subset-emit (SKELETON).
       rel = "src/systems/SystemsLean/LinearSubsetEmitMain.lean";
       all = [
@@ -581,6 +623,27 @@
       ];
     }
     {
+      # HOST-MODULE-CHECK TypesSubsetEmit L2 term-surface companion.
+      rel = "src/systems/SystemsLean/HostModuleCheckTypesSubsetEmitTerm.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "SystemsLean.HostModuleCheckTypesSubsetEmitTerm"
+        "HOST-MODULE-CHECK"
+        "namespace SystemsLean.HostModuleCheck"
+        "TERM-SURFACE"
+        "TypesSubsetEmit-only"
+        "ILL-TYPED-TERM"
+        "checkTypesSubsetEmitTermDialect"
+        "hostModuleCheckTypesSubsetEmitTermSurfaceDualOk"
+        "hostModuleCheckTypesSubsetEmitTermSurfaceOk"
+        "HostModuleCheckTypesSubsetEmitTerm"
+        "import SystemsLean.HostModuleCheckSurface"
+        "PARTIAL-STRUCTURAL"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+      ];
+    }
+    {
       # Thin Lake main for slake-types-subset-emit (SKELETON).
       rel = "src/systems/SystemsLean/TypesSubsetEmitMain.lean";
       all = [
@@ -682,6 +745,90 @@
         "UNIT_SURFACE"
         "Not freestanding residual free"
         "IR_PROGRAM_V0"
+      ];
+    }
+    {
+      # HOST-MODULE-CHECK ProgramSubsetEmit L2 term-surface companion.
+      rel = "src/systems/SystemsLean/HostModuleCheckProgramSubsetEmitTerm.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "SystemsLean.HostModuleCheckProgramSubsetEmitTerm"
+        "HOST-MODULE-CHECK"
+        "namespace SystemsLean.HostModuleCheck"
+        "TERM-SURFACE"
+        "ProgramSubsetEmit-only"
+        "ILL-TYPED-TERM"
+        "checkProgramSubsetEmitTermDialect"
+        "hostModuleCheckProgramSubsetEmitTermSurfaceDualOk"
+        "hostModuleCheckProgramSubsetEmitTermSurfaceOk"
+        "HostModuleCheckProgramSubsetEmitTerm"
+        "import SystemsLean.HostModuleCheckSurface"
+        "PARTIAL-STRUCTURAL"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+      ];
+    }
+    {
+      # HOST-MODULE-CHECK GraphSubsetEmit L2 term-surface companion.
+      rel = "src/systems/SystemsLean/HostModuleCheckGraphSubsetEmitTerm.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "SystemsLean.HostModuleCheckGraphSubsetEmitTerm"
+        "HOST-MODULE-CHECK"
+        "namespace SystemsLean.HostModuleCheck"
+        "TERM-SURFACE"
+        "GraphSubsetEmit-only"
+        "ILL-TYPED-TERM"
+        "checkGraphSubsetEmitTermDialect"
+        "hostModuleCheckGraphSubsetEmitTermSurfaceDualOk"
+        "hostModuleCheckGraphSubsetEmitTermSurfaceOk"
+        "HostModuleCheckGraphSubsetEmitTerm"
+        "import SystemsLean.HostModuleCheckSurface"
+        "PARTIAL-STRUCTURAL"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+      ];
+    }
+    {
+      # HOST-MODULE-CHECK ComposeSubsetEmit L2 term-surface companion.
+      rel = "src/systems/SystemsLean/HostModuleCheckComposeSubsetEmitTerm.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "SystemsLean.HostModuleCheckComposeSubsetEmitTerm"
+        "HOST-MODULE-CHECK"
+        "namespace SystemsLean.HostModuleCheck"
+        "TERM-SURFACE"
+        "ComposeSubsetEmit-only"
+        "ILL-TYPED-TERM"
+        "checkComposeSubsetEmitTermDialect"
+        "hostModuleCheckComposeSubsetEmitTermSurfaceDualOk"
+        "hostModuleCheckComposeSubsetEmitTermSurfaceOk"
+        "HostModuleCheckComposeSubsetEmitTerm"
+        "import SystemsLean.HostModuleCheckSurface"
+        "PARTIAL-STRUCTURAL"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+      ];
+    }
+    {
+      # HOST-MODULE-CHECK ErasureSubsetEmit L2 term-surface companion.
+      rel = "src/systems/SystemsLean/HostModuleCheckErasureSubsetEmitTerm.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "SystemsLean.HostModuleCheckErasureSubsetEmitTerm"
+        "HOST-MODULE-CHECK"
+        "namespace SystemsLean.HostModuleCheck"
+        "TERM-SURFACE"
+        "ErasureSubsetEmit-only"
+        "ILL-TYPED-TERM"
+        "checkErasureSubsetEmitTermDialect"
+        "hostModuleCheckErasureSubsetEmitTermSurfaceDualOk"
+        "hostModuleCheckErasureSubsetEmitTermSurfaceOk"
+        "HostModuleCheckErasureSubsetEmitTerm"
+        "import SystemsLean.HostModuleCheckSurface"
+        "PARTIAL-STRUCTURAL"
+        "Not freestanding residual free"
+        "Not PROVABLY"
       ];
     }
     {

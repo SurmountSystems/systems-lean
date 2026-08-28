@@ -5,8 +5,10 @@
     (sibling unit/program bars), JoinMap JOIN-ALG dual cite, CompilePath,
     Mult/Linear/Types/IrProgram/IrGraph/Erasure/Extract/HostCompose/Emit*
     host ladder. Dual cite paths (read-only; do not reimplement):
-    ConsumeToken, ErasedIndex, UnrestrictedShare under src/idris2/examples/
-    and src/lean4/examples/. Inventory prose: src/systems/surface-matrix.md.
+    ConsumeToken, ErasedIndex, UnrestrictedShare, FailClosedGrade, LinearPairSwap,
+    RuntimeExtract under
+    src/idris2/examples/ and src/lean4/examples/. Inventory prose:
+    src/systems/surface-matrix.md.
 
   Spec (readable, separate from any future proof):
   - SLAKE_SURFACE_MATRIX_V0 / HOST-SURFACE-MATRIX / SURFACE-MATRIX: host
@@ -44,7 +46,7 @@
   - Open language gaps stay open: full syntax surface, full elaborator,
     full Idris parity, full Lean parity, full CFG/SSA backend.
   - CompCert PROVABLY row claimed after product matrix + evidence residual.
-  - Duals cited only (three JOIN-ALG algorithm examples); no dual invent.
+  - Duals cited only (six JOIN-ALG algorithm examples); no dual invent padding.
   - Not proof complete (SpecProof.proofCompleteClaimed stays false).
   - Does not fold program bar into unit bar (sibling APIs; P3 residual lesson).
   - Does not claim full out/llvm-ir backend from unlock true alone.
@@ -53,7 +55,9 @@
   SURFACE-MATRIX, matrixUnitReady, matrixProgramReady, matrixReady,
   matrixSurfaceOk, SURFACE-MATRIX-SMOKE, HOST-SELF-HOST, SLAKE_SELF_HOST_V0,
   HOST-JOIN-MAP, HOST-COMPILE-PATH, MULT-0, MULT-1, MULT-OMEGA, JOIN-ALG,
-  ConsumeToken, ErasedIndex, UnrestrictedShare, present-partial, open, measured,
+  ConsumeToken, ErasedIndex, UnrestrictedShare, FailClosedGrade, LinearPairSwap,
+  RuntimeExtract, present-partial,
+  open, measured,
   EMPTY-PROGRAM-FAIL-CLOSED, FAIL-CLOSED, SURFACE-MATRIX-THEOREM,
   HOST-SURFACE-MATRIX-THEOREM, SurfaceMatrixTheorems,
   matrixUnitReady_empty_true, matrixProgramReady_empty_false,
@@ -102,7 +106,7 @@ def hostModulePath : String := "src/systems/SystemsLean/SurfaceMatrix.lean"
 /-- Read-only package root path cite (not a filesystem read). -/
 def packageRootPath : String := "src/systems/SystemsLean.lean"
 
-/-! ### Dual cite paths (three JOIN-ALG algorithm examples; read-only) -/
+/-! ### Dual cite paths (six JOIN-ALG algorithm examples; read-only) -/
 
 def dualConsumeTokenIdris : String := "src/idris2/examples/ConsumeToken.idr"
 def dualConsumeTokenLean : String := "src/lean4/examples/ConsumeToken.lean"
@@ -110,10 +114,17 @@ def dualErasedIndexIdris : String := "src/idris2/examples/ErasedIndex.idr"
 def dualErasedIndexLean : String := "src/lean4/examples/ErasedIndex.lean"
 def dualUnrestrictedShareIdris : String := "src/idris2/examples/UnrestrictedShare.idr"
 def dualUnrestrictedShareLean : String := "src/lean4/examples/UnrestrictedShare.lean"
+def dualFailClosedGradeIdris : String := "src/idris2/examples/FailClosedGrade.idr"
+def dualFailClosedGradeLean : String := "src/lean4/examples/FailClosedGrade.lean"
+def dualLinearPairSwapIdris : String := "src/idris2/examples/LinearPairSwap.idr"
+def dualLinearPairSwapLean : String := "src/lean4/examples/LinearPairSwap.lean"
+def dualRuntimeExtractIdris : String := "src/idris2/examples/RuntimeExtract.idr"
+def dualRuntimeExtractLean : String := "src/lean4/examples/RuntimeExtract.lean"
 
-/-- dualCiteOk -- three JOIN-ALG dual-pair path cites match layout.
+/-- dualCiteOk -- six JOIN-ALG dual-pair path cites match layout.
     Surface-level constant canary only (not an FS walk of dual trees).
-    Greppable: ConsumeToken, ErasedIndex, UnrestrictedShare, JOIN-ALG. -/
+    Greppable: ConsumeToken, ErasedIndex, UnrestrictedShare, FailClosedGrade,
+    LinearPairSwap, RuntimeExtract, JOIN-ALG. -/
 def dualCiteOk : Bool :=
   (dualConsumeTokenIdris == "src/idris2/examples/ConsumeToken.idr")
     && (dualConsumeTokenLean == "src/lean4/examples/ConsumeToken.lean")
@@ -121,6 +132,12 @@ def dualCiteOk : Bool :=
     && (dualErasedIndexLean == "src/lean4/examples/ErasedIndex.lean")
     && (dualUnrestrictedShareIdris == "src/idris2/examples/UnrestrictedShare.idr")
     && (dualUnrestrictedShareLean == "src/lean4/examples/UnrestrictedShare.lean")
+    && (dualFailClosedGradeIdris == "src/idris2/examples/FailClosedGrade.idr")
+    && (dualFailClosedGradeLean == "src/lean4/examples/FailClosedGrade.lean")
+    && (dualLinearPairSwapIdris == "src/idris2/examples/LinearPairSwap.idr")
+    && (dualLinearPairSwapLean == "src/lean4/examples/LinearPairSwap.lean")
+    && (dualRuntimeExtractIdris == "src/idris2/examples/RuntimeExtract.idr")
+    && (dualRuntimeExtractLean == "src/lean4/examples/RuntimeExtract.lean")
 
 /-! ### Matrix row status vocabulary (inventory strings; not product C) -/
 
@@ -132,6 +149,17 @@ def statusOpen : String := "open"
 
 /-- Row claimed PROVABLY after green product CompCert matrix + pin flip. -/
 def statusProvably : String := "PROVABLY"
+
+/-- Dual formal map theorems inventory row (partial named edges; not isomorphism).
+    Edges: failClosedGrade_host_use_implies_mult_unknown_reject and
+    runtimeExtract_host_use_implies_unknown_runtime_reject in JoinMapTheorems.
+    Greppable: rowDualFormalMap, dualFormalMapPartial, present-partial. -/
+def rowDualFormalMap : String := statusPresentPartial
+
+/-- dualFormalMapPartialOk -- dual formal map row is present-partial (not open,
+    not isomorphism complete). Greppable: dualFormalMapPartialOk. -/
+def dualFormalMapPartialOk : Bool :=
+  rowDualFormalMap == statusPresentPartial
 
 /-- Row measured against living claim pin / fail-closed evidence (not full parity). -/
 def statusMeasured : String := "measured"
@@ -166,8 +194,21 @@ def rowSelfHostDirection : String := statusPresentPartial
 /-- Full Idris 2 / Lean 4 syntax surface (not claimed day-one). -/
 def rowSyntaxSurface : String := statusOpen
 
-/-- Full classic elaborator parity (not claimed). -/
-def rowFullElaborator : String := statusOpen
+/-- Full classic elaborator parity inventory row (measured under M1-M6 bar).
+    Living tip: package L4 multi-band PACKAGE-ELABORATE dual-ok
+    (MultExtractFoundation + MultLinearTypesProof + KernelEmitParity +
+    MultLinearTypesProgramGraphComposeErasureExtractEmitPlanEmitApplyEmitBodyKernelMultLinearTypesProgramEmitParityMultParityLinearParityTypesParityProgramParityEmitEnv
+    real multi-module Mult..EmitBody + Kernel Mult/Linear/Types/Program/Emit +
+    ParityMult + ParityLinear + ParityTypes + ParityProgram + ParityEmit env judgment) plus unit TERM
+    Mult..EmitBody + Kernel Mult..Emit + ParityMult + ParityLinear + ParityTypes +
+    ParityProgram + ParityEmit and PROOF Mult/Linear/Types dual-ok. Measured bar M1-M6 met
+    (research full-classic-elaborator-parity-measured-bar-2026-08-09.md).
+    Still not seed-wide J1-J12 Lake-grade package typecheck of full seed; not
+    mathlib; FullHost stays false; free claimed != full Lean 4 elaborator.
+    statusMeasured = named row bar met with fail-closed dual-ok evidence.
+    Greppable: rowFullElaborator, measured, PACKAGE-ELABORATE,
+    MultLinearTypesProgramGraphComposeErasureExtractEmitPlanEmitApplyEmitBodyKernelMultLinearTypesProgramEmitParityMultParityLinearParityTypesParityProgramParityEmitEnv-only. -/
+def rowFullElaborator : String := statusMeasured
 
 /-- Freestanding product self-host complete inventory row.
     Living claim pin freestandingProductSelfHostComplete is true elsewhere
@@ -202,15 +243,27 @@ def hostRowsPresentPartialOk : Bool :=
     && (rowJoinMap == statusPresentPartial)
     && (rowSelfHostDirection == statusPresentPartial)
 
-/-- openRowsOpenOk -- open / not-claimed language-parity rows stay open (honesty).
-    Freestanding complete, llvm unlock, and CompCert PROVABLY are measured /
-    claimed separately (rowFreestandingSelfHostMeasuredOk, rowLlvmMeasuredOk,
-    rowProvablyClaimedOk). Full backend stays open in prose inventory only. -/
+/-- openRowsOpenOk -- open / not-claimed full-language-parity rows stay open.
+    Full classic elaborator parity is measured (rowFullElaboratorMeasuredOk),
+    not open. Freestanding complete, llvm unlock, and CompCert PROVABLY are
+    measured / claimed separately. Full backend stays open in prose. -/
 def openRowsOpenOk : Bool :=
   (rowSyntaxSurface == statusOpen)
-    && (rowFullElaborator == statusOpen)
     && (rowFullIdrisParity == statusOpen)
     && (rowFullLeanParity == statusOpen)
+
+/-- rowFullElaboratorMeasuredOk -- Full classic elaborator parity is measured.
+    M1-M6 bar met: multi-band PACKAGE-ELABORATE + unit TERM/PROOF + MultLinear
+    package env judgments path; not seed-wide J1-J12 full seed typecheck; not
+    mathlib; FullHost stays false.
+    Greppable: rowFullElaboratorMeasuredOk, measured, PACKAGE-ELABORATE. -/
+def rowFullElaboratorMeasuredOk : Bool :=
+  rowFullElaborator == statusMeasured
+
+/-- Historical name kept as alias of measured gate (greppable partialOk retired).
+    Greppable: rowFullElaboratorPartialOk, measured, PACKAGE-ELABORATE. -/
+def rowFullElaboratorPartialOk : Bool :=
+  rowFullElaboratorMeasuredOk
 
 /-- rowFreestandingSelfHostMeasuredOk -- freestanding complete inventory measured.
     Inventory string self-check only (same pattern as rowProvablyClaimedOk).
@@ -245,6 +298,8 @@ def matrixSurfaceOk : Bool :=
     && dualCiteOk
     && hostRowsPresentPartialOk
     && openRowsOpenOk
+    && dualFormalMapPartialOk
+    && rowFullElaboratorMeasuredOk
     && rowFreestandingSelfHostMeasuredOk
     && rowLlvmMeasuredOk
     && rowProvablyClaimedOk

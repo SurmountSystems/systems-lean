@@ -6,7 +6,7 @@
 hostSpecsJoinSurface = [
     {
       # HOST-JOIN-MAP (P4): dual / JOIN honesty into compile-path readiness.
-      # JOIN-ALG-USE: host use pins (not dual-path cite alone) for three duals.
+      # JOIN-ALG-USE: host use pins (not dual-path cite alone) for six duals.
       # Theorems + smoke peeled to JoinMapTheorems (same namespace).
       rel = "src/systems/SystemsLean/JoinMap.lean";
       all = [
@@ -19,12 +19,20 @@ hostSpecsJoinSurface = [
         "ConsumeToken"
         "ErasedIndex"
         "UnrestrictedShare"
+        "FailClosedGrade"
+        "FAIL-CLOSED-UNKNOWN-GRADE"
+        "LinearPairSwap"
+        "RuntimeExtract"
+        "RUNTIME-FS"
         "joinAlgContractOk"
         "joinAlgUseOk"
         "joinDualCiteOk"
         "consumeTokenHostUseOk"
         "erasedIndexHostUseOk"
         "unrestrictedShareHostUseOk"
+        "failClosedGradeHostUseOk"
+        "linearPairSwapHostUseOk"
+        "runtimeExtractHostUseOk"
         "joinUnitCompileReady"
         "joinProgramCompileReady"
         "joinCompileReady"
@@ -42,6 +50,12 @@ hostSpecsJoinSurface = [
         "src/lean4/examples/ErasedIndex.lean"
         "src/idris2/examples/UnrestrictedShare.idr"
         "src/lean4/examples/UnrestrictedShare.lean"
+        "src/idris2/examples/FailClosedGrade.idr"
+        "src/lean4/examples/FailClosedGrade.lean"
+        "src/idris2/examples/LinearPairSwap.idr"
+        "src/lean4/examples/LinearPairSwap.lean"
+        "src/idris2/examples/RuntimeExtract.idr"
+        "src/lean4/examples/RuntimeExtract.lean"
         "JOIN-MAP-THEOREM"
         "HOST-JOIN-MAP-THEOREM"
       ];
@@ -84,6 +98,16 @@ hostSpecsJoinSurface = [
         "theorem joinUnitCompileReady_mult1_unminted_false"
         "theorem joinUnitCompileReady_mult1_minted_true"
         "theorem joinProgramCompileReady_single_value"
+        "failClosedGradeHostUseOk_true"
+        "failClosedGrade_host_use_implies_mult_unknown_reject"
+        "dualFormalMapFailClosedEdge"
+        "theorem failClosedGradeHostUseOk_true"
+        "theorem failClosedGrade_host_use_implies_mult_unknown_reject"
+        "runtimeExtractHostUseOk_true"
+        "runtimeExtract_host_use_implies_unknown_runtime_reject"
+        "dualFormalMapRuntimeExtractEdge"
+        "theorem runtimeExtractHostUseOk_true"
+        "theorem runtimeExtract_host_use_implies_unknown_runtime_reject"
       ];
       anyGroups = [];
     }
@@ -181,6 +205,11 @@ hostSpecsJoinSurface = [
         "ConsumeToken"
         "ErasedIndex"
         "UnrestrictedShare"
+        "FailClosedGrade"
+        "LinearPairSwap"
+        "RuntimeExtract"
+        "rowDualFormalMap"
+        "dualFormalMapPartialOk"
         "MULT-0"
         "MULT-1"
         "MULT-OMEGA"
@@ -190,6 +219,12 @@ hostSpecsJoinSurface = [
         "src/lean4/examples/ErasedIndex.lean"
         "src/idris2/examples/UnrestrictedShare.idr"
         "src/lean4/examples/UnrestrictedShare.lean"
+        "src/idris2/examples/FailClosedGrade.idr"
+        "src/lean4/examples/FailClosedGrade.lean"
+        "src/idris2/examples/LinearPairSwap.idr"
+        "src/lean4/examples/LinearPairSwap.lean"
+        "src/idris2/examples/RuntimeExtract.idr"
+        "src/lean4/examples/RuntimeExtract.lean"
         "src/systems/surface-matrix.md"
         "src/systems/SystemsLean/SurfaceMatrix.lean"
         "SURFACE-MATRIX-THEOREM"

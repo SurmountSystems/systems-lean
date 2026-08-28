@@ -7,10 +7,16 @@ host-residual-shrink:
     lean_dir="$systems_dir/SystemsLean"
     just_sources=("$root/justfile" "$root"/just/*.just)
     mod="$lean_dir/HostResidualShrink.lean"
+    # TERM/PROOF/PACKAGE dual-ok pins live in TermOk companion (S1 long-file peel).
+    mod_term="$lean_dir/HostResidualShrinkTermOk.lean"
     dual_residual="$lean_dir/DualResidual.lean"
     echo "== host-residual-shrink (peer step 10; partial shrink inventory) =="
     if [[ ! -f "$mod" ]]; then
       echo "error: missing $mod" >&2
+      exit 1
+    fi
+    if [[ ! -f "$mod_term" ]]; then
+      echo "error: missing $mod_term" >&2
       exit 1
     fi
     if [[ ! -f "$dual_residual" ]]; then
@@ -91,100 +97,681 @@ host-residual-shrink:
       SLAKE_HOST_RESIDUAL_SHRINK_V0 \
       HOST-HOST-RESIDUAL-SHRINK
     do
-      if ! grep -qF "$tok" "$mod"; then
-        echo "error: missing $tok in $mod" >&2
+      if ! grep -qF "$tok" "$mod" "$mod_term"; then
+        echo "error: missing $tok in $mod or $mod_term" >&2
         exit 1
       fi
     done
-    if ! grep -qE 'def hostResidualShrinkFinishedClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
+    if ! grep -qE 'def hostResidualShrinkFinishedClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
       echo "error: hostResidualShrinkFinishedClaimed must be true" >&2
       exit 1
     fi
-    if ! grep -qE 'def hostResidualPartialShrinkClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
+    if ! grep -qE 'def hostResidualPartialShrinkClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
       echo "error: hostResidualPartialShrinkClaimed must be true" >&2
       exit 1
     fi
-    if ! grep -qE 'def hostResidualShrinkHostElaborateRemains[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
-      echo "error: hostResidualShrinkHostElaborateRemains must be true" >&2
+    if ! grep -qE 'def hostResidualShrinkHostElaborateRemains[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*false' "$mod" "$mod_term"; then
+      echo "error: hostResidualShrinkHostElaborateRemains must be false (F1 free tip)" >&2
       exit 1
     fi
-    if ! grep -qE 'def hostResidualShrinkHostFreeClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*false' "$mod"; then
-      echo "error: hostResidualShrinkHostFreeClaimed must be false (do not forge host free)" >&2
+    if ! grep -qE 'def hostResidualShrinkHostFreeClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostResidualShrinkHostFreeClaimed must be true (F1 free dual-ok)" >&2
       exit 1
     fi
-    if ! grep -qE 'def hostResidualShrinkInventoryReseeded[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
+    if ! grep -qE 'def hostResidualShrinkInventoryReseeded[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
       echo "error: hostResidualShrinkInventoryReseeded must be true after 3b-N reseed" >&2
       exit 1
     fi
-    if ! grep -qE 'def hostPackageWriteMultLinearDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
+    if ! grep -qE 'def hostPackageWriteMultLinearDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
       echo "error: hostPackageWriteMultLinearDualOk must be true" >&2
       exit 1
     fi
-    if ! grep -qE 'def hostPackageWriteMultLinearTypesDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
+    if ! grep -qE 'def hostPackageWriteMultLinearTypesDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
       echo "error: hostPackageWriteMultLinearTypesDualOk must be true" >&2
       exit 1
     fi
-    if ! grep -qE 'def hostPackageWriteProgramPackageDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
+    if ! grep -qE 'def hostPackageWriteProgramPackageDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
       echo "error: hostPackageWriteProgramPackageDualOk must be true" >&2
       exit 1
     fi
-    if ! grep -qE 'def hostPackageWriteGraphPackageDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
+    if ! grep -qE 'def hostPackageWriteGraphPackageDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
       echo "error: hostPackageWriteGraphPackageDualOk must be true" >&2
       exit 1
     fi
-    if ! grep -qE 'def hostPackageWriteComposePackageDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
+    if ! grep -qE 'def hostPackageWriteComposePackageDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
       echo "error: hostPackageWriteComposePackageDualOk must be true" >&2
       exit 1
     fi
-    if ! grep -qE 'def hostPackageRootsLoadDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
+    if ! grep -qE 'def hostPackageRootsLoadDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
       echo "error: hostPackageRootsLoadDualOk must be true (A3 package roots)" >&2
       exit 1
     fi
-    if ! grep -qF 'host-package-roots-without-lake' "$mod"; then
+    if ! grep -qF 'host-package-roots-without-lake' "$mod" "$mod_term"; then
       echo "error: measuredHostLakeFreePackageRoots must cite host-package-roots-without-lake" >&2
       exit 1
     fi
-    if ! grep -qE 'def hostImportGraphMultSeedDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
+    if ! grep -qE 'def hostImportGraphMultSeedDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
       echo "error: hostImportGraphMultSeedDualOk must be true (A4 real Mult import graph)" >&2
       exit 1
     fi
-    if ! grep -qF 'host-import-graph-without-lake' "$mod"; then
+    if ! grep -qF 'host-import-graph-without-lake' "$mod" "$mod_term"; then
       echo "error: measuredHostLakeFreeImportGraph must cite host-import-graph-without-lake" >&2
       exit 1
     fi
-    if ! grep -qE 'def hostModuleCheckMultSeedDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
+    if ! grep -qE 'def hostModuleCheckMultSeedDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
       echo "error: hostModuleCheckMultSeedDualOk must be true (A5 first real host module check)" >&2
       exit 1
     fi
-    if ! grep -qF 'host-module-check-without-lake' "$mod"; then
+    if ! grep -qF 'host-module-check-without-lake' "$mod" "$mod_term"; then
       echo "error: measuredHostLakeFreeModuleCheck must cite host-module-check-without-lake" >&2
       exit 1
     fi
-    if ! grep -qE 'def hostImportGraphExpandSeedDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
+    if ! grep -qE 'def hostImportGraphExpandSeedDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
       echo "error: hostImportGraphExpandSeedDualOk must be true (A6 host module set expand)" >&2
       exit 1
     fi
-    if ! grep -qE 'def hostModuleCheckExpandSeedDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
+    if ! grep -qE 'def hostModuleCheckExpandSeedDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
       echo "error: hostModuleCheckExpandSeedDualOk must be true (A6 host module set expand)" >&2
       exit 1
     fi
-    if ! grep -qF 'Mult+MultTheorems+Linear+LinearTheorems+Types+TypesTheorems+IrProgram+IrProgramTheorems+IrGraph+IrGraphTheorems+HostCompose+HostComposeTheorems+Erasure+ErasureTheorems+Extract+ExtractTheorems+CompilePath+KernelMult+KernelLinear+KernelTypes+KernelProgram+KernelMultTheorems+KernelLinearTheorems+KernelTypesTheorems+KernelProgramTheorems+JoinMap+JoinMapTheorems+SelfHost+SelfHostTheorems+SurfaceMatrix+SurfaceMatrixTheorems+EmitMultScaffold+EmitLinearScaffold+EmitTypesScaffold+EmitProgramScaffold+EmitGraphScaffold+EmitComposeScaffold+EmitPlanScaffold+EmitApplyScaffold+EmitBodyScaffold+EmitErasureScaffold+EmitExtractScaffold+EmitBannerScaffold+KernelSelfApply+KernelSelfApplyTheorems+EmitMult+EmitPlan+EmitApply+EmitBody+KernelEmit+KernelEmitTheorems+ParityMult+ParityMultTheorems+ParityLinear+ParityLinearTheorems+ParityTypes+ParityTypesTheorems+ParityProgram+ParityProgramTheorems+ParityEmit+ParityEmitTheorems+SelfApply+SelfApplyTheorems+EmitLinear+EmitTypes+EmitProgram+EmitGraph+EmitCompose+EmitErasure+EmitExtract+EmitBanner+ProductOutKernel+ProductOutKernelTheorems+BootstrapHonesty+BootstrapHonestyTheorems+ProductPathWriterSurface+ProductPathWriterSurfaceTheorems+ProductPathWriterPathPlan+ProductPathWriterPathPlanTheorems+ProductPathWriterPathExec+ProductPathWriterPathExecTheorems' "$mod"; then
-      echo "error: measuredHostRealModuleSeedUnits must cite Mult+...+EmitBanner+ProductOutKernel+ProductOutKernelTheorems+BootstrapHonesty+BootstrapHonestyTheorems+ProductPathWriterSurface+ProductPathWriterSurfaceTheorems+ProductPathWriterPathPlan+ProductPathWriterPathPlanTheorems+ProductPathWriterPathExec+ProductPathWriterPathExecTheorems seed" >&2
+    if ! grep -qF 'Mult+MultTheorems+Linear+LinearTheorems+Types+TypesTheorems+IrProgram+IrProgramTheorems+IrGraph+IrGraphTheorems+HostCompose+HostComposeTheorems+Erasure+ErasureTheorems+Extract+ExtractTheorems+CompilePath+KernelMult+KernelLinear+KernelTypes+KernelProgram+KernelMultTheorems+KernelLinearTheorems+KernelTypesTheorems+KernelProgramTheorems+JoinMap+JoinMapTheorems+SelfHost+SelfHostTheorems+SurfaceMatrix+SurfaceMatrixTheorems+EmitMultScaffold+EmitLinearScaffold+EmitTypesScaffold+EmitProgramScaffold+EmitGraphScaffold+EmitComposeScaffold+EmitPlanScaffold+EmitApplyScaffold+EmitBodyScaffold+EmitErasureScaffold+EmitExtractScaffold+EmitBannerScaffold+KernelSelfApply+KernelSelfApplyTheorems+EmitMult+EmitPlan+EmitApply+EmitBody+KernelEmit+KernelEmitTheorems+ParityMult+ParityMultTheorems+ParityLinear+ParityLinearTheorems+ParityTypes+ParityTypesTheorems+ParityProgram+ParityProgramTheorems+ParityEmit+ParityEmitTheorems+SelfApply+SelfApplyTheorems+EmitLinear+EmitTypes+EmitProgram+EmitGraph+EmitCompose+EmitErasure+EmitExtract+EmitBanner+ProductOutKernel+ProductOutKernelTheorems+BootstrapHonesty+BootstrapHonestyTheorems+ProductPathWriterSurface+ProductPathWriterSurfaceTheorems+ProductPathWriterPathPlan+ProductPathWriterPathPlanTheorems+ProductPathWriterPathExec+ProductPathWriterPathExecTheorems+ProductPathOwnershipInputs+ProductPathOwnershipInputsTheorems+ProductPathPerform+ProductPathPerformTheorems+ProductPathPerformStep+ProductPathPerformStepTheorems+ProductPathReadSsot+ProductPathReadSsotTheorems+ProductPathComposePlan+ProductPathComposePlanTheorems+Capable+CapableTheorems+CapableStepContract+CapableStepContractTheorems+InstallOut+InstallOutTheorems+OfficialPath+OfficialPathTheorems+PerformEvidence+PerformEvidenceTheorems+CapableRead+CapableReadTheorems+CapableCompose+CapableComposeTheorems+CapableFullBar+CapableFullBarTheorems+DualEqWriteCapableGap+DualEqWriteCapableGapTheorems+DualEqWriteClosePath+DualEqWriteClosePathTheorems+DualEqWriteParity+DualEqWriteParityTheorems+OfficialRetire+OfficialRetireTheorems+OwnershipClaimed+OwnershipClaimedTheorems+PerformClaimed+PerformClaimedTheorems+StepContractFull+StepContractFullTheorems+SelfHostComplete+SelfHostCompleteTheorems+OfficialPathAlternate+OfficialPathAlternateTheorems+ProductPathOwnershipRegenerate+ProductPathOwnershipRegenerateTheorems+CapableWriteHcLoad+DualEqWriteLoad+CapableWriteHc+DualEqWriteApi+LlvmHold+LlvmHoldTheorems+CapableRegenerate+CapableRegenerateTheorems+FreestandingEmitLoad+FreestandingEmitLoadScaffold+LakeRetireInventory+HostPackageRoots+FreestandingEmit+ProductPathWriteHc+ProductPathWriteHcTheorems+CompilePathMult+CompilePathLinear+CompilePathTypes+CompilePathProgram+CompilePathGraph+CompilePathCompose+CompilePathPlan+CompilePathApply+CompilePathBody+CompilePathErasure+CompilePathExtract+ProductWireWriteTool+HostTerm+LlvmEmitPath+SubsetFront+FirstSurface+LinearSubsetEmit+TypesSubsetEmit+ProgramSubsetEmit+GraphSubsetEmit+ComposeSubsetEmit+ErasureSubsetEmit+ExtractSubsetEmit+MultSubsetEmit+MultSubsetRebuild+LinearSubsetRebuild+TypesSubsetRebuild+ProgramSubsetRebuild+GraphSubsetRebuild+ComposeSubsetRebuild+ErasureSubsetRebuild+ExtractSubsetRebuild+HostFront+LlvmMultText+HostFrontTheorems+HostCheck+HostGraph+LlvmLinearText+MultFsWriteTool+FrontMultPackage+SubsetPackageJoin+HostGraphTheorems+LlvmTypesText+MultFsDeepen+HostPackageWrite+HostPackageWriteTheorems+LlvmProgramText+LlvmGraphText+LlvmComposeText+SelfApplyFs+SelfApplyFsTheorems+InventoryClose+ProductPathBars+InventoryCloseTheorems+ProductPath+ProductPathTheorems+DualResidual+DualResidualTheorems+ProbeWire+SelfHostBody+ProbeWireTheorems+SelfHostBodyTheorems+SpecProof+SpecProofTheorems' "$mod" "$mod_term"; then
+      echo "error: measuredHostRealModuleSeedUnits must cite Mult+...+EmitBanner+ProductOutKernel+ProductOutKernelTheorems+BootstrapHonesty+BootstrapHonestyTheorems+ProductPathWriterSurface+ProductPathWriterSurfaceTheorems+ProductPathWriterPathPlan+ProductPathWriterPathPlanTheorems+ProductPathWriterPathExec+ProductPathWriterPathExecTheorems+ProductPathOwnershipInputs+ProductPathOwnershipInputsTheorems+ProductPathPerform+ProductPathPerformTheorems+ProductPathPerformStep+ProductPathPerformStepTheorems+ProductPathReadSsot+ProductPathReadSsotTheorems+ProductPathComposePlan+ProductPathComposePlanTheorems+Capable+CapableTheorems+CapableStepContract+CapableStepContractTheorems+InstallOut+InstallOutTheorems+OfficialPath+OfficialPathTheorems+PerformEvidence+PerformEvidenceTheorems+CapableRead+CapableReadTheorems+CapableCompose+CapableComposeTheorems+CapableFullBar+CapableFullBarTheorems+DualEqWriteCapableGap+DualEqWriteCapableGapTheorems+DualEqWriteClosePath+DualEqWriteClosePathTheorems+DualEqWriteParity+DualEqWriteParityTheorems+OfficialRetire+OfficialRetireTheorems+OwnershipClaimed+OwnershipClaimedTheorems+PerformClaimed+PerformClaimedTheorems+StepContractFull+StepContractFullTheorems+SelfHostComplete+SelfHostCompleteTheorems+OfficialPathAlternate+OfficialPathAlternateTheorems+ProductPathOwnershipRegenerate+ProductPathOwnershipRegenerateTheorems+CapableWriteHcLoad+DualEqWriteLoad+CapableWriteHc+DualEqWriteApi+LlvmHold+LlvmHoldTheorems+CapableRegenerate+CapableRegenerateTheorems+FreestandingEmitLoad+FreestandingEmitLoadScaffold+LakeRetireInventory+HostPackageRoots+FreestandingEmit+ProductPathWriteHc+ProductPathWriteHcTheorems+CompilePathMult+CompilePathLinear+CompilePathTypes+CompilePathProgram+CompilePathGraph+CompilePathCompose+CompilePathPlan+CompilePathApply+CompilePathBody+CompilePathErasure+CompilePathExtract+ProductWireWriteTool+HostTerm+LlvmEmitPath+SubsetFront+FirstSurface+LinearSubsetEmit+TypesSubsetEmit+ProgramSubsetEmit+GraphSubsetEmit+ComposeSubsetEmit+ErasureSubsetEmit+ExtractSubsetEmit+MultSubsetEmit+MultSubsetRebuild+LinearSubsetRebuild+TypesSubsetRebuild+ProgramSubsetRebuild+GraphSubsetRebuild+ComposeSubsetRebuild+ErasureSubsetRebuild+ExtractSubsetRebuild+HostFront+LlvmMultText+HostFrontTheorems+HostCheck+HostGraph+LlvmLinearText+MultFsWriteTool+FrontMultPackage+SubsetPackageJoin+HostGraphTheorems+LlvmTypesText+MultFsDeepen+HostPackageWrite+HostPackageWriteTheorems+LlvmProgramText+LlvmGraphText+LlvmComposeText seed" >&2
       exit 1
     fi
-    if ! grep -qF 'Host library seed expand continue' "$mod"; then
-      echo "error: HostResidualShrink must cite Host library seed expand continue" >&2
+    if ! grep -qF 'Check depth deepen continue' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite Check depth deepen continue (A58)" >&2
       exit 1
     fi
-    if ! grep -qE 'def hostModuleCheckTheoremCorpusExpandDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
+    if ! grep -qF 'FOUNDATION-KIND-SURFACE' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite FOUNDATION-KIND-SURFACE (A58)" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckTheoremCorpusExpandDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
       echo "error: hostModuleCheckTheoremCorpusExpandDualOk must be true (A7 theorem corpus expand)" >&2
       exit 1
     fi
-    if ! grep -qF 'MultTheorems=8+LinearTheorems=8+TypesTheorems=8+IrProgramTheorems=6+IrGraphTheorems=6+HostComposeTheorems=8+ErasureTheorems=8+ExtractTheorems=8+KernelMultTheorems=8+KernelLinearTheorems=8+KernelTypesTheorems=8+KernelProgramTheorems=8+JoinMapTheorems=8+SelfHostTheorems=8+SurfaceMatrixTheorems=8' "$mod"; then
-      echo "error: measuredHostTheoremCorpusRequiredCounts must cite A7+Kernel *Theorems corpus sizes" >&2
+    if ! grep -qE 'def hostModuleCheckDepthDeepenDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckDepthDeepenDualOk must be true (A58 Check depth deepen continue)" >&2
       exit 1
     fi
-    if ! grep -qE 'def hostResidualShrinkBootstrapPrebuildRemains[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*false' "$mod"; then
+    if ! grep -qF 'MultTheorems=14+LinearTheorems=12+TypesTheorems=14+IrProgramTheorems=12+IrGraphTheorems=12+HostComposeTheorems=14+ErasureTheorems=14+ExtractTheorems=14+KernelMultTheorems=11+KernelLinearTheorems=12+KernelTypesTheorems=12+KernelProgramTheorems=12+KernelEmitTheorems=12+JoinMapTheorems=8+SelfHostTheorems=8+SurfaceMatrixTheorems=8' "$mod" "$mod_term"; then
+      echo "error: measuredHostTheoremCorpusRequiredCounts must cite Mult..Extract + Kernel band expand corpus sizes" >&2
+      exit 1
+    fi
+    if ! grep -qF 'Host library band complete' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite Host library band complete (A59)" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def measuredHostLibraryProductSeedCount[[:space:]]*:[[:space:]]*String[[:space:]]*:=[[:space:]]*"206"' "$mod" "$mod_term"; then
+      echo "error: measuredHostLibraryProductSeedCount must be 206 (A59 L-band)" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def measuredHostLibraryLeftoverProductModules[[:space:]]*:[[:space:]]*String[[:space:]]*:=[[:space:]]*"empty"' "$mod" "$mod_term"; then
+      echo "error: measuredHostLibraryLeftoverProductModules must be empty (A59 L-band)" >&2
+      exit 1
+    fi
+    if ! grep -qF '*Main lake exe entrypoints' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must carve out *Main lake exe entrypoints (A59)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'HostImportGraph+HostImportGraphSeeds+HostImportGraphModel+HostImportGraphMods+HostImportGraphModsLater+HostImportGraphLoadOk+HostImportGraphLoadOkLater+HostImportGraphTheorems+HostImportGraphWalk+HostImportGraphWalkLater+HostImportGraphDriver+HostModuleCheck+HostModuleCheckFixtures+HostModuleCheckRequiredDecls+HostModuleCheckRequiredDeclsProduct+HostModuleCheckRequiredDeclsLater+HostModuleCheckFixtureTexts+HostModuleCheckFixtureTextsProduct+HostModuleCheckFixtureTextsLater+HostModuleCheckFixtureTextsSelfHost+HostModuleCheckFixtureTextsEmit+HostModuleCheckSurface+HostModuleCheckMultTerm+HostModuleCheckLinearTerm+HostModuleCheckTypesTerm+HostModuleCheckIrProgramTerm+HostModuleCheckIrGraphTerm+HostModuleCheckHostComposeTerm+HostModuleCheckErasureTerm+HostModuleCheckExtractTerm+HostModuleCheckEmitPlanTerm+HostModuleCheckEmitApplyTerm+HostModuleCheckEmitBodyTerm+HostModuleCheckKernelMultTerm+HostModuleCheckKernelLinearTerm+HostModuleCheckKernelTypesTerm+HostModuleCheckKernelProgramTerm+HostModuleCheckKernelEmitTerm+HostModuleCheckParityMultTerm+HostModuleCheckParityLinearTerm+HostModuleCheckParityTypesTerm+HostModuleCheckParityProgramTerm+HostModuleCheckParityEmitTerm+HostModuleCheckEmitMultScaffoldTerm+HostModuleCheckEmitLinearScaffoldTerm+HostModuleCheckEmitTypesScaffoldTerm+HostModuleCheckEmitProgramScaffoldTerm+HostModuleCheckEmitGraphScaffoldTerm+HostModuleCheckEmitComposeScaffoldTerm+HostModuleCheckEmitErasureScaffoldTerm+HostModuleCheckEmitExtractScaffoldTerm+HostModuleCheckEmitBannerScaffoldTerm+HostModuleCheckKernelSelfApplyTerm+HostModuleCheckProductOutKernelTerm+HostModuleCheckCompilePathTerm+HostModuleCheckJoinMapTerm+HostModuleCheckSelfHostTerm+HostModuleCheckSurfaceMatrixTerm+HostModuleCheckSpecProofTerm+HostModuleCheckDualResidualTerm+HostModuleCheckCompilePathMultTerm+HostModuleCheckCompilePathLinearTerm+HostModuleCheckCompilePathTypesTerm+HostModuleCheckCompilePathProgramTerm+HostModuleCheckCompilePathGraphTerm+HostModuleCheckCompilePathComposeTerm+HostModuleCheckCompilePathErasureTerm+HostModuleCheckCompilePathExtractTerm+HostModuleCheckCompilePathPlanTerm+HostModuleCheckCompilePathApplyTerm+HostModuleCheckCompilePathBodyTerm+HostModuleCheckFirstSurfaceTerm+HostModuleCheckLinearSubsetEmitTerm+HostModuleCheckTypesSubsetEmitTerm+HostModuleCheckProgramSubsetEmitTerm+HostModuleCheckGraphSubsetEmitTerm+HostModuleCheckComposeSubsetEmitTerm+HostModuleCheckErasureSubsetEmitTerm+HostModuleCheckExtractSubsetEmitTerm+HostModuleCheckMultSubsetEmitTerm+HostModuleCheckMultSubsetRebuildTerm+HostModuleCheckLinearSubsetRebuildTerm+HostModuleCheckTypesSubsetRebuildTerm+HostModuleCheckProgramSubsetRebuildTerm+HostModuleCheckGraphSubsetRebuildTerm+HostModuleCheckComposeSubsetRebuildTerm+HostModuleCheckErasureSubsetRebuildTerm+HostModuleCheckExtractSubsetRebuildTerm+HostModuleCheckHostFrontTerm+HostModuleCheckLlvmMultTextTerm+HostModuleCheckHostCheckTerm+HostModuleCheckHostGraphTerm+HostModuleCheckLlvmLinearTextTerm+HostModuleCheckMultFsWriteToolTerm+HostModuleCheckFrontMultPackageTerm+HostModuleCheckSubsetPackageJoinTerm+HostModuleCheckLlvmTypesTextTerm+HostModuleCheckMultFsDeepenTerm+HostModuleCheckHostPackageWriteTerm+HostModuleCheckLlvmProgramTextTerm+HostModuleCheckLlvmGraphTextTerm+HostModuleCheckLlvmComposeTextTerm+HostModuleCheckSelfApplyFsTerm+HostModuleCheckInventoryCloseTerm+HostModuleCheckProductPathBarsTerm+HostModuleCheckProductPathTerm+HostModuleCheckProbeWireTerm+HostModuleCheckSelfHostBodyTerm+HostModuleCheckLoadOkCompilePathUnits+HostModuleCheckLoadOkLaterTerm+HostModuleCheckRealModule+HostModuleCheckMultProof+HostModuleCheckLinearProof+HostModuleCheckTypesProof+HostModuleCheckKernelMultProof+HostModuleCheckKernelLinearProof+HostModuleCheckKernelTypesProof+HostModuleCheckKernelProgramProof+HostModuleCheckKernelEmitProof+HostModuleCheckPackageElab+HostModuleCheckPackageEnv+HostModuleCheckPackageEnvFixtures+HostModuleCheckPackageEnvFixturesU2+HostModuleCheckPackageEnvFixturesS5+HostModuleCheckPackageEnvEvidence+HostModuleCheckCheckers+HostModuleCheckCheckersLater+HostModuleCheckAcceptsGoods+HostModuleCheckAcceptsGoodsTerm+HostModuleCheckAcceptsProof+HostModuleCheckAcceptsLater+HostModuleCheckAccepts+HostModuleCheckSeeds+HostModuleCheckLoadOk+HostModuleCheckDriverIO+HostModuleCheckDriver+HostModuleCheckTheorems+HostModuleCheckSmoke+HostResidualShrink+HostResidualShrinkTermOk+HostResidualShrinkTheorems' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must carve out host harness out-of-scope (A59)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'seed=206+Main=59+harness=141' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite seed=206+Main=59+harness=141 disk partition (A59)" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckTermSurfaceDualOk must be true (Mult L2 TERM-SURFACE Mult-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'TERM-SURFACE' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite TERM-SURFACE (Mult L2 pilot)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'Mult-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite Mult-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckLinearTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckLinearTermSurfaceDualOk must be true (Linear L2 TERM-SURFACE Linear-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'Linear-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite Linear-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckTypesTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckTypesTermSurfaceDualOk must be true (Types L2 TERM-SURFACE Types-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'Types-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite Types-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckIrProgramTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckIrProgramTermSurfaceDualOk must be true (IrProgram L2 TERM-SURFACE IrProgram-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'IrProgram-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite IrProgram-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckIrGraphTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckIrGraphTermSurfaceDualOk must be true (IrGraph L2 TERM-SURFACE IrGraph-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'IrGraph-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite IrGraph-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckHostComposeTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckHostComposeTermSurfaceDualOk must be true (HostCompose L2 TERM-SURFACE HostCompose-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'HostCompose-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite HostCompose-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckErasureTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckErasureTermSurfaceDualOk must be true (Erasure L2 TERM-SURFACE Erasure-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'Erasure-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite Erasure-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckExtractTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckExtractTermSurfaceDualOk must be true (Extract L2 TERM-SURFACE Extract-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'Extract-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite Extract-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckEmitPlanTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckEmitPlanTermSurfaceDualOk must be true (EmitPlan L2 TERM-SURFACE EmitPlan-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'EmitPlan-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite EmitPlan-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckEmitApplyTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckEmitApplyTermSurfaceDualOk must be true (EmitApply L2 TERM-SURFACE EmitApply-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'EmitApply-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite EmitApply-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckEmitBodyTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckEmitBodyTermSurfaceDualOk must be true (EmitBody L2 TERM-SURFACE EmitBody-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'EmitBody-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite EmitBody-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckKernelMultTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckKernelMultTermSurfaceDualOk must be true (KernelMult L2 TERM-SURFACE KernelMult-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'KernelMult-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite KernelMult-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckKernelLinearTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckKernelLinearTermSurfaceDualOk must be true (KernelLinear L2 TERM-SURFACE KernelLinear-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'KernelLinear-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite KernelLinear-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckKernelTypesTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckKernelTypesTermSurfaceDualOk must be true (KernelTypes L2 TERM-SURFACE KernelTypes-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'KernelTypes-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite KernelTypes-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckKernelProgramTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckKernelProgramTermSurfaceDualOk must be true (KernelProgram L2 TERM-SURFACE KernelProgram-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'KernelProgram-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite KernelProgram-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckKernelEmitTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckKernelEmitTermSurfaceDualOk must be true (KernelEmit L2 TERM-SURFACE KernelEmit-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'KernelEmit-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite KernelEmit-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckParityMultTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckParityMultTermSurfaceDualOk must be true (ParityMult L2 TERM-SURFACE ParityMult-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'ParityMult-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite ParityMult-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckParityLinearTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckParityLinearTermSurfaceDualOk must be true (ParityLinear L2 TERM-SURFACE ParityLinear-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'ParityLinear-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite ParityLinear-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckParityTypesTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckParityTypesTermSurfaceDualOk must be true (ParityTypes L2 TERM-SURFACE ParityTypes-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'ParityTypes-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite ParityTypes-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckParityProgramTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckParityProgramTermSurfaceDualOk must be true (ParityProgram L2 TERM-SURFACE ParityProgram-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'ParityProgram-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite ParityProgram-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckParityEmitTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckParityEmitTermSurfaceDualOk must be true (ParityEmit L2 TERM-SURFACE ParityEmit-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'ParityEmit-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite ParityEmit-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    # U1 Emit*Scaffold + KernelSelfApply + ProductOutKernel TERM dual-ok mirrors
+    for u1dual in \
+      hostModuleCheckEmitMultScaffoldTermSurfaceDualOk \
+      hostModuleCheckEmitLinearScaffoldTermSurfaceDualOk \
+      hostModuleCheckEmitTypesScaffoldTermSurfaceDualOk \
+      hostModuleCheckEmitProgramScaffoldTermSurfaceDualOk \
+      hostModuleCheckEmitGraphScaffoldTermSurfaceDualOk \
+      hostModuleCheckEmitComposeScaffoldTermSurfaceDualOk \
+      hostModuleCheckEmitErasureScaffoldTermSurfaceDualOk \
+      hostModuleCheckEmitExtractScaffoldTermSurfaceDualOk \
+      hostModuleCheckEmitBannerScaffoldTermSurfaceDualOk \
+      hostModuleCheckKernelSelfApplyTermSurfaceDualOk \
+      hostModuleCheckProductOutKernelTermSurfaceDualOk \
+      hostModuleCheckCompilePathTermSurfaceDualOk
+    do
+      if ! grep -qE "def ${u1dual}[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true" "$mod" "$mod_term"; then
+        echo "error: ${u1dual} must be true (U1 TERM-SURFACE dual-ok)" >&2
+        exit 1
+      fi
+    done
+    for u1scope in \
+      EmitMultScaffold-only EmitLinearScaffold-only EmitTypesScaffold-only \
+      EmitProgramScaffold-only EmitGraphScaffold-only EmitComposeScaffold-only \
+      EmitErasureScaffold-only EmitExtractScaffold-only EmitBannerScaffold-only \
+      KernelSelfApply-only ProductOutKernel-only CompilePath-only
+    do
+      if ! grep -qF "$u1scope" "$mod" "$mod_term"; then
+        echo "error: HostResidualShrink must cite ${u1scope} TERM-SURFACE scope" >&2
+        exit 1
+      fi
+    done
+    # S3 JoinMap TERM dual-ok mirror
+    if ! grep -qE 'def hostModuleCheckJoinMapTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckJoinMapTermSurfaceDualOk must be true (JoinMap L2 TERM-SURFACE JoinMap-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'JoinMap-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite JoinMap-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    # S4 SelfHost + SurfaceMatrix TERM dual-ok mirrors
+    if ! grep -qE 'def hostModuleCheckSelfHostTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckSelfHostTermSurfaceDualOk must be true (SelfHost L2 TERM-SURFACE SelfHost-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'SelfHost-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite SelfHost-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckSurfaceMatrixTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckSurfaceMatrixTermSurfaceDualOk must be true (SurfaceMatrix L2 TERM-SURFACE SurfaceMatrix-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'SurfaceMatrix-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite SurfaceMatrix-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    # S6 SpecProof + DualResidual TERM dual-ok mirrors
+    if ! grep -qE 'def hostModuleCheckSpecProofTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckSpecProofTermSurfaceDualOk must be true (SpecProof L2 TERM-SURFACE SpecProof-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'SpecProof-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite SpecProof-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckDualResidualTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckDualResidualTermSurfaceDualOk must be true (DualResidual L2 TERM-SURFACE DualResidual-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'DualResidual-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite DualResidual-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+
+    # S8 CompilePath unit modules TERM dual-ok mirrors
+    for s8dual in \
+      hostModuleCheckCompilePathMultTermSurfaceDualOk \
+      hostModuleCheckCompilePathLinearTermSurfaceDualOk \
+      hostModuleCheckCompilePathTypesTermSurfaceDualOk \
+      hostModuleCheckCompilePathProgramTermSurfaceDualOk \
+      hostModuleCheckCompilePathGraphTermSurfaceDualOk \
+      hostModuleCheckCompilePathComposeTermSurfaceDualOk \
+      hostModuleCheckCompilePathErasureTermSurfaceDualOk \
+      hostModuleCheckCompilePathExtractTermSurfaceDualOk \
+      hostModuleCheckCompilePathPlanTermSurfaceDualOk \
+      hostModuleCheckCompilePathApplyTermSurfaceDualOk \
+      hostModuleCheckCompilePathBodyTermSurfaceDualOk
+    do
+      if ! grep -qE "def ${s8dual}[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true" "$mod" "$mod_term"; then
+        echo "error: ${s8dual} must be true (S8 CompilePath unit TERM-SURFACE dual-ok)" >&2
+        exit 1
+      fi
+    done
+    for s8scope in \
+      CompilePathMult-only CompilePathLinear-only CompilePathTypes-only \
+      CompilePathProgram-only CompilePathGraph-only CompilePathCompose-only \
+      CompilePathErasure-only CompilePathExtract-only \
+      CompilePathPlan-only CompilePathApply-only CompilePathBody-only
+    do
+      if ! grep -qF "$s8scope" "$mod" "$mod_term"; then
+        echo "error: HostResidualShrink must cite ${s8scope} TERM-SURFACE scope" >&2
+        exit 1
+      fi
+    done
+    if ! grep -qE 'def hostModuleCheckFirstSurfaceTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckFirstSurfaceTermSurfaceDualOk must be true (FirstSurface L2 TERM-SURFACE FirstSurface-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'FirstSurface-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite FirstSurface-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckLinearSubsetEmitTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckLinearSubsetEmitTermSurfaceDualOk must be true (LinearSubsetEmit L2 TERM-SURFACE LinearSubsetEmit-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'LinearSubsetEmit-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite LinearSubsetEmit-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckTypesSubsetEmitTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckTypesSubsetEmitTermSurfaceDualOk must be true (TypesSubsetEmit L2 TERM-SURFACE TypesSubsetEmit-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'TypesSubsetEmit-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite TypesSubsetEmit-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckProgramSubsetEmitTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckProgramSubsetEmitTermSurfaceDualOk must be true (ProgramSubsetEmit L2 TERM-SURFACE ProgramSubsetEmit-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'ProgramSubsetEmit-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite ProgramSubsetEmit-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckGraphSubsetEmitTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckGraphSubsetEmitTermSurfaceDualOk must be true (GraphSubsetEmit L2 TERM-SURFACE GraphSubsetEmit-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'GraphSubsetEmit-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite GraphSubsetEmit-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckComposeSubsetEmitTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckComposeSubsetEmitTermSurfaceDualOk must be true (ComposeSubsetEmit L2 TERM-SURFACE ComposeSubsetEmit-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'ComposeSubsetEmit-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite ComposeSubsetEmit-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckErasureSubsetEmitTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckErasureSubsetEmitTermSurfaceDualOk must be true (ErasureSubsetEmit L2 TERM-SURFACE ErasureSubsetEmit-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'ErasureSubsetEmit-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite ErasureSubsetEmit-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckExtractSubsetEmitTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckExtractSubsetEmitTermSurfaceDualOk must be true (ExtractSubsetEmit L2 TERM-SURFACE ExtractSubsetEmit-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'ExtractSubsetEmit-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite ExtractSubsetEmit-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckMultSubsetEmitTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckMultSubsetEmitTermSurfaceDualOk must be true (MultSubsetEmit L2 TERM-SURFACE MultSubsetEmit-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'MultSubsetEmit-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite MultSubsetEmit-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckMultSubsetRebuildTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckMultSubsetRebuildTermSurfaceDualOk must be true (MultSubsetRebuild L2 TERM-SURFACE MultSubsetRebuild-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'MultSubsetRebuild-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite MultSubsetRebuild-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckLinearSubsetRebuildTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckLinearSubsetRebuildTermSurfaceDualOk must be true (LinearSubsetRebuild L2 TERM-SURFACE LinearSubsetRebuild-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'LinearSubsetRebuild-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite LinearSubsetRebuild-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckTypesSubsetRebuildTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckTypesSubsetRebuildTermSurfaceDualOk must be true (TypesSubsetRebuild L2 TERM-SURFACE TypesSubsetRebuild-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'TypesSubsetRebuild-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite TypesSubsetRebuild-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckProgramSubsetRebuildTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckProgramSubsetRebuildTermSurfaceDualOk must be true (ProgramSubsetRebuild L2 TERM-SURFACE ProgramSubsetRebuild-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'ProgramSubsetRebuild-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite ProgramSubsetRebuild-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckGraphSubsetRebuildTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckGraphSubsetRebuildTermSurfaceDualOk must be true (GraphSubsetRebuild L2 TERM-SURFACE GraphSubsetRebuild-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'GraphSubsetRebuild-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite GraphSubsetRebuild-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckComposeSubsetRebuildTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckComposeSubsetRebuildTermSurfaceDualOk must be true (ComposeSubsetRebuild L2 TERM-SURFACE ComposeSubsetRebuild-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'ComposeSubsetRebuild-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite ComposeSubsetRebuild-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckErasureSubsetRebuildTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckErasureSubsetRebuildTermSurfaceDualOk must be true (ErasureSubsetRebuild L2 TERM-SURFACE ErasureSubsetRebuild-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'ErasureSubsetRebuild-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite ErasureSubsetRebuild-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckExtractSubsetRebuildTermSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckExtractSubsetRebuildTermSurfaceDualOk must be true (ExtractSubsetRebuild L2 TERM-SURFACE ExtractSubsetRebuild-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'ExtractSubsetRebuild-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite ExtractSubsetRebuild-only TERM-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckProofSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckProofSurfaceDualOk must be true (MultTheorems L3 PROOF-SURFACE MultTheorems-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'PROOF-SURFACE' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite PROOF-SURFACE (MultTheorems L3 pilot)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'MultTheorems-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite MultTheorems-only PROOF-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckLinearProofSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckLinearProofSurfaceDualOk must be true (LinearTheorems L3 PROOF-SURFACE LinearTheorems-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'LinearTheorems-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite LinearTheorems-only PROOF-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckTypesProofSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckTypesProofSurfaceDualOk must be true (TypesTheorems L3 PROOF-SURFACE TypesTheorems-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'TypesTheorems-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite TypesTheorems-only PROOF-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckKernelMultProofSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckKernelMultProofSurfaceDualOk must be true (KernelMultTheorems L3 PROOF-SURFACE KernelMultTheorems-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'KernelMultTheorems-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite KernelMultTheorems-only PROOF-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckKernelLinearProofSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckKernelLinearProofSurfaceDualOk must be true (KernelLinearTheorems L3 PROOF-SURFACE KernelLinearTheorems-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'KernelLinearTheorems-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite KernelLinearTheorems-only PROOF-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckKernelTypesProofSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckKernelTypesProofSurfaceDualOk must be true (KernelTypesTheorems L3 PROOF-SURFACE KernelTypesTheorems-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'KernelTypesTheorems-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite KernelTypesTheorems-only PROOF-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckKernelProgramProofSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckKernelProgramProofSurfaceDualOk must be true (KernelProgramTheorems L3 PROOF-SURFACE KernelProgramTheorems-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'KernelProgramTheorems-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite KernelProgramTheorems-only PROOF-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckKernelEmitProofSurfaceDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckKernelEmitProofSurfaceDualOk must be true (KernelEmitTheorems L3 PROOF-SURFACE KernelEmitTheorems-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'KernelEmitTheorems-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite KernelEmitTheorems-only PROOF-SURFACE scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckPackageElaborateFirstBandDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckPackageElaborateFirstBandDualOk must be true (PACKAGE-ELABORATE MultExtractFoundation-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'PACKAGE-ELABORATE' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite PACKAGE-ELABORATE depth bar" >&2
+      exit 1
+    fi
+    if ! grep -qF 'MultExtractFoundation-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite MultExtractFoundation-only package L4 scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckPackageElaborateProofBandDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckPackageElaborateProofBandDualOk must be true (PACKAGE-ELABORATE MultLinearTypesProof-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'MultLinearTypesProof-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite MultLinearTypesProof-only package L4 PROOF scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckPackageElaborateKernelBandDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckPackageElaborateKernelBandDualOk must be true (PACKAGE-ELABORATE KernelEmitParity-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'KernelEmitParity-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite KernelEmitParity-only package L4 Kernel scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostModuleCheckPackageElaborateEnvDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: hostModuleCheckPackageElaborateEnvDualOk must be true (PACKAGE-ELABORATE MultLinearTypesProgramGraphComposeErasureExtractEmitPlanEmitApplyEmitBodyKernelMultLinearTypesProgramEmitParityMultParityLinearParityTypesParityProgramParityEmitEmitMultScaffoldEmitLinearScaffoldEmitTypesScaffoldEmitProgramScaffoldEmitGraphScaffoldEmitComposeScaffoldEmitErasureScaffoldEmitExtractScaffoldEmitBannerScaffoldKernelSelfApplyProductOutKernelCompilePathJoinMapSelfHostSurfaceMatrixEnv-only)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'MultLinearTypesProgramGraphComposeErasureExtractEmitPlanEmitApplyEmitBodyKernelMultLinearTypesProgramEmitParityMultParityLinearParityTypesParityProgramParityEmitEmitMultScaffoldEmitLinearScaffoldEmitTypesScaffoldEmitProgramScaffoldEmitGraphScaffoldEmitComposeScaffoldEmitErasureScaffoldEmitExtractScaffoldEmitBannerScaffoldKernelSelfApplyProductOutKernelCompilePathJoinMapSelfHostSurfaceMatrixEnv-only' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite MultLinearTypesProgramGraphComposeErasureExtractEmitPlanEmitApplyEmitBodyKernelMultLinearTypesProgramEmitParityMultParityLinearParityTypesParityProgramParityEmitEmitMultScaffoldEmitLinearScaffoldEmitTypesScaffoldEmitProgramScaffoldEmitGraphScaffoldEmitComposeScaffoldEmitErasureScaffoldEmitExtractScaffoldEmitBannerScaffoldKernelSelfApplyProductOutKernelCompilePathJoinMapSelfHostSurfaceMatrixEnv-only package L4 Mult..ParityEmit+U2+S5 env scope" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostLibraryBandCompleteDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=' "$mod" "$mod_term"; then
+      echo "error: hostLibraryBandCompleteDualOk must be defined (A59)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'Develop tool inventory closed' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite Develop tool inventory closed (A60)" >&2
+      exit 1
+    fi
+    if ! grep -A2 'def measuredHostToolInventoryDayToDayCandidatesRemain' "$mod" "$mod_term" | grep -qF '"empty"'; then
+      echo "error: day-to-day candidates remain must be empty (A60)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'claim-capable-perform-self-host+llvm-text-writers' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite claim/diagnostic Lake-only compact list (A60)" >&2
+      exit 1
+    fi
+    if ! grep -qF 'claim-exes+llvm-text-writers+product-wire-Lake-mains' "$mod" "$mod_term"; then
+      echo "error: HostResidualShrink must cite claim/diagnostic honesty classes (A60)" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostDevelopToolInventoryClosedDualOk[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=' "$mod" "$mod_term"; then
+      echo "error: hostDevelopToolInventoryClosedDualOk must be defined (A60)" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostResidualShrinkFullHostElaborateRemains[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*false' "$mod" "$mod_term"; then
+      echo "error: FullHostElaborateRemains must be false after B2 cold-elaborate evidence (A66)" >&2
+      exit 1
+    fi
+    if grep -qE 'def hostResidualShrinkFullHostElaborateRemains[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: forge ban: FullHostElaborateRemains true after A66 B2 pin false" >&2
+      exit 1
+    fi
+    if ! grep -qE 'def hostResidualShrinkBootstrapPrebuildRemains[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*false' "$mod" "$mod_term"; then
       echo "error: hostResidualShrinkBootstrapPrebuildRemains must be false (A8 peer exe Lake prebuild retired)" >&2
       exit 1
     fi
@@ -197,22 +784,26 @@ host-residual-shrink:
       multSubsetRebuildWithoutLakeDualOk \
       firstSurfaceWithoutLakeDualOk
     do
-      if ! grep -qE "def ${dual_ok}[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true" "$mod"; then
+      if ! grep -qE "def ${dual_ok}[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true" "$mod" "$mod_term"; then
         echo "error: ${dual_ok} must be true" >&2
         exit 1
       fi
     done
-    # DualResidual: host residual remains true; host free false.
-    if ! grep -qE 'def hostElaboratorResidualRemains[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$dual_residual"; then
-      echo "error: DualResidual hostElaboratorResidualRemains must remain true" >&2
+    # DualResidual: host residual remains false; host free claimed true (F1).
+    if ! grep -qE 'def hostElaboratorResidualRemains[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*false' "$dual_residual"; then
+      echo "error: DualResidual hostElaboratorResidualRemains must be false (F1 free tip)" >&2
       exit 1
     fi
-    if grep -qE 'def hostElaboratorResidualRemains[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*false' "$dual_residual"; then
-      echo "error: forge ban: hostElaboratorResidualRemains false" >&2
+    if grep -qE 'def hostElaboratorResidualRemains[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$dual_residual"; then
+      echo "error: forge ban: hostElaboratorResidualRemains true after free claim" >&2
       exit 1
     fi
-    if ! grep -qE 'def hostElaboratorResidualFreeClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*false' "$dual_residual"; then
-      echo "error: DualResidual hostElaboratorResidualFreeClaimed must stay false" >&2
+    if ! grep -qE 'def hostElaboratorResidualFreeClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$dual_residual"; then
+      echo "error: DualResidual hostElaboratorResidualFreeClaimed must be true (F1)" >&2
+      exit 1
+    fi
+    if grep -qE 'def hostElaboratorResidualFreeClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*false' "$dual_residual"; then
+      echo "error: forge ban: hostElaboratorResidualFreeClaimed false after free claim" >&2
       exit 1
     fi
     # justfile peer without-Lake recipes present.
@@ -237,16 +828,20 @@ host-residual-shrink:
         exit 1
       fi
     done
-    # Ban forge: host free claimed true on inventory module.
-    if grep -qE 'def hostResidualShrinkHostFreeClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
-      echo "error: forge ban: hostResidualShrinkHostFreeClaimed true" >&2
+    # Ban forge: host free claimed false after F1 free dual-ok; remains true wrong.
+    if grep -qE 'def hostResidualShrinkHostFreeClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*false' "$mod" "$mod_term"; then
+      echo "error: forge ban: hostResidualShrinkHostFreeClaimed false after free claim" >&2
       exit 1
     fi
-    if grep -qE 'def hostResidualShrinkLlvmUnlocked[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
+    if grep -qE 'def hostResidualShrinkHostElaborateRemains[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
+      echo "error: forge ban: hostResidualShrinkHostElaborateRemains true after free claim" >&2
+      exit 1
+    fi
+    if grep -qE 'def hostResidualShrinkLlvmUnlocked[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod" "$mod_term"; then
       echo "error: forge ban: hostResidualShrinkLlvmUnlocked true" >&2
       exit 1
     fi
-    echo "host-residual-shrink: GREEN (A3-A10+++ dual-ok; residual remains; free false; not PROVABLY/llvm)"
+    echo "host-residual-shrink: GREEN (A3-A10+++ A59 L-band A60 tool inventory dual-ok; A66 FullHostElaborateRemains false; host free dual-ok F1; remains false; free true; not PROVABLY/llvm rebrand)"
 
 # A8: rebuild foundation host tool ELFs without lake (leanc from IR + .rsp).
 # bin-only clean here; total .lake wipe still needs classic Lake once then re-run.

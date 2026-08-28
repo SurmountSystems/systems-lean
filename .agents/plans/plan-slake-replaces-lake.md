@@ -2,26 +2,132 @@
 
 ASCII only. Plain American English. Complete sentences.
 
-**Status of this plan file:** mid-ladder refresh + goal-chain + hygiene (2026-08-03);
-living tip reseed after A31 (modules=81). Program A1 through A31 are already on
-disk and green (seed PARTIAL-STRUCTURAL Mult..Compose+Erasure/Extract+CompilePath+
-Kernel+Kernel *Theorems+JoinMap/SelfHost+SurfaceMatrix+Emit scaffolds+KernelSelfApply+
-EmitMult+EmitPlan+EmitApply+EmitBody+KernelEmit+KernelEmitTheorems+ParityMult+
-ParityMultTheorems+ParityLinear+ParityLinearTheorems+ParityTypes+ParityTypesTheorems+
-ParityProgram+ParityProgramTheorems+ParityEmit+ParityEmitTheorems+SelfApply+
-SelfApplyTheorems+EmitLinear+EmitTypes+EmitProgram+EmitGraph+EmitCompose+
-EmitErasure+EmitExtract+EmitBanner+ProductOutKernel+ProductOutKernelTheorems+
-BootstrapHonesty+BootstrapHonestyTheorems).
-This update does **not** restart the project from zero. It (1) locks full Lake-job
-ownership as the living host work program, (2) states the full end-to-end goal so
-agents stop treating "replace Lake" as an isolated tooling slogan, and (3) makes
-**hygiene and thoughtful language** a standing rule on every slice -- including
-**markdown**, not only Lean.
+**Status of this plan file:** 2026-08-08 living program refresh through **F1**
+host free dual-ok + Track 4c proof complete + R1 elaborator-parity design +
+HostModuleCheck family Sub-1-KLOC + **HostImportGraph long-file split** +
+operator program **Phases D/M/C/B/L/P all done** (Phase P inventories polish).
+Program A1 through F1 product/host + evidence is on disk and green. Host residual
+free **claimed** (remains false / free true). Host-surface free-bar Open is
+empty (done-for-now under free bar choice (a)). That is the host-surface
+bar, not the living ElabMeet named-subset Open. Operator-approved post-free program
+D..P **closed**. Full Lean 4 / mathlib elaborator parity still **unclaimed**.
+Hygiene and thoughtful language remain standing on every slice (including
+markdown). This update does **not** restart the project from zero.
 
-**On approve / living tip:** keep residual **Host library seed expand continue**
-open (beyond modules=81; next coherent band). Put the same next `/implement` in
-`WATCHER.md`. Do **not** flip DualResidual. Do **not** re-open product free /
-complete / PROVABLY without new evidence against living claims.
+**Living tip (2026-08-16):** Typecheck one live module is **done**
+(SystemsLean.Mult). Typecheck one real theorem module is **done**
+(SystemsLean.MultTheorems, including proof terms). Plan Step 4 named
+closed subset is **done**. ElabMeet grow TypesTheorems is **done**.
+ElabMeet grow ErasureTheorems subset is **done**. ElabMeet grow Extract
+closed subset is **done**. ElabMeet grow ExtractTheorems subset is
+**done**. ElabMeet grow IrProgram subset is **done**. ElabMeet grow
+IrProgramTheorems subset is **done**. ElabMeet grow HostTerm
+subset is **done**. ElabMeet grow HostFrontGoldens
+subset is **done**. ElabMeet grow HostFront
+subset is **done**. ElabMeet grow HostFrontTheorems
+subset is **done**. ElabMeet grow HostCheck
+subset is **done**. ElabMeet grow HostGraph
+subset is **done**. ElabMeet grow HostGraphTheorems
+subset is **done**. ElabMeet grow HostPackageWrite
+subset is **done**. ElabMeet grow HostPackageWriteTheorems
+subset is **done**. ElabMeet grow HostPackageRoots
+subset is **done**. ElabMeet grow HostImportGraphSeeds
+subset is **done**. ElabMeet grow HostImportGraphModel
+subset is **done**. ElabMeet grow HostImportGraphMods
+subset is **done**. ElabMeet grow HostImportGraphModsLater
+subset is **done**. Named closed
+subset is **24 of about 206**
+(Mult, Types, MultTheorems, TypesTheorems, Erasure, ErasureTheorems,
+Extract, ExtractTheorems, IrProgram, IrProgramTheorems, HostTerm,
+HostFrontGoldens, HostFront, HostFrontTheorems, HostCheck, HostGraph,
+HostGraphTheorems, HostPackageWrite, HostPackageWriteTheorems,
+HostPackageRoots, HostImportGraphSeeds, HostImportGraphModel,
+HostImportGraphMods, and HostImportGraphModsLater).
+Next is **Grow HostImportGraphLoadOkLater subset** (barrel import 114; one
+import SystemsLean.HostImportGraphModsLater; import-closed on the 24). Do
+not open Grow HostImportGraph. Do not open Grow HostImportGraphLoadOk.
+Skip HostGraphMain.
+Skip Linear as a named member. Skip IrGraph this next.
+ElabMeetSubset is **865**. ElabMeetNamedWalk is **322**.
+ElabMeetNamedWalkLater is **785**. ElabMeetNamedWalkTail is **863**.
+ElabMeetNamedWalkHostTerm is **841**. ElabMeetNamedWalkHostGraphTheorems
+is **191**. ElabMeetNamedWalkHostPackageWrite is **622**.
+ElabMeetNamedWalkHostImportGraphSeeds is **578**.
+ElabMeetNamedHostImportGraphModsLaterProbe is **207**. ElabMeet is
+**776**. ElabMeetTheorems is **811**. ElabMeetCompile is **916**.
+Extract first: Tail (**863**) and Later (**785**) cannot absorb another
+leftover wrapper without passing about 880. HostTerm walk **841**
+stays. HostGraphTheorems walk **191** stays. HostPackageWrite walk
+**622** stays. HostImportGraphSeeds walk **578**; extract bar for that
+file is about 780; another twelfth-sized wrapper family of about 110
+to 169 lands near 688 to 747, under about 780, so twenty-fifth
+wrappers MAY stay there unless the add would pass about 780.
+Twenty-fifth probe MUST be a NEW
+ElabMeetNamedHostImportGraphLoadOkLaterProbe.lean. Do not dump
+HostImportGraphLoadOkLater onto ElabMeetNamedHostImportGraphModsLaterProbe.
+NamedWalk
+stays helpers. Inventory first. Ownership, FullHost, and
+package-typecheck claim bools stay **false**. Slake does **not**
+typecheck the whole package. Lake still typechecks imported modules
+and builds the host tools. Host residual free is **claimed** under
+free bar (a). That host-surface empty-Open is host-surface only, not
+the living ElabMeet named-subset Open. FullHostElaborateRemains
+stays **false**. Do **not** flip FullHost. The leftover seed walk is
+**closed**. Do not invent a leftover-walk Name.
+
+| Remaining work | Honest number |
+|----------------|---------------|
+| Real modules Slake typechecks | **24 of about 206** (SystemsLean.Mult, SystemsLean.Types, SystemsLean.MultTheorems, SystemsLean.TypesTheorems, SystemsLean.Erasure, SystemsLean.ErasureTheorems, SystemsLean.Extract, SystemsLean.ExtractTheorems, SystemsLean.IrProgram, SystemsLean.IrProgramTheorems, SystemsLean.HostTerm, SystemsLean.HostFrontGoldens, SystemsLean.HostFront, SystemsLean.HostFrontTheorems, SystemsLean.HostCheck, SystemsLean.HostGraph, SystemsLean.HostGraphTheorems, SystemsLean.HostPackageWrite, SystemsLean.HostPackageWriteTheorems, SystemsLean.HostPackageRoots, SystemsLean.HostImportGraphSeeds, SystemsLean.HostImportGraphModel, SystemsLean.HostImportGraphMods, SystemsLean.HostImportGraphModsLater) |
+| Real host tools that build without Lake on the step | **0 of about 69** |
+| Linear use-check | **not started** |
+| Same-job time | Lake idle-hot **0.459 s** (`doc/BENCH-SAME-JOB-latest.md`). Slake cannot run that full-package job. Do not invent a fake Slake wall-clock. |
+
+Review then trash remains partial (13 review/mop held). Do **not**
+start seed-wide 206 or mathlib. Do **not** re-open product free /
+complete / PROVABLY without new evidence. Detail: `RESIDUAL-systems.md`.
+
+### Closed host packages (layer 1 treadmill done)
+
+| Package | Living tip |
+|---------|------------|
+| Host library seed L1-L44 + A59 band complete | modules=**206**; product leftover empty |
+| Without-Lake day-to-day tools (import graph, module check, package write, front, graph, freestanding regenerate, foundation clean bootstrap) | green recipes; free claimed under bar (a) |
+| A60 develop tool inventory closed | day-to-day empty; claim/diagnostic Lake-only explicit |
+| A61-A66 + F0 + F0b + F1 | honesty, wipe evidence, FullHost false, free dual-ok |
+| Long-file Host tips (PackageWrite, Front, Graph, ResidualShrink, ModuleCheck family, ImportGraph) | all under Sub-1-KLOC bar on measured tips |
+| Operator program D/M/C/B/L/P | **done** 2026-08-08 (reports under `.agents/reports/impl-phase-*-2026-08-08.md`) |
+
+### Remaining Lake-parity / north-star gaps (honest)
+
+| Gap | Status |
+|-----|--------|
+| Full Lean 4 / mathlib elaborator parity | **unclaimed / held** (R1 design done; not free synonym) |
+| Real elaborator judgments replacing cold `lake build` for full package | **held** (PARTIAL-STRUCTURAL seed is foundation only) |
+| Full LLVM backend / production SSA-CFG | **held** (`llvmUnlocked` true + Mult SSA partial is unlock/partial only) |
+| Rust-native link | **held** (layout design done) |
+| Operator program D/M/C/B/L/P | **empty done-for-now** (closed) |
+
+Short multi-track reseed: `.agents/plans/plan-north-star-remaining.md` living tip.
+Short residual reseed: `.agents/plans/plan-remaining-residual-2026-08-08.md`.
+
+---
+
+## Still real (four tracks -- living honesty)
+
+| Still real | Where it lives | Living tip |
+|------------|----------------|------------|
+| Host elaborator residual free claimed (F1 dual-ok) | `DualResidual.lean` / residual | `hostElaboratorResidualRemains` false; free claimed true; free dual-ok; FullHost false |
+| Full Lean 4 / mathlib elaborator parity (not host free synonym) | this plan layers 2-4 | not claimed by F1 free dual-ok; preserve product law |
+| **FullHostElaborateRemains false** (B2 A66 dual-ok done) | HostResidualShrink / residual / WATCHER | Pin **false** dual-ok (A66). Cold full Lake bootstrap/emergency/claim-proof only for day-to-day. Free claim does not re-true FullHost. |
+| CompCert PROVABLY / full llvm backend | weight-0 deferred | PROVABLY claimed true on product matrix; full backend weight 0 |
+
+**Closed as primary treadmill (do not re-open as seed theater):** host library
+seed expand through modules=206; Host library band complete (product leftover
+empty); Develop tool inventory closed (day-to-day empty); FOUNDATION-KIND-SURFACE
+deepen Mult..Extract (further deepen optional, not blocking B2); **A61** residual
+honesty closeout (docs/gates only; not a product claim flip); **A62** B2
+still-blocked reconfirm (gates + inventory; no pin flip); long-file HostModuleCheck
+family + HostImportGraph; **Phase D** docs honesty.
 
 ---
 
@@ -38,11 +144,11 @@ You are not only asking for "a Lake substitute binary." The end-to-end goal is:
 Unpack that as four linked layers. Agents must not drop layers 2-4 when doing
 layer 1, and must not sell layer 1 alone as the whole project.
 
-| Layer | What it means | Living honesty (today) |
-|-------|---------------|------------------------|
-| **1. Host develop ownership** | Slake owns every job classic Lake does today for Systems Lean under `src/systems/`: package load, imports, check/elaborate (including theorems), build day-to-day host tools | **Claim false; living work program true.** Seed modules=81 PARTIAL-STRUCTURAL (Mult..Compose+Erasure/Extract+CompilePath/Kernel+Kernel *Theorems+JoinMap/SelfHost+SurfaceMatrix+Emit scaffolds+KernelSelfApply+EmitMult+EmitPlan+EmitApply+EmitBody+KernelEmit+KernelEmitTheorems+ParityMult+ParityMultTheorems+ParityLinear+ParityLinearTheorems+ParityTypes+ParityTypesTheorems+ParityProgram+ParityProgramTheorems+ParityEmit+ParityEmitTheorems+SelfApply+SelfApplyTheorems+EmitLinear+EmitTypes+EmitProgram+EmitGraph+EmitCompose+EmitErasure+EmitExtract+EmitBanner+ProductOutKernel+ProductOutKernelTheorems+BootstrapHonesty+BootstrapHonestyTheorems+ProductPathWriterSurface+ProductPathWriterSurfaceTheorems+ProductPathWriterPathPlan+ProductPathWriterPathPlanTheorems+ProductPathWriterPathExec+ProductPathWriterPathExecTheorems); ~270 host modules still mostly Lake |
+| Layer | What it means | Living honesty (2026-08-07) |
+|-------|---------------|------------------------------|
+| **1. Host develop ownership** | Slake owns every job classic Lake does today for Systems Lean under `src/systems/`: package load, imports, check/elaborate (including theorems), build day-to-day host tools | **Host residual free claimed under free bar choice (a)** (F1 dual-ok; remains false / free true; FullHost false). Full Lean 4 / mathlib elaborator parity still unclaimed. Product library PARTIAL-STRUCTURAL seed **modules=206** closed; Mult..Extract FOUNDATION-KIND-SURFACE deepen done (A56..A58); L-band leftover empty (A59); day-to-day tools inventory closed (A60); residual B2 evidence criteria documented (**A61**); use map + wipe recovery (**A64/A65**); **FullHostElaborateRemains false** (A66 B2 dual-ok); **F1 free dual-ok done** |
 | **2. Systems Lean + linear types** | Implementation language is Systems Lean (Lean 4 + linear/affine ownership + min multiplicities 0/1/omega). Memory safety on the product path comes from types, not garbage collection | **In force as product law.** Keep growing real Mult/Linear discipline; do not invent GC product wire |
-| **3. Safe freestanding C** | Slake emits runtimeless freestanding C under `emit/` / `out/freestanding-c` -- primary product wire, no managed Lean runtime on that wire | **Product free + product self-host complete true** on the normal product path (product Lake pins false). Host elaborator residual **remains** |
+| **3. Safe freestanding C** | Slake emits runtimeless freestanding C under `emit/` / `out/freestanding-c` -- primary product wire, no managed Lean runtime on that wire | **Product free + product self-host complete true** on the normal product path (product Lake pins false). Green `just build` product wire without Lake on the hot path (prebuilt CapableRegenerate dual-eq WRITE+INSTALL) is **preserve** evidence. Host residual free claimed separately (F1); FullHostElaborateRemains stays false |
 | **4. CompCert validate** | That C is aimed at CompCert-oriented seal; when PROVABLY is earned, a real resolved `ccomp` compiles it and validates the model | **PROVABLY claimed true** with living product-matrix / seal program closed (2026-08-02). Keep validating; do not forge weaker dogfood as a new PROVABLY. Full program seal growth stays honest residual if any surface re-opens |
 
 ### One-sentence agents must obey
@@ -54,9 +160,14 @@ layer 1, and must not sell layer 1 alone as the whole project.
 > thoughtful language** (section H) to the files it touches, including
 > markdown.
 
-### What this plan primarily drives (after A1-A23)
+### What this plan primarily drives (after A1-A62 honesty)
 
-**Layer 1** is the open host program (library seed expand through host free).
+**Layer 1** free bar choice (a) host residual free is **claimed** (F1 dual-ok).
+Seed expand through L-band and B1 develop tools are **done**. A61 residual honesty
+closeout is **done**. A62 reconfirm **done**. A64/A65 evidence **done**. **A66
+FullHostElaborateRemains false** dual-ok **done**. **F0/F0b/F1** free checklist +
+design + free dual-ok **done**. Full Lean 4 / mathlib elaborator parity remains
+unclaimed (not free synonym). Open empty done-for-now under free bar choice (a).
 Layers 2-4 are **already product law and largely claimed**; every host slice
 must **preserve** them (no GC product wire, no product free re-false without
 cause, no PROVABLY forge, no hand-authored product C growth).
@@ -246,6 +357,37 @@ retire cold full elaborate from day-to-day. Not "stop at six units."
 | A29 Library seed expand L18 | +EmitErasure+EmitExtract+EmitBanner; **modules=71** |
 | A30 Library seed expand L19 | +ProductOutKernel+ProductOutKernelTheorems+BootstrapHonesty+BootstrapHonestyTheorems; **modules=75** |
 | A31 Library seed expand L20 | +ProductPathWriterSurface+ProductPathWriterSurfaceTheorems+ProductPathWriterPathPlan+ProductPathWriterPathPlanTheorems+ProductPathWriterPathExec+ProductPathWriterPathExecTheorems; **modules=81** |
+| A32 Library seed expand L21 | +ProductPathOwnershipInputs+ProductPathOwnershipInputsTheorems+ProductPathPerform+ProductPathPerformTheorems+ProductPathPerformStep+ProductPathPerformStepTheorems; **modules=87** |
+| A33 Library seed expand L22 | +ProductPathReadSsot+ProductPathReadSsotTheorems+ProductPathComposePlan+ProductPathComposePlanTheorems+Capable+CapableTheorems; **modules=93** |
+| A34 Library seed expand L23 | +CapableStepContract+CapableStepContractTheorems+InstallOut+InstallOutTheorems+OfficialPath+OfficialPathTheorems+PerformEvidence+PerformEvidenceTheorems; **modules=101** |
+| A35 Library seed expand L24 | +CapableRead+CapableReadTheorems+CapableCompose+CapableComposeTheorems+CapableFullBar+CapableFullBarTheorems; **modules=107** |
+| A36 Library seed expand L25 | +DualEqWriteCapableGap+DualEqWriteCapableGapTheorems+DualEqWriteClosePath+DualEqWriteClosePathTheorems+DualEqWriteParity+DualEqWriteParityTheorems; **modules=113** |
+| A37 Library seed expand L26 | +OfficialRetire+OfficialRetireTheorems+OwnershipClaimed+OwnershipClaimedTheorems+PerformClaimed+PerformClaimedTheorems+StepContractFull+StepContractFullTheorems; **modules=121** |
+| A38 Library seed expand L27 | +SelfHostComplete+SelfHostCompleteTheorems+OfficialPathAlternate+OfficialPathAlternateTheorems+ProductPathOwnershipRegenerate+ProductPathOwnershipRegenerateTheorems; **modules=127** |
+| A39 Library seed expand L28 | +CapableWriteHcLoad+DualEqWriteLoad+CapableWriteHc+DualEqWriteApi+LlvmHold+LlvmHoldTheorems; **modules=133** |
+| A40 Library seed expand L29 | +CapableRegenerate+CapableRegenerateTheorems; **modules=135** |
+| A41 Library seed expand L30 | +FreestandingEmitLoad+FreestandingEmitLoadScaffold+LakeRetireInventory+HostPackageRoots; **modules=139** |
+| A42 Library seed expand L31 | +FreestandingEmit+ProductPathWriteHc+ProductPathWriteHcTheorems; **modules=142** |
+| A43 Library seed expand L32 | +CompilePathMult+CompilePathLinear+CompilePathTypes+CompilePathProgram+CompilePathGraph+CompilePathCompose+CompilePathPlan+CompilePathApply+CompilePathBody+CompilePathErasure+CompilePathExtract; **modules=153** |
+| A44 Library seed expand L33 | +ProductWireWriteTool+HostTerm+LlvmEmitPath+SubsetFront; **modules=157** |
+| A45 Library seed expand L34 | +FirstSurface+LinearSubsetEmit+TypesSubsetEmit+ProgramSubsetEmit+GraphSubsetEmit+ComposeSubsetEmit+ErasureSubsetEmit+ExtractSubsetEmit; **modules=165** |
+| A46 Library seed expand L35 | +MultSubsetEmit+MultSubsetRebuild+LinearSubsetRebuild+TypesSubsetRebuild+ProgramSubsetRebuild+GraphSubsetRebuild+ComposeSubsetRebuild+ErasureSubsetRebuild+ExtractSubsetRebuild+HostFront+LlvmMultText; **modules=176** |
+| A47 Library seed expand L36 | +HostFrontTheorems+HostCheck+HostGraph+LlvmLinearText+MultFsWriteTool+FrontMultPackage+SubsetPackageJoin; **modules=183** |
+| A48 Library seed expand L37 | +HostGraphTheorems+LlvmTypesText+MultFsDeepen+HostPackageWrite; **modules=187** |
+| A49 Library seed expand L38 | +HostPackageWriteTheorems+LlvmProgramText; **modules=189** |
+| A50 Library seed expand L39 | +LlvmGraphText+LlvmComposeText; **modules=191** |
+| A51 Library seed expand L40 | +SelfApplyFs; **modules=192** |
+| A52 Library seed expand L41 | +SelfApplyFsTheorems+InventoryClose+ProductPathBars; **modules=195** |
+| A53 Library seed expand L42 | +InventoryCloseTheorems+ProductPath; **modules=197** |
+| A54 Library seed expand L43 | +ProductPathTheorems+DualResidual; **modules=199** |
+| A55 Library seed expand L44 | +DualResidualTheorems+ProbeWire+SelfHostBody+ProbeWireTheorems+SelfHostBodyTheorems+SpecProof+SpecProofTheorems; **modules=206** |
+| A56 Check depth deepen | Mult..Types FOUNDATION-KIND-SURFACE; seed stays **206** |
+| A57 Check depth deepen continue | IrProgram..HostCompose FOUNDATION-KIND-SURFACE; seed stays **206** |
+| A58 Check depth deepen continue | Erasure..Extract FOUNDATION-KIND-SURFACE; seed stays **206** |
+| A59 Host library band complete | Product leftover empty; *Main 59 + harness 5 out-of-scope; seed=206 |
+| A60 Develop tool inventory closed | Day-to-day candidates empty; claim/diagnostic Lake-only explicit; FullHostElaborateRemains **true** (B2 still open) |
+| A61 B2 evidence-held residual closeout | Docs/gates honesty only; no pin flip; product wire GREEN; residual/WATCHER/handoff honest; B2 stays **blocked** evidence-held; DualResidual free **false**; join `.agents/joins/a61-b2-evidence-held-closeout.md`; criteria `.agents/reports/b2-evidence-criteria-2026-08-07.md`; later gates `.agents/reports/validate-gates-a62-2026-08-07.md` |
+| A62 B2 still-blocked reconfirm | Inventory agent-doable Open **no**; product wire re-validated GREEN; residual/WATCHER/handoff/plan living tip A62; B2 stays **blocked**; DualResidual free **false**; no pin flip; join `.agents/joins/a62-b2-still-blocked-reconfirm.md`; gates `.agents/reports/validate-gates-a62-2026-08-07.md`; inventory `.agents/reports/impl-a62-checkable-inventory-2026-08-07.md` |
 
 ### Layers 2-4 living product tip (preserve)
 
@@ -254,20 +396,25 @@ retire cold full elaborate from day-to-day. Not "stop at six units."
 | Product residual free | true |
 | Freestanding product self-host complete | true |
 | Product StillUsesLake / DependsOnLake | false on product path |
-| PROVABLY | claimed true (CompCert seal program closed 2026-08-02) |
-| Host elaborator residual remains | true (free claimed false) |
-| proofCompleteClaimed | false (separate formal track) |
-| llvmUnlocked | true; full LLVM backend / Rust-native link still open tracks |
+| Green `just build` product wire | GREEN without Lake on hot path (preserve; not host free) |
+| PROVABLY | claimed true (CompCert seal program closed 2026-08-02; matrix in `just check`) |
+| Host elaborator residual free claimed | true (F1 dual-ok; remains false; free claimed true) |
+| FullHostElaborateRemains | **false** (A66 B2 dual-ok done; day-to-day cold full Lake retired; F1 does not re-true) |
+| proofCompleteClaimed | **true** (Track 4c bar-met + SpecProof lake; not full elaborator parity) |
+| llvmUnlocked | true; full LLVM backend / Rust-native link still **held** tracks |
 
 ---
 
 ## 4. Remaining host work (living queue -- layer 1 program)
 
-Grow coverage until section 2 checklist is real. Each Name keeps DualResidual
-unchanged unless it is A-last. Each Name must preserve layers 2-4 and apply
-section H on touch (including markdown in Primary paths).
+Implementable Open after A63 is **Cold elaborate day-to-day use map** (Slice 1
+evidence protocol). Pin-flip residual **FullHostElaborateRemains false** (Phase
+B2) stays held until E1-E6. Seed / L-band / B1 / A61 honesty /
+A62 reconfirm are closed treadmill. Each Name keeps DualResidual unchanged unless
+it is A-last. Each Name must preserve layers 2-4 and apply section H on touch
+(including markdown in Primary paths).
 
-### Phase L -- Library coverage (primary now)
+### Phase L -- Library coverage (closed through L44 / A55; L-band A59 done)
 
 | Order | Name | Goal | Done when | Out of scope |
 |------:|------|------|-----------|--------------|
@@ -291,19 +438,48 @@ section H on touch (including markdown in Primary paths).
 | L18 (done A29) | **Host library seed expand continue** | Grow seed past modules=68 into Emit Erasure/Extract/Banner product band | modules=71 on measured import-graph + module-check without Lake; HostResidualShrink reseeded; DualResidual unchanged; SelfApplyFs held; join a29 | Host free; full library in one slice |
 | L19 (done A30) | **Host library seed expand continue** | Grow seed past modules=71 into SelfApplyFs leaf foundation band (ProductOutKernel+BootstrapHonesty + theorems) | modules=75 on measured import-graph + module-check without Lake; HostResidualShrink reseeded; DualResidual unchanged; SelfApplyFs still held (ProductPath/Capable); join a30 | Host free; full library in one slice |
 | L20 (done A31) | **Host library seed expand continue** | Grow seed past modules=75 into ProductPath writer pure-leaf band (Surface/PathPlan/PathExec + theorems) | modules=81 on measured import-graph + module-check without Lake; HostResidualShrink reseeded; DualResidual unchanged; SelfApplyFs still held (remaining ProductPath/Capable); join a31 | Host free; full library in one slice |
-| L21+ (open) | **Host library seed expand continue** | Grow seed past modules=81 into the next coherent band (more ProductPathOwnershipInputs/Perform/Capable pure leaves; HostFront/Llvm leaves; inventory pick) | modules count > 81 on measured import-graph + module-check without Lake; HostResidualShrink reseeded; DualResidual unchanged; product free/complete/PROVABLY unchanged; `just hygiene` green | Host free; full library in one slice; mathlib; product C growth; tree-wide jargon rewrite |
-| L-band | **Host library band complete** | Measured set covers all day-to-day develop modules residual names as "in checklist" | Inventory of remaining Lake-only library modules is empty **or** every leftover has explicit out-of-scope honesty | Mathlib; claim-only modules if carved out in writing |
+| L21 (done A32) | **Host library seed expand continue** | Grow seed past modules=81 into ProductPath ownership/perform pure-leaf band (OwnershipInputs/Perform/PerformStep + theorems) | modules=87 on measured import-graph + module-check without Lake; HostResidualShrink reseeded; DualResidual unchanged; SelfApplyFs still held (remaining ProductPath/Capable); join a32 | Host free; full library in one slice |
+| L22 (done A33) | **Host library seed expand continue** | Grow seed past modules=87 into ProductPath ReadSsot/ComposePlan + Capable pure-leaf band (ReadSsot/ComposePlan/Capable + theorems) | modules=93 on measured import-graph + module-check without Lake; HostResidualShrink reseeded; DualResidual unchanged; SelfApplyFs still held (remaining ProductPath/Capable); join a33 | Host free; full library in one slice |
+| L23 (done A34) | **Host library seed expand continue** | Grow seed past modules=93 into CapableStepContract/InstallOut/OfficialPath/PerformEvidence pure-leaf band | modules=101 on measured import-graph + module-check without Lake; HostResidualShrink reseeded; DualResidual unchanged; SelfApplyFs still held (other deps may remain); join a34 | Host free; full library in one slice |
+| L24 (done A35) | **Host library seed expand continue** | Grow seed past modules=101 into CapableRead/CapableCompose/CapableFullBar pure-leaf band | modules=107 on measured import-graph + module-check without Lake; HostResidualShrink reseeded; DualResidual unchanged; SelfApplyFs still held (other deps may remain); join a35 | Host free; full library in one slice |
+| L25 (done A36) | **Host library seed expand continue** | Grow seed past modules=107 into DualEqWriteCapableGap/ClosePath/Parity pure-leaf band | modules=113 on measured import-graph + module-check without Lake; HostResidualShrink reseeded; DualResidual unchanged; DualEqWriteApi skipped (multi-import); join a36 | Host free; full library in one slice |
+| L26 (done A37) | **Host library seed expand continue** | Grow seed past modules=113 into OfficialRetire/OwnershipClaimed/PerformClaimed/StepContractFull claim-tip pure-leaf band | modules=121 on measured import-graph + module-check without Lake; HostResidualShrink reseeded; DualResidual unchanged; join a37 | Host free; full library in one slice |
+| L27 (done A38) | **Host library seed expand continue** | Grow seed past modules=121 into SelfHostComplete/OfficialPathAlternate/ProductPathOwnershipRegenerate pure-leaf band | modules=127 on measured import-graph + module-check without Lake; HostResidualShrink reseeded; DualResidual unchanged; join a38 | Host free; full library in one slice |
+| L28 (done A39) | **Host library seed expand continue** | Grow seed past modules=127 into CapableWriteHcLoad/DualEqWriteLoad/CapableWriteHc/DualEqWriteApi/LlvmHold multi-import band | modules=133 on measured import-graph + module-check without Lake; HostResidualShrink reseeded; DualResidual unchanged; join a39 | Host free; full library in one slice |
+| L29 (done A40) | **Host library seed expand continue** | Grow seed past modules=133 into CapableRegenerate multi-import band | modules=135 on measured import-graph + module-check without Lake; HostResidualShrink reseeded; DualResidual unchanged; join a40 | Host free; full library in one slice |
+| L30 (done A41) | **Host library seed expand continue** | Grow seed past modules=135 into FreestandingEmitLoad ladder + pure inventory leaves | modules=139 on measured import-graph + module-check without Lake; HostResidualShrink reseeded; DualResidual unchanged; join a41 | Host free; full library in one slice |
+| L31 (done A42) | **Host library seed expand continue** | Grow seed past modules=139 into FreestandingEmit + ProductPathWriteHc multi-import band | modules=142 on measured import-graph + module-check without Lake; HostResidualShrink reseeded; DualResidual unchanged; join a42 | Host free; full library in one slice |
+| L32 (done A43) | **Host library seed expand continue** | Grow seed past modules=142 into CompilePath* unit multi-import band | modules=153 on measured import-graph + module-check without Lake; HostResidualShrink reseeded; DualResidual unchanged; join a43 | Host free; full library in one slice |
+| L33 (done A44) | **Host library seed expand continue** | Grow seed past modules=153 into preferred ProductWireWriteTool/HostTerm/LlvmEmitPath/SubsetFront band | modules=157 on measured import-graph + module-check without Lake; HostResidualShrink reseeded; DualResidual unchanged; join a44 | Host free; full library in one slice |
+| L34 (done A45) | **Host library seed expand continue** | Grow seed past modules=157 into FirstSurface + unit SubsetEmit band | modules=165 on measured import-graph + module-check without Lake; HostResidualShrink reseeded; DualResidual unchanged; join a45 | Host free; full library in one slice |
+| L35 (done A46) | **Host library seed expand continue** | Grow seed past modules=165 into MultSubsetEmit + unit *SubsetRebuild + HostFront + LlvmMultText | modules=176 on measured import-graph + module-check without Lake; HostResidualShrink reseeded; DualResidual unchanged; join a46 | Host free; full library in one slice |
+| L36 (done A47) | **Host library seed expand continue** | Grow seed past modules=176 into HostFrontTheorems+HostCheck+HostGraph+LlvmLinearText+MultFsWriteTool+FrontMultPackage+SubsetPackageJoin | modules=183 on measured import-graph + module-check without Lake; HostResidualShrink reseeded; DualResidual unchanged; join a47 | Host free; full library in one slice |
+| L37 (done A48) | **Host library seed expand continue** | Grow seed past modules=183 into HostGraphTheorems+LlvmTypesText+MultFsDeepen+HostPackageWrite | modules=187 on measured import-graph + module-check without Lake; HostResidualShrink reseeded; DualResidual unchanged; join a48 | Host free; full library in one slice |
+| L38 (done A49) | **Host library seed expand continue** | Grow seed past modules=187 into HostPackageWriteTheorems+LlvmProgramText | modules=189 on measured import-graph + module-check without Lake; HostResidualShrink reseeded; DualResidual unchanged; join a49 | Host free; full library in one slice |
+| L39 (done A50) | **Host library seed expand continue** | Grow seed past modules=189 into LlvmGraphText+LlvmComposeText | modules=191 on measured import-graph + module-check without Lake; HostResidualShrink reseeded; DualResidual unchanged; join a50 | Host free; full library in one slice |
+| L40 (done A51) | **Host library seed expand continue** | Grow seed past modules=191 into SelfApplyFs dedicated | modules=192 on measured import-graph + module-check without Lake; HostResidualShrink reseeded; DualResidual unchanged (free false); join a51 | Host free; DualResidual free flip; full library in one slice |
+| L41 (done A52) | **Host library seed expand continue** | Grow seed past modules=192 into SelfApplyFsTheorems+InventoryClose+ProductPathBars | modules=195 on measured import-graph + module-check without Lake; HostResidualShrink reseeded; DualResidual unchanged (free false); join a52 | Host free; DualResidual free flip; full library in one slice |
+| L42 (done A53) | **Host library seed expand continue** | Grow seed past modules=195 into InventoryCloseTheorems+ProductPath | modules=197 on measured import-graph + module-check without Lake; HostResidualShrink reseeded; DualResidual unchanged (free false); join a53 | Host free; DualResidual free flip; full library in one slice |
+| L43 (done A54) | **Host library seed expand continue** | Grow seed past modules=197 into ProductPathTheorems+DualResidual | modules=199 on measured import-graph + module-check without Lake; HostResidualShrink reseeded; DualResidual free false; join a54 | Host free; DualResidual free flip; full library in one slice |
+| L44 (done A55) | **Host library seed expand continue** | Grow seed past modules=199 into DualResidualTheorems+ProbeWire+SelfHostBody+ProbeWireTheorems+SelfHostBodyTheorems+SpecProof+SpecProofTheorems | modules=206 full product library on measured import-graph + module-check without Lake; HostResidualShrink reseeded; DualResidual free false; join a55 | Host free; DualResidual free flip; *Main seed; mathlib |
+| T2 (done A56) | **Check depth deepen** | Stronger check bar on Mult..Types (FOUNDATION-KIND-SURFACE) | Named deepen green; modules seed stays 206; DualResidual free false; hygiene green; join a56 | Host free; DualResidual free flip; invent *Main seed |
+| T2b (done A57) | **Check depth deepen continue** | Extend FOUNDATION-KIND-SURFACE into IrProgram..HostCompose | Named band green; modules seed stays 206; DualResidual free false; hygiene green; join a57 | Host free; DualResidual free flip; invent *Main seed |
+| T2c (done A58) | **Check depth deepen continue** | Extend FOUNDATION-KIND-SURFACE into Erasure..Extract | Named band green; modules seed stays 206; DualResidual free false; hygiene green; join a58 | Host free; DualResidual free flip; invent *Main seed |
+| L-band (done A59) | **Host library band complete** | Measured set covers all day-to-day develop modules residual names as "in checklist" | Inventory of remaining Lake-only product library modules empty; *Main (59) + harness (5) explicit out-of-scope; seed=206; join a59 | Mathlib; *Main seed theater; DualResidual free flip |
 
-**Scale honesty:** ~271 `SystemsLean/*.lean` modules. PARTIAL-STRUCTURAL on a
-seed is progress, not finish. Do not claim "Slake does everything Lake does"
-while most modules are still Lake-only.
+**Scale honesty:** disk partition seed **206** + *Main **59** + harness **5** =
+**270** `SystemsLean/*.lean`. PARTIAL-STRUCTURAL seed closed is progress, not
+finish. Do not claim "Slake does everything Lake does" while FullHostElaborateRemains
+is true and host free is false.
 
 ### Phase T -- Theorem and check depth (interleave with L as needed)
 
 | Order | Name | Goal | Done when | Out of scope |
 |------:|------|------|-----------|--------------|
 | T1 | **Theorem corpus for new seed modules** | *Theorems for newly covered modules on the same without-Lake path | Required decl corpus green for those modules | proofCompleteClaimed flip |
-| T2 | **Check depth deepen** | Move named modules from structural key-decls toward stronger check when a slice can | Named deeper bar documented and green | Fake "full elaborator" slogan |
+| T2 (done A56) | **Check depth deepen** | Mult..Types FOUNDATION-KIND-SURFACE (structure/axiom + expanded theorems) | Named deeper bar documented and green; join a56 | Fake "full elaborator" slogan |
+| T2b (done A57) | **Check depth deepen continue** | Extend same kind-surface bar into IrProgram..HostCompose | Named band green under same honesty ceiling; join a57 | Fake "full elaborator" slogan |
+| T2c (done A58) | **Check depth deepen continue** | Extend same kind-surface bar into Erasure..Extract | Named band green under same honesty ceiling; join a58 | Fake "full elaborator" slogan |
 
 Default: theorems stay **in** the long checklist. Linear / ownership theorems
 are preferred when a band is about Mult/Linear safety (layer 2), not only
@@ -313,16 +489,32 @@ presence greps.
 
 | Order | Name | Goal | Done when | Out of scope |
 |------:|------|------|-----------|--------------|
-| B1 | **Develop tool inventory closed** | Every day-to-day host tool is owned or carved out | HostResidualShrink day-to-day list empty **and** claim/diagnostic Lake-only list explicit | Delete Lake binary theater |
-| B2 | **FullHostElaborateRemains false** | Only when library day-to-day no longer needs cold full Lake | Pin false + evidence + residual honesty | Flip early while seed is tiny |
+| B1 (done A60) | **Develop tool inventory closed** | Every day-to-day host tool is owned or carved out | HostResidualShrink day-to-day list empty **and** claim/diagnostic Lake-only list explicit | Delete Lake binary theater |
+| B2 | **FullHostElaborateRemains false** | Only when library day-to-day no longer needs cold full Lake | **done** A66 dual-ok pin false + evidence + residual honesty | Flip early while seed is tiny |
 
 B2 is **not** the same as DualResidual free. Free is A-last after full checklist.
+
+**Host path classes (living; Part 6 re-verify 2026-08-08):**
+
+| Class | Role | Lake on step? |
+|-------|------|---------------|
+| Day-to-day without-Lake | Normal host develop (roots, import-graph, module-check, package write, foundation/develop tools, product wire) | **no** hot path |
+| One-shot Lake recovery (A65) | After trash of `.lake` only: cold `lake build` once, then clean-bootstrap `leanc` relink | **yes** wipe-bootstrap only |
+| Claim-proof lake | Claim-bool flips while Lake is host elaborator (`AGENTS.md` lake-on-PATH) | **yes** claim/diagnostic only |
+
+Measure numbers: Phase M note
+`doc/dev/research/hot-cold-benchmarks-2026-08-08.md` (without-Lake suite + hot Lake +
+cold Lake cite + A65). Re-verify:
+`.agents/reports/impl-part6-phase-b-reverify-2026-08-08.md`. Do **not** re-true
+FullHost.
 
 ### Phase F -- Host free claim (A-last only)
 
 | Order | Name | Goal | Done when | Out of scope |
 |------:|------|------|-----------|--------------|
-| F1 | **Host residual free claim** | Flip DualResidual only when section 2 checklist met under choice (a) | remains false; free claimed true; lake elaborator proof; residual + surface-matrix lockstep; layers 2-4 still honest | Re-open product free; forge llvm / PROVABLY |
+| F0 | **Free checklist inventory refresh** | Post-A66 living gap vs section 2 + design section 4 | **done** 2026-08-07; note `doc/dev/research/host-residual-free-bar-inventory-2026-08-07.md`; DualResidual unchanged | Free pin flip; re-true FullHostElaborateRemains |
+| F0b | **Host free dual-ok design** | Specify DualResidual + HostResidualShrink fold changes for free | **done** 2026-08-07; note `doc/dev/research/host-free-dual-ok-design-2026-08-07.md`; free still false | Free pin flip; product free re-open |
+| F1 | **Host residual free claim** | Flip DualResidual only when section 2 checklist met under choice (a) + F0b dual-ok | **done** 2026-08-07; remains false; free claimed true; free-shape dual-ok; lake elaborator proof; residual + surface-matrix lockstep; layers 2-4 still honest; report `.agents/reports/impl-f1-dualresidual-free-claim-2026-08-07.md` | Re-open product free; forge llvm / PROVABLY |
 
 ### Phase V -- Validation continuity (not a substitute for L; do not drop)
 
@@ -339,37 +531,111 @@ B2 is **not** the same as DualResidual free. Free is A-last after full checklist
 | Name | Status |
 |------|--------|
 | Multi-language print / host-cc helpers | Done (P0/P1); do not re-open as finish line |
-| Long-file splits | Only when a file is unsafe to edit; not elaborator coverage |
-| LLVM / proof complete / superset | Separate tracks; do not replace this program |
+| Long-file splits | HostModuleCheck family **done**; HostImportGraph H-opt **done**; further long-file splits only on-touch or operator Open (standing headroom on FixtureTextsLater / Walk / LoadOk) |
+| LLVM / proof complete / superset | Separate tracks; proof complete Track 4c **done**; full LLVM / R2 dual remain optional or held |
 
 ---
 
-## 5. Immediate next implement (after approve)
+## 5. Immediate next (F1 free claim done; hygiene long-file splits done; operator program D..P closed; Open empty done-for-now)
 
-**Name:** Host library seed expand continue (already Open / WATCHER; L21+ beyond modules=81)
+**Living tip one-line (2026-08-08 Phase P close):** DualResidual free claim **done** (host residual
+free dual-ok; remains false; free true; FullHost false; report
+`.agents/reports/impl-f1-dualresidual-free-claim-2026-08-07.md`). Proof complete
+Track 4c **done**. HostModuleCheck family Sub-1-KLOC **done**. HostImportGraph
+long-file split **done** (tip 4875->43; harness 20->28). Operator program
+D/M/C/B/L/P **closed** (Phase P report
+`.agents/reports/impl-phase-p-inventories-polish-2026-08-08.md`). Open empty
+(done-for-now under free bar choice (a)). Standing stop rules (not Open Names):
+FixtureTextsLater ~999; HostImportGraphWalk ~999 / LoadOk ~995; on-touch Sub-1-KLOC.
+Held (operator promote): full elaborator parity / Full LLVM / Rust-native / mathlib.
+Optional held Opens only with operator promote: R1a/R1b, further duals, full
+backend, Rust-native.
+
+### 5.1 Slice 1 -- Cold elaborate day-to-day use map (**done** A64)
+
+Research note `doc/dev/research/cold-elaborate-day-to-day-use-map-2026-08-07.md`;
+join `.agents/joins/a64-cold-elaborate-use-map.md`.
+
+### 5.1a Slice 2 -- Wipe recovery bootstrap evidence (**done** A65)
+
+Research note `doc/dev/research/wipe-recovery-bootstrap-evidence-2026-08-07.md`;
+join `.agents/joins/a65-wipe-recovery-bootstrap-evidence.md`. E4 Met-documented
+(not Met-measured-total-wipe). Matrix + probes exit codes on disk.
+
+### 5.1b Pin-flip residual (implementable Open -- after E1-E6)
+
+**Name:** FullHostElaborateRemains false (plan Phase B2 / Slice 4) -- **done A66**
 
 | Field | Content |
 |-------|---------|
-| Goal | Grow HostImportGraph + HostModuleCheck seed beyond modules=81 |
-| Done when | Named next-band modules; modules count > 75; expandSliceName; HostResidualShrink reseeded; DualResidual unchanged; free/complete/PROVABLY and product Lake pins unchanged; not host free; living residual/join prose plain English on touch; `just hygiene` green |
-| Primary paths | `HostImportGraph.lean`, `HostModuleCheck*.lean`, `HostResidualShrink.lean`, durable plan, residual, WATCHER, handoff |
-| Gates | `just hygiene` (ASCII + professional-tone on novel markdown); dual-pin presence if new modules; lake elaborator proof if Lean claim / shrink / graph / check edited; sequential lake then without-lake recipes when measuring |
-| Join | `.agents/joins/a32-host-library-seed-expand-continue.md` (next); A31 done: `.agents/joins/a31-host-library-seed-expand-continue.md`; A30 done: `.agents/joins/a30-host-library-seed-expand-continue.md` |
+| Goal | Set FullHostElaborateRemains false only with real evidence that cold full Lake under `src/systems/` is bootstrap-only for day-to-day host develop |
+| Done when | Written E1-E6 evidence + pin false dual-ok in HostResidualShrink + residual honesty; DualResidual free stays false; free/complete/PROVABLY and product Lake pins unchanged; lake elaborator proof while Lake is host elaborator; `just hygiene` green |
+| Ready when | Slice 1 use map + Slice 2 wipe recovery land E1-E6 (**met** with E4 Met-documented + E5a; optional Slice 3 if operator rejects E5a) |
+| Out of scope | DualResidual free flip; delete Lake binary theater; forge pin false; invent *Main seed; re-open seed/L-band/B1 theater |
+| Primary paths | `HostResidualShrink.lean`, residual, WATCHER, handoff, this plan |
+| Prior joins | a65 wipe recovery; a64 use map; a62 reconfirm; a61 honesty; a60 B1; a63 Slice 1 open |
+| Criteria report | `.agents/reports/b2-evidence-criteria-2026-08-07.md` |
 
-**Also on approve (docs lockstep):**
+**WATCHER posture:** DONE-FOR-NOW (program D..P closed). Do **not** invent free
+forge. Do **not** re-true FullHost. F1 free dual-ok **done**. A66 / F0 / F0b
+**done**. Mult SSA partial **done**. Standing headroom stop rules only (not auto
+Open). Do **not** auto-open held R1/R2/R3 Full LLVM.
 
-1. Sync `.agents/plans/plan-slake-replaces-lake.md` to this body (or living tip
-   + section 0 + section H + section 1 + remaining queue).
-2. Confirm residual / WATCHER / handoff still point at Host library seed expand
-   continue, and say **living work program true / claim false** for layer 1.
-3. Optional goals tip: short paragraph that layer 1 is living host program, full
-   goal chain is Systems Lean + linear + freestanding C + CompCert validate,
-   and hygiene/plain English applies to markdown on touch (link this plan).
-4. Scrub living residual/WATCHER/plan lines in that same docs step if they still
-   read like decoder-ring slang (H0/H1 light).
+### 5.2 Ranked highest-value next
 
-Do **not** empty Open. Do **not** open Track 3c free flip. Do **not** start a
-repository-wide jargon rewrite instead of library seed expand.
+| Rank | Work | Why |
+|-----:|------|-----|
+| **done** | DualResidual free claim (F1) | Free dual-ok + lake proof; remains false / free true |
+| **done** | Host free dual-ok design (F0b) | Ready/surfacesDistinct/doesNotForgeHostFree redesign specified |
+| **done** | Free checklist inventory refresh (F0) | Post-A66 living inventory; section-2 + section-4 reseed |
+| **done** | FullHostElaborateRemains false (Slice 4 A66) | Pin false dual-ok; E1-E6 + lake proof |
+| **done** | Cold elaborate day-to-day use map (Slice 1 A64) | Recipe partition + E1-E7 |
+| **done** | Wipe recovery bootstrap evidence (Slice 2 A65) | E4 Met-documented; cold Lake one-shot bootstrap contract |
+| **done** | Proof complete residual (Track 4c) | proofCompleteClaimed true + bar-met + lake |
+| **done** | Full elaborator parity design (R1) | Design only; parity claim still held |
+| **done** | HostModuleCheck family Sub-1-KLOC | All HostModuleCheck*.lean under 1000; harness 8->20 |
+| **done** | HostImportGraph long-file split (H-opt) | Tip 4875->43; harness 20->28; gates green |
+| **standing** | Headroom stop rules | FixtureTextsLater ~999; Walk ~999; LoadOk ~995; on-touch Sub-1-KLOC |
+| **held** | Full elaborator parity / Full LLVM / Rust-native / mathlib | Operator promote only |
+| **optional** | R2 dual / R3 backend follow-on / R1a-R1b / R5 CompCert | Open only with checkable Done when |
+
+### 5.3 Self-validation loops (agents run without claim inflation)
+
+| Check | Expected during Slice 4 |
+|-------|-------------------------|
+| `just hygiene` | GREEN after novel prose/source edits |
+| Without-Lake matrix | Still GREEN; documents E2 living tree |
+| Pin greps / `just host-residual-shrink` | After F1: FullHostElaborateRemains **false**; host free claimed **true**; remains **false**; seed **206** greppable |
+| Claim recipes | Lake elaborator proof on pin flip while Lake is host elaborator |
+
+### 5.4 Chain status
+
+1. Slice 1 use map **done** A64.
+2. Slice 2 wipe recovery **done** A65 (E4 Met-documented).
+3. Optional Slice 3 check-depth if accept criteria require deeper HostModuleCheck
+   (default free bar accepts E5a; not required for F1).
+4. Slice 4 pin false dual-ok **done** A66 with E1-E6 written.
+5. Free checklist inventory refresh **done** F0 (post-A66 living inventory).
+6. Host free dual-ok design **done** F0b.
+7. DualResidual free claim **done** (F1 free dual-ok + lake proof).
+8. Open empty done-for-now under free bar choice (a).
+
+Do **not** re-open FullHostElaborateRemains true. Do **not** re-open product free
+without new evidence.
+
+---
+
+## 5b. Root Lake monorepo workspace (additive; not a product claim)
+
+| Path | Role |
+|------|------|
+| Root `lakefile.lean` | Thin umbrella package **`Iso`** |
+| Root `lean-toolchain` | `leanprover/lean4:v4.32.0` |
+| Root `lake-manifest.json` | Path deps **SystemsLean** (`src/systems`) + **SystemsLeanLean4** (`src/lean4`) |
+
+Product package name stays **SystemsLean**. Root umbrella is host workspace
+convenience only -- not freestanding product claim and not DualResidual free.
+Report: `.agents/reports/root-lake-workspace.md`.
 
 ---
 
@@ -454,13 +720,14 @@ repository-wide jargon rewrite instead of library seed expand.
 
 ### Step 1 -- Plan and status lockstep (docs only; DualResidual unchanged)
 
-- Write section 0 goal chain + section H hygiene + section 1 status table into
-  durable plan and any lagging goals/handoff one-liners.
-- Scrub living residual/WATCHER lines in that step if they need plain English
-  (on-touch; no archive rewrite).
-- Keep residual Open on Host library seed expand continue.
-- WATCHER matches residual.
-- `just hygiene` green.
+- Living tip through **A62** B2 still-blocked reconfirm; A1-A61 product/host +
+  honesty done; residual Open primary FullHostElaborateRemains false (B2
+  **blocked** evidence-held); WATCHER BLOCKED (no `/implement` token);
+  join `.agents/joins/a62-b2-still-blocked-reconfirm.md`.
+- Scrub living residual/WATCHER lines on touch if they need plain English
+  (no archive rewrite).
+- Do not forge B2 or DualResidual free.
+- `just hygiene` green after prose edits.
 
 ### Step 2 -- Implement L1 / L2 / L3 / L4 / L5 / L6 / L7 / L8 / L9 (done)
 
@@ -484,17 +751,47 @@ repository-wide jargon rewrite instead of library seed expand.
 - L18 A29: EmitErasure + EmitExtract + EmitBanner band; modules=71; join a29. SelfApplyFs held (ProductPath/Capable deps).
 - L19 A30: ProductOutKernel + ProductOutKernelTheorems + BootstrapHonesty + BootstrapHonestyTheorems band; modules=75; join a30. SelfApplyFs still held (ProductPath/Capable deps remain).
 - L20 A31: ProductPathWriterSurface + ProductPathWriterSurfaceTheorems + ProductPathWriterPathPlan + ProductPathWriterPathPlanTheorems + ProductPathWriterPathExec + ProductPathWriterPathExecTheorems band; modules=81; join a31. SelfApplyFs still held (remaining ProductPath/Capable deps).
+- L21 A32: ProductPathOwnershipInputs + ProductPathOwnershipInputsTheorems + ProductPathPerform + ProductPathPerformTheorems + ProductPathPerformStep + ProductPathPerformStepTheorems band; modules=87; join a32. SelfApplyFs still held (remaining ProductPath/Capable deps).
+- L22 A33: ProductPathReadSsot + ProductPathReadSsotTheorems + ProductPathComposePlan + ProductPathComposePlanTheorems + Capable + CapableTheorems band; modules=93; join a33. SelfApplyFs still held (remaining ProductPath/Capable deps).
+- L23 A34: CapableStepContract + CapableStepContractTheorems + InstallOut + InstallOutTheorems + OfficialPath + OfficialPathTheorems + PerformEvidence + PerformEvidenceTheorems band; modules=101; join a34. SelfApplyFs still held (other deps may remain).
+- L24 A35: CapableRead + CapableReadTheorems + CapableCompose + CapableComposeTheorems + CapableFullBar + CapableFullBarTheorems band; modules=107; join a35. SelfApplyFs still held (other deps may remain).
+- L25 A36: DualEqWriteCapableGap + DualEqWriteCapableGapTheorems + DualEqWriteClosePath + DualEqWriteClosePathTheorems + DualEqWriteParity + DualEqWriteParityTheorems band; modules=113; join a36. DualEqWriteApi skipped. SelfApplyFs still held (other deps may remain).
+- L26 A37: OfficialRetire + OfficialRetireTheorems + OwnershipClaimed + OwnershipClaimedTheorems + PerformClaimed + PerformClaimedTheorems + StepContractFull + StepContractFullTheorems band; modules=121; join a37.
+- L27 A38: SelfHostComplete + SelfHostCompleteTheorems + OfficialPathAlternate + OfficialPathAlternateTheorems + ProductPathOwnershipRegenerate + ProductPathOwnershipRegenerateTheorems band; modules=127; join a38. Preferred SelfApplyFs pure leaves seeded.
+- L28 A39: CapableWriteHcLoad + DualEqWriteLoad + CapableWriteHc + DualEqWriteApi + LlvmHold + LlvmHoldTheorems multi-import band; modules=133; join a39. RealMod edges use full on-disk emit product stack (not empty multi-import). CapableRegenerate fully seedable next (deps CapableRead/Compose/WriteHc/InstallOut all seeded). ProductPathWriteHc still needs FreestandingEmit.
+- L29 A40: CapableRegenerate + CapableRegenerateTheorems multi-import band; modules=135; join a40. RealMod edges list CapableRead+CapableCompose+CapableWriteHc+InstallOut (match on-disk). ProductPathWriteHc still needs FreestandingEmit.
+- L30 A41: FreestandingEmitLoad + FreestandingEmitLoadScaffold + LakeRetireInventory + HostPackageRoots; modules=139; join a41. Emit load pure leaf + scaffold parent + two pure inventory leaves. FreestandingEmit now seed-closed. ProductPathWriteHc still needs FreestandingEmit.
+- L31 A42: FreestandingEmit + ProductPathWriteHc + ProductPathWriteHcTheorems; modules=142; join a42. FreestandingEmit multi-import Load+Scaffold+emit product stack; ProductPathWriteHc imports FreestandingEmit; theorems parent only.
+- L32 A43: CompilePathMult + CompilePathLinear + CompilePathTypes + CompilePathProgram + CompilePathGraph + CompilePathCompose + CompilePathPlan + CompilePathApply + CompilePathBody + CompilePathErasure + CompilePathExtract; modules=153; join a43. Unit multi-import CompilePath+Emit*; Extract depends Mult+Program.
+- L33 A44: ProductWireWriteTool + HostTerm + LlvmEmitPath + SubsetFront; modules=157; join a44. Preferred seed-closed multi/pure leaves; honest RealMod edges.
+- L34 A45: FirstSurface + Linear/Types/Program/Graph/Compose/Erasure/Extract SubsetEmit; modules=165; join a45. Unit SubsetEmit + FirstSurface band.
+- L35 A46: MultSubsetEmit + MultSubsetRebuild + Linear/Types/Program/Graph/Compose/Erasure/Extract SubsetRebuild + HostFront + LlvmMultText; modules=176; join a46.
+- L36 A47: HostFrontTheorems + HostCheck + HostGraph + LlvmLinearText + MultFsWriteTool + FrontMultPackage + SubsetPackageJoin; modules=183; join a47. Preferred seed-closed band after HostFront/LlvmMultText/unit SubsetRebuild; SelfApplyFs deferred.
+- L37 A48: HostGraphTheorems + LlvmTypesText + MultFsDeepen + HostPackageWrite; modules=187; join a48. Preferred seed-closed band after HostGraph/LlvmLinearText/MultFsWriteTool/unit SubsetEmit; SelfApplyFs deferred.
+- L39 A50: LlvmGraphText + LlvmComposeText; modules=191; join a50. Preferred light llvm ladder complete.
+- L40 A51: SelfApplyFs dedicated; modules=192; full honest 39-edge package imports; join a51. DualResidual free unchanged false.
+- L41 A52: SelfApplyFsTheorems + InventoryClose + ProductPathBars; modules=195; join a52. Preferred seed-closed after SelfApplyFs; DualResidual free unchanged false.
+- L42 A53: InventoryCloseTheorems + ProductPath; modules=197; join a53. Preferred seed-closed after ProductPathBars; DualResidual free unchanged false.
+- L43 A54: ProductPathTheorems + DualResidual; modules=199; join a54. Preferred ProductPathTheorems + DualResidual PARTIAL-STRUCTURAL free false; host free unchanged false.
+- L44 A55: DualResidualTheorems + ProbeWire + SelfHostBody + ProbeWireTheorems + SelfHostBodyTheorems + SpecProof + SpecProofTheorems; modules=206 full product library; DualResidual free false; join a55.
+- L38 A49: HostPackageWriteTheorems + LlvmProgramText; modules=189; join a49. Preferred light seed-closed band; SelfApplyFs deferred; LlvmGraphText now seed-closed.
 - Product free/complete/PROVABLY and DualResidual preserved.
 
-### Step 3+ -- Repeat L21+ / interleave T
+### Step 3+ -- T2 / L-band / B1 / A61 honesty (done A56-A61)
 
-- Next band beyond modules=81 (ProductPath writer pure leaves done A31; SelfApplyFs leaf foundation done A30; Emit Erasure/Extract/Banner product done A29; Emit Mult..Compose product done A28; SelfApply done A27); until inventory of day-to-day library modules is closed or carved out.
-- Prefer coherent importers of current seed; SelfApplyFs still blocked on ProductPath/Capable; HostFront/Llvm/Capable leaves next candidates; next seedable band as evidence picks.
+- T2 A56..A58: FOUNDATION-KIND-SURFACE Mult..Extract; seed stayed 206.
+- L-band A59: Host library band complete; leftover empty; *Main/harness out-of-scope.
+- B1 A60: Develop tool inventory closed; day-to-day empty.
+- A61: B2 evidence-held residual closeout (docs/gates; no pin flip; product wire
+  GREEN; residual/WATCHER/handoff honest).
+- DualResidual free stayed false throughout.
 - H0 on every slice.
 
 ### Step 4 -- B2 when library day-to-day no longer needs cold full Lake
 
-- FullHostElaborateRemains false with evidence only.
+- FullHostElaborateRemains false with evidence only. WATCHER stays BLOCKED
+  until evidence or operator names a checkable slice. No forge. Seed/T deepen
+  already done; do not re-open as default treadmill.
 
 ### Step 5 -- F1 Host residual free claim
 
@@ -547,12 +844,17 @@ still elaborates remaining modules.
 1. Free checklist = full SystemsLean host develop (choice a).
 2. Theorems in the long checklist.
 3. Hybrid real-module seed + dialect harness; not mathlib day one.
-4. Next work = Host library seed expand continue (L21+ beyond modules=81; next coherent band), not free flip.
+4. Next work = DualResidual free **held A-last** after full free checklist.
+   B2 FullHostElaborateRemains false is **done** (A66). Seed expand and
+   Mult..Extract FOUNDATION-KIND-SURFACE deepen are **already done**. Do **not**
+   auto-forge free or re-open seed/T as default.
 5. Full goal chain (Systems Lean + linear + freestanding C + CompCert validate)
    is standing law; layer 1 is the open host program.
 6. Hygiene: H0 standing on every slice including markdown; no tree-wide jargon
    campaign; H1 only if living surfaces still need a short prose pass.
 7. Other tracks continue but do not replace this program.
+8. WATCHER stays **BLOCKED** (no `/implement` free forge token) until full free
+   checklist evidence or an operator-named free-checklist residual.
 
 Revise in freeform chat if any default is wrong.
 
@@ -567,8 +869,10 @@ Revise in freeform chat if any default is wrong.
 - Hygiene is prominent: point to `AGENTS.md` + pure Nix gates; gradual on-touch
   jargon scrub **includes markdown**; no bulk rewrite substitute for layer 1.
 - Durable plan and residual cannot honestly say "not the living work program."
-- Next implement is library seed expand, not done-for-now.
-- No forged free / complete / PROVABLY / DualResidual changes in the docs slice.
+- Living tip through **A66**: A1-A65 product/host + honesty + evidence done; A66
+  B2 FullHostElaborateRemains false dual-ok done; DualResidual free stays false
+  (A-last; not auto-forge).
+- No forged free / complete / PROVABLY / DualResidual free changes.
 
 ---
 
@@ -587,4 +891,8 @@ Revise in freeform chat if any default is wrong.
 - `src/systems/SystemsLean/Mult.lean`, `Linear.lean` -- linear safety core
 - `src/systems/emit/`, `out/freestanding-c/` -- freestanding product C
 - `doc/dev/research/full-host-elaborator-design-2026-08-03.md`
-- `.agents/joins/a12-host-library-seed-expand-continue.md` -- next join path
+- `.agents/joins/a66-full-host-elaborate-remains-false.md` -- latest B2 pin false join
+- `.agents/joins/a65-wipe-recovery-bootstrap-evidence.md` -- E4 Met-documented
+- `.agents/joins/a64-cold-elaborate-use-map.md` -- Slice 1 use map
+- `.agents/joins/a61-b2-evidence-held-closeout.md` -- prior honesty join (B2 held)
+- `.agents/joins/a60-develop-tool-inventory-closed.md` -- prior B1 close

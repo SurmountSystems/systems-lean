@@ -14,12 +14,19 @@
     joinUnitCompileReady_eq / joinProgramCompileReady_eq /
     joinUnitCompileReady_mult1_unminted_false /
     joinUnitCompileReady_mult1_minted_true / joinProgramCompileReady_single_value.
+  - Dual formal map edges (partial; not isomorphism complete):
+    failClosedGradeHostUseOk_true /
+    failClosedGrade_host_use_implies_mult_unknown_reject (product edge:
+    FailClosedGrade host use + Mult FAIL-CLOSED-UNKNOWN-GRADE reject);
+    runtimeExtractHostUseOk_true /
+    runtimeExtract_host_use_implies_unknown_runtime_reject (product edge:
+    RuntimeExtract host use + Extract unknown runtime tag reject).
   - JOIN-MAP-SMOKE: stage / dual-cite / host-use / empty host OK / empty program
     fail-closed / MULT-1 mint / MULT-0 mark / sibling bar behavioral examples
     (lake build fails if example fails).
 
   These JoinMap theorems do NOT set SpecProof.proofCompleteClaimed true.
-  Partial path contracts != formal dual-bridge theorems != residual free.
+  Partial path contracts != full dual-bridge isomorphism != residual free.
 
   Intentional non-claims:
   - Join surface canaries only -- NOT freestanding residual free.
@@ -43,17 +50,22 @@
 -/
 
 import SystemsLean.Mult
+import SystemsLean.MultTheorems
 import SystemsLean.Linear
 import SystemsLean.Types
 import SystemsLean.IrProgram
 import SystemsLean.Erasure
+import SystemsLean.Extract
+import SystemsLean.ExtractTheorems
 import SystemsLean.HostCompose
 import SystemsLean.CompilePath
 import SystemsLean.JoinMap
 
 namespace SystemsLean.JoinMap
 
-open SystemsLean.Mult (Mult)
+open SystemsLean.Mult (Mult ofNat? isValidTag ofNat?_fail_closed isValidTag_fail_closed)
+open SystemsLean.Extract (ofRuntimeTag? isValidRuntimeTag ofRuntimeTag?_fail_closed
+  isValidRuntimeTag_fail_closed)
 open SystemsLean.Types (IrNode NodeKind typeTagInit)
 open SystemsLean.IrProgram (Program)
 open SystemsLean.HostCompose (Host)
@@ -75,15 +87,63 @@ theorem stageId_eq : stageId = "SLAKE_JOIN_MAP_V0" := rfl
     Greppable: hostJoinMapId_eq, JOIN-MAP-THEOREM. -/
 theorem hostJoinMapId_eq : hostJoinMapId = "HOST-JOIN-MAP" := rfl
 
-/-- Host use pins for three JOIN-ALG dual algorithms hold.
+/-- Host use pins for six JOIN-ALG dual algorithms hold
+    (ConsumeToken, ErasedIndex, UnrestrictedShare, FailClosedGrade,
+    LinearPairSwap, RuntimeExtract).
     Greppable: joinAlgUseOk_true, JOIN-ALG-USE, JOIN-MAP-THEOREM,
-    HOST-JOIN-MAP-THEOREM. -/
+    HOST-JOIN-MAP-THEOREM, failClosedGradeHostUseOk, runtimeExtractHostUseOk. -/
 theorem joinAlgUseOk_true : joinAlgUseOk = true := by decide
 
 /-- JOIN-ALG dual-cite + host-use surface canary holds.
     Greppable: joinAlgContractOk_true, JOIN-ALG, JOIN-MAP-THEOREM,
     HOST-JOIN-MAP-THEOREM. -/
 theorem joinAlgContractOk_true : joinAlgContractOk = true := by decide
+
+/-- FailClosedGrade dual host use pin holds.
+    Greppable: failClosedGradeHostUseOk_true, FailClosedGrade, JOIN-MAP-THEOREM. -/
+theorem failClosedGradeHostUseOk_true : failClosedGradeHostUseOk = true := by decide
+
+/-- Dual formal map edge (product honesty): FailClosedGrade host use implies
+    Mult unknown-tag reject (FAIL-CLOSED-UNKNOWN-GRADE).
+    Uses Mult.ofNat?_fail_closed / isValidTag_fail_closed for n = 3.
+    Partial formal dual-map only -- not isomorphism complete, not full bridge.
+    Greppable: failClosedGrade_host_use_implies_mult_unknown_reject,
+    dualFormalMapFailClosedEdge, FAIL-CLOSED-UNKNOWN-GRADE, FailClosedGrade. -/
+theorem failClosedGrade_host_use_implies_mult_unknown_reject :
+    failClosedGradeHostUseOk = true
+      /\ ofNat? 3 = none
+      /\ isValidTag 3 = false :=
+  And.intro failClosedGradeHostUseOk_true
+    (And.intro
+      (ofNat?_fail_closed 3 (by decide : 2 < 3))
+      (isValidTag_fail_closed 3 (by decide : 2 < 3)))
+
+/-- Greppable alias id for the dual formal map FailClosedGrade edge (partial). -/
+def dualFormalMapFailClosedEdge : String :=
+  "failClosedGrade_host_use_implies_mult_unknown_reject"
+
+/-- RuntimeExtract dual host use pin holds.
+    Greppable: runtimeExtractHostUseOk_true, RuntimeExtract, JOIN-MAP-THEOREM. -/
+theorem runtimeExtractHostUseOk_true : runtimeExtractHostUseOk = true := by decide
+
+/-- Dual formal map edge (product honesty): RuntimeExtract host use implies
+    Extract unknown runtime-tag reject (FAIL-CLOSED unknown runtime).
+    Uses ofRuntimeTag?_fail_closed / isValidRuntimeTag_fail_closed for n = 3.
+    Second formal dual-map edge -- still not isomorphism complete, not full bridge.
+    Greppable: runtimeExtract_host_use_implies_unknown_runtime_reject,
+    dualFormalMapRuntimeExtractEdge, RuntimeExtract, RUNTIME-FS. -/
+theorem runtimeExtract_host_use_implies_unknown_runtime_reject :
+    runtimeExtractHostUseOk = true
+      /\ ofRuntimeTag? 3 = none
+      /\ isValidRuntimeTag 3 = false :=
+  And.intro runtimeExtractHostUseOk_true
+    (And.intro
+      (ofRuntimeTag?_fail_closed 3 (by decide : 2 < 3))
+      (isValidRuntimeTag_fail_closed 3 (by decide : 2 < 3)))
+
+/-- Greppable alias id for the dual formal map RuntimeExtract edge (partial). -/
+def dualFormalMapRuntimeExtractEdge : String :=
+  "runtimeExtract_host_use_implies_unknown_runtime_reject"
 
 /-- joinCompileReady is definitionally joinUnitCompileReady.
     Greppable: joinCompileReady_eq_joinUnitCompileReady, JOIN-MAP-THEOREM. -/
@@ -199,8 +259,9 @@ example : joinAlgUseId = "JOIN-ALG-USE" := by decide
 example : consumeTokenAlgId = "ConsumeToken" := by decide
 example : erasedIndexAlgId = "ErasedIndex" := by decide
 example : unrestrictedShareAlgId = "UnrestrictedShare" := by decide
+example : failClosedGradeAlgId = "FailClosedGrade" := by decide
 
-/-- JOIN-MAP-SMOKE: three dual path cites match dual-pair layout (inventory). -/
+/-- JOIN-MAP-SMOKE: six dual path cites match dual-pair layout (inventory). -/
 example : dualConsumeTokenIdris = "src/idris2/examples/ConsumeToken.idr" := by decide
 example : dualConsumeTokenLean = "src/lean4/examples/ConsumeToken.lean" := by decide
 example : dualErasedIndexIdris = "src/idris2/examples/ErasedIndex.idr" := by decide
@@ -209,15 +270,22 @@ example : dualUnrestrictedShareIdris = "src/idris2/examples/UnrestrictedShare.id
   by decide
 example : dualUnrestrictedShareLean = "src/lean4/examples/UnrestrictedShare.lean" :=
   by decide
+example : dualFailClosedGradeIdris = "src/idris2/examples/FailClosedGrade.idr" :=
+  by decide
+example : dualFailClosedGradeLean = "src/lean4/examples/FailClosedGrade.lean" :=
+  by decide
 example : dualIdrisPath = "src/idris2/examples/ConsumeToken.idr" := by decide
 example : dualLeanPath = "src/lean4/examples/ConsumeToken.lean" := by decide
 example : joinLinearCiteOk = true := by decide
 example : joinDualCiteOk = true := by decide
 
-/-- JOIN-MAP-SMOKE: host use pins (use vs dual-cite distinction). -/
+/-- JOIN-MAP-SMOKE: host use pins (use vs dual-cite distinction; six duals). -/
 example : consumeTokenHostUseOk = true := by decide
 example : erasedIndexHostUseOk = true := by decide
 example : unrestrictedShareHostUseOk = true := by decide
+example : failClosedGradeHostUseOk = true := by decide
+example : linearPairSwapHostUseOk = true := by decide
+example : runtimeExtractHostUseOk = true := by decide
 example : joinAlgUseOk = true := by decide
 example : joinAlgContractOk = true := by decide
 example : hostMintConsumeOnceOk = true := by decide
@@ -227,6 +295,9 @@ example : productConsumeTokenMintApi = "slake_consume_token_mint" := by decide
 example : productErasureRuntimeAbsentApi = "slake_erasure_is_runtime_absent" :=
   by decide
 example : productMultOmegaGrade = "MULT-OMEGA" := by decide
+example : productFailClosedUnknownGradeId = "FAIL-CLOSED-UNKNOWN-GRADE" := by decide
+example : dualFormalMapRuntimeExtractEdge
+    = "runtimeExtract_host_use_implies_unknown_runtime_reject" := by decide
 
 /-- JOIN-MAP-SMOKE: empty HostCompose is join-unit-ready (unit bar + join). -/
 example : joinCompileReady HostCompose.empty = true := by decide

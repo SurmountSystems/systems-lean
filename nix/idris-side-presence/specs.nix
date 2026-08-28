@@ -9,6 +9,11 @@
     "src/idris2/examples/ConsumeToken.idr"
     "src/idris2/examples/ErasedIndex.idr"
     "src/idris2/examples/UnrestrictedShare.idr"
+    "src/idris2/examples/FailClosedGrade.idr"
+    "src/idris2/examples/LinearPairSwap.idr"
+    "src/idris2/examples/RuntimeExtract.idr"
+    "src/idris2/examples/AffineDrop.idr"
+    "src/idris2/examples/AffineOwn.idr"
     "src/idris2/examples/TRUST.md"
     "src/idris2/JOIN.md"
   ];
@@ -28,6 +33,49 @@
       all = [ "UnrestrictedShare" ];
     }
     {
+      rel = "src/idris2/examples/FailClosedGrade.idr";
+      all = [
+        "FailClosedGrade"
+        "FAIL-CLOSED-UNKNOWN-GRADE"
+      ];
+    }
+    {
+      rel = "src/idris2/examples/LinearPairSwap.idr";
+      all = [
+        "LinearPairSwap"
+        "swapLin"
+        "MULT-1"
+      ];
+    }
+    {
+      rel = "src/idris2/examples/RuntimeExtract.idr";
+      all = [
+        "RuntimeExtract"
+        "RUNTIME-FS"
+        "RUNTIME-CLASSIC"
+        "EDGE-RUNTIME"
+      ];
+    }
+    {
+      rel = "src/idris2/examples/AffineDrop.idr";
+      all = [
+        "AffineDrop"
+        "EDGE-AFFINE"
+        "AFFINE-NOT-FIRST-CLASS"
+        "dropAffine"
+      ];
+    }
+    {
+      rel = "src/idris2/examples/AffineOwn.idr";
+      all = [
+        "AffineOwn"
+        "EDGE-AFFINE"
+        "AFFINE-NOT-FIRST-CLASS"
+        "PRODUCT-OWN"
+        "useLeftDropRight"
+      ];
+    }
+    {
       rel = "src/idris2/multiplicity-map.md";
       all = [
         "MULT-1"
@@ -35,6 +83,11 @@
         "MULT-OMEGA"
         "ERASE-PROP"
         "EDGE-PROP"
+        "FailClosedGrade"
+        "LinearPairSwap"
+        "RuntimeExtract"
+        "AffineDrop"
+        "AffineOwn"
       ];
     }
     {
@@ -42,6 +95,11 @@
       all = [
         "ErasedIndex"
         "UnrestrictedShare"
+        "FailClosedGrade"
+        "LinearPairSwap"
+        "RuntimeExtract"
+        "AffineDrop"
+        "AffineOwn"
       ];
     }
   ];
