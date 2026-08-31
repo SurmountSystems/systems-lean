@@ -338,17 +338,18 @@ Write **thoughtful, concise, natural language**. This is not a jargon dump or ac
   every implement slice starts with that natural-language progress
   report: what compiled, what still does not, and what is next. Keep a
   living remaining-work metric table in ordinary English: how many real
-  modules Slake typechecks (today **47 of about 206**, SystemsLean.Mult
-  through SystemsLean.HostModuleCheckParityMultTerm on the Slake
-  path; next remaining work is Grow HostModuleCheckParityLinearTerm subset,
-  **blocked** by operator STOP: never `lake build SystemsLean.ElabMeetTheorems`
-  or ElabMeet (hub fan-out); MemoryMax 192 GiB is the ceiling; next prove
-  if any is one serial niced isolation probe only after pgrep lake is
-  empty; leakEnv false must be on the nixbuilder tree; tip stays 47; do not
-  claim 48; do not fold ParityTypesTerm while this Name is red);
+  modules Slake typechecks (today **49 of about 206**, SystemsLean.Mult
+  through SystemsLean.HostModuleCheckParityTypesTerm on the Slake
+  path; next remaining work is Grow HostModuleCheckParityProgramTerm subset;
+  never `lake build SystemsLean.ElabMeetTheorems` or ElabMeet as prove;
+  MemoryMax 192 GiB is the ceiling; isolation prove only,
+  `LEAN_NUM_THREADS=1`; leakEnv false on the nixbuilder tree; Types
+  isolation EXIT 0 (1802 s, 21 jobs) and ElabMeet fold landed; do not
+  claim 50 until ProgramTerm isolation EXIT 0; ProgramTerm prove may
+  already be in flight; do not start a second Lake);
   skip SystemsLean.Linear as a named membership member and skip IrGraph; FullHost stays false;
-  extract first already on disk for ParityLinearTerm: probe 299 helper 63 walk 175;
-  fold on disk again after probe GREEN; do not claim 48;
+  extract first already on disk for ParityTypesTerm: probe 305 helper 63 walk 179;
+  ParityProgramTerm extract-first on disk: probe 310 helper 63 walk 180;
   Tail is 863 and Later is 785 and cannot absorb another leftover
   wrapper without passing about 880; CheckersLater walk
   ElabMeetNamedWalkHostModuleCheckCheckersLater is 617 lines, under
@@ -950,7 +951,7 @@ do **not** run `lake build SystemsLean.ElabMeetTheorems` or
 Name. Isolation theorems live on the probe modules and named helpers.
 `ElabMeetTheorems.lean` must not import `SystemsLean.ElabMeetNamed*Probe`
 modules. Prove with one serial niced
-`lake build SystemsLean.ElabMeetNamedHostModuleCheckParityLinearTermProbe`
+`lake build SystemsLean.ElabMeetNamedHostModuleCheckParityProgramTermProbe`
 (or the current Name's probe), `LEAN_NUM_THREADS=1`. If more than one
 `lean` process appears during that prove, **stop starting jobs**. Tell
 the operator the recipe and host. Do **not** kill processes unless the
@@ -975,7 +976,7 @@ Not FullHost. Not folding the next Name while this one is red.
 `leakEnv := false` on multi-module helpers must be in the tree Lake
 actually builds (`/home/nixbuilder/iso`), not only on the laptop. If a
 hub job started without that, it does not count as the fix being live.
-Named closed subset stays **47 of about 206**. Do not claim **48**.
+Named closed subset stays **49 of about 206**. Do not claim **50**.
 
 Do **not** flip `FullHost` or package-typecheck pins. Skip **Linear** and
 **IrGraph** unless living residual already requires them. This pin does not

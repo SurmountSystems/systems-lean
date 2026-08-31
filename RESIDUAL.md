@@ -51,25 +51,20 @@ Dual depth, ordered IR program rename, divergence merge, IR sketch, systems skel
 
 ## Open (high-value next)
 
-**Living tip (2026-08-28):** Hub reliability landed. `ElabMeetTheorems.lean`
-no longer imports the 18 historical isolation probes (HostFrontTheorems
-through FixtureTextsLater). Those isolation theorems live on the probe
-modules. Named-helper imports that pulled later probes are also gone from
-the hub. ElabMeetTheorems is **581**. Do **not** run
+**Living tip (2026-08-28):** Grow HostModuleCheckParityTypesTerm subset
+is **done**. Types isolation EXIT 0 on surmount-1 (1802 s, 21 jobs).
+ElabMeet ANDs the four ParityTypesTerm drive Bools. Named closed subset
+is **49 of about 206**. Do **not** claim **50**. FullHost stays false.
+`slakeOwnsPackageTypecheck` stays false. Open Name is
+**Grow HostModuleCheckParityProgramTerm subset**. That prove may already
+be in flight. Do **not** start a second Lake. Do **not** run
 `lake build SystemsLean.ElabMeetTheorems` or ElabMeet as the prove.
-MemoryMax **192 GiB** is the ceiling. Never raise it. 256 GiB is the box.
-Measured fat isolation peak about **167 GiB**. Max concurrent fat Leans is
-`floor(192/167) = 1`. Do not set jobs from core count.
-`64 * 10 GiB = 640 GiB` is not a budget we have. Fat proves:
-`LEAN_NUM_THREADS=1`, one niced Lake, one lean. Named closed subset stays
-**47 of about 206**. Do **not** claim **48**. FullHost stays false. Open
-Name is **Grow HostModuleCheckParityLinearTerm subset**. Next prove, if
-any: one serial niced isolation probe
-(`SystemsLean.ElabMeetNamedHostModuleCheckParityLinearTermProbe`) after
-`pgrep lake` is empty. Not the theorems hub. Not FullHost. Do not fold
-ParityTypesTerm. `leakEnv := false` stays on the nixbuilder tree
+ElabMeetTheorems is **581** and must not import Named*Probe modules.
+MemoryMax **192 GiB** is the ceiling. Fat proves:
+`LEAN_NUM_THREADS=1`, one niced Lake, one lean.
+`leakEnv := false` stays on the nixbuilder tree
 (ElabMeetCompile lines 111 and 170). Report
-`/home/hunter/.agents/reports/iso-2026-08-28-reliability-hub.md`.
+`/home/hunter/.agents/reports/iso-2026-08-28-paritytypes-49.md`.
 
 Historical prioritized backlog labels (P0..P7 / SH*) are land-time plan order only.
 **Living tip wins** for claim status: free true; complete true; PROVABLY claimed;
@@ -83,29 +78,24 @@ D/M/C/B/L/P **all done** (2026-08-08). Systems Open: **two-target emit program O
 
 | Remaining work | Honest number |
 |----------------|---------------|
-| Real modules Slake typechecks | **47 of about 206** (SystemsLean.Mult through SystemsLean.HostModuleCheckParityMultTerm) |
+| Real modules Slake typechecks | **49 of about 206** (SystemsLean.Mult through SystemsLean.HostModuleCheckParityTypesTerm) |
 | Real host tools that build without Lake on the step | **0 of about 69** |
 | Linear use-check | **not started** |
 | Same-job time | Lake idle-hot **0.459 s** (`doc/BENCH-SAME-JOB-latest.md`). Slake cannot run that full-package job. Do not invent a fake Slake wall-clock. |
 
-**Open this wave (not done):** Grow HostModuleCheckParityLinearTerm subset
-is **blocked** by operator STOP. Hub no longer imports the 18 historical
-isolation probes. Isolation theorems live on the probe modules. Do **not**
-run `lake build SystemsLean.ElabMeetTheorems` or ElabMeet. Next prove, if
-any: one serial niced isolation probe only after `pgrep lake` is empty,
-`LEAN_NUM_THREADS=1`. Not the theorems hub. Not FullHost. MemoryMax 192 GiB
-is the ceiling. `floor(192/167) = 1` concurrent fat Lean. Kill a hub
-fan-out yourself. `leakEnv := false` is live on the nixbuilder tree. Tip
-stays **47**. Do **not** claim **48**. Do **not** start a second lake. Do
-**not** restart a fat Lake job on horizon. Do **not** flip `FullHost` or
-package-typecheck pins. Skip SystemsLean.Linear as a named membership
-member and skip **IrGraph**. Do not fold HostModuleCheckParityTypesTerm
-while this Name is ungated. Prepare queue (EXTRACT_READY; fold only after
-tip 48): ParityTypesTerm, ParityProgramTerm, ParityEmitTerm,
-EmitMultScaffoldTerm, EmitLinearScaffoldTerm, EmitTypesScaffoldTerm,
-EmitProgramScaffoldTerm, EmitGraphScaffoldTerm. Host law: `AGENTS.md`
-section **Lake host and niceness**. Report
-`/home/hunter/.agents/reports/iso-2026-08-28-reliability-hub.md`.
+**Open this wave (not done):** Grow HostModuleCheckParityProgramTerm subset.
+Grow HostModuleCheckParityTypesTerm subset is **done**. Named closed
+subset **49 of about 206**. Do **not** claim **50**. Types isolation
+EXIT 0 (1802 s, 21 jobs). ElabMeet fold landed. ProgramTerm prove may
+already be in flight. Do **not** start a second Lake. Do **not** run
+`lake build SystemsLean.ElabMeetTheorems` or ElabMeet. Not FullHost.
+MemoryMax 192 GiB is the ceiling. `floor(192/167) = 1` concurrent fat Lean.
+Do not kill processes unless the operator names the PID or job.
+`leakEnv := false` is live on the nixbuilder tree. Do **not** restart a
+fat Lake job on horizon. Do **not** flip `FullHost` or package-typecheck
+pins. Skip SystemsLean.Linear as a named membership member and skip
+**IrGraph**. Host law: `AGENTS.md` section **Lake host and niceness**.
+Report `/home/hunter/.agents/reports/iso-2026-08-28-paritytypes-49.md`.
 
 Package-import for LLVM Compose text is **done** (PE86 / S40; `checkPackageEnvDialectS40` exists; E-good S40 is S39 plus LlvmComposeText; Soft J2 `packageBodyImportsHostCompose`; Soft J5 `checkLlvmComposeTextTermDialect`; PackageEnv **859**; DialectTail **193**; FixturesTail **891**; Evidence **827**; EvidenceLater **597**; Compose TERM companion **438** cite only; both-lessons **80 of 206**).
 Term-surface for LLVM Compose text is **done** (companion **438**; DualOk true; Soft J5 `checkLlvmComposeTextTermDialect`; RealModule `refineLlvmComposeTextWithTermSurface`; living `llvmComposeTextReady`; first import `SystemsLean.HostCompose`; LLVM text class; no dominance twin; harness **135**; TERM **80**; leftover TERM **126**; both-lessons now **80 of 206**).

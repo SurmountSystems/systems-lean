@@ -399,7 +399,7 @@
   Drive theorems: SystemsLean.ElabMeetTheorems (same namespace).
   Short role name (not ProductPathFreestanding*).
   Red/green: lake build one isolation probe only
-  (example SystemsLean.ElabMeetNamedHostModuleCheckParityLinearTermProbe)
+  (example SystemsLean.ElabMeetNamedHostModuleCheckParityTypesTermProbe)
   with LEAN_NUM_THREADS=1; just systems-host. Never lake build
   SystemsLean.ElabMeetTheorems or SystemsLean.ElabMeet as the prove.
   Do not add SystemsLean.ElabMeetNamed*Probe imports here.
@@ -437,6 +437,7 @@ import SystemsLean.ElabMeetNamedWalkHostModuleCheckKernelProgramTerm
 import SystemsLean.ElabMeetNamedWalkHostModuleCheckKernelEmitTerm
 import SystemsLean.ElabMeetNamedWalkHostModuleCheckParityMultTerm
 import SystemsLean.ElabMeetNamedWalkHostModuleCheckParityLinearTerm
+import SystemsLean.ElabMeetNamedWalkHostModuleCheckParityTypesTerm
 import SystemsLean.ElabMeetNamedHostFrontTheoremsProbe
 import SystemsLean.ElabMeetNamedHostCheckProbe
 import SystemsLean.ElabMeetNamedHostGraphProbe
@@ -472,6 +473,7 @@ import SystemsLean.ElabMeetNamedHostModuleCheckKernelProgramTermProbe
 import SystemsLean.ElabMeetNamedHostModuleCheckKernelEmitTermProbe
 import SystemsLean.ElabMeetNamedHostModuleCheckParityMultTermProbe
 import SystemsLean.ElabMeetNamedHostModuleCheckParityLinearTermProbe
+import SystemsLean.ElabMeetNamedHostModuleCheckParityTypesTermProbe
 import SystemsLean.ElabMeetSubset
 import SystemsLean.ElabMeetReadyHostModuleCheck
 
@@ -690,11 +692,17 @@ def elabMeetFullHostElaborateRemains : Bool := false
   HostModuleCheckParityLinearTerm-subset probe lives in
   SystemsLean.ElabMeetNamedHostModuleCheckParityLinearTermProbe.
   #elabMeetNamedHostModuleCheckParityLinearTermSubsetProbe
+  HostModuleCheckParityTypesTerm-subset probe lives in
+  SystemsLean.ElabMeetNamedHostModuleCheckParityTypesTermProbe.
+  #elabMeetNamedHostModuleCheckParityTypesTermSubsetProbe
 -/
 
 set_option maxRecDepth 8192 in
 /-- Slice ready: one-command drive is real and honesty holds.
     Partial drive is not full-package typecheck.
+    Rec-depth 8192 keep. This fold ANDs HostModuleCheckParityTypesTerm.
+    Do not skip to ParityProgramTerm in this fold. FullHost stays false.
+    slakeOwnsPackageTypecheck stays false.
     Greppable: elabMeetReady. MULT-0 MULT-1 MULT-OMEGA (host Mult cite). -/
 def elabMeetReady : Bool :=
   !slakeOwnsPackageTypecheck
@@ -931,6 +939,10 @@ def elabMeetReady : Bool :=
   && elabMeetRejectsBadNamedHostModuleCheckParityLinearTermSubset
   && elabMeetRejectsOldWalkAsNamedHostModuleCheckParityLinearTermSubset
   && elabMeetDrivesNamedHostModuleCheckParityLinearTermSubset
+  && elabMeetAcceptsGoodNamedHostModuleCheckParityTypesTermSubset
+  && elabMeetRejectsBadNamedHostModuleCheckParityTypesTermSubset
+  && elabMeetRejectsOldWalkAsNamedHostModuleCheckParityTypesTermSubset
+  && elabMeetDrivesNamedHostModuleCheckParityTypesTermSubset
 
 
 /-! ### ELAB-MEET-THEOREM (honesty flags; drive theorems live in ElabMeetTheorems) -/

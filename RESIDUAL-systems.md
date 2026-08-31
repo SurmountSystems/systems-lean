@@ -318,25 +318,20 @@ mathlib non-goal; **C5** host UX out of repo. Speed is empirical
 
 ### Open queue (checkable agent Names)
 
-**Living tip (2026-08-28):** Hub reliability landed. `ElabMeetTheorems.lean`
-no longer imports the 18 historical isolation probes (HostFrontTheorems
-through FixtureTextsLater). Those isolation theorems live on the probe
-modules. Named-helper imports that pulled later probes are also gone from
-the hub. ElabMeetTheorems is **581**. Do **not** run
+**Living tip (2026-08-28):** Grow HostModuleCheckParityTypesTerm subset
+is **done**. Types isolation EXIT 0 on surmount-1 (1802 s, 21 jobs).
+ElabMeet ANDs the four ParityTypesTerm drive Bools. Named closed subset
+is **49 of about 206**. Do **not** claim **50**. FullHost stays false.
+`slakeOwnsPackageTypecheck` stays false. Open Name is
+**Grow HostModuleCheckParityProgramTerm subset**. That prove may already
+be in flight. Do **not** start a second Lake. Do **not** run
 `lake build SystemsLean.ElabMeetTheorems` or ElabMeet as the prove.
-MemoryMax **192 GiB** is the ceiling. Never raise it. 256 GiB is the box.
-Measured fat isolation peak about **167 GiB**. Max concurrent fat Leans is
-`floor(192/167) = 1`. Do not set jobs from core count.
-`64 * 10 GiB = 640 GiB` is not a budget we have. Fat proves:
-`LEAN_NUM_THREADS=1`, one niced Lake, one lean. Named closed subset stays
-**47 of about 206**. Do **not** claim **48**. FullHost stays false. Open
-Name is **Grow HostModuleCheckParityLinearTerm subset**. Next prove, if
-any: one serial niced isolation probe
-(`SystemsLean.ElabMeetNamedHostModuleCheckParityLinearTermProbe`) after
-`pgrep lake` is empty. Not the theorems hub. Not FullHost. Do not fold
-ParityTypesTerm. `leakEnv := false` stays on the nixbuilder tree
+ElabMeetTheorems is **581** and must not import Named*Probe modules.
+MemoryMax **192 GiB** is the ceiling. Fat proves:
+`LEAN_NUM_THREADS=1`, one niced Lake, one lean.
+`leakEnv := false` stays on the nixbuilder tree
 (ElabMeetCompile lines 111 and 170). Report
-`/home/hunter/.agents/reports/iso-2026-08-28-reliability-hub.md`.
+`/home/hunter/.agents/reports/iso-2026-08-28-paritytypes-49.md`.
 
 **Living Open product Names: two-target emit program** (HAP leftovers **done**
 archive; cold compose init unroll **not open**). Operator **approved-with-notes**.
@@ -1237,7 +1232,7 @@ fail_closed_shape (~1.0x faster). Phase 0 two-target:
 | Linear use-check | **not started** |
 | Same-job time | Lake idle-hot **0.459 s** (`doc/BENCH-SAME-JOB-latest.md`). Slake cannot run that full-package job. Do not invent a fake Slake wall-clock. |
 
-#### Grow HostModuleCheckParityLinearTerm subset (host finish, open)
+#### Grow HostModuleCheckParityLinearTerm subset (host finish, done)
 
 | Field | Content |
 |-------|---------|
@@ -1246,11 +1241,33 @@ fail_closed_shape (~1.0x faster). Phase 0 two-target:
 | **Done when** | The named closed subset typechecks live HostModuleCheckParityLinearTerm via `tryCompileNamedMemberListIO`, or the implementer parks with one concrete blocker if the EmitPlanTerm import makes plus-one dishonest. Do not forge **48**. Accept good / reject planted error. Isolation vs the prior forty-seven-module walk. Leftover temp good.lean and leftover fake lean_lib ElabMeetRichLib stay false. Four theorems FIRST (`elabMeetDrivesNamedHostModuleCheckParityLinearTermSubset_true`, `elabMeetAcceptsGoodNamedHostModuleCheckParityLinearTermSubset_true`, `elabMeetRejectsBadNamedHostModuleCheckParityLinearTermSubset_true`, `elabMeetRejectsOldWalkAsNamedHostModuleCheckParityLinearTermSubset_true`) all `= true := by native_decide` BEFORE the Bools exist if this grow proceeds. TDD red then implement then green. Extract-first already on disk (probe **299**, helper **63**, walk **175**); this slice is prove plus ElabMeet fold. Theorems not rewritten. `slakeOwnsPackageTypecheck` stays **false**. FullHostElaborateRemains stays **false**. llvm pins stay. Leftover seed walk stays **closed**. |
 | **Out of scope** | Whole-package typecheck; leftover seed increments; flipping ownership / FullHost / DualResidual / Dominance / FullBackend / SpecProof; claiming the whole develop seed; planting errors in live product; growing ElabMeetCompile; flipping free / complete / PROVABLY; adding SystemsLean.Linear as a named membership member; adding IrGraph; adding HostCompose; adding HostGraphMain this slice; opening Grow HostImportGraph; folding HostModuleCheckParityTypesTerm; inventing a leftover-walk Name; flipping slakeOwnsPackageTypecheck / elabMeetFullHostElaborateRemains / FullHostElaborateRemains / llvm pins; running Lake on the laptop (horizon); `lake build SystemsLean.ElabMeetTheorems` or ElabMeet as prove (hub fan-out); raising MemoryMax above 192 GiB. |
 | **Primary paths** | EXTRACT-FIRST already on disk. Tail is **863** and Later is **785**; neither can absorb another leftover wrapper without passing about 880. HostTerm walk is **841** and stays. Emit walk stays **693**. CheckersLater walk is **617** and stays. KernelMultTerm walk is **162** and stays. KernelLinearTerm walk is **167** and stays. KernelTypesTerm walk is **168** and stays. KernelProgramTerm walk is **170** and stays. KernelEmitTerm walk is **171** and stays. ParityMultTerm walk is **173** and stays. Forty-eighth wrappers live in `ElabMeetNamedWalkHostModuleCheckParityLinearTerm.lean` (**175**). Forty-eighth probe lives in `ElabMeetNamedHostModuleCheckParityLinearTermProbe.lean` (**299**). Do not dump onto ParityMultTermProbe **294**. ElabMeetTheorems is **581** after dropping hub isolation-probe imports; isolation theorems live on the probe modules. Helper `ElabMeetTheoremsNamedHostModuleCheckParityLinearTerm.lean` is **63**. Do not grow ElabMeetCompile (**916**). Fold only on ElabMeet (**946**). ReadyHostModuleCheck is **132** and stays. Rec-depth 8192 keep. |
-| **Status** | **blocked** (operator STOP 2026-08-27; hub imports dropped 2026-08-28). Do **not** run `lake build SystemsLean.ElabMeetTheorems` or ElabMeet. The theorems hub no longer imports the 18 historical isolation probes. Isolation theorems live on the probe modules. Prove with one serial niced `lake build SystemsLean.ElabMeetNamedHostModuleCheckParityLinearTermProbe` and `LEAN_NUM_THREADS=1`. If `pgrep -c lean` climbs past 1, kill it. MemoryMax **192 GiB** is the ceiling. Never raise it. `floor(192/167) = 1` concurrent fat Lean. Do not set jobs from core count. Isolation probe EXIT 0 (START 2026-08-27T18:20:07Z END 19:03:52Z; probe **2518 s**; peak lean RSS about **167 GiB**). `leakEnv := false` is live on `/home/nixbuilder/iso` (ElabMeetCompile lines 111 and 170). ElabMeetTheorems **581**. Named closed subset stays **47 of about 206**. Do **not** claim **48**. Next prove, if any: wait until `pgrep lake` is empty, then one serial niced isolation probe only. Not the theorems hub. Not FullHost. Do not fold ParityTypesTerm. Skip SystemsLean.Linear as a named membership member. Skip IrGraph. Skip HostCompose. Skip HostGraphMain. Still not `slakeOwnsPackageTypecheck`. Still not FullHost. Report `/home/hunter/.agents/reports/iso-2026-08-28-reliability-hub.md`. |
+| **Status** | **done** (2026-08-28). Isolation EXIT 0 2026-08-27 (2518 s, peak about 167 GiB) plus 2026-08-28 incremental `lake build SystemsLean.ElabMeetNamedHostModuleCheckParityLinearTermProbe` 20 jobs EXIT 0 after hub uncouple rsync. ElabMeet already ANDs the four ParityLinearTerm drive Bools. Did **not** run ElabMeetTheorems or ElabMeet as prove. Named closed subset **48 of about 206** at that land. FullHost stays false. Next after that land was Grow HostModuleCheckParityTypesTerm subset. Report `/home/hunter/.agents/reports/iso-2026-08-28-paritylinear-48.md`. |
+
+#### Grow HostModuleCheckParityTypesTerm subset (host finish, done)
+
+| Field | Content |
+|-------|---------|
+| **Name** | Grow HostModuleCheckParityTypesTerm subset |
+| **Goal** | Add SystemsLean.HostModuleCheckParityTypesTerm to the named ElabMeet subset toward the develop seed. Dispatcher split after ParityLinearTerm. Skip HostGraphMain. Skip SystemsLean.Linear as a named membership member. Skip IrGraph. Skip HostCompose. Do not skip to HostModuleCheckParityProgramTerm in this fold. |
+| **Done when** | Types isolation EXIT 0. ElabMeet ANDs the four ParityTypesTerm drive Bools. Named closed subset **49**. FullHost stays false. slakeOwnsPackageTypecheck stays false. |
+| **Out of scope** | Whole-package typecheck; folding ParityProgramTerm in this fold; growing ElabMeetCompile; `lake build SystemsLean.ElabMeetTheorems` or ElabMeet as prove; Named*Probe imports on ElabMeetTheorems; flipping FullHost / slakeOwnsPackageTypecheck; starting a second Lake. |
+| **Primary paths** | Walk `ElabMeetNamedWalkHostModuleCheckParityTypesTerm.lean` (**179**). Probe `ElabMeetNamedHostModuleCheckParityTypesTermProbe.lean` (**305**). Helper `ElabMeetTheoremsNamedHostModuleCheckParityTypesTerm.lean` (**63**) stays off ElabMeet (match Linear). Fold only on ElabMeet. Rec-depth 8192 keep. |
+| **Status** | **done** (2026-08-28). Types isolation EXIT 0 on surmount-1 (1802 s, 21 jobs). ElabMeet ANDs the four ParityTypesTerm drive Bools. Did **not** run ElabMeetTheorems or ElabMeet as prove. Named closed subset **49 of about 206**. Do **not** claim **50**. FullHost stays false. Next is Grow HostModuleCheckParityProgramTerm subset. Report `/home/hunter/.agents/reports/iso-2026-08-28-paritytypes-49.md`. |
+
+#### Grow HostModuleCheckParityProgramTerm subset (host finish, open)
+
+| Field | Content |
+|-------|---------|
+| **Name** | Grow HostModuleCheckParityProgramTerm subset |
+| **Goal** | Add SystemsLean.HostModuleCheckParityProgramTerm to the named ElabMeet subset toward the develop seed. Dispatcher split after ParityTypesTerm. Skip HostGraphMain. Skip SystemsLean.Linear as a named membership member. Skip IrGraph. Skip HostCompose. |
+| **Done when** | Isolation EXIT 0 on the ProgramTerm probe, then ElabMeet fold ANDs the four ProgramTerm drive Bools, then living tip **50**. Do not forge **50** before isolation EXIT 0. FullHost stays false. slakeOwnsPackageTypecheck stays false. |
+| **Out of scope** | Whole-package typecheck; growing ElabMeetCompile; `lake build SystemsLean.ElabMeetTheorems` or ElabMeet as prove; Named*Probe imports on ElabMeetTheorems; flipping FullHost / slakeOwnsPackageTypecheck; starting a second Lake; laptop Lake. |
+| **Primary paths** | EXTRACT-FIRST already on disk. Walk `ElabMeetNamedWalkHostModuleCheckParityProgramTerm.lean` (**180**). Probe `ElabMeetNamedHostModuleCheckParityProgramTermProbe.lean` (**310**). Helper `ElabMeetTheoremsNamedHostModuleCheckParityProgramTerm.lean` (**63**). Do not grow ElabMeetCompile (**916**). Rec-depth 8192 keep. |
+| **Status** | **open**. Types fold is **done** (tip **49**). ProgramTerm prove may already be in flight. Do **not** start a second Lake. |
 
 | Remaining work | Honest number |
 |----------------|---------------|
-| Real modules Slake typechecks | **47 of about 206** (SystemsLean.Mult through SystemsLean.HostModuleCheckParityMultTerm) |
+| Real modules Slake typechecks | **49 of about 206** (SystemsLean.Mult through SystemsLean.HostModuleCheckParityTypesTerm) |
 | Real host tools that build without Lake on the step | **0 of about 69** |
 | Linear use-check | **not started** |
 | Same-job time | Lake idle-hot **0.459 s** (`doc/BENCH-SAME-JOB-latest.md`). Slake cannot run that full-package job. Do not invent a fake Slake wall-clock. |

@@ -101,15 +101,16 @@ Leans is `floor(192/167) = 1`. Do not set jobs from core count.
 **not** kill processes unless the operator names the PID or job.
 `just check` on **horizon** skips `lake build` in `_lake-if-pin`
 (`just/dual-side.just`) unless hostname is `surmount-1`. Force:
-`SYSTEMS_LEAN_LAKE_FORCE=1`. Named closed subset stays **47 of about 206**.
-Do **not** claim **48**.
-FullHost stays false. Open Name is Grow HostModuleCheckParityLinearTerm
-subset. Next prove, if any: one serial niced isolation probe
-(`SystemsLean.ElabMeetNamedHostModuleCheckParityLinearTermProbe`) after
-`pgrep lake` is empty. Not the theorems hub. Not FullHost. Do not fold
-ParityTypesTerm. `leakEnv := false` stays on the nixbuilder tree
+`SYSTEMS_LEAN_LAKE_FORCE=1`. Named closed subset stays **49 of about 206**.
+Do **not** claim **50**.
+FullHost stays false. Grow HostModuleCheckParityTypesTerm subset is
+**done**. Types isolation EXIT 0 on surmount-1 (1802 s, 21 jobs).
+ElabMeet ANDs the four ParityTypesTerm drive Bools. Open Name is Grow
+HostModuleCheckParityProgramTerm subset. That prove may already be in
+flight. Do not start a second Lake. Not the theorems hub. Not FullHost.
+`leakEnv := false` stays on the nixbuilder tree
 (ElabMeetCompile lines 111 and 170). Report
-`/home/hunter/.agents/reports/iso-2026-08-28-reliability-hub.md`.
+`/home/hunter/.agents/reports/iso-2026-08-28-paritytypes-49.md`.
 
 **Prior living tip (2026-08-26):**
 
