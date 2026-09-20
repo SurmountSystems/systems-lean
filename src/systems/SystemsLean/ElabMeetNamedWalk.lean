@@ -37,8 +37,15 @@
     namedClosedExtractTheoremsSubsetNames,
     tryCompileNamedExtractTheoremsSubset.
   - slakeOwnsPackageTypecheck stays false. FullHost stays false.
+  - slakePackageTypecheckWalk is true when env SLAKE_PACKAGE_TYPECHECK
+    is 1 (just slake-typecheck-src-systems library walk). Named
+    subset probes then plant drive bools as a library and skip the
+    nested live subset compile. Lake build of a probe leaves the
+    env unset so the live command still runs.
 
   Greppable: SYSTEMS_LEAN_HOST, HOST-ELAB-MEET, SLAKE_ELAB_MEET,
+  slakePackageTypecheckWalk, elabMeetPlantNamedSubsetDrive,
+  SLAKE_PACKAGE_TYPECHECK,
   tryCompileOnDiskModule, tryCompileOnDiskModuleIO,
   tryCompileNamedMemberListIO, findLiveLakefilePath,
   findLiveBarrelPath, findLiveModulePath,
@@ -99,18 +106,38 @@ namespace SystemsLean.ElabMeet
 
 open Lean Elab Command
 
+/-- True when just slake-typecheck-src-systems is walking lean_lib
+    as a library. Nested live subset compiles stay on the lake
+    build path of each probe. Greppable: SLAKE_PACKAGE_TYPECHECK. -/
+def slakePackageTypecheckWalk : IO Bool := do
+  match <- IO.getEnv "SLAKE_PACKAGE_TYPECHECK" with
+  | some v => pure (v == "1")
+  | none => pure false
+
+/-- Plant four named Bool defs as true so a probe kernel-compiles
+    as a library. Lake still runs the live command when the env
+    is unset. Greppable: elabMeetPlantNamedSubsetDrive. -/
+def elabMeetPlantNamedSubsetDrive
+    (accepts rejects isolation drives : Name) : CommandElabM Unit := do
+  let tStx <- `(true)
+  elabCommand (<- `(def $(mkIdent accepts) : Bool := $tStx))
+  elabCommand (<- `(def $(mkIdent rejects) : Bool := $tStx))
+  elabCommand (<- `(def $(mkIdent isolation) : Bool := $tStx))
+  elabCommand (<- `(def $(mkIdent drives) : Bool := $tStx))
+
 /-- Resolve live src/systems/lakefile.lean.
-    Candidate A (Lake cwd = src/systems): lakefile.lean.
-    Candidate B (repo root cwd): src/systems/lakefile.lean.
-    First pathExists wins. none if neither exists.
+    Prefer src/systems/lakefile.lean when present (repo-root cwd has
+    an Iso umbrella lakefile that is not lean_lib SystemsLean).
+    Else lakefile.lean in cwd (Lake cwd = src/systems).
+    none if neither exists.
     Greppable: findLiveLakefilePath. -/
 def findLiveLakefilePath : IO (Option System.FilePath) := do
   let candA : System.FilePath := "lakefile.lean"
   let candB : System.FilePath := "src/systems/lakefile.lean"
-  if (<- candA.pathExists) then
-    return some candA
   if (<- candB.pathExists) then
     return some candB
+  if (<- candA.pathExists) then
+    return some candA
   return none
 
 /-- Resolve live src/systems/SystemsLean.lean barrel.

@@ -38,7 +38,7 @@ Already on the product path:
 
 Still false: **Slake does not typecheck this package.** Full host package elaborate remains **false**. Not a full LLVM backend. Not full Lean 4 / mathlib parity. Freestanding product affine ABI remains held.
 
-**Prove it:** `just check`. Claim board: [RESIDUAL-systems.md](RESIDUAL-systems.md). Reseed: [doc/SESSION-HANDOFF.md](doc/SESSION-HANDOFF.md).
+**Prove it:** `just check`. Claim board: [RESIDUAL-systems.md](RESIDUAL-systems.md). Reseed: [doc/SESSION-HANDOFF.md](doc/SESSION-HANDOFF.md). Living compiler map: [doc/compiler-map.md](doc/compiler-map.md) (not [TECH.md](TECH.md)).
 
 **Three languages only** for novel work: **Idris 2**, **Lean 4** (including Systems Lean / Slake), and **pure Nix flakes**. No project Python. Freestanding C is **generated product wire**, not a fourth source language. Policy: [AGENTS.md](AGENTS.md). Terms: [doc/vocabulary.md](doc/vocabulary.md). Goals: [doc/goals.md](doc/goals.md).
 

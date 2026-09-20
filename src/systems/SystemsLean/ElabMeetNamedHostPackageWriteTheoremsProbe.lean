@@ -87,7 +87,7 @@ open Lean Elab Command
     good && !bad && isolation.
     Linear skipped. IrGraph skipped as a grow-tip Name. Do not
     plant live HostPackageWriteTheorems.lean. -/
-elab "#elabMeetNamedHostPackageWriteTheoremsSubsetProbe" : command => do
+def elabMeetRunNamedHostPackageWriteTheoremsSubsetProbe : CommandElabM Unit := do
   let liveLake? <- liftIO findLiveLakefilePath
   let liveMult? <- liftIO findLiveMultPath
   let liveThm? <- liftIO findLiveMultTheoremsPath
@@ -191,6 +191,16 @@ elab "#elabMeetNamedHostPackageWriteTheoremsSubsetProbe" : command => do
   elabCommand (<- `(def $rN : Bool := $rStx))
   elabCommand (<- `(def $iN : Bool := $iStx))
   elabCommand (<- `(def $dN : Bool := $dStx))
+
+elab "#elabMeetNamedHostPackageWriteTheoremsSubsetProbe" : command => do
+  if (<- liftIO slakePackageTypecheckWalk) then
+    elabMeetPlantNamedSubsetDrive
+      `elabMeetAcceptsGoodNamedHostPackageWriteTheoremsSubset
+      `elabMeetRejectsBadNamedHostPackageWriteTheoremsSubset
+      `elabMeetRejectsOldWalkAsNamedHostPackageWriteTheoremsSubset
+      `elabMeetDrivesNamedHostPackageWriteTheoremsSubset
+  else
+    elabMeetRunNamedHostPackageWriteTheoremsSubsetProbe
 
 #elabMeetNamedHostPackageWriteTheoremsSubsetProbe
 

@@ -76,6 +76,8 @@
   Module must stay ASCII.
 -/
 
+import SystemsLean.UseCheck
+
 namespace SystemsLean.Linear
 
 /-- Unrestricted ordinary data (MULT-OMEGA class). May be used more than once. -/

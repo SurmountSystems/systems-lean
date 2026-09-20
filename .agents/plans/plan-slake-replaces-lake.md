@@ -78,7 +78,7 @@ stays **false**. Do **not** flip FullHost. The leftover seed walk is
 | Remaining work | Honest number |
 |----------------|---------------|
 | Real modules Slake typechecks | **24 of about 206** (SystemsLean.Mult, SystemsLean.Types, SystemsLean.MultTheorems, SystemsLean.TypesTheorems, SystemsLean.Erasure, SystemsLean.ErasureTheorems, SystemsLean.Extract, SystemsLean.ExtractTheorems, SystemsLean.IrProgram, SystemsLean.IrProgramTheorems, SystemsLean.HostTerm, SystemsLean.HostFrontGoldens, SystemsLean.HostFront, SystemsLean.HostFrontTheorems, SystemsLean.HostCheck, SystemsLean.HostGraph, SystemsLean.HostGraphTheorems, SystemsLean.HostPackageWrite, SystemsLean.HostPackageWriteTheorems, SystemsLean.HostPackageRoots, SystemsLean.HostImportGraphSeeds, SystemsLean.HostImportGraphModel, SystemsLean.HostImportGraphMods, SystemsLean.HostImportGraphModsLater) |
-| Real host tools that build without Lake on the step | **0 of about 69** |
+| Real host tools that build without Lake on the step | **14 of 69** (`src/systems/host-tools-inventory.md`; 69 `lean_exe` rows in `src/systems/lakefile.lean`; fourteenth row `slake-freestanding-perform-dual-equality-write-parity` via `just fourteenth-host-tool`) |
 | Linear use-check | **not started** |
 | Same-job time | Lake idle-hot **0.459 s** (`doc/BENCH-SAME-JOB-latest.md`). Slake cannot run that full-package job. Do not invent a fake Slake wall-clock. |
 

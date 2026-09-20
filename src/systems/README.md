@@ -14,6 +14,7 @@ or implement prompts into this file.
 |------|------|
 | Lean host (Lake package `SystemsLean`) | `SystemsLean/*.lean`, `lakefile.lean`, `lean-toolchain` |
 | Module inventory | `host-partial-inventory.md` |
+| Host Lake executables (69) | `host-tools-inventory.md` (69 of 69 build without Lake on the mill step; that is produce, not package typecheck) |
 | Self-host claims | `self-host.md` (archives beside it) |
 | Freestanding C ownership | `emit/host-owned-emit.md` |
 | Dual / JOIN-ALG map | `join-map.md` |
@@ -31,7 +32,9 @@ on the release path. `just build` does **not** need Lake on that step. Host
 residual free is **claimed** for day-to-day tools; that is **not** "Lake is
 gone." Full host package elaborate remains **false**. Slake does **not**
 typecheck this package. Lake still typechecks imported modules and builds the
-host tools. **PROVABLY** is **true** (CompCert matrix in `just check`). LLVM is
+host tools. Named red command: `just slake-typecheck-src-systems`. Inventory:
+`doc/dev/research/self-host-gap-inventory-2026-09-17.md`. **PROVABLY** is **true**
+(CompCert matrix in `just check`). LLVM is
 unlocked and partial, not a full backend. Detail: `self-host.md`,
 `doc/SESSION-HANDOFF.md`, `RESIDUAL-systems.md`.
 

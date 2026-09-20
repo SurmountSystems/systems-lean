@@ -19,6 +19,7 @@ import SystemsLean.HostModuleCheckSurface
 import SystemsLean.HostModuleCheckCheckers
 import SystemsLean.HostModuleCheckCheckersLater
 import SystemsLean.HostModuleCheckMultTerm
+import SystemsLean.HostModuleCheckMultKernel
 import SystemsLean.HostModuleCheckMultProof
 import SystemsLean.HostModuleCheckLinearProof
 import SystemsLean.HostModuleCheckTypesProof
@@ -136,8 +137,9 @@ def checkRealModule (modName : String) (content : String) :
   else
     let surf := surfaceFromContent modName content
     if modName == "SystemsLean.Mult" then
-      -- L0/L1 structural then Mult L2 term-surface (J5+J6 dialect pilot).
-      refineMultWithTermSurface (checkMultSurface surf) content
+      -- L0/L1 structural then Mult L2 term-surface then KERNEL-CHECK.
+      refineMultWithKernel
+        (refineMultWithTermSurface (checkMultSurface surf) content) content
     else if modName == "SystemsLean.MultTheorems" then
       -- L0/L1 structural then MultTheorems L3 proof-surface (J7 dialect pilot).
       refineMultTheoremsWithProofSurface (checkMultTheoremsSurface surf) content

@@ -389,6 +389,13 @@ theorem hostModuleCheckMultTermSurfaceOk_true :
     hostModuleCheckMultTermSurfaceOk = true := by
   native_decide
 
+/-- Mult KERNEL-CHECK dual-pin (HostTerm fixture + G1 + ill-typed rejects).
+    Greppable: hostModuleCheckMultKernelOk_true, KERNEL-CHECK, Mult-only,
+    HOST-MODULE-CHECK-THEOREM. -/
+theorem hostModuleCheckMultKernelOk_true :
+    hostModuleCheckMultKernelOk = true := by
+  native_decide
+
 /-- TERM-SURFACE Mult-only pins.
     Greppable: hostModuleCheck_term_surface_ids_eq, TERM-SURFACE, Mult-only. -/
 theorem hostModuleCheck_term_surface_ids_eq :

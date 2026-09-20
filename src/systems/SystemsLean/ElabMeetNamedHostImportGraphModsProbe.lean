@@ -37,6 +37,10 @@
     skipped as a grow-tip Name. Do not plant live
     HostImportGraphMods.lean.
   - The drive is good && !bad && isolation.
+  - When SLAKE_PACKAGE_TYPECHECK=1 (library walk), plant drive Bools
+    via elabMeetPlantNamedSubsetDrive so this probe kernel-compiles
+    as a library. Lake unset-env still runs the live nested compile.
+    Do not drop this module from the 747 list.
   - slakeOwnsPackageTypecheck stays false. FullHost stays false.
 
   Greppable: SYSTEMS_LEAN_HOST, HOST-ELAB-MEET, SLAKE_ELAB_MEET,
@@ -51,6 +55,9 @@
   elabMeetAcceptsGoodNamedHostImportGraphModsSubset,
   elabMeetRejectsBadNamedHostImportGraphModsSubset,
   elabMeetRejectsOldWalkAsNamedHostImportGraphModsSubset,
+  elabMeetRunNamedHostImportGraphModsSubsetProbe,
+  elabMeetPlantNamedSubsetDrive, slakePackageTypecheckWalk,
+  SLAKE_PACKAGE_TYPECHECK,
   #elabMeetNamedHostImportGraphModsSubsetProbe,
   elabMeetNamedHostImportGraphModsSubsetProbe,
   SystemsLean.HostImportGraphMods,
@@ -92,7 +99,7 @@ open Lean Elab Command
     good && !bad && isolation.
     Linear skipped. IrGraph skipped as a grow-tip Name. Do not
     plant live HostImportGraphMods.lean. -/
-elab "#elabMeetNamedHostImportGraphModsSubsetProbe" : command => do
+def elabMeetRunNamedHostImportGraphModsSubsetProbe : CommandElabM Unit := do
   let liveLake? <- liftIO findLiveLakefilePath
   let liveMult? <- liftIO findLiveMultPath
   let liveThm? <- liftIO findLiveMultTheoremsPath
@@ -196,6 +203,16 @@ elab "#elabMeetNamedHostImportGraphModsSubsetProbe" : command => do
   elabCommand (<- `(def $rN : Bool := $rStx))
   elabCommand (<- `(def $iN : Bool := $iStx))
   elabCommand (<- `(def $dN : Bool := $dStx))
+
+elab "#elabMeetNamedHostImportGraphModsSubsetProbe" : command => do
+  if (<- liftIO slakePackageTypecheckWalk) then
+    elabMeetPlantNamedSubsetDrive
+      `elabMeetAcceptsGoodNamedHostImportGraphModsSubset
+      `elabMeetRejectsBadNamedHostImportGraphModsSubset
+      `elabMeetRejectsOldWalkAsNamedHostImportGraphModsSubset
+      `elabMeetDrivesNamedHostImportGraphModsSubset
+  else
+    elabMeetRunNamedHostImportGraphModsSubsetProbe
 
 #elabMeetNamedHostImportGraphModsSubsetProbe
 

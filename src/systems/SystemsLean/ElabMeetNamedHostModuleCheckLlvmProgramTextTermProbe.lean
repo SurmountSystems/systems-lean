@@ -420,7 +420,7 @@ open Lean Elab Command
     Linear skipped. IrGraph skipped as a grow-tip Name. HostCompose skipped.
     Do not plant live HostModuleCheckLlvmProgramTextTerm.lean. Do not skip to
     HostModuleCheckLlvmGraphTextTerm. -/
-elab "#elabMeetNamedHostModuleCheckLlvmProgramTextTermSubsetProbe" : command => do
+def elabMeetRunNamedHostModuleCheckLlvmProgramTextTermSubsetProbe : CommandElabM Unit := do
   let liveLake? <- liftIO findLiveLakefilePath
   let liveMult? <- liftIO findLiveMultPath
   let liveThm? <- liftIO findLiveMultTheoremsPath
@@ -525,6 +525,16 @@ elab "#elabMeetNamedHostModuleCheckLlvmProgramTextTermSubsetProbe" : command => 
   elabCommand (<- `(def $rN : Bool := $rStx))
   elabCommand (<- `(def $iN : Bool := $iStx))
   elabCommand (<- `(def $dN : Bool := $dStx))
+
+elab "#elabMeetNamedHostModuleCheckLlvmProgramTextTermSubsetProbe" : command => do
+  if (<- liftIO slakePackageTypecheckWalk) then
+    elabMeetPlantNamedSubsetDrive
+      `elabMeetAcceptsGoodNamedHostModuleCheckLlvmProgramTextTermSubset
+      `elabMeetRejectsBadNamedHostModuleCheckLlvmProgramTextTermSubset
+      `elabMeetRejectsOldWalkAsNamedHostModuleCheckLlvmProgramTextTermSubset
+      `elabMeetDrivesNamedHostModuleCheckLlvmProgramTextTermSubset
+  else
+    elabMeetRunNamedHostModuleCheckLlvmProgramTextTermSubsetProbe
 
 #elabMeetNamedHostModuleCheckLlvmProgramTextTermSubsetProbe
 

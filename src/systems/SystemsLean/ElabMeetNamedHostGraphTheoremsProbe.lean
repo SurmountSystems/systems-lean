@@ -32,6 +32,10 @@
     an alias of the sixteenth. Linear skipped. IrGraph skipped.
     Do not plant live HostGraphTheorems.lean.
   - The drive is good && !bad && isolation.
+  - When SLAKE_PACKAGE_TYPECHECK=1 (library walk), plant drive Bools
+    via elabMeetPlantNamedSubsetDrive so this probe kernel-compiles
+    as a library. Lake unset-env still runs the live nested compile.
+    Do not drop this module from the 747 list.
   - slakeOwnsPackageTypecheck stays false. FullHost stays false.
 
   Greppable: SYSTEMS_LEAN_HOST, HOST-ELAB-MEET, SLAKE_ELAB_MEET,
@@ -46,6 +50,9 @@
   elabMeetAcceptsGoodNamedHostGraphTheoremsSubset,
   elabMeetRejectsBadNamedHostGraphTheoremsSubset,
   elabMeetRejectsOldWalkAsNamedHostGraphTheoremsSubset,
+  elabMeetRunNamedHostGraphTheoremsSubsetProbe,
+  elabMeetPlantNamedSubsetDrive, slakePackageTypecheckWalk,
+  SLAKE_PACKAGE_TYPECHECK,
   #elabMeetNamedHostGraphTheoremsSubsetProbe,
   elabMeetNamedHostGraphTheoremsSubsetProbe,
   SystemsLean.HostGraphTheorems,
@@ -86,7 +93,7 @@ open Lean Elab Command
     an alias of the sixteenth. Drive is good && !bad && isolation.
     Linear skipped. IrGraph skipped. Do not plant live
     HostGraphTheorems.lean. -/
-elab "#elabMeetNamedHostGraphTheoremsSubsetProbe" : command => do
+def elabMeetRunNamedHostGraphTheoremsSubsetProbe : CommandElabM Unit := do
   let liveLake? <- liftIO findLiveLakefilePath
   let liveMult? <- liftIO findLiveMultPath
   let liveThm? <- liftIO findLiveMultTheoremsPath
@@ -190,6 +197,16 @@ elab "#elabMeetNamedHostGraphTheoremsSubsetProbe" : command => do
   elabCommand (<- `(def $rN : Bool := $rStx))
   elabCommand (<- `(def $iN : Bool := $iStx))
   elabCommand (<- `(def $dN : Bool := $dStx))
+
+elab "#elabMeetNamedHostGraphTheoremsSubsetProbe" : command => do
+  if (<- liftIO slakePackageTypecheckWalk) then
+    elabMeetPlantNamedSubsetDrive
+      `elabMeetAcceptsGoodNamedHostGraphTheoremsSubset
+      `elabMeetRejectsBadNamedHostGraphTheoremsSubset
+      `elabMeetRejectsOldWalkAsNamedHostGraphTheoremsSubset
+      `elabMeetDrivesNamedHostGraphTheoremsSubset
+  else
+    elabMeetRunNamedHostGraphTheoremsSubsetProbe
 
 #elabMeetNamedHostGraphTheoremsSubsetProbe
 

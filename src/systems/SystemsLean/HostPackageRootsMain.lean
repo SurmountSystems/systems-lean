@@ -1,7 +1,9 @@
 /-
-  SYSTEMS_LEAN_HOST partial -- thin Lake exe main for package roots / library
-  module list without Lake on the measured step (SKELETON; plan A3). Root for
-  lake exe slake-host-package-roots. Body lives in SystemsLean.HostPackageRoots
+  SYSTEMS_LEAN_HOST partial -- thin lean then leanc inventory executable main
+  for package roots / library module list without Lake on the measured step
+  (SKELETON; plan A3). Inventory name: slake-host-package-roots (lakefile
+  lean_exe still exists; mill is just twenty-second-host-tool). Body lives in
+  SystemsLean.HostPackageRoots
   (hostPackageRootsReady / loadPackageRoots walk).
   Greppable: SystemsLean.HostPackageRootsMain, slake-host-package-roots,
   HostPackageRootsMain, HOST-PACKAGE-ROOTS, SLAKE_HOST_PACKAGE_ROOTS,

@@ -269,7 +269,7 @@ open Lean Elab Command
     Linear skipped. IrGraph skipped as a grow-tip Name. HostCompose skipped.
     Do not plant live HostModuleCheckSelfHostTerm.lean. Do not skip to
     HostModuleCheckSurfaceMatrixTerm. -/
-elab "#elabMeetNamedHostModuleCheckSelfHostTermSubsetProbe" : command => do
+def elabMeetRunNamedHostModuleCheckSelfHostTermSubsetProbe : CommandElabM Unit := do
   let liveLake? <- liftIO findLiveLakefilePath
   let liveMult? <- liftIO findLiveMultPath
   let liveThm? <- liftIO findLiveMultTheoremsPath
@@ -374,6 +374,16 @@ elab "#elabMeetNamedHostModuleCheckSelfHostTermSubsetProbe" : command => do
   elabCommand (<- `(def $rN : Bool := $rStx))
   elabCommand (<- `(def $iN : Bool := $iStx))
   elabCommand (<- `(def $dN : Bool := $dStx))
+
+elab "#elabMeetNamedHostModuleCheckSelfHostTermSubsetProbe" : command => do
+  if (<- liftIO slakePackageTypecheckWalk) then
+    elabMeetPlantNamedSubsetDrive
+      `elabMeetAcceptsGoodNamedHostModuleCheckSelfHostTermSubset
+      `elabMeetRejectsBadNamedHostModuleCheckSelfHostTermSubset
+      `elabMeetRejectsOldWalkAsNamedHostModuleCheckSelfHostTermSubset
+      `elabMeetDrivesNamedHostModuleCheckSelfHostTermSubset
+  else
+    elabMeetRunNamedHostModuleCheckSelfHostTermSubsetProbe
 
 #elabMeetNamedHostModuleCheckSelfHostTermSubsetProbe
 

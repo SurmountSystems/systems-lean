@@ -65,6 +65,14 @@ let
 in if h.ok then h.summary + "\n" else throw h.summary
 '''
 
+_systems_mill_extras_fit := '''
+let
+  lib = (import (builtins.getFlake "nixpkgs") {}).lib;
+  novel = import ./nix/novel-source.nix { inherit lib; src = ./.; };
+  h = import ./nix/systems-mill-extras-fit { inherit lib; root = novel; };
+in if h.ok then h.summary + "\n" else throw h.summary
+'''
+
 hygiene:
     @nix eval --impure --raw --expr {{quote(_hygiene)}}
 
@@ -114,6 +122,11 @@ idris-side:
 # Live impure worktree eval. Optional elaborator: just lean-elaborate.
 lean-side:
     @nix eval --impure --raw --expr {{quote(_lean_side)}}
+
+# Pure Nix mill extras-fit (HostModuleCheck extras file + mill-class just-line).
+# Live impure worktree eval. Does not mill. Does not claim mill GREEN.
+systems-mill-extras-fit:
+    @nix eval --impure --raw --expr {{quote(_systems_mill_extras_fit)}}
 
 # Optional idris2 --check on dual examples. Skip GREEN if idris2 missing; RED if check fails.
 # Static presence: just idris-side. Module names match basenames (ConsumeToken, ...).

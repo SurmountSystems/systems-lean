@@ -352,7 +352,7 @@ open Lean Elab Command
     Linear skipped. IrGraph skipped as a grow-tip Name. HostCompose skipped.
     Do not plant live HostModuleCheckLinearSubsetEmitTerm.lean. Do not skip to
     HostModuleCheckTypesSubsetEmitTerm. -/
-elab "#elabMeetNamedHostModuleCheckLinearSubsetEmitTermSubsetProbe" : command => do
+def elabMeetRunNamedHostModuleCheckLinearSubsetEmitTermSubsetProbe : CommandElabM Unit := do
   let liveLake? <- liftIO findLiveLakefilePath
   let liveMult? <- liftIO findLiveMultPath
   let liveThm? <- liftIO findLiveMultTheoremsPath
@@ -457,6 +457,16 @@ elab "#elabMeetNamedHostModuleCheckLinearSubsetEmitTermSubsetProbe" : command =>
   elabCommand (<- `(def $rN : Bool := $rStx))
   elabCommand (<- `(def $iN : Bool := $iStx))
   elabCommand (<- `(def $dN : Bool := $dStx))
+
+elab "#elabMeetNamedHostModuleCheckLinearSubsetEmitTermSubsetProbe" : command => do
+  if (<- liftIO slakePackageTypecheckWalk) then
+    elabMeetPlantNamedSubsetDrive
+      `elabMeetAcceptsGoodNamedHostModuleCheckLinearSubsetEmitTermSubset
+      `elabMeetRejectsBadNamedHostModuleCheckLinearSubsetEmitTermSubset
+      `elabMeetRejectsOldWalkAsNamedHostModuleCheckLinearSubsetEmitTermSubset
+      `elabMeetDrivesNamedHostModuleCheckLinearSubsetEmitTermSubset
+  else
+    elabMeetRunNamedHostModuleCheckLinearSubsetEmitTermSubsetProbe
 
 #elabMeetNamedHostModuleCheckLinearSubsetEmitTermSubsetProbe
 

@@ -680,7 +680,7 @@ def tryCompileAfterIrProgramDeps
     the prior seven-module named subset still work; this walker
     is false on a leftover temp snippet and on a leftover
     fake-package lakefile. Drive is good && !bad && isolation. -/
-elab "#elabMeetNamedExtractTheoremsSubsetProbe" : command => do
+def elabMeetRunNamedExtractTheoremsSubsetProbe : CommandElabM Unit := do
   let liveLake? <- liftIO findLiveLakefilePath
   let liveMult? <- liftIO findLiveMultPath
   let liveThm? <- liftIO findLiveMultTheoremsPath
@@ -774,6 +774,16 @@ elab "#elabMeetNamedExtractTheoremsSubsetProbe" : command => do
   elabCommand (<- `(def $rN : Bool := $rStx))
   elabCommand (<- `(def $iN : Bool := $iStx))
   elabCommand (<- `(def $dN : Bool := $dStx))
+
+elab "#elabMeetNamedExtractTheoremsSubsetProbe" : command => do
+  if (<- liftIO slakePackageTypecheckWalk) then
+    elabMeetPlantNamedSubsetDrive
+      `elabMeetAcceptsGoodNamedExtractTheoremsSubset
+      `elabMeetRejectsBadNamedExtractTheoremsSubset
+      `elabMeetRejectsOldWalkAsNamedExtractTheoremsSubset
+      `elabMeetDrivesNamedExtractTheoremsSubset
+  else
+    elabMeetRunNamedExtractTheoremsSubsetProbe
 
 #elabMeetNamedExtractTheoremsSubsetProbe
 

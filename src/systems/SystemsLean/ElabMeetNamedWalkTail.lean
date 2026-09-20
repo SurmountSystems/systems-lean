@@ -219,7 +219,7 @@ def tryCompileAfterIrProgramTheoremsDeps
     still work; this walker is false on a leftover temp snippet
     and on a leftover fake-package lakefile. Drive is
     good && !bad && isolation. -/
-elab "#elabMeetNamedExtractSubsetProbe" : command => do
+def elabMeetRunNamedExtractSubsetProbe : CommandElabM Unit := do
   let liveLake? <- liftIO findLiveLakefilePath
   let liveMult? <- liftIO findLiveMultPath
   let liveThm? <- liftIO findLiveMultTheoremsPath
@@ -314,6 +314,16 @@ elab "#elabMeetNamedExtractSubsetProbe" : command => do
   elabCommand (<- `(def $iN : Bool := $iStx))
   elabCommand (<- `(def $dN : Bool := $dStx))
 
+elab "#elabMeetNamedExtractSubsetProbe" : command => do
+  if (<- liftIO slakePackageTypecheckWalk) then
+    elabMeetPlantNamedSubsetDrive
+      `elabMeetAcceptsGoodNamedExtractSubset
+      `elabMeetRejectsBadNamedExtractSubset
+      `elabMeetRejectsOldWalkAsNamedExtractSubset
+      `elabMeetDrivesNamedExtractSubset
+  else
+    elabMeetRunNamedExtractSubsetProbe
+
 #elabMeetNamedExtractSubsetProbe
 
 example : elabMeetAcceptsGoodNamedExtractSubset = true := rfl
@@ -332,7 +342,7 @@ example : elabMeetDrivesNamedExtractSubset = true := rfl
     is false on a leftover temp snippet and on a leftover
     fake-package lakefile. Drive is good && !bad && isolation.
     Linear skipped. Do not plant live IrProgram.lean. -/
-elab "#elabMeetNamedIrProgramSubsetProbe" : command => do
+def elabMeetRunNamedIrProgramSubsetProbe : CommandElabM Unit := do
   let liveLake? <- liftIO findLiveLakefilePath
   let liveMult? <- liftIO findLiveMultPath
   let liveThm? <- liftIO findLiveMultTheoremsPath
@@ -427,6 +437,16 @@ elab "#elabMeetNamedIrProgramSubsetProbe" : command => do
   elabCommand (<- `(def $iN : Bool := $iStx))
   elabCommand (<- `(def $dN : Bool := $dStx))
 
+elab "#elabMeetNamedIrProgramSubsetProbe" : command => do
+  if (<- liftIO slakePackageTypecheckWalk) then
+    elabMeetPlantNamedSubsetDrive
+      `elabMeetAcceptsGoodNamedIrProgramSubset
+      `elabMeetRejectsBadNamedIrProgramSubset
+      `elabMeetRejectsOldWalkAsNamedIrProgramSubset
+      `elabMeetDrivesNamedIrProgramSubset
+  else
+    elabMeetRunNamedIrProgramSubsetProbe
+
 #elabMeetNamedIrProgramSubsetProbe
 
 example : elabMeetAcceptsGoodNamedIrProgramSubset = true := rfl
@@ -441,7 +461,7 @@ example : elabMeetDrivesNamedIrProgramSubset = true := rfl
     still work; this walker is false on a leftover temp snippet and
     on a leftover fake-package lakefile. Drive is
     good && !bad && isolation. -/
-elab "#elabMeetNamedSubsetProbe" : command => do
+def elabMeetRunNamedSubsetProbe : CommandElabM Unit := do
   let liveLake? <- liftIO findLiveLakefilePath
   let liveMult? <- liftIO findLiveMultPath
   let liveThm? <- liftIO findLiveMultTheoremsPath
@@ -523,6 +543,16 @@ elab "#elabMeetNamedSubsetProbe" : command => do
   elabCommand (<- `(def $iN : Bool := $iStx))
   elabCommand (<- `(def $dN : Bool := $dStx))
 
+elab "#elabMeetNamedSubsetProbe" : command => do
+  if (<- liftIO slakePackageTypecheckWalk) then
+    elabMeetPlantNamedSubsetDrive
+      `elabMeetAcceptsGoodNamedSubset
+      `elabMeetRejectsBadNamedSubset
+      `elabMeetRejectsOldWalkAsNamedSubset
+      `elabMeetDrivesNamedSubset
+  else
+    elabMeetRunNamedSubsetProbe
+
 #elabMeetNamedSubsetProbe
 
 example : elabMeetAcceptsGoodNamedSubset = true := rfl
@@ -538,7 +568,7 @@ example : elabMeetDrivesNamedSubset = true := rfl
     prior three-module named subset still work; this walker is
     false on a leftover temp snippet and on a leftover fake-package
     lakefile. Drive is good && !bad && isolation. -/
-elab "#elabMeetNamedTypesTheoremsSubsetProbe" : command => do
+def elabMeetRunNamedTypesTheoremsSubsetProbe : CommandElabM Unit := do
   let liveLake? <- liftIO findLiveLakefilePath
   let liveMult? <- liftIO findLiveMultPath
   let liveThm? <- liftIO findLiveMultTheoremsPath
@@ -633,6 +663,16 @@ elab "#elabMeetNamedTypesTheoremsSubsetProbe" : command => do
   elabCommand (<- `(def $iN : Bool := $iStx))
   elabCommand (<- `(def $dN : Bool := $dStx))
 
+elab "#elabMeetNamedTypesTheoremsSubsetProbe" : command => do
+  if (<- liftIO slakePackageTypecheckWalk) then
+    elabMeetPlantNamedSubsetDrive
+      `elabMeetAcceptsGoodNamedTypesTheoremsSubset
+      `elabMeetRejectsBadNamedTypesTheoremsSubset
+      `elabMeetRejectsOldWalkAsNamedTypesTheoremsSubset
+      `elabMeetDrivesNamedTypesTheoremsSubset
+  else
+    elabMeetRunNamedTypesTheoremsSubsetProbe
+
 #elabMeetNamedTypesTheoremsSubsetProbe
 
 example : elabMeetAcceptsGoodNamedTypesTheoremsSubset = true := rfl
@@ -648,7 +688,7 @@ example : elabMeetDrivesNamedTypesTheoremsSubset = true := rfl
     four-module named subset still work; this walker is false on
     a leftover temp snippet and on a leftover fake-package
     lakefile. Drive is good && !bad && isolation. -/
-elab "#elabMeetNamedErasureSubsetProbe" : command => do
+def elabMeetRunNamedErasureSubsetProbe : CommandElabM Unit := do
   let liveLake? <- liftIO findLiveLakefilePath
   let liveMult? <- liftIO findLiveMultPath
   let liveThm? <- liftIO findLiveMultTheoremsPath
@@ -742,6 +782,16 @@ elab "#elabMeetNamedErasureSubsetProbe" : command => do
   elabCommand (<- `(def $iN : Bool := $iStx))
   elabCommand (<- `(def $dN : Bool := $dStx))
 
+elab "#elabMeetNamedErasureSubsetProbe" : command => do
+  if (<- liftIO slakePackageTypecheckWalk) then
+    elabMeetPlantNamedSubsetDrive
+      `elabMeetAcceptsGoodNamedErasureSubset
+      `elabMeetRejectsBadNamedErasureSubset
+      `elabMeetRejectsOldWalkAsNamedErasureSubset
+      `elabMeetDrivesNamedErasureSubset
+  else
+    elabMeetRunNamedErasureSubsetProbe
+
 #elabMeetNamedErasureSubsetProbe
 
 example : elabMeetAcceptsGoodNamedErasureSubset = true := rfl
@@ -758,7 +808,7 @@ example : elabMeetDrivesNamedErasureSubset = true := rfl
     still work; this walker is false on a leftover temp snippet
     and on a leftover fake-package lakefile. Drive is
     good && !bad && isolation. -/
-elab "#elabMeetNamedErasureTheoremsSubsetProbe" : command => do
+def elabMeetRunNamedErasureTheoremsSubsetProbe : CommandElabM Unit := do
   let liveLake? <- liftIO findLiveLakefilePath
   let liveMult? <- liftIO findLiveMultPath
   let liveThm? <- liftIO findLiveMultTheoremsPath
@@ -852,6 +902,16 @@ elab "#elabMeetNamedErasureTheoremsSubsetProbe" : command => do
   elabCommand (<- `(def $rN : Bool := $rStx))
   elabCommand (<- `(def $iN : Bool := $iStx))
   elabCommand (<- `(def $dN : Bool := $dStx))
+
+elab "#elabMeetNamedErasureTheoremsSubsetProbe" : command => do
+  if (<- liftIO slakePackageTypecheckWalk) then
+    elabMeetPlantNamedSubsetDrive
+      `elabMeetAcceptsGoodNamedErasureTheoremsSubset
+      `elabMeetRejectsBadNamedErasureTheoremsSubset
+      `elabMeetRejectsOldWalkAsNamedErasureTheoremsSubset
+      `elabMeetDrivesNamedErasureTheoremsSubset
+  else
+    elabMeetRunNamedErasureTheoremsSubsetProbe
 
 #elabMeetNamedErasureTheoremsSubsetProbe
 

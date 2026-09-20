@@ -44,6 +44,28 @@ just bench
 
 A full `just bench` still times freestanding emit, without-Lake host tools, and CompCert. Those are **not** Lake-versus-Slake on host package elaborate. Runtime freestanding C is a product speed story (`just bench-runtime`).
 
+## Closed set leftover (Slake typechecks src/systems), addendum 2026-09-20
+
+This addendum does **not** replace the full-package suite above. Idle-hot **0.459 s** (this file, **horizon**, 2026-08-13), suite idle-hot **0.447 s**, and suite first pass **29.613 s** stay the full-package job. They are **not** this leftover. Do not treat closed-set idle-hot **0.92 s** as those full-package cells.
+
+**Closed set:** product modules Mult, Types, Erasure, Extract, IrProgram (already live-parse GREEN). Named Lake targets: `SystemsLean.Mult`, `SystemsLean.Types`, `SystemsLean.Erasure`, `SystemsLean.Extract`, `SystemsLean.IrProgram`.
+
+**How much faster or slower:** not comparable, because Slake cannot run this closed-set typecheck as the compiler yet. Do not say which arm is faster. The first ELF dest `out/slake-produced-elf/slake-hello` is clang-linked generator SSA, not Slake compiling Slake.
+
+| Arm | Result |
+|-----|--------|
+| **Closed-set Lake** | Measured on **surmount-1**, tree `/home/nixbuilder/iso/src/systems`, niced `nice -n 19`, `LEAN_NUM_THREADS=16`. First pass EXIT 0, wall **2.60 s**, Max RSS **811360 KiB** (about 0.77 GiB). Idle-hot second pass EXIT 0, wall **0.92 s**, Max RSS **803528 KiB**. RSS is mill-class, not OccupancyProbe. Log `/tmp/systems-lean-bench-closed-set-20260920T033252Z.log`. Coordinator report `/home/hunter/.agents/reports/grok-impl-summary-lake-coord-closed-set-bench.md`. This is **not** `just bench-same-job`. Full-package idle-hot **0.459 s** on **horizon** 2026-08-13 is a different job. |
+| **Closed-set Slake** | Slake cannot typecheck this closed set as the compiler yet. No Slake wall-clock for this job. Do not invent one. |
+
+### Closed-set Lake passes (surmount-1, 2026-09-20)
+
+| Pass | Exit | real (s) | Max RSS (KiB) |
+|------|------|----------|---------------|
+| first | 0 | 2.60 | 811360 |
+| second (idle hot) | 0 | 0.92 | 803528 |
+
+**FullHost** stays **false**. **slakeOwnsPackageTypecheck** stays **false**. Occupancy stays 49. Mill stays 69 of 69. Do not claim Lake-gone. OccupancyProbe was not run for this sample.
+
 ## Non-claims
 
 - No "provably fastest C" claim.
@@ -51,6 +73,7 @@ A full `just bench` still times freestanding emit, without-Lake host tools, and 
 - **FullHostElaborateRemains** stays **false**.
 - Lake does not emit that wire (freestanding product C).
 - free / complete / PROVABLY are **not** flipped by these benches.
+- The 2026-09-20 closed-set addendum does **not** overwrite the 2026-08-13 full-package **0.459 s** / **0.447 s** / **29.613 s** cells. Closed-set Lake is measured on surmount-1. Closed-set Slake has no wall-clock. How much faster: not comparable.
 
 ## Paths
 
@@ -61,6 +84,9 @@ A full `just bench` still times freestanding emit, without-Lake host tools, and 
 | Full transcript | `/tmp/systems-lean-bench-same-job-20260813T164543Z.log` |
 | Research note | `doc/dev/research/hot-cold-benchmarks-2026-08-08.md` |
 | Recipes | `just/bench.just` |
+| Closed-set Lake queue | `/home/hunter/.agents/reports/lake-queue-closed-set-bench.md` |
+| Closed-set Lake log | `/tmp/systems-lean-bench-closed-set-20260920T033252Z.log` |
+| Closed-set Lake coordinator report | `/home/hunter/.agents/reports/grok-impl-summary-lake-coord-closed-set-bench.md` |
 
 ## Overall exit
 

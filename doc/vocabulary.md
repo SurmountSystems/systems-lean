@@ -53,7 +53,7 @@ Stable terms for **Systems Lean**. Prefer plain English. Do not invent fashion n
 | **skills/** | Read-only **agent skill pack** submodules (e.g. `skills/lean4-skills`) -- not product source; not under `ref/` |
 | **Project skill / `.agents/skills/`** | Discovery root hosts walk for project-local skills. Symlinks into `skills/<pack>/...`. Policy and **when to use** map: `AGENTS.md` (**Project agent skills**). Example: `lean4` skill for prove/formalize/review on host Lean residual -- not for inventing residual, Nix mills, or hand-authored freestanding C |
 | **CompCert / ccomp** | Verified C compiler reference; product C path may target it; PROVABLY only with real resolved evidence |
-| **Rust layout reference** | `ref/rust` (rustc_abi / codegen) defines layout-compatible interop; LLVM IR alone is not enough |
+| **Rust layout reference** | `ref/rust` (rustc_abi / codegen) is how we **check** that emitted LLVM IR uses the same memory shape a Rust consumer can use without classic FFI as the happy path. That IR **is** the Rust-compatible surface. rustc_abi is the check, not a product language. |
 | **iso / Iso** | **Internal only.** Historical checkout-directory nickname from when this tree first started, and the root Lake umbrella package id. Not the project name. Prefer **Systems Lean** in prose |
 | **SystemsLean** | **Internal** Lake package id for the host under `src/systems/`. Not a second language name. Prose: **Systems Lean** / **Slake** |
 | **SystemsLeanLean4** | **Internal** Lake package id for classic Lean dual examples under `src/lean4/`. Not a product name |

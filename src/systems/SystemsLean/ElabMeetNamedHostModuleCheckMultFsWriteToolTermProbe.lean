@@ -420,7 +420,7 @@ open Lean Elab Command
     Linear skipped. IrGraph skipped as a grow-tip Name. HostCompose skipped.
     Do not plant live HostModuleCheckMultFsWriteToolTerm.lean. Do not skip to
     HostModuleCheckFrontMultPackageTerm. -/
-elab "#elabMeetNamedHostModuleCheckMultFsWriteToolTermSubsetProbe" : command => do
+def elabMeetRunNamedHostModuleCheckMultFsWriteToolTermSubsetProbe : CommandElabM Unit := do
   let liveLake? <- liftIO findLiveLakefilePath
   let liveMult? <- liftIO findLiveMultPath
   let liveThm? <- liftIO findLiveMultTheoremsPath
@@ -525,6 +525,16 @@ elab "#elabMeetNamedHostModuleCheckMultFsWriteToolTermSubsetProbe" : command => 
   elabCommand (<- `(def $rN : Bool := $rStx))
   elabCommand (<- `(def $iN : Bool := $iStx))
   elabCommand (<- `(def $dN : Bool := $dStx))
+
+elab "#elabMeetNamedHostModuleCheckMultFsWriteToolTermSubsetProbe" : command => do
+  if (<- liftIO slakePackageTypecheckWalk) then
+    elabMeetPlantNamedSubsetDrive
+      `elabMeetAcceptsGoodNamedHostModuleCheckMultFsWriteToolTermSubset
+      `elabMeetRejectsBadNamedHostModuleCheckMultFsWriteToolTermSubset
+      `elabMeetRejectsOldWalkAsNamedHostModuleCheckMultFsWriteToolTermSubset
+      `elabMeetDrivesNamedHostModuleCheckMultFsWriteToolTermSubset
+  else
+    elabMeetRunNamedHostModuleCheckMultFsWriteToolTermSubsetProbe
 
 #elabMeetNamedHostModuleCheckMultFsWriteToolTermSubsetProbe
 

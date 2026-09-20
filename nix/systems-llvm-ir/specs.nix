@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Unlicense
 # Thin join of systems-llvm-ir data slices (hold, emit-path, unit-text,
 # unit-package, compose-text, as-smoke, abi-parity, layout-ir-dual-pin,
-# ir-node-layout).
+# ir-node-layout, trait-object-vtable).
 # Imported by ./default.nix. Keep each slice small; do not grow kitchen-sink
 # tables here.
 let
@@ -41,6 +41,7 @@ let
   rustIrInteropPartial = import ./rust-ir-interop-partial.nix;
   rustIrInteropFull = import ./rust-ir-interop-full.nix;
   irNodeLayout = import ./ir-node-layout.nix;
+  traitObjectVtable = import ./trait-object-vtable.nix;
 in
 {
   requiredFiles =
@@ -79,7 +80,8 @@ in
     ++ graphForeignLinkSuccess.requiredFiles
     ++ rustIrInteropPartial.requiredFiles
     ++ rustIrInteropFull.requiredFiles
-    ++ irNodeLayout.requiredFiles;
+    ++ irNodeLayout.requiredFiles
+    ++ traitObjectVtable.requiredFiles;
 
   contentSpecs =
     hold.contentSpecs
@@ -117,5 +119,6 @@ in
     ++ graphForeignLinkSuccess.contentSpecs
     ++ rustIrInteropPartial.contentSpecs
     ++ rustIrInteropFull.contentSpecs
-    ++ irNodeLayout.contentSpecs;
+    ++ irNodeLayout.contentSpecs
+    ++ traitObjectVtable.contentSpecs;
 }

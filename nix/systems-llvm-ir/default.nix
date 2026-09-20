@@ -9,7 +9,7 @@
 #
 # Specs data: ./specs.nix (hold / emit-path / unit-text / unit-package /
 # compose-text / as-smoke / abi-parity / layout-ir-dual-pin /
-# ir-node-layout slices).
+# ir-node-layout / trait-object-vtable slices).
 # Flake: checks.systems-llvm-ir-presence.
 # Live gate (does not require git-tracked flake store): just systems-llvm-ir
 { lib, root }:

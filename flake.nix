@@ -68,6 +68,16 @@
         root = novelSource;
       };
 
+      systemsMillExtrasFit = import ./nix/systems-mill-extras-fit {
+        inherit lib;
+        root = novelSource;
+      };
+
+      slakeProducedElf = import ./nix/slake-produced-elf.nix {
+        inherit lib;
+        root = novelSource;
+      };
+
       # Pure check: throw at eval time with violation list, or a tiny text drv.
       mkSourceHygieneCheck =
         pkgs:
@@ -118,6 +128,20 @@
         else
           throw leanSidePresence.summary;
 
+      mkSystemsMillExtrasFitCheck =
+        pkgs:
+        if systemsMillExtrasFit.ok then
+          pkgs.writeText "systems-mill-extras-fit-ok" systemsMillExtrasFit.summary
+        else
+          throw systemsMillExtrasFit.summary;
+
+      mkSlakeProducedElfCheck =
+        pkgs:
+        if slakeProducedElf.ok then
+          pkgs.writeText "slake-produced-elf-ok" slakeProducedElf.summary
+        else
+          throw slakeProducedElf.summary;
+
       mkProgressReport =
         pkgs:
         pkgs.writeText "PROGRESS.md" progressAt.report;
@@ -134,6 +158,8 @@
         systemsLlvmIr = import ./nix/systems-llvm-ir;
         idrisSidePresence = import ./nix/idris-side-presence;
         leanSidePresence = import ./nix/lean-side-presence;
+        systemsMillExtrasFit = import ./nix/systems-mill-extras-fit;
+        slakeProducedElf = import ./nix/slake-produced-elf.nix;
       };
 
       # Live pure-Nix meter text (system-independent). `just progress` redirects these.
@@ -150,6 +176,8 @@
           systems-llvm-ir-presence = mkSystemsLlvmIrPresenceCheck pkgs;
           idris-side-presence = mkIdrisSidePresenceCheck pkgs;
           lean-side-presence = mkLeanSidePresenceCheck pkgs;
+          systems-mill-extras-fit = mkSystemsMillExtrasFitCheck pkgs;
+          slake-produced-elf = mkSlakeProducedElfCheck pkgs;
         }
       );
 

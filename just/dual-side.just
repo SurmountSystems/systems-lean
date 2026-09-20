@@ -118,6 +118,242 @@ systems-lake:
     just _lake-if-pin src/systems systems
     echo "systems-lake GREEN (static: just systems-host / systems-emit-wire)"
 
+# Apply MemoryMax (GiB) + nice 19 to the named kernel walk. Fail closed
+# if neither systemd-run --user --scope MemoryMax nor prlimit/ulimit -v
+# can be applied. Do not run unbounded. OccupancyProbe 192 GiB is not
+# this helper. One L2 owns the builder walk (local or remote).
+_capped-nice-typecheck mem_g:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    mem="{{mem_g}}"
+    if ! [[ "$mem" =~ ^[0-9]+$ ]] || [[ "$mem" -lt 1 ]]; then
+      echo "_capped-nice-typecheck RED: mem_g must be a positive integer GiB (got $mem)" >&2
+      exit 1
+    fi
+    as_bytes=$((mem * 1024 * 1024 * 1024))
+    as_kb=$((mem * 1024 * 1024))
+    walk=(env LEAN_NUM_THREADS="${LEAN_NUM_THREADS:-1}" just slake-typecheck-src-systems)
+    if command -v systemd-run >/dev/null 2>&1 \
+       && systemd-run --user --scope -p "MemoryMax=${mem}G" --quiet -- /bin/true; then
+      echo "_capped-nice-typecheck: systemd-run --user --scope MemoryMax=${mem}G; nice 19"
+      systemd-run --user --scope -p "MemoryMax=${mem}G" --quiet -- nice -n 19 "${walk[@]}"
+      exit $?
+    fi
+    if command -v prlimit >/dev/null 2>&1 \
+       && prlimit --as="$as_bytes" -- /bin/true; then
+      echo "_capped-nice-typecheck: prlimit --as ${mem}G; nice 19"
+      prlimit --as="$as_bytes" -- nice -n 19 "${walk[@]}"
+      exit $?
+    fi
+    if ulimit -v "$as_kb" 2>/dev/null; then
+      echo "_capped-nice-typecheck: ulimit -v ${mem}G; nice 19"
+      nice -n 19 "${walk[@]}"
+      exit $?
+    fi
+    echo "_capped-nice-typecheck RED: cannot apply ${mem} GiB cap (no systemd-run MemoryMax, prlimit, or ulimit -v)" >&2
+    echo "fail closed: will not run unbounded" >&2
+    exit 1
+
+# Local Lean while SSH to nixbuilder@surmount-1 is down.
+# Forces one Lean 4 thread (LEAN_NUM_THREADS=1), nice 19 process group,
+# 96 GiB cap, then the named kernel walk.
+# slake-typecheck-src-systems defaults mill-class 16 unless this export wins.
+# GREEN here is not OccupancyProbe, mill, or the surmount-1 typecheck Done when.
+# Horizon skip-GREEN on just check / just systems-lake is still not that Done when.
+# FullHost false. slakeOwnsPackageTypecheck false. Not Lake-gone. Do not remill.
+# Do not OccupancyProbe. OccupancyProbe MemoryMax 192 GiB is not this recipe.
+# One L2 owns this local builder walk. Policy: AGENTS.md (Local Lean while
+# builder SSH is down).
+check-local:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    export LEAN_NUM_THREADS=1
+    echo "check-local: one Lean 4 thread (LEAN_NUM_THREADS=1)"
+    echo "check-local: MemoryMax 96 GiB; nice 19 (process group)"
+    echo "GREEN is not surmount-1 package typecheck Done when"
+    echo "not mill; not OccupancyProbe (OccupancyProbe MemoryMax 192 GiB is not this recipe); not Lake-gone"
+    echo "FullHost false; slakeOwnsPackageTypecheck false"
+    echo "one L2 owns this local builder walk"
+    just _capped-nice-typecheck 96
+
+# Remote fat walk on nixbuilder@surmount-1. MemoryMax 256 GiB, nice 19,
+# one Lean 4 thread (this is a fat PackageTypecheck walk, not mill-class RSS).
+# Do not skip-GREEN because this laptop is horizon. SSH down is fail closed.
+# OccupancyProbe MemoryMax 192 GiB is not this recipe. Not mill. Not Lake-gone.
+# One L2 owns this remote builder walk.
+# Lean must be a nix-store ELF (PT_INTERP /nix/store/.../ld-linux). Elan
+# toolchain lean is stub-ld (/lib64/ld-linux); fail closed if no real ELF.
+# User slice MemoryMax must be 256 GiB or the 256G scope loses to
+# user-<uid>.slice (last PackageTypecheck exit 143 at 46/747, OOM at 192 GiB).
+# Probe systemd-run with PATH true; NixOS has no /bin/true.
+check-remote:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    echo "check-remote: SSH nixbuilder@surmount-1; MemoryMax 256 GiB; nice 19; LEAN_NUM_THREADS=1"
+    echo "GREEN is not skip-GREEN on horizon; SSH down is fail closed"
+    echo "not mill; not OccupancyProbe (OccupancyProbe MemoryMax 192 GiB is not this recipe); not Lake-gone"
+    echo "one L2 owns this remote builder walk"
+    echo "FullHost false; slakeOwnsPackageTypecheck false"
+    echo "check-remote: user slice MemoryMax must be 256 GiB or the 256G scope is a lie (OOM at about 192 GiB; last walk exit 143 at 46/747)"
+    ssh -o BatchMode=yes -o ConnectTimeout=15 nixbuilder@surmount-1 bash -s <<'REMOTE'
+    set -euo pipefail
+    cd /home/nixbuilder/iso
+    export PATH="${HOME}/.elan/bin:/var/lib/elan/bin:${HOME}/.cargo/bin:${PATH}"
+    export LEAN_NUM_THREADS=1
+    if ! command -v just >/dev/null 2>&1; then
+      echo "check-remote RED: miss just on nixbuilder PATH" >&2
+      exit 1
+    fi
+    # ELF64 little-endian PT_INTERP. file(1)/readelf/patchelf may be missing.
+    _elf64_interp() {
+      local f="$1"
+      [[ -f "$f" ]] || return 1
+      local mag class data
+      mag=$(od -An -tx1 -N4 "$f" | tr -d ' \n')
+      [[ "$mag" == "7f454c46" ]] || return 1
+      class=$(od -An -tu1 -N1 -j4 "$f" | tr -d ' ')
+      data=$(od -An -tu1 -N1 -j5 "$f" | tr -d ' ')
+      [[ "$class" == "2" && "$data" == "1" ]] || return 1
+      local phoff phentsize phnum
+      phoff=$(od -An -tu8 -N8 -j32 "$f" | tr -d ' ')
+      phentsize=$(od -An -tu2 -N2 -j54 "$f" | tr -d ' ')
+      phnum=$(od -An -tu2 -N2 -j56 "$f" | tr -d ' ')
+      local i=0 off ptype poffset pfilesz
+      while [[ "$i" -lt "$phnum" ]]; do
+        off=$((phoff + i * phentsize))
+        ptype=$(od -An -tu4 -N4 -j"$off" "$f" | tr -d ' ')
+        if [[ "$ptype" == "3" ]]; then
+          poffset=$(od -An -tu8 -N8 -j$((off + 8)) "$f" | tr -d ' ')
+          pfilesz=$(od -An -tu8 -N8 -j$((off + 32)) "$f" | tr -d ' ')
+          if [[ "$pfilesz" -gt 1 && "$pfilesz" -lt 512 ]]; then
+            dd if="$f" bs=1 skip="$poffset" count=$((pfilesz - 1)) 2>/dev/null
+            echo
+            return 0
+          fi
+        fi
+        i=$((i + 1))
+      done
+      return 1
+    }
+    _is_nix_store_ld() {
+      local interp="$1"
+      case "$interp" in
+        /nix/store/*/ld-linux*) return 0 ;;
+        *) return 1 ;;
+      esac
+    }
+    shopt -s nullglob
+    cands=()
+    if command -v lean >/dev/null 2>&1; then
+      cands+=("$(readlink -f "$(command -v lean)")")
+    fi
+    cands+=(/tmp/patched-lean-*/bin/lean)
+    cands+=("${HOME}/.elan/toolchains/"*/bin/lean)
+    cands+=(/var/lib/elan/toolchains/*/bin/lean)
+    cands+=(/nix/store/*-lean4-4.32.0/bin/lean)
+    cands+=(/nix/store/*-lean4-4.32.0/bin/.lean-wrapped)
+    lean_elf=""
+    lean_interp=""
+    for cand in "${cands[@]}"; do
+      [[ -n "$cand" && -x "$cand" ]] || continue
+      interp=$(_elf64_interp "$cand" || true)
+      interp=${interp//$'\n'/}
+      if _is_nix_store_ld "$interp"; then
+        lean_elf="$cand"
+        lean_interp="$interp"
+        break
+      fi
+    done
+    if [[ -z "$lean_elf" ]]; then
+      echo "check-remote RED: no nix-store ELF lean (elan toolchain is stub-ld /lib64/ld-linux)" >&2
+      echo "fail closed: will not invoke elan stub-ld" >&2
+      exit 1
+    fi
+    lean_dir=$(dirname "$lean_elf")
+    export PATH="${lean_dir}:${PATH}"
+    echo "check-remote: nix-store ELF lean=${lean_elf}"
+    echo "check-remote: PT_INTERP=${lean_interp}"
+    uid=$(id -u)
+    slice_max=$(systemctl show "user-${uid}.slice" -p MemoryMax --value 2>/dev/null || echo unknown)
+    echo "check-remote: user-${uid}.slice MemoryMax=${slice_max} (256 GiB is 274877906944; 192 GiB is 206158430208)"
+    echo "check-remote: user slice must be 256 GiB or the 256G scope loses (OOM at about 192 GiB; last walk exit 143 at 46/747)"
+    as_bytes=$((256 * 1024 * 1024 * 1024))
+    as_kb=$((256 * 1024 * 1024))
+    walk=(env LEAN_NUM_THREADS=1 just slake-typecheck-src-systems)
+    if command -v systemd-run >/dev/null 2>&1 \
+       && systemd-run --user --scope -p MemoryMax=256G --quiet -- true; then
+      echo "check-remote: systemd-run --user --scope MemoryMax=256G; nice 19"
+      systemd-run --user --scope -p MemoryMax=256G --quiet -- nice -n 19 "${walk[@]}"
+      exit $?
+    fi
+    if command -v prlimit >/dev/null 2>&1 \
+       && prlimit --as="$as_bytes" -- true; then
+      echo "check-remote: prlimit --as 256G; nice 19"
+      prlimit --as="$as_bytes" -- nice -n 19 "${walk[@]}"
+      exit $?
+    fi
+    if ulimit -v "$as_kb" 2>/dev/null; then
+      echo "check-remote: ulimit -v 256G; nice 19"
+      nice -n 19 "${walk[@]}"
+      exit $?
+    fi
+    echo "check-remote RED: cannot apply 256 GiB cap on nixbuilder (no systemd-run MemoryMax, prlimit, or ulimit -v)" >&2
+    echo "fail closed: will not run unbounded" >&2
+    exit 1
+    REMOTE
+
+# Slake-owned replacement for (cd src/systems && lake build) / just bench-lake-host.
+# Runs SystemsLean.PackageTypecheck via lean --run (chunked kernel compile of
+# product modules; oleans durable under build/package-typecheck, not temp;
+# leftover isolation-test Lean files omitted; occupancy living omitted;
+# kitchen-sink barrel SystemsLean omitted; one Lean process per module).
+# slakeOwnsPackageTypecheck stays false. FullHost stays false. Not Lake-gone.
+# Not occupancy count. Not mill 69. Do not skip-GREEN on hostname horizon.
+# Do not fold into just check. Do not invoke lake. Do not remill. Do not
+# OccupancyProbe. Lean orchestrates chunks (no bash for-loop mill here).
+# Greppable: slake-typecheck-src-systems, slakeOwnsPackageTypecheck
+slake-typecheck-src-systems:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    echo "slake-typecheck-src-systems: Slake kernel walk of lean_lib SystemsLean"
+    echo "slakeOwnsPackageTypecheck false"
+    echo "FullHost false"
+    echo "not occupancy count; not mill 69; not Lake-gone"
+    root="$(pwd)"
+    src_root="$root/src/systems"
+    src="$src_root/SystemsLean/PackageTypecheck.lean"
+    # nixbuilder login PATH may omit elan. Not skip-GREEN: still fail if
+    # no host Lean. Horizon without Lean stays red.
+    if ! command -v lean >/dev/null 2>&1; then
+      if [[ -x /var/lib/elan/bin/lean ]]; then
+        export ELAN_HOME="${ELAN_HOME:-/var/lib/elan}"
+        export PATH="/var/lib/elan/bin:${PATH}"
+      elif [[ -x "${HOME}/.elan/bin/lean" ]]; then
+        export PATH="${HOME}/.elan/bin:${PATH}"
+      fi
+    fi
+    if ! command -v lean >/dev/null 2>&1; then
+      echo "slake-typecheck-src-systems RED: miss lean not on PATH" >&2
+      echo "package is not owned" >&2
+      exit 1
+    fi
+    if [[ ! -f "$src" ]]; then
+      echo "slake-typecheck-src-systems RED: miss $src" >&2
+      echo "package is not owned" >&2
+      exit 1
+    fi
+    # Mill-class threads. OccupancyProbe stays 1 and is not this job.
+    : "${LEAN_NUM_THREADS:=16}"
+    export LEAN_NUM_THREADS
+    # Durable oleans. Never IO.FS.createTempDir. Never under src/systems
+    # sources. /build/ is gitignored.
+    : "${SLAKE_OLEAN_DIR:=$root/build/package-typecheck}"
+    # Library walk: named subset probes skip nested live compiles.
+    # Prefix-only: do not export SLAKE_PACKAGE_TYPECHECK. A leftover
+    # export would plant Lake probe builds if a later lake inherited
+    # this env. Lake build of a probe leaves this unset. Not skip-GREEN.
+    SLAKE_PACKAGE_TYPECHECK=1 SLAKE_OLEAN_DIR="$SLAKE_OLEAN_DIR" nice -n 19 lean -R "$src_root" -D maxRecDepth=8192 --run "$src"
+
 # Freestanding-first cc -c on emit + link/run behavioral probe.
 # Under just check, SYSTEMS_PRODUCT_WIRE_FRESH=1 skips second just build (build already ran).
 # Solo: runs just build unless FRESH=1. Soft GREEN if no cc; RED if emit missing or tests fail.

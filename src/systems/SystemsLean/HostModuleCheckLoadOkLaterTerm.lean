@@ -14,6 +14,9 @@
 
   Greppable: SYSTEMS_LEAN_HOST, HOST-MODULE-CHECK,
   HostModuleCheckLoadOkLaterTerm, hostModuleCheckLaterTermSurfaceOk,
+  hostModuleCheckParityMultTermSmokeOk, hostModuleCheckParityLinearTermSmokeOk,
+  hostModuleCheckParityTypesTermSmokeOk, hostModuleCheckParityProgramTermSmokeOk,
+  hostModuleCheckParityEmitTermSmokeOk,
   TERM-SURFACE, FirstSurface-only, LinearSubsetEmit-only, TypesSubsetEmit-only,
   ProgramSubsetEmit-only, GraphSubsetEmit-only, ComposeSubsetEmit-only,
   ErasureSubsetEmit-only, ExtractSubsetEmit-only, MultSubsetEmit-only,
@@ -35,6 +38,7 @@
   Not freestanding residual free. Not freestanding emit residual free. Not PROVABLY.
 -/
 
+import SystemsLean.HostModuleCheckSurface
 import SystemsLean.HostModuleCheckEmitPlanTerm
 import SystemsLean.HostModuleCheckEmitApplyTerm
 import SystemsLean.HostModuleCheckEmitBodyTerm
@@ -103,9 +107,134 @@ import SystemsLean.HostModuleCheckProductPathBarsTerm
 import SystemsLean.HostModuleCheckProductPathTerm
 import SystemsLean.HostModuleCheckProbeWireTerm
 import SystemsLean.HostModuleCheckSelfHostBodyTerm
-import SystemsLean.HostModuleCheckAcceptsGoodsTerm
 
 namespace SystemsLean.HostModuleCheck
+
+/-- Structural then ParityMult L2 refine (no checkRealModule).
+    Greppable: parityMultTermSmokeResult, TERM-SURFACE, ParityMult-only. -/
+def parityMultTermSmokeResult (content : String) : ModuleCheckResult :=
+  refineParityMultWithTermSurface
+    (checkNamedSurface (parityMultTermSurfaceFrom content)
+      parityMultExpectedNamespace parityMultRequiredDecls
+      (some "SystemsLean.KernelMult"))
+    content
+
+/-- Compact full-path smoke (good + PM1..PM4 + SurfaceOk). RealModule-free.
+    Greppable: hostModuleCheckParityMultTermSmokeOk, TERM-SURFACE,
+    ParityMult-only. -/
+def hostModuleCheckParityMultTermSmokeOk : Bool :=
+  (parityMultTermSmokeResult
+      hostModuleCheckGoodParityMultTermText).isAccept
+    && (parityMultTermSmokeResult
+      hostModuleCheckBadParityMultStageIdText).isRejectWith reasonIllTypedTerm
+    && (parityMultTermSmokeResult
+      hostModuleCheckBadParityMultReadyText).isRejectWith reasonIllTypedTerm
+    && (parityMultTermSmokeResult
+      hostModuleCheckBadParityMultOkText).isRejectWith reasonIllTypedTerm
+    && (parityMultTermSmokeResult
+      hostModuleCheckBadParityMultGradeText).isRejectWith reasonIllTypedTerm
+    && hostModuleCheckParityMultTermSurfaceOk
+
+/-- Structural then ParityLinear L2 refine (no checkRealModule).
+    Greppable: parityLinearTermSmokeResult, TERM-SURFACE, ParityLinear-only. -/
+def parityLinearTermSmokeResult (content : String) : ModuleCheckResult :=
+  refineParityLinearWithTermSurface
+    (checkNamedSurface (parityLinearTermSurfaceFrom content)
+      parityLinearExpectedNamespace parityLinearRequiredDecls
+      (some "SystemsLean.KernelLinear"))
+    content
+
+/-- Compact full-path smoke (good + PL1..PL4 + SurfaceOk). RealModule-free.
+    Greppable: hostModuleCheckParityLinearTermSmokeOk, TERM-SURFACE,
+    ParityLinear-only. -/
+def hostModuleCheckParityLinearTermSmokeOk : Bool :=
+  (parityLinearTermSmokeResult
+      hostModuleCheckGoodParityLinearTermText).isAccept
+    && (parityLinearTermSmokeResult
+      hostModuleCheckBadParityLinearStageIdText).isRejectWith reasonIllTypedTerm
+    && (parityLinearTermSmokeResult
+      hostModuleCheckBadParityLinearReadyText).isRejectWith reasonIllTypedTerm
+    && (parityLinearTermSmokeResult
+      hostModuleCheckBadParityLinearOkText).isRejectWith reasonIllTypedTerm
+    && (parityLinearTermSmokeResult
+      hostModuleCheckBadParityLinearContractText).isRejectWith reasonIllTypedTerm
+    && hostModuleCheckParityLinearTermSurfaceOk
+
+/-- Structural then ParityTypes L2 refine (no checkRealModule).
+    Greppable: parityTypesTermSmokeResult, TERM-SURFACE, ParityTypes-only. -/
+def parityTypesTermSmokeResult (content : String) : ModuleCheckResult :=
+  refineParityTypesWithTermSurface
+    (checkNamedSurface (parityTypesTermSurfaceFrom content)
+      parityTypesExpectedNamespace parityTypesRequiredDecls
+      (some "SystemsLean.KernelTypes"))
+    content
+
+/-- Compact full-path smoke (good + PT1..PT4 + SurfaceOk). RealModule-free.
+    Greppable: hostModuleCheckParityTypesTermSmokeOk, TERM-SURFACE,
+    ParityTypes-only. -/
+def hostModuleCheckParityTypesTermSmokeOk : Bool :=
+  (parityTypesTermSmokeResult
+      hostModuleCheckGoodParityTypesTermText).isAccept
+    && (parityTypesTermSmokeResult
+      hostModuleCheckBadParityTypesStageIdText).isRejectWith reasonIllTypedTerm
+    && (parityTypesTermSmokeResult
+      hostModuleCheckBadParityTypesReadyText).isRejectWith reasonIllTypedTerm
+    && (parityTypesTermSmokeResult
+      hostModuleCheckBadParityTypesOkText).isRejectWith reasonIllTypedTerm
+    && (parityTypesTermSmokeResult
+      hostModuleCheckBadParityTypesContractText).isRejectWith reasonIllTypedTerm
+    && hostModuleCheckParityTypesTermSurfaceOk
+
+/-- Structural then ParityProgram L2 refine (no checkRealModule).
+    Greppable: parityProgramTermSmokeResult, TERM-SURFACE,
+    ParityProgram-only. -/
+def parityProgramTermSmokeResult (content : String) : ModuleCheckResult :=
+  refineParityProgramWithTermSurface
+    (checkNamedSurface (parityProgramTermSurfaceFrom content)
+      parityProgramExpectedNamespace parityProgramRequiredDecls
+      (some "SystemsLean.KernelProgram"))
+    content
+
+/-- Compact full-path smoke (good + PP1..PP4 + SurfaceOk). RealModule-free.
+    Greppable: hostModuleCheckParityProgramTermSmokeOk, TERM-SURFACE,
+    ParityProgram-only. -/
+def hostModuleCheckParityProgramTermSmokeOk : Bool :=
+  (parityProgramTermSmokeResult
+      hostModuleCheckGoodParityProgramTermText).isAccept
+    && (parityProgramTermSmokeResult
+      hostModuleCheckBadParityProgramStageIdText).isRejectWith reasonIllTypedTerm
+    && (parityProgramTermSmokeResult
+      hostModuleCheckBadParityProgramReadyText).isRejectWith reasonIllTypedTerm
+    && (parityProgramTermSmokeResult
+      hostModuleCheckBadParityProgramOkText).isRejectWith reasonIllTypedTerm
+    && (parityProgramTermSmokeResult
+      hostModuleCheckBadParityProgramContractText).isRejectWith reasonIllTypedTerm
+    && hostModuleCheckParityProgramTermSurfaceOk
+
+/-- Structural then ParityEmit L2 refine (no checkRealModule).
+    Greppable: parityEmitTermSmokeResult, TERM-SURFACE, ParityEmit-only. -/
+def parityEmitTermSmokeResult (content : String) : ModuleCheckResult :=
+  refineParityEmitWithTermSurface
+    (checkNamedSurface (parityEmitTermSurfaceFrom content)
+      parityEmitExpectedNamespace parityEmitRequiredDecls
+      (some "SystemsLean.KernelEmit"))
+    content
+
+/-- Compact full-path smoke (good + PE1..PE4 + SurfaceOk). RealModule-free.
+    Greppable: hostModuleCheckParityEmitTermSmokeOk, TERM-SURFACE,
+    ParityEmit-only. -/
+def hostModuleCheckParityEmitTermSmokeOk : Bool :=
+  (parityEmitTermSmokeResult
+      hostModuleCheckGoodParityEmitTermText).isAccept
+    && (parityEmitTermSmokeResult
+      hostModuleCheckBadParityEmitStageIdText).isRejectWith reasonIllTypedTerm
+    && (parityEmitTermSmokeResult
+      hostModuleCheckBadParityEmitReadyText).isRejectWith reasonIllTypedTerm
+    && (parityEmitTermSmokeResult
+      hostModuleCheckBadParityEmitOkText).isRejectWith reasonIllTypedTerm
+    && (parityEmitTermSmokeResult
+      hostModuleCheckBadParityEmitContractText).isRejectWith reasonIllTypedTerm
+    && hostModuleCheckParityEmitTermSurfaceOk
 
 /-- Later TERM SurfaceOk aggregate (LoadOk fold). EmitPlan through SelfHostBody.
     Greppable: hostModuleCheckLaterTermSurfaceOk, TERM-SURFACE. -/

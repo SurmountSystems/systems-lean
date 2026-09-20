@@ -339,6 +339,4 @@ def main (_args : List String) : IO UInt32 := do
 end SystemsLean.SelfHostComplete
 
 -- Theorems + smoke: SystemsLean.SelfHostCompleteTheorems (same namespace).
-/-- Lake / lean --run entry: forward argv. -/
-def main (args : List String) : IO UInt32 :=
-  SystemsLean.SelfHostComplete.main args
+-- Lake / lean --run entry lives in SystemsLean.SelfHostCompleteMain.

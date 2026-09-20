@@ -23,6 +23,7 @@
 
 import SystemsLean.HostModuleCheckSeeds
 import SystemsLean.HostModuleCheckAccepts
+import SystemsLean.HostModuleCheckMultKernel
 import SystemsLean.HostModuleCheckPackageElab
 import SystemsLean.HostModuleCheckPackageEnv
 import SystemsLean.HostModuleCheckPackageEnvEvidence
@@ -263,6 +264,7 @@ def hostModuleCheckLoadOk : Bool :=
     && hostModuleCheckBadMultIsValidApp.isRejectWith reasonIllTypedTerm
     && hostModuleCheckBadMultIsValidArm.isRejectWith reasonIllTypedTerm
     && hostModuleCheckMultTermSurfaceOk
+    && hostModuleCheckMultKernelOk
     -- Linear L2 dual-pin fold (full checkRealModule twins live in Driver smoke).
     && hostModuleCheckLinearTermSurfaceOk
     -- Types L2 dual-pin fold (full checkRealModule twins live in Driver smoke).

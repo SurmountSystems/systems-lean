@@ -357,6 +357,10 @@ Living tip table below wins.
 | Bootstrap S0-S3 + ideal M1-M6 product path | **done** (archive companions) |
 | Claim B product-path ladder B2..B40 + Full + complete | **done** (archive + living complete section) |
 
+Host residual free claimed is **not** whole-package typecheck. FullHost stays
+**false**. The inventory of that gap and the named red command
+`just slake-typecheck-src-systems` live in
+`doc/dev/research/self-host-gap-inventory-2026-09-17.md`.
 
 ## Self-host body (SELF-HOST-BODY) -- acceptance first
 

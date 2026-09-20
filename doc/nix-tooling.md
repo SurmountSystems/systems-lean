@@ -2,7 +2,7 @@
 
 **Kind:** process / tooling map. Detail for agents and humans. Policy index remains `AGENTS.md` (**Three languages only**, **Sub-1-KLOC**, pure Nix rules).
 
-Live impure gates: `just hygiene`, `just systems-host`, `just systems-emit-wire`, `just systems-llvm-ir`, `just idris-side`, `just lean-side`. Flake checks after human stages `nix/`.
+Live impure gates: `just hygiene`, `just systems-host`, `just systems-emit-wire`, `just systems-llvm-ir`, `just idris-side`, `just lean-side`, `just systems-mill-extras-fit`. Flake checks after human stages `nix/`.
 
 ## Overview
 
@@ -78,17 +78,19 @@ Terms (plain English); full glossary in `doc/vocabulary.md`:
 | Systems LLVM IR presence | `just systems-llvm-ir` (live); flake after human stages | `nix/systems-llvm-ir/` -> check `systems-llvm-ir-presence` (hold unlock, emit-path, Mult..Graph unit text, unit-package artifacts, compose text, optional as-smoke honesty, Mult ABI parity fixture/header/IR; no llvm-as binary require) |
 | Idris-side dual presence | `just idris-side` (live); flake after human stages | `nix/idris-side-presence/` -> check `idris-side-presence` (files + tokens + examples jargon) |
 | Lean-side dual presence | `just lean-side` (live); flake after human stages | `nix/lean-side-presence/` -> check `lean-side-presence` (files + tokens + examples jargon) |
+| Systems mill extras-fit | `just systems-mill-extras-fit` (live); flake after human stages | `nix/systems-mill-extras-fit/` -> check `systems-mill-extras-fit` (HostModuleCheck extras file + mill-class just-line; does not mill) |
 | Progress meters | `just progress` | `nix/progress/` -> text outputs / package `progress-report` |
 | Line-count appendix | `just progress-scc` | `just` + `scc` on PATH |
 | Watch loop | `just watch` | short `just` loop only |
-| Full suite | `just check` | hygiene (+ professional-tone) + systems-host + systems-emit-wire + systems-llvm-ir + idris-side + lean-side + flake check + residual workspace scripts |
+| Full suite | `just check` | hygiene (+ professional-tone) + systems-host + systems-emit-wire + systems-llvm-ir + idris-side + lean-side + systems-mill-extras-fit + flake check + residual workspace scripts |
 
 **New pure Nix modules and flakes (HITL stage):** `just systems-host` / `just
 systems-emit-wire` / `just systems-llvm-ir` / `just idris-side` / `just lean-side` /
-`just hygiene` / `just professional-tone` evaluate the live worktree (impure) and
+`just hygiene` / `just professional-tone` / `just systems-mill-extras-fit` evaluate the live worktree (impure) and
 do not require the new path to be git-tracked. `nix flake check` and
 `nix build .#checks.*.systems-host-presence` (or `systems-emit-wire`,
 `systems-llvm-ir-presence`, `idris-side-presence`, `lean-side-presence`,
+`systems-mill-extras-fit`,
 `professional-tone`) only see files git tracks. After adding under `nix/` (and
 any related paths the flake copy needs), the **human** must `git add` those
 paths before flake/continuous integration (CI) match. Agents must **not** stage
@@ -131,6 +133,8 @@ nix/
   lean-side-presence/         # dual Lean static presence (Wave A; check.sh deleted)
     default.nix               # pure eval: { ok, violations, summary }
     specs.nix                 # required paths + tokens + examples jargon
+  systems-mill-extras-fit/    # HostModuleCheck extras file + mill-class just-line
+    default.nix               # pure eval: { ok, violations, summary }
   progress/
     default.nix               # entry: report and scores from a tree root
     helpers.nix               # path probes

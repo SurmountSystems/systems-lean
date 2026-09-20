@@ -2,7 +2,7 @@
   SYSTEMS_LEAN_HOST partial -- Systems Lean package root (classic elaborator).
   Imports Mult + MultTheorems + Linear + LinearTheorems + Types + TypesTheorems + ordered IR program + IrProgramTheorems + Erasure + ErasureTheorems + Extract +
   ExtractTheorems +
-  IrGraph + IrGraphTheorems + HostCompose + HostComposeTheorems + HostCost + HostCostTheorems + EmitPlan + EmitPlanScaffold + EmitApply + EmitApplyScaffold + EmitBody + EmitBanner + EmitBannerScaffold + CompilePath + CompilePathBody + CompilePathErasure + CompilePathPlan + CompilePathApply + CompilePathGraph + CompilePathCompose + CompilePathMult + FirstSurface + MultSubsetEmit + MultSubsetRebuild + MultFsDeepen + CompilePathLinear + LinearSubsetEmit + LinearSubsetRebuild + CompilePathTypes + TypesSubsetEmit + TypesSubsetRebuild + CompilePathProgram + ProgramSubsetEmit + ProgramSubsetRebuild + CompilePathExtract + ExtractSubsetEmit + ExtractSubsetRebuild + ErasureSubsetEmit + ErasureSubsetRebuild + GraphSubsetEmit + GraphSubsetRebuild + ComposeSubsetEmit + ComposeSubsetRebuild + SubsetFront + SubsetPackageJoin + FrontMultPackage + HostTerm + HostFrontGoldens + HostFront +
+  IrGraph + IrGraphTheorems + HostCompose + HostComposeTheorems + HostCost + HostCostTheorems + EmitPlan + EmitPlanScaffold + EmitApply + EmitApplyScaffold + EmitBody + EmitBanner + EmitBannerScaffold + CompilePath + CompilePathBody + CompilePathErasure + CompilePathPlan + CompilePathApply + CompilePathGraph + CompilePathCompose + CompilePathMult + FirstSurface + MultSubsetEmit + MultSubsetRebuild + MultFsDeepen + CompilePathLinear + LinearSubsetEmit + LinearSubsetRebuild + CompilePathTypes + TypesSubsetEmit + TypesSubsetRebuild + CompilePathProgram + ProgramSubsetEmit + ProgramSubsetRebuild + CompilePathExtract + ExtractSubsetEmit + ExtractSubsetRebuild + ErasureSubsetEmit + ErasureSubsetRebuild + GraphSubsetEmit + GraphSubsetRebuild + ComposeSubsetEmit + ComposeSubsetRebuild + SubsetFront + SubsetPackageJoin + FrontMultPackage + HostTerm + HostFrontGoldens + HostFront + HostFrontLiveMult + HostFrontLiveTypes + HostFrontLiveErasure + HostFrontLiveExtract + HostFrontLiveHostTerm + HostFrontLiveGoldens + HostFrontLivePackageWrite + HostFrontLivePackageWriteTheorems + HostFrontLiveMultTheorems + HostFrontLiveImportSeeds + HostFrontLiveImportLoadOkLater + HostFrontLiveImportModel + HostFrontLiveImportMods + HostFrontLiveImportModsLater + HostModuleCheckImportModsLaterKernel + HostFrontLiveImportWalkLater + HostFrontLiveImportWalk + HostFrontLiveRequiredDecls + HostFrontLiveFixtures + HostFrontLiveFrontTheorems + HostFrontLiveGraphTheorems + HostFrontLiveGraph +
   HostCheck + HostGraph + HostGraphTheorems + HostFrontTheorems + HostPackageWrite + HostPackageWriteTheorems +
   HostPackageRoots + HostImportGraph + HostImportGraphSeeds + HostImportGraphModel + HostImportGraphMods + HostImportGraphModsLater + HostImportGraphLoadOk + HostImportGraphLoadOkLater + HostImportGraphTheorems + HostImportGraphWalkLater + HostImportGraphWalk + HostImportGraphDriver + HostModuleCheck + HostModuleCheckFixtures +
   HostModuleCheckRequiredDecls + HostModuleCheckRequiredDeclsProduct +
@@ -15,7 +15,7 @@
   ParityMult + ParityMultTheorems +
   KernelLinear + KernelLinearTheorems + ParityLinear + ParityLinearTheorems + KernelTypes + KernelTypesTheorems + ParityTypes + ParityTypesTheorems + KernelProgram +
   KernelProgramTheorems +
-  ParityProgram + ParityProgramTheorems + KernelEmit + KernelEmitTheorems + ParityEmit + ParityEmitTheorems + SelfApply + SelfApplyTheorems + SelfApplyFs + SelfApplyFsClose + SelfApplyFsTheorems + LlvmHold + LlvmHoldTheorems + LlvmEmitPath + LlvmMultText + LlvmLinearText + LlvmTypesText + LlvmProgramText + LlvmGraphText + LlvmComposeText + LlvmMultSsa + LlvmLinearSsa + LlvmTypesSsa + LlvmProgramSsa + LlvmGraphSsa + LlvmComposeSsa + LlvmCfgHonesty + LlvmCfgMultProduction + LlvmCfgMultDf + LlvmCfgUnitProduction + LlvmCfgGeneral + LlvmCfgFixture + MultForeignLink + LinearForeignLink + TypesForeignLink + ProgramForeignLink + GraphForeignLink + IrNodeLayout + RustIrInterop +
+  ParityProgram + ParityProgramTheorems + KernelEmit + KernelEmitTheorems + ParityEmit + ParityEmitTheorems + SelfApply + SelfApplyTheorems + SelfApplyFs + SelfApplyFsClose + SelfApplyFsTheorems + LlvmHold + LlvmHoldTheorems + LlvmEmitPath + LlvmMultText + LlvmLinearText + LlvmTypesText + LlvmProgramText + LlvmGraphText + LlvmComposeText + LlvmMultSsa + LlvmLinearSsa + LlvmTypesSsa + LlvmProgramSsa + LlvmGraphSsa + LlvmComposeSsa + LlvmCfgHonesty + LlvmCfgMultProduction + LlvmCfgMultDf + LlvmCfgUnitProduction + LlvmCfgGeneral + LlvmCfgFixture + MultForeignLink + LinearForeignLink + TypesForeignLink + ProgramForeignLink + GraphForeignLink + IrNodeLayout + TraitObjectVtable + RustIrInterop +
 
   InventoryClose + InventoryCloseTheorems + ProductPath + ProductPathTheorems + DualResidual +
   DualResidualTheorems + ProbeWire + ProbeWireTheorems +
@@ -97,9 +97,78 @@ import SystemsLean.SubsetFront
 import SystemsLean.SubsetPackageJoin
 import SystemsLean.FrontMultPackage
 import SystemsLean.HostTerm
+import SystemsLean.HostKernel
 import SystemsLean.HostFrontGoldens
 import SystemsLean.HostFront
 import SystemsLean.HostFrontTheorems
+import SystemsLean.HostFrontLiveMult
+import SystemsLean.HostFrontLiveTypes
+import SystemsLean.HostFrontLiveErasure
+import SystemsLean.HostFrontLiveExtract
+import SystemsLean.HostFrontLiveHostTerm
+import SystemsLean.HostFrontLiveIrProgram
+import SystemsLean.HostFrontLiveGoldens
+import SystemsLean.HostFrontLivePackageWrite
+import SystemsLean.HostFrontLivePackageWriteTheorems
+import SystemsLean.HostModuleCheckPackageWriteTheoremsKernel
+import SystemsLean.HostFrontLiveMultTheorems
+import SystemsLean.HostModuleCheckMultTheoremsKernel
+import SystemsLean.HostFrontLiveTypesTheorems
+import SystemsLean.HostModuleCheckTypesTheoremsKernel
+import SystemsLean.HostFrontLiveErasureTheorems
+import SystemsLean.HostModuleCheckErasureTheoremsKernel
+import SystemsLean.HostFrontLiveExtractTheorems
+import SystemsLean.HostModuleCheckExtractTheoremsKernel
+import SystemsLean.HostFrontLiveIrProgramTheorems
+import SystemsLean.HostModuleCheckIrProgramTheoremsKernel
+import SystemsLean.SlakeProducedElf
+import SystemsLean.HostFrontLivePackageRoots
+import SystemsLean.HostFrontLiveImportSeeds
+import SystemsLean.HostModuleCheckImportSeedsKernel
+import SystemsLean.HostFrontLiveImportLoadOkLater
+import SystemsLean.HostModuleCheckImportLoadOkLaterKernel
+import SystemsLean.HostFrontLiveImportModel
+import SystemsLean.HostModuleCheckImportModelKernel
+import SystemsLean.HostFrontLiveImportMods
+import SystemsLean.HostModuleCheckImportModsKernel
+import SystemsLean.HostFrontLiveImportModsLater
+import SystemsLean.HostModuleCheckImportModsLaterKernel
+import SystemsLean.HostFrontLiveImportWalkLater
+import SystemsLean.HostModuleCheckImportWalkLaterKernel
+import SystemsLean.HostFrontLiveImportWalk
+import SystemsLean.HostModuleCheckImportWalkKernel
+import SystemsLean.HostFrontLiveRequiredDecls
+import SystemsLean.HostModuleCheckRequiredDeclsKernel
+import SystemsLean.HostFrontLiveCheckers
+import SystemsLean.HostModuleCheckCheckersKernel
+import SystemsLean.HostFrontLiveCheckersLater
+import SystemsLean.HostModuleCheckCheckersLaterKernel
+import SystemsLean.HostFrontLiveFixtures
+import SystemsLean.HostModuleCheckFixturesKernel
+import SystemsLean.HostFrontLiveKernelMultTerm
+import SystemsLean.HostModuleCheckKernelMultTermKernel
+import SystemsLean.HostFrontLiveKernelProgramTerm
+import SystemsLean.HostModuleCheckKernelProgramTermKernel
+import SystemsLean.HostFrontLiveKernelLinearTerm
+import SystemsLean.HostModuleCheckKernelLinearTermKernel
+import SystemsLean.HostFrontLiveKernelTypesTerm
+import SystemsLean.HostModuleCheckKernelTypesTermKernel
+import SystemsLean.HostFrontLiveParityMultTerm
+import SystemsLean.HostModuleCheckParityMultTermKernel
+import SystemsLean.HostFrontLiveParityLinearTerm
+import SystemsLean.HostModuleCheckParityLinearTermKernel
+import SystemsLean.HostFrontLiveParityTypesTerm
+import SystemsLean.HostModuleCheckParityTypesTermKernel
+import SystemsLean.HostFrontLiveParityProgramTerm
+import SystemsLean.HostModuleCheckParityProgramTermKernel
+import SystemsLean.HostFrontLiveEmitBodyTerm
+import SystemsLean.HostModuleCheckEmitBodyTermKernel
+import SystemsLean.HostFrontLiveFrontTheorems
+import SystemsLean.HostModuleCheckFrontTheoremsKernel
+import SystemsLean.HostFrontLiveGraphTheorems
+import SystemsLean.HostModuleCheckGraphTheoremsKernel
+import SystemsLean.HostFrontLiveGraph
+import SystemsLean.HostModuleCheckHostGraphKernel
 import SystemsLean.HostCheck
 import SystemsLean.HostGraph
 import SystemsLean.HostGraphTheorems
@@ -130,6 +199,15 @@ import SystemsLean.HostModuleCheckSurface
 import SystemsLean.HostModuleCheckCheckers
 import SystemsLean.HostModuleCheckCheckersLater
 import SystemsLean.HostModuleCheckRealModule
+import SystemsLean.HostModuleCheckMultKernel
+import SystemsLean.HostModuleCheckTypesKernel
+import SystemsLean.HostModuleCheckErasureKernel
+import SystemsLean.HostModuleCheckExtractKernel
+import SystemsLean.HostModuleCheckHostTermKernel
+import SystemsLean.HostModuleCheckIrProgramKernel
+import SystemsLean.HostModuleCheckGoldensKernel
+import SystemsLean.HostModuleCheckPackageWriteKernel
+import SystemsLean.HostModuleCheckPackageRootsKernel
 import SystemsLean.HostModuleCheckEmitBodyTerm
 import SystemsLean.HostModuleCheckKernelMultTerm
 import SystemsLean.HostModuleCheckKernelLinearTerm
@@ -292,6 +370,7 @@ import SystemsLean.TypesForeignLink
 import SystemsLean.ProgramForeignLink
 import SystemsLean.GraphForeignLink
 import SystemsLean.IrNodeLayout
+import SystemsLean.TraitObjectVtable
 import SystemsLean.RustIrInterop
 import SystemsLean.InventoryClose
 import SystemsLean.InventoryCloseTheorems

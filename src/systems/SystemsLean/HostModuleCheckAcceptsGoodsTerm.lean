@@ -1,8 +1,11 @@
 /-
-  SYSTEMS_LEAN_HOST partial -- HostModuleCheck Emit/Kernel/Parity L2 term-surface smoke accepts.
+  SYSTEMS_LEAN_HOST partial -- HostModuleCheck Emit/Kernel L2 term-surface smoke.
   Side: classic Lean elaborator under src/systems/ (not freestanding C).
   Long-file peel from SystemsLean.HostModuleCheckAcceptsGoods: EmitPlan/Apply/Body
-  term twins + Kernel Mult..Emit + Parity Mult..Emit compact smoke folds.
+  and Kernel Mult..Emit compact smokes. RealModule-free: checkNamedSurface plus
+  unit refine, same shape as LoadOkLaterTerm. Occupancy-useful (no RealModule
+  import). Occupancy names stay 49; this file is not a named occupancy member.
+  Parity Mult..Emit TermSmokeOk live in HostModuleCheckLoadOkLaterTerm.
   Same namespace SystemsLean.HostModuleCheck so names stay unqualified.
   Sub-1-KLOC: do not grow past 1000.
 
@@ -13,7 +16,12 @@
 
   Greppable: SYSTEMS_LEAN_HOST, HOST-MODULE-CHECK, HostModuleCheckAcceptsGoodsTerm,
   TERM-SURFACE, PARTIAL-STRUCTURAL, FOUNDATION-KIND-SURFACE,
-  UNIT_SURFACE host surface, MULT-0, MULT-1, MULT-OMEGA (peer Mult-first cite).
+  UNIT_SURFACE host surface, MULT-0, MULT-1, MULT-OMEGA (peer Mult-first cite),
+  checkNamedSurface, emitPlanTermSmokeResult, emitApplyTermSmokeResult,
+  emitBodyTermSmokeResult, kernelMultTermSmokeResult, kernelLinearTermSmokeResult,
+  kernelTypesTermSmokeResult, kernelProgramTermSmokeResult, kernelEmitTermSmokeResult,
+  hostModuleCheckEmitKernelTermSmokeAllOk, hostModuleCheckGoodEmitPlanTerm,
+  RealModule-free.
   Module: SystemsLean.HostModuleCheckAcceptsGoodsTerm
   Red/green: just systems-host; lake build SystemsLean.HostModuleCheckAcceptsGoodsTerm;
   lake build SystemsLean.HostModuleCheck.
@@ -21,9 +29,7 @@
   Not freestanding residual free. Not freestanding emit residual free. Not PROVABLY.
 -/
 
-import SystemsLean.HostModuleCheckFixtures
 import SystemsLean.HostModuleCheckSurface
-import SystemsLean.HostModuleCheckRealModule
 import SystemsLean.HostModuleCheckEmitPlanTerm
 import SystemsLean.HostModuleCheckEmitApplyTerm
 import SystemsLean.HostModuleCheckEmitBodyTerm
@@ -32,243 +38,229 @@ import SystemsLean.HostModuleCheckKernelLinearTerm
 import SystemsLean.HostModuleCheckKernelTypesTerm
 import SystemsLean.HostModuleCheckKernelProgramTerm
 import SystemsLean.HostModuleCheckKernelEmitTerm
-import SystemsLean.HostModuleCheckParityMultTerm
-import SystemsLean.HostModuleCheckParityLinearTerm
-import SystemsLean.HostModuleCheckParityTypesTerm
-import SystemsLean.HostModuleCheckParityProgramTerm
-import SystemsLean.HostModuleCheckParityEmitTerm
 
 namespace SystemsLean.HostModuleCheck
 
-/-! ### EmitPlan L2 term-surface twins (EP1..EP4; full checkRealModule) -/
+/-! ### EmitPlan L2 term-surface smoke (EP1..EP4; no checkRealModule) -/
 
-/-- Good EmitPlan L2 term fixture accepts (E-good via checkRealModule).
-    Greppable: hostModuleCheckGoodEmitPlanTerm, TERM-SURFACE, EmitPlan-only. -/
-def hostModuleCheckGoodEmitPlanTerm : ModuleCheckResult :=
-  checkRealModule "SystemsLean.EmitPlan" hostModuleCheckGoodEmitPlanTermText
+/-- Structural then EmitPlan L2 refine (no checkRealModule).
+    Greppable: emitPlanTermSmokeResult, TERM-SURFACE, EmitPlan-only. -/
+def emitPlanTermSmokeResult (content : String) : ModuleCheckResult :=
+  refineEmitPlanWithTermSurface
+    (checkNamedSurface (emitPlanTermSurfaceFrom content)
+      emitPlanExpectedNamespace emitPlanRequiredDecls
+      (some "SystemsLean.EmitPlanScaffold"))
+    content
 
-/-- EP1 wrong Plan.failClosed body rejects under L2.
-    Greppable: hostModuleCheckBadEmitPlanFailClosed, ILL-TYPED-TERM,
+/-- Compact full-path smoke (good + EP1..EP4 + SurfaceOk). RealModule-free.
+    Greppable: hostModuleCheckEmitPlanTermSmokeOk, hostModuleCheckGoodEmitPlanTerm,
     TERM-SURFACE, EmitPlan-only. -/
-def hostModuleCheckBadEmitPlanFailClosed : ModuleCheckResult :=
-  checkRealModule "SystemsLean.EmitPlan"
-    hostModuleCheckBadEmitPlanFailClosedText
-
-/-- EP2 wrong isRuntimeMult body rejects under L2.
-    Greppable: hostModuleCheckBadEmitPlanIsRuntimeMult, ILL-TYPED-TERM,
-    TERM-SURFACE, EmitPlan-only. -/
-def hostModuleCheckBadEmitPlanIsRuntimeMult : ModuleCheckResult :=
-  checkRealModule "SystemsLean.EmitPlan"
-    hostModuleCheckBadEmitPlanIsRuntimeMultText
-
-/-- EP3 wrong planFromCompose body rejects under L2.
-    Greppable: hostModuleCheckBadEmitPlanFromCompose, ILL-TYPED-TERM,
-    TERM-SURFACE, EmitPlan-only. -/
-def hostModuleCheckBadEmitPlanFromCompose : ModuleCheckResult :=
-  checkRealModule "SystemsLean.EmitPlan"
-    hostModuleCheckBadEmitPlanFromComposeText
-
-/-- EP4 wrong isReady body rejects under L2.
-    Greppable: hostModuleCheckBadEmitPlanIsReady, ILL-TYPED-TERM,
-    TERM-SURFACE, EmitPlan-only. -/
-def hostModuleCheckBadEmitPlanIsReady : ModuleCheckResult :=
-  checkRealModule "SystemsLean.EmitPlan"
-    hostModuleCheckBadEmitPlanIsReadyText
-
-/-- Compact full-path smoke (good + EP1..EP4 + SurfaceOk) for Driver Sub-1-KLOC.
-    Greppable: hostModuleCheckEmitPlanTermSmokeOk, TERM-SURFACE, EmitPlan-only. -/
 def hostModuleCheckEmitPlanTermSmokeOk : Bool :=
-  hostModuleCheckGoodEmitPlanTerm.isAccept
-    && hostModuleCheckBadEmitPlanFailClosed.isRejectWith reasonIllTypedTerm
-    && hostModuleCheckBadEmitPlanIsRuntimeMult.isRejectWith reasonIllTypedTerm
-    && hostModuleCheckBadEmitPlanFromCompose.isRejectWith reasonIllTypedTerm
-    && hostModuleCheckBadEmitPlanIsReady.isRejectWith reasonIllTypedTerm
+  (emitPlanTermSmokeResult
+      hostModuleCheckGoodEmitPlanTermText).isAccept
+    && (emitPlanTermSmokeResult
+      hostModuleCheckBadEmitPlanFailClosedText).isRejectWith reasonIllTypedTerm
+    && (emitPlanTermSmokeResult
+      hostModuleCheckBadEmitPlanIsRuntimeMultText).isRejectWith reasonIllTypedTerm
+    && (emitPlanTermSmokeResult
+      hostModuleCheckBadEmitPlanFromComposeText).isRejectWith reasonIllTypedTerm
+    && (emitPlanTermSmokeResult
+      hostModuleCheckBadEmitPlanIsReadyText).isRejectWith reasonIllTypedTerm
     && hostModuleCheckEmitPlanTermSurfaceOk
 
-/-! ### EmitApply L2 term-surface twins (EA1..EA4; full checkRealModule) -/
+/-! ### EmitApply L2 term-surface smoke (EA1..EA4; no checkRealModule) -/
 
-/-- Good EmitApply L2 term fixture accepts (E-good via checkRealModule).
-    Greppable: hostModuleCheckGoodEmitApplyTerm, TERM-SURFACE, EmitApply-only. -/
-def hostModuleCheckGoodEmitApplyTerm : ModuleCheckResult :=
-  checkRealModule "SystemsLean.EmitApply" hostModuleCheckGoodEmitApplyTermText
+/-- Structural then EmitApply L2 refine (no checkRealModule).
+    Greppable: emitApplyTermSmokeResult, TERM-SURFACE, EmitApply-only. -/
+def emitApplyTermSmokeResult (content : String) : ModuleCheckResult :=
+  refineEmitApplyWithTermSurface
+    (checkNamedSurface (emitApplyTermSurfaceFrom content)
+      emitApplyExpectedNamespace emitApplyRequiredDecls
+      (some "SystemsLean.EmitApplyScaffold"))
+    content
 
-/-- EA1 wrong Apply.failClosed body rejects under L2.
-    Greppable: hostModuleCheckBadEmitApplyFailClosed, ILL-TYPED-TERM,
+/-- Compact full-path smoke (good + EA1..EA4 + SurfaceOk). RealModule-free.
+    Greppable: hostModuleCheckEmitApplyTermSmokeOk, hostModuleCheckGoodEmitApplyTerm,
     TERM-SURFACE, EmitApply-only. -/
-def hostModuleCheckBadEmitApplyFailClosed : ModuleCheckResult :=
-  checkRealModule "SystemsLean.EmitApply"
-    hostModuleCheckBadEmitApplyFailClosedText
-
-/-- EA2 wrong applyCap body rejects under L2.
-    Greppable: hostModuleCheckBadEmitApplyCap, ILL-TYPED-TERM,
-    TERM-SURFACE, EmitApply-only. -/
-def hostModuleCheckBadEmitApplyCap : ModuleCheckResult :=
-  checkRealModule "SystemsLean.EmitApply"
-    hostModuleCheckBadEmitApplyCapText
-
-/-- EA3 wrong multCode body rejects under L2.
-    Greppable: hostModuleCheckBadEmitApplyMultCode, ILL-TYPED-TERM,
-    TERM-SURFACE, EmitApply-only. -/
-def hostModuleCheckBadEmitApplyMultCode : ModuleCheckResult :=
-  checkRealModule "SystemsLean.EmitApply"
-    hostModuleCheckBadEmitApplyMultCodeText
-
-/-- EA4 wrong applyFromCompose body rejects under L2.
-    Greppable: hostModuleCheckBadEmitApplyFromCompose, ILL-TYPED-TERM,
-    TERM-SURFACE, EmitApply-only. -/
-def hostModuleCheckBadEmitApplyFromCompose : ModuleCheckResult :=
-  checkRealModule "SystemsLean.EmitApply"
-    hostModuleCheckBadEmitApplyFromComposeText
-
-/-- Compact full-path smoke (good + EA1..EA4 + SurfaceOk) for Driver Sub-1-KLOC.
-    Greppable: hostModuleCheckEmitApplyTermSmokeOk, TERM-SURFACE, EmitApply-only. -/
 def hostModuleCheckEmitApplyTermSmokeOk : Bool :=
-  hostModuleCheckGoodEmitApplyTerm.isAccept
-    && hostModuleCheckBadEmitApplyFailClosed.isRejectWith reasonIllTypedTerm
-    && hostModuleCheckBadEmitApplyCap.isRejectWith reasonIllTypedTerm
-    && hostModuleCheckBadEmitApplyMultCode.isRejectWith reasonIllTypedTerm
-    && hostModuleCheckBadEmitApplyFromCompose.isRejectWith reasonIllTypedTerm
+  (emitApplyTermSmokeResult
+      hostModuleCheckGoodEmitApplyTermText).isAccept
+    && (emitApplyTermSmokeResult
+      hostModuleCheckBadEmitApplyFailClosedText).isRejectWith reasonIllTypedTerm
+    && (emitApplyTermSmokeResult
+      hostModuleCheckBadEmitApplyCapText).isRejectWith reasonIllTypedTerm
+    && (emitApplyTermSmokeResult
+      hostModuleCheckBadEmitApplyMultCodeText).isRejectWith reasonIllTypedTerm
+    && (emitApplyTermSmokeResult
+      hostModuleCheckBadEmitApplyFromComposeText).isRejectWith reasonIllTypedTerm
     && hostModuleCheckEmitApplyTermSurfaceOk
 
-/-! ### EmitBody L2 term-surface twins (EB1..EB4; full checkRealModule) -/
+/-! ### EmitBody L2 term-surface smoke (EB1..EB4; no checkRealModule) -/
 
-/-- Good EmitBody L2 term fixture accepts (E-good via checkRealModule).
-    Greppable: hostModuleCheckGoodEmitBodyTerm, TERM-SURFACE, EmitBody-only. -/
-def hostModuleCheckGoodEmitBodyTerm : ModuleCheckResult :=
-  checkRealModule "SystemsLean.EmitBody" hostModuleCheckGoodEmitBodyTermText
+/-- Structural then EmitBody L2 refine (no checkRealModule).
+    Greppable: emitBodyTermSmokeResult, TERM-SURFACE, EmitBody-only. -/
+def emitBodyTermSmokeResult (content : String) : ModuleCheckResult :=
+  refineEmitBodyWithTermSurface
+    (checkNamedSurface (emitBodyTermSurfaceFrom content)
+      emitBodyExpectedNamespace emitBodyRequiredDecls
+      (some "SystemsLean.EmitPlan"))
+    content
 
-/-- EB1 wrong Body.failClosed body rejects under L2.
-    Greppable: hostModuleCheckBadEmitBodyFailClosed, ILL-TYPED-TERM,
+/-- Compact full-path smoke (good + EB1..EB4 + SurfaceOk). RealModule-free.
+    Greppable: hostModuleCheckEmitBodyTermSmokeOk, hostModuleCheckGoodEmitBodyTerm,
     TERM-SURFACE, EmitBody-only. -/
-def hostModuleCheckBadEmitBodyFailClosed : ModuleCheckResult :=
-  checkRealModule "SystemsLean.EmitBody"
-    hostModuleCheckBadEmitBodyFailClosedText
-
-/-- EB2 wrong bodyCap body rejects under L2.
-    Greppable: hostModuleCheckBadEmitBodyCap, ILL-TYPED-TERM,
-    TERM-SURFACE, EmitBody-only. -/
-def hostModuleCheckBadEmitBodyCap : ModuleCheckResult :=
-  checkRealModule "SystemsLean.EmitBody"
-    hostModuleCheckBadEmitBodyCapText
-
-/-- EB3 wrong bodyFromCompose body rejects under L2.
-    Greppable: hostModuleCheckBadEmitBodyFromCompose, ILL-TYPED-TERM,
-    TERM-SURFACE, EmitBody-only. -/
-def hostModuleCheckBadEmitBodyFromCompose : ModuleCheckResult :=
-  checkRealModule "SystemsLean.EmitBody"
-    hostModuleCheckBadEmitBodyFromComposeText
-
-/-- EB4 wrong bodyIsValid body rejects under L2.
-    Greppable: hostModuleCheckBadEmitBodyIsValid, ILL-TYPED-TERM,
-    TERM-SURFACE, EmitBody-only. -/
-def hostModuleCheckBadEmitBodyIsValid : ModuleCheckResult :=
-  checkRealModule "SystemsLean.EmitBody"
-    hostModuleCheckBadEmitBodyIsValidText
-
-/-- Compact full-path smoke (good + EB1..EB4 + SurfaceOk) for Driver Sub-1-KLOC.
-    Greppable: hostModuleCheckEmitBodyTermSmokeOk, TERM-SURFACE, EmitBody-only. -/
 def hostModuleCheckEmitBodyTermSmokeOk : Bool :=
-  hostModuleCheckGoodEmitBodyTerm.isAccept
-    && hostModuleCheckBadEmitBodyFailClosed.isRejectWith reasonIllTypedTerm
-    && hostModuleCheckBadEmitBodyCap.isRejectWith reasonIllTypedTerm
-    && hostModuleCheckBadEmitBodyFromCompose.isRejectWith reasonIllTypedTerm
-    && hostModuleCheckBadEmitBodyIsValid.isRejectWith reasonIllTypedTerm
+  (emitBodyTermSmokeResult
+      hostModuleCheckGoodEmitBodyTermText).isAccept
+    && (emitBodyTermSmokeResult
+      hostModuleCheckBadEmitBodyFailClosedText).isRejectWith reasonIllTypedTerm
+    && (emitBodyTermSmokeResult
+      hostModuleCheckBadEmitBodyCapText).isRejectWith reasonIllTypedTerm
+    && (emitBodyTermSmokeResult
+      hostModuleCheckBadEmitBodyFromComposeText).isRejectWith reasonIllTypedTerm
+    && (emitBodyTermSmokeResult
+      hostModuleCheckBadEmitBodyIsValidText).isRejectWith reasonIllTypedTerm
     && hostModuleCheckEmitBodyTermSurfaceOk
 
-/-! ### Kernel* L2 term-surface twins (compact inline checkRealModule; Sub-1-KLOC) -/
+/-! ### Kernel* L2 term-surface smoke (compact Result helper; Sub-1-KLOC) -/
 
-/-- Compact full-path smoke (good + KM1..KM4 + SurfaceOk).
+/-- Structural then KernelMult L2 refine (no checkRealModule).
+    Greppable: kernelMultTermSmokeResult, TERM-SURFACE, KernelMult-only. -/
+def kernelMultTermSmokeResult (content : String) : ModuleCheckResult :=
+  refineKernelMultWithTermSurface
+    (checkNamedSurface (kernelMultTermSurfaceFrom content)
+      kernelMultExpectedNamespace kernelMultRequiredDecls
+      (some "SystemsLean.CompilePath"))
+    content
+
+/-- Compact full-path smoke (good + KM1..KM4 + SurfaceOk). RealModule-free.
     Greppable: hostModuleCheckKernelMultTermSmokeOk, hostModuleCheckGoodKernelMultTerm,
     hostModuleCheckBadKernelMultStageId, hostModuleCheckBadKernelMultLower,
     hostModuleCheckBadKernelMultReady, hostModuleCheckBadKernelMultUnknownTag,
     TERM-SURFACE, KernelMult-only. -/
 def hostModuleCheckKernelMultTermSmokeOk : Bool :=
-  (checkRealModule "SystemsLean.KernelMult"
+  (kernelMultTermSmokeResult
       hostModuleCheckGoodKernelMultTermText).isAccept
-    && (checkRealModule "SystemsLean.KernelMult"
+    && (kernelMultTermSmokeResult
       hostModuleCheckBadKernelMultStageIdText).isRejectWith reasonIllTypedTerm
-    && (checkRealModule "SystemsLean.KernelMult"
+    && (kernelMultTermSmokeResult
       hostModuleCheckBadKernelMultLowerText).isRejectWith reasonIllTypedTerm
-    && (checkRealModule "SystemsLean.KernelMult"
+    && (kernelMultTermSmokeResult
       hostModuleCheckBadKernelMultReadyText).isRejectWith reasonIllTypedTerm
-    && (checkRealModule "SystemsLean.KernelMult"
+    && (kernelMultTermSmokeResult
       hostModuleCheckBadKernelMultUnknownTagText).isRejectWith reasonIllTypedTerm
     && hostModuleCheckKernelMultTermSurfaceOk
 
-/-- Compact full-path smoke (good + KL1..KL4 + SurfaceOk).
+/-- Structural then KernelLinear L2 refine (no checkRealModule).
+    Greppable: kernelLinearTermSmokeResult, TERM-SURFACE, KernelLinear-only. -/
+def kernelLinearTermSmokeResult (content : String) : ModuleCheckResult :=
+  refineKernelLinearWithTermSurface
+    (checkNamedSurface (kernelLinearTermSurfaceFrom content)
+      kernelLinearExpectedNamespace kernelLinearRequiredDecls
+      (some "SystemsLean.CompilePath"))
+    content
+
+/-- Compact full-path smoke (good + KL1..KL4 + SurfaceOk). RealModule-free.
     Greppable: hostModuleCheckKernelLinearTermSmokeOk, hostModuleCheckGoodKernelLinearTerm,
     hostModuleCheckBadKernelLinearStageId, hostModuleCheckBadKernelLinearLower,
     hostModuleCheckBadKernelLinearReady, hostModuleCheckBadKernelLinearMismatch,
     TERM-SURFACE, KernelLinear-only. -/
 def hostModuleCheckKernelLinearTermSmokeOk : Bool :=
-  (checkRealModule "SystemsLean.KernelLinear"
+  (kernelLinearTermSmokeResult
       hostModuleCheckGoodKernelLinearTermText).isAccept
-    && (checkRealModule "SystemsLean.KernelLinear"
+    && (kernelLinearTermSmokeResult
       hostModuleCheckBadKernelLinearStageIdText).isRejectWith reasonIllTypedTerm
-    && (checkRealModule "SystemsLean.KernelLinear"
+    && (kernelLinearTermSmokeResult
       hostModuleCheckBadKernelLinearLowerText).isRejectWith reasonIllTypedTerm
-    && (checkRealModule "SystemsLean.KernelLinear"
+    && (kernelLinearTermSmokeResult
       hostModuleCheckBadKernelLinearReadyText).isRejectWith reasonIllTypedTerm
-    && (checkRealModule "SystemsLean.KernelLinear"
+    && (kernelLinearTermSmokeResult
       hostModuleCheckBadKernelLinearMismatchText).isRejectWith reasonIllTypedTerm
     && hostModuleCheckKernelLinearTermSurfaceOk
 
-/-- Compact full-path smoke (good + KT1..KT4 + SurfaceOk).
+/-- Structural then KernelTypes L2 refine (no checkRealModule).
+    Greppable: kernelTypesTermSmokeResult, TERM-SURFACE, KernelTypes-only. -/
+def kernelTypesTermSmokeResult (content : String) : ModuleCheckResult :=
+  refineKernelTypesWithTermSurface
+    (checkNamedSurface (kernelTypesTermSurfaceFrom content)
+      kernelTypesExpectedNamespace kernelTypesRequiredDecls
+      (some "SystemsLean.CompilePath"))
+    content
+
+/-- Compact full-path smoke (good + KT1..KT4 + SurfaceOk). RealModule-free.
     Greppable: hostModuleCheckKernelTypesTermSmokeOk, hostModuleCheckGoodKernelTypesTerm,
     hostModuleCheckBadKernelTypesStageId, hostModuleCheckBadKernelTypesLower,
     hostModuleCheckBadKernelTypesReady, hostModuleCheckBadKernelTypesUnknownKind,
     TERM-SURFACE, KernelTypes-only. -/
 def hostModuleCheckKernelTypesTermSmokeOk : Bool :=
-  (checkRealModule "SystemsLean.KernelTypes"
+  (kernelTypesTermSmokeResult
       hostModuleCheckGoodKernelTypesTermText).isAccept
-    && (checkRealModule "SystemsLean.KernelTypes"
+    && (kernelTypesTermSmokeResult
       hostModuleCheckBadKernelTypesStageIdText).isRejectWith reasonIllTypedTerm
-    && (checkRealModule "SystemsLean.KernelTypes"
+    && (kernelTypesTermSmokeResult
       hostModuleCheckBadKernelTypesLowerText).isRejectWith reasonIllTypedTerm
-    && (checkRealModule "SystemsLean.KernelTypes"
+    && (kernelTypesTermSmokeResult
       hostModuleCheckBadKernelTypesReadyText).isRejectWith reasonIllTypedTerm
-    && (checkRealModule "SystemsLean.KernelTypes"
+    && (kernelTypesTermSmokeResult
       hostModuleCheckBadKernelTypesUnknownKindText).isRejectWith reasonIllTypedTerm
     && hostModuleCheckKernelTypesTermSurfaceOk
 
-/-- Compact full-path smoke (good + KP1..KP4 + SurfaceOk).
+/-- Structural then KernelProgram L2 refine (no checkRealModule).
+    Greppable: kernelProgramTermSmokeResult, TERM-SURFACE, KernelProgram-only. -/
+def kernelProgramTermSmokeResult (content : String) : ModuleCheckResult :=
+  refineKernelProgramWithTermSurface
+    (checkNamedSurface (kernelProgramTermSurfaceFrom content)
+      kernelProgramExpectedNamespace kernelProgramRequiredDecls
+      (some "SystemsLean.CompilePath"))
+    content
+
+/-- Compact full-path smoke (good + KP1..KP4 + SurfaceOk). RealModule-free.
     Greppable: hostModuleCheckKernelProgramTermSmokeOk, hostModuleCheckGoodKernelProgramTerm,
     hostModuleCheckBadKernelProgramStageId, hostModuleCheckBadKernelProgramLower,
     hostModuleCheckBadKernelProgramReady, hostModuleCheckBadKernelProgramOk,
     TERM-SURFACE, KernelProgram-only. -/
 def hostModuleCheckKernelProgramTermSmokeOk : Bool :=
-  (checkRealModule "SystemsLean.KernelProgram"
+  (kernelProgramTermSmokeResult
       hostModuleCheckGoodKernelProgramTermText).isAccept
-    && (checkRealModule "SystemsLean.KernelProgram"
+    && (kernelProgramTermSmokeResult
       hostModuleCheckBadKernelProgramStageIdText).isRejectWith reasonIllTypedTerm
-    && (checkRealModule "SystemsLean.KernelProgram"
+    && (kernelProgramTermSmokeResult
       hostModuleCheckBadKernelProgramLowerText).isRejectWith reasonIllTypedTerm
-    && (checkRealModule "SystemsLean.KernelProgram"
+    && (kernelProgramTermSmokeResult
       hostModuleCheckBadKernelProgramReadyText).isRejectWith reasonIllTypedTerm
-    && (checkRealModule "SystemsLean.KernelProgram"
+    && (kernelProgramTermSmokeResult
       hostModuleCheckBadKernelProgramOkText).isRejectWith reasonIllTypedTerm
     && hostModuleCheckKernelProgramTermSurfaceOk
 
-/-- Compact full-path smoke (good + KE1..KE4 + SurfaceOk).
+/-- Structural then KernelEmit L2 refine (no checkRealModule).
+    Greppable: kernelEmitTermSmokeResult, TERM-SURFACE, KernelEmit-only. -/
+def kernelEmitTermSmokeResult (content : String) : ModuleCheckResult :=
+  refineKernelEmitWithTermSurface
+    (checkNamedSurface (kernelEmitTermSurfaceFrom content)
+      kernelEmitExpectedNamespace kernelEmitRequiredDecls
+      (some "SystemsLean.KernelProgram"))
+    content
+
+/-- Compact full-path smoke (good + KE1..KE4 + SurfaceOk). RealModule-free.
     Greppable: hostModuleCheckKernelEmitTermSmokeOk, hostModuleCheckGoodKernelEmitTerm,
     hostModuleCheckBadKernelEmitStageId, hostModuleCheckBadKernelEmitLower,
     hostModuleCheckBadKernelEmitReady, hostModuleCheckBadKernelEmitOk,
     TERM-SURFACE, KernelEmit-only. -/
 def hostModuleCheckKernelEmitTermSmokeOk : Bool :=
-  (checkRealModule "SystemsLean.KernelEmit"
+  (kernelEmitTermSmokeResult
       hostModuleCheckGoodKernelEmitTermText).isAccept
-    && (checkRealModule "SystemsLean.KernelEmit"
+    && (kernelEmitTermSmokeResult
       hostModuleCheckBadKernelEmitStageIdText).isRejectWith reasonIllTypedTerm
-    && (checkRealModule "SystemsLean.KernelEmit"
+    && (kernelEmitTermSmokeResult
       hostModuleCheckBadKernelEmitLowerText).isRejectWith reasonIllTypedTerm
-    && (checkRealModule "SystemsLean.KernelEmit"
+    && (kernelEmitTermSmokeResult
       hostModuleCheckBadKernelEmitReadyText).isRejectWith reasonIllTypedTerm
-    && (checkRealModule "SystemsLean.KernelEmit"
+    && (kernelEmitTermSmokeResult
       hostModuleCheckBadKernelEmitOkText).isRejectWith reasonIllTypedTerm
     && hostModuleCheckKernelEmitTermSurfaceOk
 
 /-- Fold Emit* + Kernel* L2 smokes so Driver stays Sub-1-KLOC.
-    ParityMult L2 smoke lives in LoadOk (Sub-1-KLOC: AcceptsGoods at limit).
+    ParityMult L2 smoke lives in LoadOkLaterTerm.
     Greppable: hostModuleCheckEmitKernelTermSmokeAllOk, TERM-SURFACE. -/
 def hostModuleCheckEmitKernelTermSmokeAllOk : Bool :=
   hostModuleCheckEmitPlanTermSmokeOk
@@ -280,92 +272,10 @@ def hostModuleCheckEmitKernelTermSmokeAllOk : Bool :=
     && hostModuleCheckKernelProgramTermSmokeOk
     && hostModuleCheckKernelEmitTermSmokeOk
 
-/-! ### KernelMultTheorems L3 proof-surface twins (full checkRealModule + smoke) -/
-
-
-
-/-- Compact full-path smoke (good + PM1..PM4 + SurfaceOk).
-    Lives here so AcceptsGoods stays under Sub-1-KLOC growth.
-    Greppable: hostModuleCheckParityMultTermSmokeOk, hostModuleCheckGoodParityMultTerm,
-    hostModuleCheckBadParityMultStageId, hostModuleCheckBadParityMultReady,
-    hostModuleCheckBadParityMultOk, hostModuleCheckBadParityMultGrade,
-    TERM-SURFACE, ParityMult-only. -/
-def hostModuleCheckParityMultTermSmokeOk : Bool :=
-  (checkRealModule "SystemsLean.ParityMult"
-      hostModuleCheckGoodParityMultTermText).isAccept
-    && (checkRealModule "SystemsLean.ParityMult"
-      hostModuleCheckBadParityMultStageIdText).isRejectWith reasonIllTypedTerm
-    && (checkRealModule "SystemsLean.ParityMult"
-      hostModuleCheckBadParityMultReadyText).isRejectWith reasonIllTypedTerm
-    && (checkRealModule "SystemsLean.ParityMult"
-      hostModuleCheckBadParityMultOkText).isRejectWith reasonIllTypedTerm
-    && (checkRealModule "SystemsLean.ParityMult"
-      hostModuleCheckBadParityMultGradeText).isRejectWith reasonIllTypedTerm
-    && hostModuleCheckParityMultTermSurfaceOk
-
-/-- Compact full-path smoke (good + PL1..PL4 + SurfaceOk).
-    Lives here so AcceptsGoods stays under Sub-1-KLOC growth.
-    Greppable: hostModuleCheckParityLinearTermSmokeOk, hostModuleCheckGoodParityLinearTerm,
-    hostModuleCheckBadParityLinearStageId, hostModuleCheckBadParityLinearReady,
-    hostModuleCheckBadParityLinearOk, hostModuleCheckBadParityLinearContract,
-    TERM-SURFACE, ParityLinear-only. -/
-def hostModuleCheckParityLinearTermSmokeOk : Bool :=
-  (checkRealModule "SystemsLean.ParityLinear"
-      hostModuleCheckGoodParityLinearTermText).isAccept
-    && (checkRealModule "SystemsLean.ParityLinear"
-      hostModuleCheckBadParityLinearStageIdText).isRejectWith reasonIllTypedTerm
-    && (checkRealModule "SystemsLean.ParityLinear"
-      hostModuleCheckBadParityLinearReadyText).isRejectWith reasonIllTypedTerm
-    && (checkRealModule "SystemsLean.ParityLinear"
-      hostModuleCheckBadParityLinearOkText).isRejectWith reasonIllTypedTerm
-    && (checkRealModule "SystemsLean.ParityLinear"
-      hostModuleCheckBadParityLinearContractText).isRejectWith reasonIllTypedTerm
-    && hostModuleCheckParityLinearTermSurfaceOk
-
-/-- Compact full-path smoke (good + PT1..PT4 + SurfaceOk). Greppable:
-    hostModuleCheckParityTypesTermSmokeOk, TERM-SURFACE, ParityTypes-only. -/
-def hostModuleCheckParityTypesTermSmokeOk : Bool :=
-  (checkRealModule "SystemsLean.ParityTypes"
-      hostModuleCheckGoodParityTypesTermText).isAccept
-    && (checkRealModule "SystemsLean.ParityTypes"
-      hostModuleCheckBadParityTypesStageIdText).isRejectWith reasonIllTypedTerm
-    && (checkRealModule "SystemsLean.ParityTypes"
-      hostModuleCheckBadParityTypesReadyText).isRejectWith reasonIllTypedTerm
-    && (checkRealModule "SystemsLean.ParityTypes"
-      hostModuleCheckBadParityTypesOkText).isRejectWith reasonIllTypedTerm
-    && (checkRealModule "SystemsLean.ParityTypes"
-      hostModuleCheckBadParityTypesContractText).isRejectWith reasonIllTypedTerm
-    && hostModuleCheckParityTypesTermSurfaceOk
-
-/-- Compact full-path smoke (good + PP1..PP4 + SurfaceOk). Greppable:
-    hostModuleCheckParityProgramTermSmokeOk, TERM-SURFACE, ParityProgram-only. -/
-def hostModuleCheckParityProgramTermSmokeOk : Bool :=
-  (checkRealModule "SystemsLean.ParityProgram"
-      hostModuleCheckGoodParityProgramTermText).isAccept
-    && (checkRealModule "SystemsLean.ParityProgram"
-      hostModuleCheckBadParityProgramStageIdText).isRejectWith reasonIllTypedTerm
-    && (checkRealModule "SystemsLean.ParityProgram"
-      hostModuleCheckBadParityProgramReadyText).isRejectWith reasonIllTypedTerm
-    && (checkRealModule "SystemsLean.ParityProgram"
-      hostModuleCheckBadParityProgramOkText).isRejectWith reasonIllTypedTerm
-    && (checkRealModule "SystemsLean.ParityProgram"
-      hostModuleCheckBadParityProgramContractText).isRejectWith reasonIllTypedTerm
-    && hostModuleCheckParityProgramTermSurfaceOk
-
-/-- Compact full-path smoke (good + PE1..PE4 + SurfaceOk). Greppable:
-    hostModuleCheckParityEmitTermSmokeOk, TERM-SURFACE, ParityEmit-only. -/
-def hostModuleCheckParityEmitTermSmokeOk : Bool :=
-  (checkRealModule "SystemsLean.ParityEmit"
-      hostModuleCheckGoodParityEmitTermText).isAccept
-    && (checkRealModule "SystemsLean.ParityEmit"
-      hostModuleCheckBadParityEmitStageIdText).isRejectWith reasonIllTypedTerm
-    && (checkRealModule "SystemsLean.ParityEmit"
-      hostModuleCheckBadParityEmitReadyText).isRejectWith reasonIllTypedTerm
-    && (checkRealModule "SystemsLean.ParityEmit"
-      hostModuleCheckBadParityEmitOkText).isRejectWith reasonIllTypedTerm
-    && (checkRealModule "SystemsLean.ParityEmit"
-      hostModuleCheckBadParityEmitContractText).isRejectWith reasonIllTypedTerm
-    && hostModuleCheckParityEmitTermSurfaceOk
-
+/-!
+  Parity Mult..Emit TermSmokeOk live in HostModuleCheckLoadOkLaterTerm
+  (RealModule-free checkNamedSurface plus unit refine). Do not restore
+  those five defs here. This module does not import RealModule.
+-/
 
 end SystemsLean.HostModuleCheck

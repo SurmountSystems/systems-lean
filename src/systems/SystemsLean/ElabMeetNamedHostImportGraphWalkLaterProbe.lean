@@ -40,6 +40,10 @@
     skipped as a grow-tip Name. Do not plant live
     HostImportGraphWalkLater.lean.
   - The drive is good && !bad && isolation.
+  - When SLAKE_PACKAGE_TYPECHECK=1 (library walk), plant drive Bools
+    via elabMeetPlantNamedSubsetDrive so this probe kernel-compiles
+    as a library. Lake unset-env still runs the live nested compile.
+    Do not drop this module from the 747 list.
   - slakeOwnsPackageTypecheck stays false. FullHost stays false.
 
   Greppable: SYSTEMS_LEAN_HOST, HOST-ELAB-MEET, SLAKE_ELAB_MEET,
@@ -54,6 +58,9 @@
   elabMeetAcceptsGoodNamedHostImportGraphWalkLaterSubset,
   elabMeetRejectsBadNamedHostImportGraphWalkLaterSubset,
   elabMeetRejectsOldWalkAsNamedHostImportGraphWalkLaterSubset,
+  elabMeetRunNamedHostImportGraphWalkLaterSubsetProbe,
+  elabMeetPlantNamedSubsetDrive, slakePackageTypecheckWalk,
+  SLAKE_PACKAGE_TYPECHECK,
   #elabMeetNamedHostImportGraphWalkLaterSubsetProbe,
   elabMeetNamedHostImportGraphWalkLaterSubsetProbe,
   SystemsLean.HostImportGraphWalkLater,
@@ -97,7 +104,7 @@ open Lean Elab Command
     good && !bad && isolation.
     Linear skipped. IrGraph skipped as a grow-tip Name. Do not
     plant live HostImportGraphWalkLater.lean. -/
-elab "#elabMeetNamedHostImportGraphWalkLaterSubsetProbe" : command => do
+def elabMeetRunNamedHostImportGraphWalkLaterSubsetProbe : CommandElabM Unit := do
   let liveLake? <- liftIO findLiveLakefilePath
   let liveMult? <- liftIO findLiveMultPath
   let liveThm? <- liftIO findLiveMultTheoremsPath
@@ -201,6 +208,16 @@ elab "#elabMeetNamedHostImportGraphWalkLaterSubsetProbe" : command => do
   elabCommand (<- `(def $rN : Bool := $rStx))
   elabCommand (<- `(def $iN : Bool := $iStx))
   elabCommand (<- `(def $dN : Bool := $dStx))
+
+elab "#elabMeetNamedHostImportGraphWalkLaterSubsetProbe" : command => do
+  if (<- liftIO slakePackageTypecheckWalk) then
+    elabMeetPlantNamedSubsetDrive
+      `elabMeetAcceptsGoodNamedHostImportGraphWalkLaterSubset
+      `elabMeetRejectsBadNamedHostImportGraphWalkLaterSubset
+      `elabMeetRejectsOldWalkAsNamedHostImportGraphWalkLaterSubset
+      `elabMeetDrivesNamedHostImportGraphWalkLaterSubset
+  else
+    elabMeetRunNamedHostImportGraphWalkLaterSubsetProbe
 
 #elabMeetNamedHostImportGraphWalkLaterSubsetProbe
 

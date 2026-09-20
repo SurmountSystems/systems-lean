@@ -38,7 +38,7 @@ ASCII string names (hyphenated); no guillemet identifiers.
   slake-freestanding-perform-claimed -> SystemsLean.PerformClaimedMain
   slake-freestanding-ownership-claimed -> SystemsLean.OwnershipClaimedMain
   slake-freestanding-step-contract-full -> SystemsLean.StepContractFullMain
-  slake-freestanding-self-host-complete -> SystemsLean.SelfHostComplete
+  slake-freestanding-self-host-complete -> SystemsLean.SelfHostCompleteMain
   slake-first-surface -> SystemsLean.FirstSurfaceMain
   slake-mult-subset-emit -> SystemsLean.MultSubsetEmitMain
   slake-mult-subset-rebuild -> SystemsLean.MultSubsetRebuildMain
@@ -191,7 +191,7 @@ lean_exe "slake-freestanding-step-contract-full" where
   supportInterpreter := true
 
 lean_exe "slake-freestanding-self-host-complete" where
-  root := `SystemsLean.SelfHostComplete
+  root := `SystemsLean.SelfHostCompleteMain
   supportInterpreter := true
 
 lean_exe "slake-first-surface" where

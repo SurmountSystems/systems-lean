@@ -385,7 +385,7 @@ open Lean Elab Command
     walker is false on a leftover temp snippet and on a leftover
     fake-package lakefile. Drive is good && !bad && isolation.
     Linear skipped. Do not plant live IrProgramTheorems.lean. -/
-elab "#elabMeetNamedIrProgramTheoremsSubsetProbe" : command => do
+def elabMeetRunNamedIrProgramTheoremsSubsetProbe : CommandElabM Unit := do
   let liveLake? <- liftIO findLiveLakefilePath
   let liveMult? <- liftIO findLiveMultPath
   let liveThm? <- liftIO findLiveMultTheoremsPath
@@ -480,6 +480,16 @@ elab "#elabMeetNamedIrProgramTheoremsSubsetProbe" : command => do
   elabCommand (<- `(def $iN : Bool := $iStx))
   elabCommand (<- `(def $dN : Bool := $dStx))
 
+elab "#elabMeetNamedIrProgramTheoremsSubsetProbe" : command => do
+  if (<- liftIO slakePackageTypecheckWalk) then
+    elabMeetPlantNamedSubsetDrive
+      `elabMeetAcceptsGoodNamedIrProgramTheoremsSubset
+      `elabMeetRejectsBadNamedIrProgramTheoremsSubset
+      `elabMeetRejectsOldWalkAsNamedIrProgramTheoremsSubset
+      `elabMeetDrivesNamedIrProgramTheoremsSubset
+  else
+    elabMeetRunNamedIrProgramTheoremsSubsetProbe
+
 #elabMeetNamedIrProgramTheoremsSubsetProbe
 
 example : elabMeetAcceptsGoodNamedIrProgramTheoremsSubset = true := rfl
@@ -500,7 +510,7 @@ example : elabMeetDrivesNamedIrProgramTheoremsSubset = true := rfl
     good && !bad && isolation.
     Linear skipped. IrGraph skipped. Do not plant live
     HostTerm.lean. -/
-elab "#elabMeetNamedHostTermSubsetProbe" : command => do
+def elabMeetRunNamedHostTermSubsetProbe : CommandElabM Unit := do
   let liveLake? <- liftIO findLiveLakefilePath
   let liveMult? <- liftIO findLiveMultPath
   let liveThm? <- liftIO findLiveMultTheoremsPath
@@ -604,6 +614,16 @@ elab "#elabMeetNamedHostTermSubsetProbe" : command => do
   elabCommand (<- `(def $iN : Bool := $iStx))
   elabCommand (<- `(def $dN : Bool := $dStx))
 
+elab "#elabMeetNamedHostTermSubsetProbe" : command => do
+  if (<- liftIO slakePackageTypecheckWalk) then
+    elabMeetPlantNamedSubsetDrive
+      `elabMeetAcceptsGoodNamedHostTermSubset
+      `elabMeetRejectsBadNamedHostTermSubset
+      `elabMeetRejectsOldWalkAsNamedHostTermSubset
+      `elabMeetDrivesNamedHostTermSubset
+  else
+    elabMeetRunNamedHostTermSubsetProbe
+
 #elabMeetNamedHostTermSubsetProbe
 
 example : elabMeetAcceptsGoodNamedHostTermSubset = true := rfl
@@ -624,7 +644,7 @@ example : elabMeetDrivesNamedHostTermSubset = true := rfl
     good && !bad && isolation.
     Linear skipped. IrGraph skipped. Do not plant live
     HostFrontGoldens.lean. -/
-elab "#elabMeetNamedHostFrontGoldensSubsetProbe" : command => do
+def elabMeetRunNamedHostFrontGoldensSubsetProbe : CommandElabM Unit := do
   let liveLake? <- liftIO findLiveLakefilePath
   let liveMult? <- liftIO findLiveMultPath
   let liveThm? <- liftIO findLiveMultTheoremsPath
@@ -729,6 +749,16 @@ elab "#elabMeetNamedHostFrontGoldensSubsetProbe" : command => do
   elabCommand (<- `(def $iN : Bool := $iStx))
   elabCommand (<- `(def $dN : Bool := $dStx))
 
+elab "#elabMeetNamedHostFrontGoldensSubsetProbe" : command => do
+  if (<- liftIO slakePackageTypecheckWalk) then
+    elabMeetPlantNamedSubsetDrive
+      `elabMeetAcceptsGoodNamedHostFrontGoldensSubset
+      `elabMeetRejectsBadNamedHostFrontGoldensSubset
+      `elabMeetRejectsOldWalkAsNamedHostFrontGoldensSubset
+      `elabMeetDrivesNamedHostFrontGoldensSubset
+  else
+    elabMeetRunNamedHostFrontGoldensSubsetProbe
+
 #elabMeetNamedHostFrontGoldensSubsetProbe
 
 example : elabMeetAcceptsGoodNamedHostFrontGoldensSubset = true := rfl
@@ -750,7 +780,7 @@ example : elabMeetDrivesNamedHostFrontGoldensSubset = true := rfl
     good && !bad && isolation.
     Linear skipped. IrGraph skipped. Do not plant live
     HostFront.lean. -/
-elab "#elabMeetNamedHostFrontSubsetProbe" : command => do
+def elabMeetRunNamedHostFrontSubsetProbe : CommandElabM Unit := do
   let liveLake? <- liftIO findLiveLakefilePath
   let liveMult? <- liftIO findLiveMultPath
   let liveThm? <- liftIO findLiveMultTheoremsPath
@@ -854,6 +884,16 @@ elab "#elabMeetNamedHostFrontSubsetProbe" : command => do
   elabCommand (<- `(def $rN : Bool := $rStx))
   elabCommand (<- `(def $iN : Bool := $iStx))
   elabCommand (<- `(def $dN : Bool := $dStx))
+
+elab "#elabMeetNamedHostFrontSubsetProbe" : command => do
+  if (<- liftIO slakePackageTypecheckWalk) then
+    elabMeetPlantNamedSubsetDrive
+      `elabMeetAcceptsGoodNamedHostFrontSubset
+      `elabMeetRejectsBadNamedHostFrontSubset
+      `elabMeetRejectsOldWalkAsNamedHostFrontSubset
+      `elabMeetDrivesNamedHostFrontSubset
+  else
+    elabMeetRunNamedHostFrontSubsetProbe
 
 #elabMeetNamedHostFrontSubsetProbe
 

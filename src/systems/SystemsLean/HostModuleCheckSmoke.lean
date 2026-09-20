@@ -302,6 +302,7 @@ example :
       = true := by
   native_decide
 example : hostModuleCheckMultTermSurfaceOk = true := by native_decide
+example : hostModuleCheckMultKernelOk = true := by native_decide
 example : checkDepthTermSurfaceBar = "TERM-SURFACE" := rfl
 example : checkDepthTermSurfaceScope = "Mult-only" := rfl
 example : hostModuleCheckTermSurfaceDualOk = true := rfl

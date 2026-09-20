@@ -20,7 +20,8 @@
   HostModuleCheckSeeds, HostModuleCheckLoadOk, HostModuleCheckDriver,
   HostModuleCheckCheckers, HostModuleCheckCheckersLater, HostModuleCheckAcceptsGoods,
   HostModuleCheckAccepts, HostModuleCheckSurface, HostModuleCheckFixtures,
-  HostModuleCheckMultTerm, TERM-SURFACE, Mult-only,
+  HostModuleCheckMultTerm, HostModuleCheckMultKernel, KERNEL-CHECK,
+  checkMultKernel, hostModuleCheckMultKernelOk, TERM-SURFACE, Mult-only,
   HostModuleCheckLinearTerm, Linear-only,
   HostModuleCheckTypesTerm, Types-only,
   HostModuleCheckIrProgramTerm, IrProgram-only,
@@ -123,6 +124,7 @@
 import SystemsLean.HostModuleCheckFixtures
 import SystemsLean.HostModuleCheckSurface
 import SystemsLean.HostModuleCheckMultTerm
+import SystemsLean.HostModuleCheckMultKernel
 import SystemsLean.HostModuleCheckLinearTerm
 import SystemsLean.HostModuleCheckTypesTerm
 import SystemsLean.HostModuleCheckIrProgramTerm

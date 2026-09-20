@@ -6,13 +6,15 @@ ASCII only. Date: 2026-08-02.
 
 Living tip at land: free true; complete true; product StillUsesLake/DependsOnLake
 false; hostElaboratorResidualRemains true; PROVABLY true (`provablyUnlocked`);
-llvmUnlocked **false** (must stay false this residual).
+llvmUnlocked **false** (must stay false this residual). Later living tip (not
+this residual): `llvmUnlocked` is **true**. The land-time table below is
+historical.
 
 Related:
 
 - Goals: `doc/goals.md` (LLVM / Rust path deferred until self-host)
 - Architecture backends: `doc/architecture.md` (LLVM IR section)
-- Rust layout bar: `doc/rust-entry.md` (rustc_abi; LLVM IR alone is not enough)
+- Rust layout bar: `doc/rust-entry.md` (the IR **is** the Rust-compatible surface; rustc_abi in `ref/rust` checks layout)
 - Hold gate: `src/systems/SystemsLean/LlvmHold.lean` (`llvmUnlocked` false)
 - Release surface: `out/llvm-ir/` (reserved; measured stub only after this residual)
 - Primary product wire: `out/freestanding-c/` (runtimeless freestanding C)
@@ -35,7 +37,7 @@ later parallel release surface, not a replacement for CompCert seal work.
 
 ---
 
-## 2. Non-claims (this residual and current living tip)
+## 2. Non-claims (this residual and land-time living tip)
 
 | Claim | Status |
 |-------|--------|
@@ -67,14 +69,25 @@ PROVABLY does **not** unlock llvm. LlvmHold already separates
 
 ## 4. Relation to Rust-native link bar
 
-From `doc/rust-entry.md` and `doc/architecture.md`:
+Historical inventory from this 2026-08-02 note. At land, living tip had
+`llvmUnlocked` **false**. Living tip now has `llvmUnlocked` **true**. Do not
+read this file's land-time pin table as current unlock status.
 
-1. **LLVM IR alone is not Rust layout.** rustc (`rustc_abi`, codegen) defines
-   layout and ABI. A future backend must cite those rules + tests.
-2. **Without classic FFI** is the design happy path, not a claim until design
-   note + tests exist. This residual does **not** claim that bar.
+Product bar (then and now), from `doc/rust-entry.md` and
+`doc/rust-native-layout-design-2026-08-03.md`:
+
+1. **The IR is the Rust-compatible surface.** Emit LLVM IR that a Rust consumer
+   can use as the same memory shape **without classic FFI** as the happy path.
+   rustc (`rustc_abi`, codegen) in `ref/rust` is how we **check** that layout.
+   rustc_abi is the check, not a product language and not a substitute for the
+   IR. This 2026-08-02 note once phrased that as "LLVM IR alone is not Rust
+   layout." That phrasing inverted the bar and is not the product claim.
+2. **Without classic FFI** is the design happy path. This residual did **not**
+   claim that bar at land (design + stub only). Later measured announce lives
+   in living docs, not in this land-time table.
 3. **`ref/rust`** is read-only layout reference. Nested llvm-project under rust
-   is not required for reading layout sources.
+   is not required for reading layout sources. Product languages stay Idris 2,
+   Lean 4, and Nix. No product Rust crate under `src/`.
 
 ---
 

@@ -2253,7 +2253,7 @@
       ];
     }
     {
-      # HOST-MODULE-CHECK Emit/Kernel/Parity L2 term smoke accepts (S1 peel).
+      # HOST-MODULE-CHECK Emit/Kernel L2 term smoke accepts (RealModule-free).
       rel = "src/systems/SystemsLean/HostModuleCheckAcceptsGoodsTerm.lean";
       all = [
         "SYSTEMS_LEAN_HOST"
@@ -2262,10 +2262,9 @@
         "hostModuleCheckGoodEmitPlanTerm"
         "hostModuleCheckEmitBodyTermSmokeOk"
         "hostModuleCheckKernelMultTermSmokeOk"
-        "hostModuleCheckParityEmitTermSmokeOk"
         "HostModuleCheckAcceptsGoodsTerm"
         "TERM-SURFACE"
-        "import SystemsLean.HostModuleCheckRealModule"
+        "import SystemsLean.HostModuleCheckSurface"
         "PARTIAL-STRUCTURAL"
         "Not freestanding residual free"
         "Not PROVABLY"

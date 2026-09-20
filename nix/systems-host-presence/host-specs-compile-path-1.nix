@@ -361,7 +361,25 @@
         "slake-mult-fs-write"
         "MULT-FS-WRITE"
         "MULT-FS-DEEPEN"
+        "import SystemsLean.MultFsWrite"
+      ];
+    }
+    {
+      # MULT-FS-WRITE: mill-named body for lake exe slake-mult-fs-write.
+      rel = "src/systems/SystemsLean/MultFsWrite.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "SystemsLean.MultFsWrite"
+        "slake-mult-fs-write"
+        "MULT-FS-WRITE"
+        "SLAKE_MULT_FS_WRITE"
+        "SLAKE_MULT_FS_WRITE_V0"
+        "HOST-MULT-FS-WRITE"
+        "MULT-FS-DEEPEN"
         "import SystemsLean.MultFsDeepen"
+        "UNIT_SURFACE"
+        "Not freestanding residual free"
+        "MULT-0"
       ];
     }
     {

@@ -130,6 +130,7 @@ inductive Pat where
   | litNat (k : Nat)
   | var (name : Name)
   | ctor0 (name : Name)
+  | someVar (name : Name)
   deriving Repr
 
 /-- Pattern well-formed. -/
@@ -138,6 +139,7 @@ def patOk : Pat -> Bool
   | Pat.litNat _ => true
   | Pat.var x => nameOk x
   | Pat.ctor0 x => nameOk x
+  | Pat.someVar x => nameOk x
 
 /-- Closed term IR for Mult-first fragment bodies.
     Match arms are (pat, body) pairs.
@@ -152,6 +154,10 @@ inductive Term where
   | some_ (t : Term)
   | none_
   | match_ (scrut : Term) (arms : List (Prod Pat Term))
+  | ite (c : Term) (t : Term) (e : Term)
+  | structLit (fields : List (Prod Name Term))
+  | decideEq (lhs : Term) (rhs : Term)
+  | proj (obj : Term) (field : Name)
   deriving Repr
 
 /-- Fuel bound for structural term check (native_decide friendly). -/
@@ -172,12 +178,25 @@ def termOkN : Nat -> Term -> Bool
       termOkN n scrut
         && !arms.isEmpty
         && armsOk n arms
+  | Nat.succ n, Term.ite c t e =>
+      termOkN n c && termOkN n t && termOkN n e
+  | Nat.succ n, Term.structLit fs =>
+      !fs.isEmpty && structLitOk n fs
+  | Nat.succ n, Term.decideEq a b =>
+      termOkN n a && termOkN n b
+  | Nat.succ n, Term.proj obj f =>
+      termOkN n obj && nameOk f
 where
   armsOk : Nat -> List (Prod Pat Term) -> Bool
     | _, [] => true
     | 0, _ => false
     | Nat.succ n, (p, body) :: rest =>
         patOk p && termOkN n body && armsOk n rest
+  structLitOk : Nat -> List (Prod Name Term) -> Bool
+    | _, [] => true
+    | 0, _ => false
+    | Nat.succ n, (x, body) :: rest =>
+        nameOk x && termOkN n body && structLitOk n rest
 
 /-- Term well-formed (fail closed on empty names / empty match). -/
 def termOk (t : Term) : Bool := termOkN termFuel t
@@ -192,7 +211,29 @@ structure CtorDecl where
 /-- Ctor well-formed. -/
 def ctorOk (c : CtorDecl) : Bool := nameOk c.name
 
-/-- Closed command IR for Mult-first modules.
+/-- Structure field (Types TypeTag / IrNode). -/
+structure FieldDecl where
+  name : Name
+  ty : HostType
+  deriving Repr
+
+/-- Field well-formed. -/
+def fieldOk (f : FieldDecl) : Bool := nameOk f.name && hostTypeOk f.ty
+
+/-- Field list non-empty and each ok. -/
+def fieldListOk : List FieldDecl -> Bool
+  | [] => false
+  | xs => xs.all fieldOk
+
+/-- Named binder list (Types defBind). -/
+def namedBinderOk (p : Prod Name HostType) : Bool :=
+  nameOk p.fst && hostTypeOk p.snd
+
+/-- Named binders non-empty and each ok. -/
+def namedBinderListOk (bs : List (Prod Name HostType)) : Bool :=
+  !bs.isEmpty && bs.all namedBinderOk
+
+/-- Closed command IR for Mult-first modules plus Types structure / defBind.
     Greppable: Cmd. importModule is dialect import (graph resolve in HostGraph). -/
 inductive Cmd where
   | importModule (name : Name)
@@ -202,6 +243,9 @@ inductive Cmd where
   | inductive_ (name : Name) (ctors : List CtorDecl) (derivingClasses : List Name)
   | def_ (name : Name) (ty : Option HostType) (body : Term)
   | check (tm : Term) (ty : HostType)
+  | structure_ (name : Name) (fields : List FieldDecl) (derivingClasses : List Name)
+  | defBind (name : Name) (binders : List (Prod Name HostType)) (ret : HostType)
+      (body : Term)
   deriving Repr
 
 /-- Option HostType well-formed. -/
@@ -229,6 +273,10 @@ def cmdOk : Cmd -> Bool
       nameOk x && ctorListOk ctors && der.all nameOk
   | Cmd.def_ x ty body => nameOk x && optHostTypeOk ty && termOk body
   | Cmd.check tm ty => termOk tm && hostTypeOk ty
+  | Cmd.structure_ x fields der =>
+      nameOk x && fieldListOk fields && der.all nameOk
+  | Cmd.defBind x bs ret body =>
+      nameOk x && namedBinderListOk bs && hostTypeOk ret && termOk body
 
 /-- Ordered Mult-first module (commands under a module name).
     Greppable: Module. -/

@@ -12,6 +12,7 @@
 import SystemsLean.HostModuleCheckSeeds
 import SystemsLean.HostModuleCheckSurface
 import SystemsLean.HostModuleCheckRealModule
+import SystemsLean.HostModuleCheckMultKernel
 import SystemsLean.HostModuleCheckAccepts
 import SystemsLean.HostModuleCheckAcceptsGoods
 import SystemsLean.HostModuleCheckAcceptsProof
@@ -140,6 +141,9 @@ def runModuleCheck (root : System.FilePath) : IO Unit := do
   unless hostModuleCheckMultTermSurfaceOk do
     IO.eprintln s!"error: {stageId} hostModuleCheckMultTermSurfaceOk false"
     throw (IO.userError "Mult term-surface dual-pin")
+  unless hostModuleCheckMultKernelOk do
+    IO.eprintln s!"error: {stageId} hostModuleCheckMultKernelOk false"
+    throw (IO.userError "Mult kernel-check dual-pin")
   unless hostModuleCheckGoodLinearTerm.isAccept do
     IO.eprintln s!"error: {stageId} Linear L2 good term fixture must accept"
     throw (IO.userError "Linear L2 good term")

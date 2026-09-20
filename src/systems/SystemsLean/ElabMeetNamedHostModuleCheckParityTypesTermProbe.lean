@@ -189,7 +189,7 @@ open Lean Elab Command
     Linear skipped. IrGraph skipped as a grow-tip Name. Do not
     plant live HostModuleCheckParityTypesTerm.lean. Do not skip to
     HostModuleCheckParityProgramTerm. -/
-elab "#elabMeetNamedHostModuleCheckParityTypesTermSubsetProbe" : command => do
+def elabMeetRunNamedHostModuleCheckParityTypesTermSubsetProbe : CommandElabM Unit := do
   let liveLake? <- liftIO findLiveLakefilePath
   let liveMult? <- liftIO findLiveMultPath
   let liveThm? <- liftIO findLiveMultTheoremsPath
@@ -294,6 +294,16 @@ elab "#elabMeetNamedHostModuleCheckParityTypesTermSubsetProbe" : command => do
   elabCommand (<- `(def $rN : Bool := $rStx))
   elabCommand (<- `(def $iN : Bool := $iStx))
   elabCommand (<- `(def $dN : Bool := $dStx))
+
+elab "#elabMeetNamedHostModuleCheckParityTypesTermSubsetProbe" : command => do
+  if (<- liftIO slakePackageTypecheckWalk) then
+    elabMeetPlantNamedSubsetDrive
+      `elabMeetAcceptsGoodNamedHostModuleCheckParityTypesTermSubset
+      `elabMeetRejectsBadNamedHostModuleCheckParityTypesTermSubset
+      `elabMeetRejectsOldWalkAsNamedHostModuleCheckParityTypesTermSubset
+      `elabMeetDrivesNamedHostModuleCheckParityTypesTermSubset
+  else
+    elabMeetRunNamedHostModuleCheckParityTypesTermSubsetProbe
 
 #elabMeetNamedHostModuleCheckParityTypesTermSubsetProbe
 

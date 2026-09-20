@@ -136,7 +136,7 @@ open Lean Elab Command
     good && !bad && isolation.
     Linear skipped. IrGraph skipped as a grow-tip Name. Do not
     plant live HostModuleCheckRealModule.lean. -/
-elab "#elabMeetNamedHostModuleCheckRealModuleSubsetProbe" : command => do
+def elabMeetRunNamedHostModuleCheckRealModuleSubsetProbe : CommandElabM Unit := do
   let liveLake? <- liftIO findLiveLakefilePath
   let liveMult? <- liftIO findLiveMultPath
   let liveThm? <- liftIO findLiveMultTheoremsPath
@@ -241,6 +241,16 @@ elab "#elabMeetNamedHostModuleCheckRealModuleSubsetProbe" : command => do
   elabCommand (<- `(def $rN : Bool := $rStx))
   elabCommand (<- `(def $iN : Bool := $iStx))
   elabCommand (<- `(def $dN : Bool := $dStx))
+
+elab "#elabMeetNamedHostModuleCheckRealModuleSubsetProbe" : command => do
+  if (<- liftIO slakePackageTypecheckWalk) then
+    elabMeetPlantNamedSubsetDrive
+      `elabMeetAcceptsGoodNamedHostModuleCheckRealModuleSubset
+      `elabMeetRejectsBadNamedHostModuleCheckRealModuleSubset
+      `elabMeetRejectsOldWalkAsNamedHostModuleCheckRealModuleSubset
+      `elabMeetDrivesNamedHostModuleCheckRealModuleSubset
+  else
+    elabMeetRunNamedHostModuleCheckRealModuleSubsetProbe
 
 #elabMeetNamedHostModuleCheckRealModuleSubsetProbe
 

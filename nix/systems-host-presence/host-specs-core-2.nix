@@ -222,6 +222,210 @@
       ];
     }
     {
+      # First QTT use-check surface: ConsumeToken exact-once usage log.
+      # Second: UnrestrictedShare omega (drop / once / share all ok).
+      # Not all-types use-check. Not HostCompose live-flag. Not Idris LinearCheck.
+      rel = "src/systems/SystemsLean/UseCheck.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "QTT-USE-CHECK-CONSUME-TOKEN"
+        "QTT-USE-CHECK-UNRESTRICTED-SHARE"
+        "SystemsLean.UseCheck"
+        "ConsumeToken"
+        "UnrestrictedShare"
+        "MULT-1"
+        "MULT-OMEGA"
+        "checkConsumeToken"
+        "checkUnrestrictedShare"
+        "theorem checkConsumeToken_drop"
+        "theorem checkConsumeToken_ok"
+        "theorem checkConsumeToken_doubleSpend"
+        "theorem checkUnrestrictedShare_drop"
+        "theorem checkUnrestrictedShare_once"
+        "theorem checkUnrestrictedShare_share"
+        "consumeTokenUseCheckReady"
+        "unrestrictedShareUseCheckReady"
+        "UNIT_SURFACE"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+      ];
+    }
+    {
+      # Indexed MULT-1 OnceRes: second consume is not well-typed (not UseCheck log).
+      rel = "src/systems/SystemsLean/LinearUseFail.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "LINEAR-USE-FAIL"
+        "ILLEGAL-LINEAR-USE-FAIL"
+        "SystemsLean.LinearUseFail"
+        "OnceRes"
+        "consume"
+        "def bind"
+        "IllegalSeq"
+        "CanSeq"
+        "BindLeftUnit"
+        "BindRightUnit"
+        "BindAssoc"
+        "ConsumeThenKeepEq"
+        "KeepThenConsumeEq"
+        "ConsumeKeepCommute"
+        "BindCongr"
+        "CanSeqIff"
+        "CanSeqFalseIff"
+        "CanSeqKeepKeepTrueIff"
+        "CanSeqKeepKeepFalseIff"
+        "CanSeqConsumeKeepTrueIff"
+        "CanSeqKeepConsumeTrueIff"
+        "CanSeqKeepConsumeFalseIff"
+        "CanSeqConsumeKeepFalseIff"
+        "illegalLinearUseFailReady"
+        "UNIT_SURFACE"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+      ];
+    }
+    {
+      # Theorems for indexed MULT-1 OnceRes (same namespace LinearUseFail).
+      # Bind / onceUse / illegalSeq / early consume/consume false stay here.
+      # Later canSeq: LinearUseFail/CanSeq Keep Consume Decide.
+      rel = "src/systems/SystemsLean/LinearUseFailTheorems.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "LINEAR-USE-FAIL"
+        "SystemsLean.LinearUseFail"
+        "theorem onceUse_ok"
+        "theorem canSeq_consume_consume_false"
+        "theorem bind_consume_keep_ok"
+        "theorem illegalSeq_uninh"
+        "theorem bind_left_unit"
+        "theorem bind_right_unit"
+        "theorem bind_assoc"
+        "theorem bind_consume_keep_eq_consume"
+        "theorem bind_keep_consume_eq_consume"
+        "theorem bind_consume_keep_commute"
+        "theorem bind_congr"
+        "theorem illegalLinearUseFailReady_true"
+        "UNIT_SURFACE"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+      ];
+    }
+    {
+      # canSeq iff (same namespace LinearUseFail).
+      rel = "src/systems/SystemsLean/LinearUseFail/CanSeq.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "LINEAR-USE-FAIL"
+        "SystemsLean.LinearUseFail"
+        "theorem canSeq_iff"
+        "theorem canSeq_false_iff"
+        "UNIT_SURFACE"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+      ];
+    }
+    {
+      # keep/keep canSeq algebra (same namespace LinearUseFail).
+      rel = "src/systems/SystemsLean/LinearUseFail/Keep.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "LINEAR-USE-FAIL"
+        "SystemsLean.LinearUseFail"
+        "theorem canSeq_keep_keep_true"
+        "theorem canSeq_keep_zero_keep_one_false"
+        "theorem canSeq_keep_one_keep_zero_false"
+        "theorem canSeq_keep_keep_neq_false"
+        "theorem canSeq_keep_keep_true_iff"
+        "theorem canSeq_keep_keep_false_iff"
+        "theorem canSeq_keep_keep_eq_true"
+        "theorem canSeq_keep_keep_true_eq"
+        "theorem canSeq_keep_keep_false_neq"
+        "theorem canSeq_keep_keep_true_symm"
+        "theorem canSeq_keep_keep_false_symm"
+        "theorem canSeq_keep_keep_comm"
+        "theorem canSeq_keep_keep_trans"
+        "theorem canSeq_keep_keep_cancel"
+        "theorem canSeq_keep_keep_rcancel"
+        "theorem canSeq_keep_keep_rcancel_false"
+        "theorem canSeq_keep_keep_cancel_false"
+        "theorem canSeq_keep_keep_trans_false"
+        "theorem canSeq_keep_keep_rtrans_false"
+        "theorem canSeq_keep_keep_congr"
+        "theorem canSeq_keep_keep_rcongr"
+        "theorem canSeq_keep_keep_congr2"
+        "theorem canSeq_keep_keep_rcongr2"
+        "theorem canSeq_keep_keep_lrcongr2"
+        "theorem canSeq_keep_keep_rlcongr2"
+        "theorem canSeq_keep_keep_decide"
+        "UNIT_SURFACE"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+      ];
+    }
+    {
+      # consume/keep canSeq duals (same namespace LinearUseFail).
+      rel = "src/systems/SystemsLean/LinearUseFail/Consume.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "LINEAR-USE-FAIL"
+        "SystemsLean.LinearUseFail"
+        "theorem canSeq_consume_keep_true"
+        "theorem canSeq_keep_consume_true"
+        "theorem canSeq_keep_zero_consume_false"
+        "theorem canSeq_consume_keep_one_false"
+        "theorem canSeq_consume_keep_true_iff"
+        "theorem canSeq_keep_consume_true_iff"
+        "theorem canSeq_keep_consume_false_iff"
+        "theorem canSeq_consume_keep_false_iff"
+        "theorem canSeq_consume_keep_neq_false"
+        "theorem canSeq_keep_consume_neq_false"
+        "theorem canSeq_consume_keep_eq_true"
+        "theorem canSeq_keep_consume_eq_true"
+        "theorem canSeq_consume_keep_false_neq"
+        "theorem canSeq_keep_consume_false_neq"
+        "theorem canSeq_consume_keep_true_eq"
+        "theorem canSeq_keep_consume_true_eq"
+        "theorem canSeq_consume_keep_decide"
+        "theorem canSeq_keep_consume_decide"
+        "UNIT_SURFACE"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+      ];
+    }
+    {
+      # consume/consume canSeq decide facts (same namespace LinearUseFail).
+      rel = "src/systems/SystemsLean/LinearUseFail/Decide.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "LINEAR-USE-FAIL"
+        "SystemsLean.LinearUseFail"
+        "theorem canSeq_consume_consume_decide"
+        "theorem canSeq_consume_consume_true_iff"
+        "theorem canSeq_consume_consume_false_iff"
+        "theorem canSeq_consume_consume_neq_false"
+        "theorem canSeq_consume_consume_eq_true"
+        "theorem canSeq_consume_consume_true_eq"
+        "theorem canSeq_consume_consume_false_neq"
+        "theorem canSeq_consume_consume_false_eq"
+        "theorem canSeq_consume_consume_true_neq"
+        "theorem canSeq_consume_consume_neq_true"
+        "theorem canSeq_consume_consume_decide_eq"
+        "theorem canSeq_consume_consume_decide_eq_false"
+        "theorem canSeq_consume_consume_decide_false_eq"
+        "theorem canSeq_consume_consume_decide_true_neq"
+        "theorem canSeq_consume_consume_decide_neq_true"
+        "theorem canSeq_consume_consume_decide_true_iff"
+        "theorem canSeq_consume_consume_decide_false_iff"
+        "theorem canSeq_consume_consume_decide_neq_false"
+        "theorem canSeq_consume_consume_decide_eq_true"
+        "theorem canSeq_consume_consume_decide_true_eq"
+        "theorem canSeq_consume_consume_decide_false_neq"
+        "UNIT_SURFACE"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+      ];
+    }
+    {
       # FreestandingEmitLoadScaffold: Mult..Apply unit SSOT loaders (same namespace).
       rel = "src/systems/SystemsLean/FreestandingEmitLoadScaffold.lean";
       all = [

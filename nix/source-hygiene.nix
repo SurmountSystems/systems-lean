@@ -27,6 +27,8 @@ let
     || name == "__pycache__"
     # Compiler local output (Idris dual elaborator under examples/build; Lake uses .lake).
     || name == "build"
+    # Host ELF dest (Nix readFile cannot load binaries as strings).
+    || name == "slake-produced-elf"
     || lib.hasPrefix "result" name;
 
   skipFile =

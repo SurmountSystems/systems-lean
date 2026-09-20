@@ -8,7 +8,8 @@
 # list entries). Does not scan Lean, C, shell, or other extensions in v1.
 #
 # Skips: .git, ref/, skills/, .cache, .lake, __pycache__, result*, flake.lock-style
-# non-md (only *.md are collected). Prefer root = novelSource from
+# non-md (only *.md are collected), and root TECH.md (host persist dump; the
+# living compiler map is doc/compiler-map.md). Prefer root = novelSource from
 # novel-source.nix so ref/ and skills/ are already filtered; local skipDir is
 # defense in depth when root is a worktree path.
 #
@@ -67,6 +68,11 @@ let
     || name == "__pycache__"
     || lib.hasPrefix "result" name;
 
+  skipFile =
+    name:
+    # Host persist dump; living compiler map is doc/compiler-map.md.
+    name == "TECH.md";
+
   isMarkdown = name: lib.hasSuffix ".md" name;
 
   collectMd =
@@ -83,7 +89,7 @@ let
       in
       if typ == "directory" then
         if skipDir name then [ ] else collectMd childPath childRel
-      else if typ == "regular" && isMarkdown name then
+      else if typ == "regular" && isMarkdown name && !(skipFile name) then
         [ { path = childPath; rel = childRel; } ]
       else
         [ ]

@@ -420,7 +420,7 @@ open Lean Elab Command
     Linear skipped. IrGraph skipped as a grow-tip Name. HostCompose skipped.
     Do not plant live HostModuleCheckInventoryCloseTerm.lean. Do not skip to
     HostModuleCheckProductPathBarsTerm. -/
-elab "#elabMeetNamedHostModuleCheckInventoryCloseTermSubsetProbe" : command => do
+def elabMeetRunNamedHostModuleCheckInventoryCloseTermSubsetProbe : CommandElabM Unit := do
   let liveLake? <- liftIO findLiveLakefilePath
   let liveMult? <- liftIO findLiveMultPath
   let liveThm? <- liftIO findLiveMultTheoremsPath
@@ -525,6 +525,16 @@ elab "#elabMeetNamedHostModuleCheckInventoryCloseTermSubsetProbe" : command => d
   elabCommand (<- `(def $rN : Bool := $rStx))
   elabCommand (<- `(def $iN : Bool := $iStx))
   elabCommand (<- `(def $dN : Bool := $dStx))
+
+elab "#elabMeetNamedHostModuleCheckInventoryCloseTermSubsetProbe" : command => do
+  if (<- liftIO slakePackageTypecheckWalk) then
+    elabMeetPlantNamedSubsetDrive
+      `elabMeetAcceptsGoodNamedHostModuleCheckInventoryCloseTermSubset
+      `elabMeetRejectsBadNamedHostModuleCheckInventoryCloseTermSubset
+      `elabMeetRejectsOldWalkAsNamedHostModuleCheckInventoryCloseTermSubset
+      `elabMeetDrivesNamedHostModuleCheckInventoryCloseTermSubset
+  else
+    elabMeetRunNamedHostModuleCheckInventoryCloseTermSubsetProbe
 
 #elabMeetNamedHostModuleCheckInventoryCloseTermSubsetProbe
 

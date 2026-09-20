@@ -20,6 +20,7 @@ let
   tipSelfApply5 = import ./host-specs-tip-selfapply-5.nix;
   tipPath1 = import ./host-specs-tip-path-1.nix;
   tipEmit1 = import ./host-specs-tip-emit-1.nix;
+  firstHostTool = import ./host-specs-first-host-tool.nix;
 in
 {
   inherit (jargon)
@@ -46,5 +47,6 @@ in
     ++ hostHoldClose.hostSpecsHoldCloseEarly
     ++ tipPath1.hostSpecsTipPath1
     ++ hostHoldClose.hostSpecsHoldCloseLate
-    ++ tipEmit1.hostSpecsTipEmit1;
+    ++ tipEmit1.hostSpecsTipEmit1
+    ++ firstHostTool.hostSpecsFirstHostTool;
 }

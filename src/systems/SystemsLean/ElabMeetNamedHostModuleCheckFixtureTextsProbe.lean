@@ -110,7 +110,7 @@ open Lean Elab Command
     good && !bad && isolation.
     Linear skipped. IrGraph skipped as a grow-tip Name. Do not
     plant live HostModuleCheckFixtureTexts.lean. -/
-elab "#elabMeetNamedHostModuleCheckFixtureTextsSubsetProbe" : command => do
+def elabMeetRunNamedHostModuleCheckFixtureTextsSubsetProbe : CommandElabM Unit := do
   let liveLake? <- liftIO findLiveLakefilePath
   let liveMult? <- liftIO findLiveMultPath
   let liveThm? <- liftIO findLiveMultTheoremsPath
@@ -215,6 +215,16 @@ elab "#elabMeetNamedHostModuleCheckFixtureTextsSubsetProbe" : command => do
   elabCommand (<- `(def $rN : Bool := $rStx))
   elabCommand (<- `(def $iN : Bool := $iStx))
   elabCommand (<- `(def $dN : Bool := $dStx))
+
+elab "#elabMeetNamedHostModuleCheckFixtureTextsSubsetProbe" : command => do
+  if (<- liftIO slakePackageTypecheckWalk) then
+    elabMeetPlantNamedSubsetDrive
+      `elabMeetAcceptsGoodNamedHostModuleCheckFixtureTextsSubset
+      `elabMeetRejectsBadNamedHostModuleCheckFixtureTextsSubset
+      `elabMeetRejectsOldWalkAsNamedHostModuleCheckFixtureTextsSubset
+      `elabMeetDrivesNamedHostModuleCheckFixtureTextsSubset
+  else
+    elabMeetRunNamedHostModuleCheckFixtureTextsSubsetProbe
 
 #elabMeetNamedHostModuleCheckFixtureTextsSubsetProbe
 

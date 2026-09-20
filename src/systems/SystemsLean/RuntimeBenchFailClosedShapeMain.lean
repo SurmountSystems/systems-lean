@@ -1,6 +1,7 @@
 /-
-  SYSTEMS_LEAN_HOST measurement -- thin Lake exe main for Lean-owned
-  fail-closed-shape twin C write. Root for lake exe
+  SYSTEMS_LEAN_HOST measurement -- thin lean+leanc main for Lean-owned
+  fail-closed-shape twin C write. Without-Lake prove is just first-host-tool
+  (lean then leanc), not a Lake invocation on that step. Inventory name:
   slake-runtime-bench-fail-closed-shape.
   Body: SystemsLean.RuntimeBenchFailClosedShape.
   Greppable: RuntimeBenchFailClosedShapeMain,

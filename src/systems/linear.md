@@ -167,7 +167,11 @@ linearParityReady, multLinearParityReady, SYSTEMS_LEAN_HOST.
 
 ## Non-claims
 
-- No full use-checker body here
+- No full use-checker body here. Named QTT surfaces on a tiny usage log
+  (`SystemsLean.UseCheck`; inventory
+  `doc/dev/research/qtt-use-check-inventory-2026-09-17.md`): ConsumeToken
+  exact-once (MULT-1) and UnrestrictedShare (MULT-OMEGA drop / once / share
+  ok). That is not a full checker and not all-types use-check.
 - Not freestanding residual free
 - No second ConsumeToken dual invented under systems
 - Not PROVABLY

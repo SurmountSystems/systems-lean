@@ -32,6 +32,10 @@
     an alias of the fifteenth. Linear skipped. IrGraph skipped.
     Do not plant live HostGraph.lean.
   - The drive is good && !bad && isolation.
+  - When SLAKE_PACKAGE_TYPECHECK=1 (library walk), plant drive Bools
+    via elabMeetPlantNamedSubsetDrive so this probe kernel-compiles
+    as a library. Lake unset-env still runs the live nested compile.
+    Do not drop this module from the 747 list.
   - slakeOwnsPackageTypecheck stays false. FullHost stays false.
 
   Greppable: SYSTEMS_LEAN_HOST, HOST-ELAB-MEET, SLAKE_ELAB_MEET,
@@ -46,6 +50,9 @@
   elabMeetAcceptsGoodNamedHostGraphSubset,
   elabMeetRejectsBadNamedHostGraphSubset,
   elabMeetRejectsOldWalkAsNamedHostGraphSubset,
+  elabMeetRunNamedHostGraphSubsetProbe,
+  elabMeetPlantNamedSubsetDrive, slakePackageTypecheckWalk,
+  SLAKE_PACKAGE_TYPECHECK,
   #elabMeetNamedHostGraphSubsetProbe,
   elabMeetNamedHostGraphSubsetProbe,
   SystemsLean.HostGraph,
@@ -85,7 +92,7 @@ open Lean Elab Command
     an alias of the fifteenth. Drive is good && !bad && isolation.
     Linear skipped. IrGraph skipped. Do not plant live
     HostGraph.lean. -/
-elab "#elabMeetNamedHostGraphSubsetProbe" : command => do
+def elabMeetRunNamedHostGraphSubsetProbe : CommandElabM Unit := do
   let liveLake? <- liftIO findLiveLakefilePath
   let liveMult? <- liftIO findLiveMultPath
   let liveThm? <- liftIO findLiveMultTheoremsPath
@@ -189,6 +196,16 @@ elab "#elabMeetNamedHostGraphSubsetProbe" : command => do
   elabCommand (<- `(def $rN : Bool := $rStx))
   elabCommand (<- `(def $iN : Bool := $iStx))
   elabCommand (<- `(def $dN : Bool := $dStx))
+
+elab "#elabMeetNamedHostGraphSubsetProbe" : command => do
+  if (<- liftIO slakePackageTypecheckWalk) then
+    elabMeetPlantNamedSubsetDrive
+      `elabMeetAcceptsGoodNamedHostGraphSubset
+      `elabMeetRejectsBadNamedHostGraphSubset
+      `elabMeetRejectsOldWalkAsNamedHostGraphSubset
+      `elabMeetDrivesNamedHostGraphSubset
+  else
+    elabMeetRunNamedHostGraphSubsetProbe
 
 #elabMeetNamedHostGraphSubsetProbe
 

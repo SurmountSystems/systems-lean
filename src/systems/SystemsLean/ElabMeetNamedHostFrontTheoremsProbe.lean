@@ -31,6 +31,10 @@
     an alias of the thirteenth. Linear skipped. IrGraph skipped.
     Do not plant live HostFrontTheorems.lean.
   - The drive is good && !bad && isolation.
+  - When SLAKE_PACKAGE_TYPECHECK=1 (library walk), plant drive Bools
+    via elabMeetPlantNamedSubsetDrive so this probe kernel-compiles
+    as a library. Lake unset-env still runs the live nested compile.
+    Do not drop this module from the 747 list.
   - slakeOwnsPackageTypecheck stays false. FullHost stays false.
 
   Greppable: SYSTEMS_LEAN_HOST, HOST-ELAB-MEET, SLAKE_ELAB_MEET,
@@ -45,6 +49,9 @@
   elabMeetAcceptsGoodNamedHostFrontTheoremsSubset,
   elabMeetRejectsBadNamedHostFrontTheoremsSubset,
   elabMeetRejectsOldWalkAsNamedHostFrontTheoremsSubset,
+  elabMeetRunNamedHostFrontTheoremsSubsetProbe,
+  elabMeetPlantNamedSubsetDrive, slakePackageTypecheckWalk,
+  SLAKE_PACKAGE_TYPECHECK,
   #elabMeetNamedHostFrontTheoremsSubsetProbe,
   elabMeetNamedHostFrontTheoremsSubsetProbe,
   SystemsLean.HostFrontTheorems,
@@ -83,7 +90,7 @@ open Lean Elab Command
     an alias of the thirteenth. Drive is good && !bad && isolation.
     Linear skipped. IrGraph skipped. Do not plant live
     HostFrontTheorems.lean. -/
-elab "#elabMeetNamedHostFrontTheoremsSubsetProbe" : command => do
+def elabMeetRunNamedHostFrontTheoremsSubsetProbe : CommandElabM Unit := do
   let liveLake? <- liftIO findLiveLakefilePath
   let liveMult? <- liftIO findLiveMultPath
   let liveThm? <- liftIO findLiveMultTheoremsPath
@@ -187,6 +194,16 @@ elab "#elabMeetNamedHostFrontTheoremsSubsetProbe" : command => do
   elabCommand (<- `(def $rN : Bool := $rStx))
   elabCommand (<- `(def $iN : Bool := $iStx))
   elabCommand (<- `(def $dN : Bool := $dStx))
+
+elab "#elabMeetNamedHostFrontTheoremsSubsetProbe" : command => do
+  if (<- liftIO slakePackageTypecheckWalk) then
+    elabMeetPlantNamedSubsetDrive
+      `elabMeetAcceptsGoodNamedHostFrontTheoremsSubset
+      `elabMeetRejectsBadNamedHostFrontTheoremsSubset
+      `elabMeetRejectsOldWalkAsNamedHostFrontTheoremsSubset
+      `elabMeetDrivesNamedHostFrontTheoremsSubset
+  else
+    elabMeetRunNamedHostFrontTheoremsSubsetProbe
 
 #elabMeetNamedHostFrontTheoremsSubsetProbe
 
