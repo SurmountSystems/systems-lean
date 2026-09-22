@@ -426,6 +426,20 @@
       ];
     }
     {
+      # consume/consume not-eq-not mix duals (same namespace LinearUseFail).
+      rel = "src/systems/SystemsLean/LinearUseFail/NotEqNot.lean";
+      all = [
+        "SYSTEMS_LEAN_HOST"
+        "LINEAR-USE-FAIL"
+        "SystemsLean.LinearUseFail"
+        "theorem canSeq_consume_consume_one_zero_comm_congr_not_eq_not_symm"
+        "theorem canSeq_consume_consume_one_zero_comm_congr_not_eq_not_comm"
+        "UNIT_SURFACE"
+        "Not freestanding residual free"
+        "Not PROVABLY"
+      ];
+    }
+    {
       # FreestandingEmitLoadScaffold: Mult..Apply unit SSOT loaders (same namespace).
       rel = "src/systems/SystemsLean/FreestandingEmitLoadScaffold.lean";
       all = [

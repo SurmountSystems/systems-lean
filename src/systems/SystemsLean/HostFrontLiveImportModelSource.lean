@@ -13,8 +13,7 @@ namespace SystemsLean.HostFrontLiveImportModel
 
 /-- Dual-pinned live HostImportGraphModel.lean bytes (must match on-disk file).
     Greppable: liveImportModelSource, PARSE-LIVE-IMPORT-MODEL. -/
-def liveImportModelSource : String := r#"
-/-
+def liveImportModelSource : String := r#"/-
   SYSTEMS_LEAN_HOST partial -- HostImportGraph RealMod model + resolveImportGraph.
   Side: classic Lean elaborator under src/systems/ (not freestanding C).
   Long-file peel companion. Namespace SystemsLean.HostImportGraph.

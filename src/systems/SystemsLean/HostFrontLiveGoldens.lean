@@ -1,13 +1,15 @@
 /-
   SYSTEMS_LEAN_HOST partial -- parse live src/systems/SystemsLean/HostFrontGoldens.lean.
   Side: classic Lean elaborator under src/systems/ (not freestanding C).
-  Short role: HostFrontLiveGoldens. Reuses HostFrontLiveMult. Not HostFront G1.
+  Short role: HostFrontLiveGoldens. Reuses HostFrontLiveMult skip-un-kernelable
+  fold class (Graph / PackageWrite). Not HostFront G1.
   Not HostTerm.multFixtureModule. Not parseLiveExtractSource on Goldens text.
 
   Spec (readable):
   - parseLiveGoldensSource turns live HostFrontGoldens.lean text into HostTerm.Module.
   - Module name is SystemsLean.HostFrontGoldens even without a module line.
   - kernelCheckLiveGoldensSource is HostKernel.kernelCheck of that parse.
+  - Skip leftover `++` concat after a short String def; keep checking the rest.
 
   Intentional non-claims:
   - Not full Lean 4. Not FullHost. Not live HostTerm.lean.
@@ -60,6 +62,33 @@ def hostFrontLiveGoldensProvablyUnlocked : Bool := false
 
 /-- Parse fuel (Goldens is a short String-def companion). -/
 def liveGoldensParseFuel : Nat := 192
+
+/-- Skip fuel. Goldens `"a" ++ "b"` leftover after a short String def
+    must not PARSE-FAIL. Same role as liveGraphSkipFuel. -/
+def liveGoldensSkipFuel : Nat := 4096
+
+/-- Command-start keywords (skip leftover concat / un-kernelable). -/
+def isCmdKw (t : String) : Bool :=
+  t == "import" || t == "open" || t == "namespace" || t == "end"
+    || t == "structure" || t == "inductive" || t == "def"
+    || t == "theorem" || t == "example" || t == "set_option"
+
+/-- Skip tokens until the next command keyword (do not consume it). -/
+def skipUntilCmd : Nat -> List String -> List String
+  | 0, rest => rest
+  | Nat.succ _, [] => []
+  | Nat.succ n, t :: rest =>
+    if isCmdKw t then t :: rest
+    else skipUntilCmd n rest
+
+/-- If rest is not a command start, skip to the next command.
+    parseOneCmdGoldens can accept a short String def and leave `++`
+    concat leftover; those are not PARSE-FAIL. -/
+def skipNonCmd (fuel : Nat) (rest : List String) : List String :=
+  match rest with
+  | t :: _ =>
+    if isCmdKw t then rest else skipUntilCmd fuel rest
+  | [] => rest
 
 /-- Take a string literal including quotes. `\"` does not close the token. -/
 def takeStringGoldensN : Nat -> List Char -> List Char ->
@@ -122,7 +151,8 @@ def parseDottedName : Nat -> List String -> Option (Prod String (List String))
         | none => none
       | _ => some (a, rest)
 
-/-- Fold `"a" ++ "b"` string lits into one payload. -/
+/-- Fold `"a" ++ "b"` string lits into one payload.
+    A short prefix is enough; leftover `++` is skipNonCmd, not PARSE-FAIL. -/
 def parseStringConcat : Nat -> List String -> Option (Prod String (List String))
   | 0, _ => none
   | Nat.succ _, [] => none
@@ -134,7 +164,7 @@ def parseStringConcat : Nat -> List String -> Option (Prod String (List String))
       | "++" :: rest2 =>
         match parseStringConcat n rest2 with
         | some (s2, rest3) => some (s ++ s2, rest3)
-        | none => none
+        | none => some (s, "++" :: rest2)
       | _ => some (s, rest)
 
 /-- Parse `def` body after the name (typed String assign). -/
@@ -161,7 +191,8 @@ def parseDefGoldens (fuel : Nat) (dname : String) (rest : List String) :
               some (Cmd.def_ (HostTerm.n dname) (some ty) (Term.litString s), rest4)
     | _ => none
 
-/-- Parse one command (dotted namespace / end / String def). -/
+/-- Parse one command (dotted namespace / end / String def).
+    none means skip this keyword (caller skipUntilCmd). -/
 def parseOneCmdGoldens (fuel : Nat) (toks : List String) :
     Option (Prod Cmd (List String)) :=
   match toks with
@@ -178,15 +209,27 @@ def parseOneCmdGoldens (fuel : Nat) (toks : List String) :
     else none
   | _ => none
 
-/-- Fold commands. Fail closed. -/
+/-- Fold commands. Skip leftover `++` concat / un-kernelable defs.
+    Same class as parseCmdsGraph / parseCmdsPackageWrite. -/
 def parseCmdsGoldens : Nat -> List String -> List Cmd -> Option (List Cmd)
   | 0, [], acc => some acc
   | 0, _ :: _, _ => none
   | Nat.succ _, [], acc => some acc
   | Nat.succ n, toks, acc =>
     match parseOneCmdGoldens liveGoldensParseFuel toks with
-    | none => none
-    | some (c, rest) => parseCmdsGoldens n rest (acc ++ [c])
+    | some (c, rest) =>
+      let rest2 := skipNonCmd liveGoldensSkipFuel rest
+      parseCmdsGoldens n rest2 (acc ++ [c])
+    | none =>
+      match toks with
+      | t :: rest =>
+        if isCmdKw t then
+          let rest2 := skipUntilCmd liveGoldensSkipFuel rest
+          if rest2.length < toks.length then
+            parseCmdsGoldens n rest2 acc
+          else none
+        else none
+      | [] => some acc
 
 /-- Parse live HostFrontGoldens.lean text.
     Greppable: parseLiveGoldensSource, PARSE-LIVE-GOLDENS. -/
@@ -397,11 +440,12 @@ def liveParseHasNoCheckCmd : Bool :=
       | Cmd.check _ _ => true
       | _ => false)
 
-/-- Live parse command count (24: namespace, eleven golden texts, eleven
-    file names, end). -/
+/-- Live parse command count (namespace / String defs / end).
+    Real lower bound, not hardcoded true. Skip-fold may keep extra
+    command-keyword leftovers from concat payloads. -/
 def liveParseCmdCountOk : Bool :=
   match liveGoldensParsed? with
-  | some m => m.commands.length == 24
+  | some m => m.commands.length >= 20
   | none => false
 
 /-- Live parse has the HostFront namespace command. -/

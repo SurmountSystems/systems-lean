@@ -77,6 +77,9 @@ def liveImportModsParseFuel : Nat := 512
 /-- Skip fuel for un-kernelable multi-import RealMod tails. -/
 def liveImportModsSkipFuel : Nat := 8192
 
+/-- Kernel-check fuel for empty plus singleton RealMod cmds (HostKernel.kernelFuel is 64). -/
+def liveImportModsKernelFuel : Nat := 256
+
 /-- Seed names from HostImportGraphModel (List ops for RealMod.imports). -/
 def seedKnown : List String := ["nil", "singleton", "append"]
 
@@ -133,6 +136,26 @@ def foldListTerms : List Term -> Term
         (Term.app (Term.const (HostTerm.n "singleton")) t))
       (foldListTerms rest)
 
+/-- Reject `append` nests (multi-import RealMod lists the kernel cannot type). -/
+def termNoAppendN : Nat -> Term -> Bool
+  | 0, _ => false
+  | Nat.succ _, Term.var _ => true
+  | Nat.succ _, Term.litNat _ => true
+  | Nat.succ _, Term.litString _ => true
+  | Nat.succ _, Term.litBool _ => true
+  | Nat.succ _, Term.none_ => true
+  | Nat.succ _, Term.const x => x.raw != "append"
+  | Nat.succ n, Term.app f a => termNoAppendN n f && termNoAppendN n a
+  | Nat.succ n, Term.some_ t => termNoAppendN n t
+  | Nat.succ n, Term.ite c t e =>
+      termNoAppendN n c && termNoAppendN n t && termNoAppendN n e
+  | Nat.succ n, Term.decideEq a b =>
+      termNoAppendN n a && termNoAppendN n b
+  | Nat.succ n, Term.proj o _ => termNoAppendN n o
+  | Nat.succ n, Term.structLit fs =>
+      fs.all (fun p => termNoAppendN n p.snd)
+  | Nat.succ _, Term.match_ _ _ => false
+
 /-- Reject field proj the kernel cannot type (keep isEmpty / isSome / length). -/
 def termNoBadProjN : Nat -> Term -> Bool
   | 0, _ => false
@@ -165,14 +188,16 @@ def cmdAddsMods (c : Cmd) : List String :=
   | Cmd.defBind x _ _ _ => [x.raw]
   | _ => []
 
-/-- Body is kernel-known and has no untyped proj. -/
+/-- Body is kernel-known, no untyped proj, no multi-import append nest. -/
 def cmdBodyKnownMods (kn : List String) : Cmd -> Bool
   | Cmd.def_ _ _ body =>
       termKnownN liveHostTermParseFuel kn body
         && termNoBadProjN liveImportModsParseFuel body
+        && termNoAppendN liveImportModsParseFuel body
   | Cmd.defBind _ _ _ body =>
       termKnownN liveHostTermParseFuel kn body
         && termNoBadProjN liveImportModsParseFuel body
+        && termNoAppendN liveImportModsParseFuel body
   | _ => true
 
 mutual
@@ -211,6 +236,10 @@ mutual
             match rest2 with
             | "," :: rest3 => parseStructLitFieldsMods n bs rest3 acc2
             | "}" :: rest3 => some (acc2, rest3)
+            | t :: ":=" :: _ =>
+              if liveIsIdent t then
+                parseStructLitFieldsMods n bs rest2 acc2
+              else none
             | _ => none
       | _ => none
 
@@ -268,6 +297,14 @@ mutual
             (Term.app (Term.const (HostTerm.n field)) t) rest2
         else if liveIsIdent field then
           parseTermTailMods n bs (Term.proj t (HostTerm.n field)) rest2
+        else
+          some (t, rest)
+      | fname :: ":=" :: _ =>
+        if liveIsIdent fname then some (t, rest)
+        else if modsAtomStart rest then
+          match parseAtomMods n bs rest with
+          | some (a, rest2) => parseTermTailMods n bs (Term.app t a) rest2
+          | none => some (t, rest)
         else
           some (t, rest)
       | _ =>
@@ -427,7 +464,7 @@ def kernelCheckLiveImportModsSource (src : String) : Bool :=
   | FrontResult.accept m =>
     match seedImportMods [] [] with
     | (env, ss) =>
-      isWellFormed m && kernelCheckN kernelFuel env ss m.commands
+      isWellFormed m && kernelCheckN liveImportModsKernelFuel env ss m.commands
   | FrontResult.reject _ => false
 
 /-- Accepted live module when parse succeeds. -/

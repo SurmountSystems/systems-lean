@@ -8,7 +8,8 @@
   canSeq_consume_consume_false stay in LinearUseFailTheorems.
 
   Spec (readable; proofs follow): keep/keep true, mismatch false, iff,
-  eq, neq, symm, comm, trans, cancel, congr, decide.
+  eq, neq, symm, comm, trans, cancel, congr, decide, decide_eq,
+  neq_true, true_neq, false_eq.
 
   These theorems do NOT set SpecProof.proofCompleteClaimed true.
   Indexed MULT-1 fail-to-check != host proof complete != residual free.
@@ -22,6 +23,8 @@
 
   Greppable: SYSTEMS_LEAN_HOST, LINEAR-USE-FAIL, SystemsLean.LinearUseFail,
   theorem canSeq_keep_keep_true, theorem canSeq_keep_keep_decide,
+  theorem canSeq_keep_keep_decide_eq, theorem canSeq_keep_keep_neq_true,
+  theorem canSeq_keep_keep_true_neq, theorem canSeq_keep_keep_false_eq,
   UNIT_SURFACE host surface.
   Module: SystemsLean.LinearUseFail.Keep
   Red/green: just systems-host.
@@ -325,5 +328,37 @@ theorem canSeq_keep_keep_decide {k m : Nat} :
     canSeq (keep : LinearStep k k) (keep : LinearStep m m) = decide (k = m) :=
   Bool.eq_iff_iff.mpr
     (Iff.trans canSeq_keep_keep_true_iff (Iff.symm decide_eq_true_iff))
+
+/-- keep remaining k then keep remaining m has decide (k = m) equal to
+    canSeq (swapped). Dual of canSeq_keep_keep_decide (Eq.symm). Dual of
+    canSeq_consume_consume_decide_eq for keep then keep.
+    Matching remaining is canSeq_keep_keep_true. LINEAR-USE-FAIL. -/
+theorem canSeq_keep_keep_decide_eq {k m : Nat} :
+    decide (k = m) = canSeq (keep : LinearStep k k) (keep : LinearStep m m) :=
+  Eq.symm canSeq_keep_keep_decide
+
+/-- keep remaining k then keep remaining m is not true when k != m.
+    Dual of canSeq_keep_keep_eq_true (Not of true). Dual of
+    canSeq_consume_consume_neq_true for keep then keep.
+    Matching remaining is canSeq_keep_keep_true. LINEAR-USE-FAIL. -/
+theorem canSeq_keep_keep_neq_true {k m : Nat} (h : Not (k = m)) :
+    Not (canSeq (keep : LinearStep k k) (keep : LinearStep m m) = true) :=
+  fun ht => h (canSeq_keep_keep_true_eq ht)
+
+/-- keep remaining k then keep remaining m is not true (swapped equality)
+    when k != m. Dual of canSeq_keep_keep_neq_true (Not (true = canSeq)).
+    Dual of canSeq_consume_consume_true_neq for keep then keep.
+    Matching remaining is canSeq_keep_keep_true. LINEAR-USE-FAIL. -/
+theorem canSeq_keep_keep_true_neq {k m : Nat} (h : Not (k = m)) :
+    Not (true = canSeq (keep : LinearStep k k) (keep : LinearStep m m)) :=
+  fun ht => h (canSeq_keep_keep_true_eq (Eq.symm ht))
+
+/-- keep remaining k then keep remaining m has false equal to canSeq
+    when k != m (swapped). Dual of canSeq_keep_keep_neq_false (Eq.symm).
+    Dual of canSeq_consume_consume_false_eq for keep then keep.
+    Matching remaining is canSeq_keep_keep_true. LINEAR-USE-FAIL. -/
+theorem canSeq_keep_keep_false_eq {k m : Nat} (h : Not (k = m)) :
+    false = canSeq (keep : LinearStep k k) (keep : LinearStep m m) :=
+  Eq.symm (canSeq_keep_keep_neq_false h)
 
 end SystemsLean.LinearUseFail

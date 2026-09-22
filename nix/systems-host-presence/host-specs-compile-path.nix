@@ -36,6 +36,24 @@ let
   s33 = import ./host-specs-compile-path-33.nix;
   s34 = import ./host-specs-compile-path-34.nix;
   s35 = import ./host-specs-compile-path-35.nix;
+  s36 = import ./host-specs-compile-path-36.nix;
+  s37 = import ./host-specs-compile-path-37.nix;
+  s38 = import ./host-specs-compile-path-38.nix;
+  s39 = import ./host-specs-compile-path-39.nix;
+  s40 = import ./host-specs-compile-path-40.nix;
+  s41 = import ./host-specs-compile-path-41.nix;
+  s42 = import ./host-specs-compile-path-42.nix;
+  s43 = import ./host-specs-compile-path-43.nix;
+  s44 = import ./host-specs-compile-path-44.nix;
+  s45 = import ./host-specs-compile-path-45.nix;
+  s46 = import ./host-specs-compile-path-46.nix;
+  s47 = import ./host-specs-compile-path-47.nix;
+  s48 = import ./host-specs-compile-path-48.nix;
+  s49 = import ./host-specs-compile-path-49.nix;
+  s50 = import ./host-specs-compile-path-50.nix;
+  s51 = import ./host-specs-compile-path-51.nix;
+  s52 = import ./host-specs-compile-path-52.nix;
+  s53 = import ./host-specs-compile-path-53.nix;
 in
 {
   hostSpecsCompilePath =
@@ -72,5 +90,23 @@ in
     ++ s32.hostSpecsCompilePath32
     ++ s33.hostSpecsCompilePath33
     ++ s34.hostSpecsCompilePath34
-    ++ s35.hostSpecsCompilePath35;
+    ++ s35.hostSpecsCompilePath35
+    ++ s36.hostSpecsCompilePath36
+    ++ s37.hostSpecsCompilePath37
+    ++ s38.hostSpecsCompilePath38
+    ++ s39.hostSpecsCompilePath39
+    ++ s40.hostSpecsCompilePath40
+    ++ s41.hostSpecsCompilePath41
+    ++ s42.hostSpecsCompilePath42
+    ++ s43.hostSpecsCompilePath43
+    ++ s44.hostSpecsCompilePath44
+    ++ s45.hostSpecsCompilePath45
+    ++ s46.hostSpecsCompilePath46
+    ++ s47.hostSpecsCompilePath47
+    ++ s48.hostSpecsCompilePath48
+    ++ s49.hostSpecsCompilePath49
+    ++ s50.hostSpecsCompilePath50
+    ++ s51.hostSpecsCompilePath51
+    ++ s52.hostSpecsCompilePath52
+    ++ s53.hostSpecsCompilePath53;
 }

@@ -78,6 +78,31 @@
         root = novelSource;
       };
 
+      slakeHostToolElf = import ./nix/slake-host-tool-elf.nix {
+        inherit lib;
+        root = novelSource;
+      };
+
+      systemsMillInventory = import ./nix/systems-mill-inventory.nix {
+        inherit lib;
+        root = novelSource;
+      };
+
+      systemsMillPackedExtras = import ./nix/systems-mill-packed-extras.nix {
+        inherit lib;
+        root = novelSource;
+      };
+
+      systemsMillFilePath = import ./nix/systems-mill-file-path.nix {
+        inherit lib;
+        root = novelSource;
+      };
+
+      systemsMillRecipeCount = import ./nix/systems-mill-recipe-count.nix {
+        inherit lib;
+        root = novelSource;
+      };
+
       # Pure check: throw at eval time with violation list, or a tiny text drv.
       mkSourceHygieneCheck =
         pkgs:
@@ -142,6 +167,41 @@
         else
           throw slakeProducedElf.summary;
 
+      mkSlakeHostToolElfCheck =
+        pkgs:
+        if slakeHostToolElf.ok then
+          pkgs.writeText "slake-host-tool-elf-ok" slakeHostToolElf.summary
+        else
+          throw slakeHostToolElf.summary;
+
+      mkSystemsMillInventoryCheck =
+        pkgs:
+        if systemsMillInventory.ok then
+          pkgs.writeText "systems-mill-inventory-ok" systemsMillInventory.summary
+        else
+          throw systemsMillInventory.summary;
+
+      mkSystemsMillPackedExtrasCheck =
+        pkgs:
+        if systemsMillPackedExtras.ok then
+          pkgs.writeText "systems-mill-packed-extras-ok" systemsMillPackedExtras.summary
+        else
+          throw systemsMillPackedExtras.summary;
+
+      mkSystemsMillFilePathCheck =
+        pkgs:
+        if systemsMillFilePath.ok then
+          pkgs.writeText "systems-mill-file-path-ok" systemsMillFilePath.summary
+        else
+          throw systemsMillFilePath.summary;
+
+      mkSystemsMillRecipeCountCheck =
+        pkgs:
+        if systemsMillRecipeCount.ok then
+          pkgs.writeText "systems-mill-recipe-count-ok" systemsMillRecipeCount.summary
+        else
+          throw systemsMillRecipeCount.summary;
+
       mkProgressReport =
         pkgs:
         pkgs.writeText "PROGRESS.md" progressAt.report;
@@ -160,6 +220,11 @@
         leanSidePresence = import ./nix/lean-side-presence;
         systemsMillExtrasFit = import ./nix/systems-mill-extras-fit;
         slakeProducedElf = import ./nix/slake-produced-elf.nix;
+        slakeHostToolElf = import ./nix/slake-host-tool-elf.nix;
+        systemsMillInventory = import ./nix/systems-mill-inventory.nix;
+        systemsMillPackedExtras = import ./nix/systems-mill-packed-extras.nix;
+        systemsMillFilePath = import ./nix/systems-mill-file-path.nix;
+        systemsMillRecipeCount = import ./nix/systems-mill-recipe-count.nix;
       };
 
       # Live pure-Nix meter text (system-independent). `just progress` redirects these.
@@ -178,6 +243,11 @@
           lean-side-presence = mkLeanSidePresenceCheck pkgs;
           systems-mill-extras-fit = mkSystemsMillExtrasFitCheck pkgs;
           slake-produced-elf = mkSlakeProducedElfCheck pkgs;
+          slake-host-tool-elf = mkSlakeHostToolElfCheck pkgs;
+          systems-mill-inventory = mkSystemsMillInventoryCheck pkgs;
+          systems-mill-packed-extras = mkSystemsMillPackedExtrasCheck pkgs;
+          systems-mill-file-path = mkSystemsMillFilePathCheck pkgs;
+          systems-mill-recipe-count = mkSystemsMillRecipeCountCheck pkgs;
         }
       );
 

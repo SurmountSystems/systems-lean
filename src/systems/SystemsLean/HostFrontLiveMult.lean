@@ -188,7 +188,7 @@ def tokenizeN : Nat -> List Char -> List String -> List String
       | _ => tokenizeN n rest ("-" :: acc)
     else if c == '|' || c == '(' || c == ')' || c == ',' || c == '.' then
       tokenizeN n rest (String.singleton c :: acc)
-    else if isIdentStart c then
+    else if isIdentStart c || HostFront.isDigit c then
       let (rev, rest2) := takeIdentN liveParseFuel [c] rest
       tokenizeN n rest2 (String.ofList rev.reverse :: acc)
     else

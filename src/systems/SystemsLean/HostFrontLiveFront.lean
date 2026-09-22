@@ -13,7 +13,9 @@
   Parser sugar (not HostTerm IR growth): payload ctor args skipped; List/Prod/IO
   type apps named; || / != / && / == as ite/decideEq; char lits fail closed so
   Char compare defs skip; un-kernelable match / do / fun / let rec / equation
-  defs skip until the next command. Dual-pin is full HostFront.lean bytes.
+  defs skip until the next command. Keep-filter drops nested &&, List.any
+  proj, and IO / do-block so kernelCheckN (fuel 64) can infer remaining cmds.
+  Dual-pin is full HostFront.lean bytes.
 
   Intentional non-claims:
   - Not full Lean 4. Not FullHost. Not live HostTerm.lean.
@@ -322,52 +324,37 @@ def termKnownN : Nat -> List String -> Term -> Bool
       fs.all (fun p => termKnownN n kn p.snd)
   | Nat.succ _, _, Term.match_ _ _ => false
 
-/-- Bool-shaped body (kernel Bool / arrow-to-Bool). -/
-def boolish : Nat -> Term -> Bool
-  | 0, _ => false
-  | Nat.succ _, Term.litBool _ => true
-  | Nat.succ _, Term.var _ => true
-  | Nat.succ _, Term.const _ => true
-  | Nat.succ n, Term.ite c t e =>
-      boolish n c && boolish n t && boolish n e
-  | Nat.succ _, Term.decideEq _ _ => true
-  | Nat.succ n, Term.app f a => boolish n f && boolish n a
-  | Nat.succ n, Term.proj o _ => boolish n o
-  | Nat.succ _, _ => false
+/-- Shallow Bool / String / Nat atoms. Nested ite (long && chains) exceeds
+    kernelCheckN remaining fuel on a late command (kernelFuel 64). -/
+def boolKeepSimple : Term -> Bool
+  | Term.litBool _ => true
+  | Term.litString _ => true
+  | Term.litNat _ => true
+  | Term.const _ => true
+  | Term.var _ => true
+  | _ => false
 
-/-- String-shaped body. -/
-def stringish : Nat -> Term -> Bool
-  | 0, _ => false
-  | Nat.succ _, Term.litString _ => true
-  | Nat.succ _, Term.var _ => true
-  | Nat.succ _, Term.const _ => true
-  | Nat.succ n, Term.ite c t e =>
-      boolish n c && stringish n t && stringish n e
-  | Nat.succ n, Term.app f a => stringish n f && stringish n a
-  | Nat.succ _, _ => false
+/-- Bool bodies the kernel can check (lits, aliases, one-level && / !, ==).
+    Drop nested &&, List.any proj, and IO / do-block defs. -/
+def boolKeep : Term -> Bool
+  | Term.litBool _ => true
+  | Term.const _ => true
+  | Term.var _ => true
+  | Term.ite c t e =>
+      boolKeepSimple c && boolKeepSimple t && boolKeepSimple e
+  | Term.decideEq a b =>
+      boolKeepSimple a && boolKeepSimple b
+  | _ => false
 
-/-- Nat-shaped body. -/
-def natish : Nat -> Term -> Bool
-  | 0, _ => false
-  | Nat.succ _, Term.litNat _ => true
-  | Nat.succ _, Term.var _ => true
-  | Nat.succ _, Term.const _ => true
-  | Nat.succ n, Term.ite c t e =>
-      boolish n c && natish n t && natish n e
-  | Nat.succ _, _ => false
-
-/-- Return type is a kernel-keep shape. -/
+/-- Return type is a kernel-keep shape. Named List / IO binders skip. -/
 def retKeep : HostType -> Term -> Bool
-  | HostType.bool, body => boolish liveFrontParseFuel body
-  | HostType.string, body => stringish liveFrontParseFuel body
-  | HostType.nat, body => natish liveFrontParseFuel body
-  | HostType.option _, body =>
-      match body with
-      | Term.none_ => true
-      | Term.some_ _ => true
-      | Term.const _ => true
-      | Term.var _ => true
-      | _ => false
+  | HostType.bool, body => boolKeep body
+  | HostType.string, Term.litString _ => true
+  | HostType.string, Term.const _ => true
+  | HostType.string, Term.var _ => true
+  | HostType.nat, Term.litNat _ => true
+  | HostType.nat, Term.const _ => true
+  | HostType.nat, Term.var _ => true
   | _, _ => false
 
 /-- Names a command adds to the known-const set. -/
@@ -380,7 +367,8 @@ def cmdAdds (c : Cmd) : List String :=
   | Cmd.defBind x _ _ _ => [x.raw]
   | _ => []
 
-/-- Body of a typed def is kernel-known and return-shaped. -/
+/-- Body of a typed def is kernel-known and return-shaped.
+    Nested && / app / proj fail retKeep and skip (not PARSE-FAIL). -/
 def cmdBodyKnown (kn : List String) : Cmd -> Bool
   | Cmd.def_ _ (some ty) body =>
       termKnownN liveFrontParseFuel kn body && retKeep ty body

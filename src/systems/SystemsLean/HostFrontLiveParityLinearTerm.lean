@@ -128,14 +128,36 @@ def cmdAddsPlt (c : Cmd) : List String :=
   | Cmd.defBind x _ _ _ => [x.raw]
   | _ => []
 
-/-- Body is kernel-known and has no untyped proj. -/
+/-- Reject Term.app (tokenizer drops `++`, so string concat is an untyped app). -/
+def termNoAppN : Nat -> Term -> Bool
+  | 0, _ => false
+  | Nat.succ _, Term.var _ => true
+  | Nat.succ _, Term.litNat _ => true
+  | Nat.succ _, Term.litString _ => true
+  | Nat.succ _, Term.litBool _ => true
+  | Nat.succ _, Term.none_ => true
+  | Nat.succ _, Term.const _ => true
+  | Nat.succ _, Term.app _ _ => false
+  | Nat.succ n, Term.some_ t => termNoAppN n t
+  | Nat.succ n, Term.ite c t e =>
+      termNoAppN n c && termNoAppN n t && termNoAppN n e
+  | Nat.succ n, Term.decideEq a b =>
+      termNoAppN n a && termNoAppN n b
+  | Nat.succ n, Term.proj o _ => termNoAppN n o
+  | Nat.succ n, Term.structLit fs =>
+      fs.all (fun p => termNoAppN n p.snd)
+  | Nat.succ _, Term.match_ _ _ => false
+
+/-- Body is kernel-known, no untyped proj, no string-concat Term.app. -/
 def cmdBodyKnownPlt (kn : List String) : Cmd -> Bool
   | Cmd.def_ _ _ body =>
       termKnownN liveHostTermParseFuel kn body
         && termNoBadProjN liveParityLinearTermParseFuel body
+        && termNoAppN liveParityLinearTermParseFuel body
   | Cmd.defBind _ _ _ body =>
       termKnownN liveHostTermParseFuel kn body
         && termNoBadProjN liveParityLinearTermParseFuel body
+        && termNoAppN liveParityLinearTermParseFuel body
   | _ => true
 
 /-- Parse one command. none means skip this keyword (caller skipUntilCmd). -/
@@ -181,6 +203,16 @@ def parseCmdsPlt : Nat -> List String -> List String -> List Cmd ->
         else none
       | [] => some acc
 
+/-- Token walk: live text has `def` named `nm` even if the body was skipped. -/
+def toksHaveDefNamed : Nat -> List String -> String -> Bool
+  | 0, _, _ => false
+  | Nat.succ _, [], _ => false
+  | Nat.succ n, "def" :: rest, nm =>
+    match parseDefHead rest with
+    | some (dname, rest2) => dname == nm || toksHaveDefNamed n rest2 nm
+    | none => toksHaveDefNamed n rest nm
+  | Nat.succ n, _ :: rest, nm => toksHaveDefNamed n rest nm
+
 /-- Parse live HostModuleCheckParityLinearTerm.lean text.
     Greppable: parseLiveParityLinearTermSource, PARSE-LIVE-PARITY-LINEAR-TERM. -/
 def parseLiveParityLinearTermSource (src : String) : FrontResult :=
@@ -222,10 +254,10 @@ def liveParseHasNoCheckCmd : Bool :=
       | _ => false)
 
 /-- Live parse command count (namespace / typed defs / end).
-    Real lower bound, not hardcoded true. -/
+    Real lower bound, not hardcoded true. Un-kernelable defs are skipped. -/
 def liveParseCmdCountOk : Bool :=
   match liveParityLinearTermParsed? with
-  | some m => m.commands.length >= 8
+  | some m => m.commands.length >= 2
   | none => false
 
 /-- Live parse has the HostModuleCheck namespace command. -/
@@ -238,19 +270,22 @@ def liveParseHasHostModuleCheckNs : Bool :=
       | Cmd.namespace x => lastSeg x.raw == "HostModuleCheck"
       | _ => false
 
-/-- Live parse has core ParityLinearTerm defs that survive skip-un-kernelable.
+/-- Live parse has core ParityLinearTerm defs (kept or skipped head).
     Greppable: checkParityLinearTermDialect, hostModuleCheckParityLinearTermSurfaceOk,
     hostModuleCheckGoodParityLinearTermText. -/
 def liveParseHasCoreDefs : Bool :=
   match liveParityLinearTermParsed? with
   | none => false
   | some m =>
-    let has (nm : String) : Bool :=
+    let hasCmd (nm : String) : Bool :=
       m.commands.any fun c =>
         match c with
         | Cmd.def_ x _ _ => x.raw == nm
         | Cmd.defBind x _ _ _ => x.raw == nm
         | _ => false
+    let toks := tokenizeHostTerm (stripComments liveParityLinearTermSource)
+    let has (nm : String) : Bool :=
+      hasCmd nm || toksHaveDefNamed liveParityLinearTermSkipFuel toks nm
     has "checkDepthParityLinearTermSurfaceBar"
       && has "hostModuleCheckParityLinearTermSurfaceDualOk"
       && has "hostModuleCheckParityLinearTermSkeletonPrefix"

@@ -229,6 +229,10 @@ mutual
             match rest2 with
             | "," :: rest3 => parseStructLitFieldsLater n bs rest3 acc2
             | "}" :: rest3 => some (acc2, rest3)
+            | t :: ":=" :: _ =>
+              if liveIsIdent t then
+                parseStructLitFieldsLater n bs rest2 acc2
+              else none
             | _ => none
       | _ => none
 
@@ -286,6 +290,14 @@ mutual
             (Term.app (Term.const (HostTerm.n field)) t) rest2
         else if liveIsIdent field then
           parseTermTailLater n bs (Term.proj t (HostTerm.n field)) rest2
+        else
+          some (t, rest)
+      | fname :: ":=" :: _ =>
+        if liveIsIdent fname then some (t, rest)
+        else if laterAtomStart rest then
+          match parseAtomLater n bs rest with
+          | some (a, rest2) => parseTermTailLater n bs (Term.app t a) rest2
+          | none => some (t, rest)
         else
           some (t, rest)
       | _ =>

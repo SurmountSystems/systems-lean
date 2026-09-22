@@ -23,6 +23,8 @@ lib.cleanSourceWith {
     # Host ELF dest; hygiene walks text only (Nix readFile cannot load binaries).
     && !(lib.hasPrefix "out/slake-produced-elf/" rel)
     && !(lib.hasInfix "/out/slake-produced-elf/" rel)
+    && !(lib.hasPrefix "out/slake-host-tool-elf/" rel)
+    && !(lib.hasInfix "/out/slake-host-tool-elf/" rel)
     # Idris 2 elaborator writes examples/build/*.ttc next to duals (not product).
     && !(lib.hasPrefix "src/idris2/examples/build/" rel)
     && !(lib.hasInfix "/src/idris2/examples/build/" rel)

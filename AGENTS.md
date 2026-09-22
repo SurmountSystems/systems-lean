@@ -52,11 +52,11 @@ Operator restating this parallelism is a tool defect, not a reminder. Fix the wa
 
 After an L2 exits, record its measured window, billed tokens if fetched, and estimate as one row in root `TECH.md`.
 
-Keep **at most 3 implementor L2s**. Before a fourth, wait until one finishes. `[lake-coord]` and residual lockstep do not count as implementors. Parent thinking dump is not a status report. Do not recitation-loop constraints. Do not spawn implementors from a thinking loop to fill slots.
+Always keep **six tagged implementors**. That cap is six **tagged implementors**, not six L2s total that include residual, lake-coord, or the inventory extra. Dedicated `[lake-coord]` is extra. Residual lockstep is extra. The inventory extra is extra. None of those fill an implementor slot. Before a seventh tagged implementor, wait until one tagged implementor finishes. `[lake-coord]` runs remote niced Lake on surmount-1 once implementor work is ready to test (queue file). Do not mix jobs on one L2. One Lake. Parent thinking dump is not a status report. Do not recitation-loop constraints. Do not spawn implementors from a thinking loop to fill slots.
 
 ### Parent never runs with only one nested coordinator (operator 2026-09-18)
 
-The parent (orchestrator) never runs with only one L2 (nested coordinator agent). Always keep at least two L2s live. Implement and checks run in parallel. Example: the next lemma, the next vtable work, and `just check-local` together, not one after another. One L2 on Lake or mill does not license serializing the rest of the session onto a single remaining L2. This does not raise the one-Lake cap.
+The parent (orchestrator) never runs with only one L2 (nested coordinator agent). Always keep **six tagged implementors**. Dedicated `[lake-coord]`, residual lockstep, and the inventory extra do not fill an implementor slot. Implement and checks run in parallel. Example: the next lemma, the next vtable work, and `just check-local` together, not one after another. One L2 on Lake or mill does not license serializing the rest of the session onto a single remaining L2. This does not raise the one-Lake cap.
 
 ### Never mix tasks between nested coordinators (operator 2026-09-18)
 
@@ -66,17 +66,41 @@ One nested coordinator (L2) owns one job. Write paths stay disjoint. Do not assi
 
 Do not park the next disjoint product Name because another L2 is inventorying names. L2s coordinate on a locked file in this harness. Parent starts the next disjoint job. File locks are the race control, not a parent wait. Still never mix jobs on one L2. Still one Lake/Lean builder. Still no second PackageTypecheck.
 
-### Jobs queue (operator 2026-09-19)
+### Jobs queue (operator 2026-09-19; restated 2026-09-20)
 
-Keep **at most 3 implementor L2s**. Before a fourth, wait until one finishes. `[lake-coord]` and residual lockstep do not count as implementors.
+Always keep **six tagged implementors**. That cap is six **tagged implementors**, not six L2s total that include residual, lake-coord, or the inventory extra. Dedicated `[lake-coord]` is extra. Residual lockstep is extra. The inventory extra is extra. None of those fill an implementor slot. Before a seventh tagged implementor, wait until one tagged implementor finishes.
 
 The **same implementor L2** that implements through L3s also runs **its own review L3s** when a land is ready. There is **no dedicated reviewer L2** that does not also implement. The parent does not review source.
 
-**Running and compiling** (lake, PackageTypecheck, compile-one on surmount-1) is **only [lake-coord]**. Implementors land files, dest-missing systems-host, and queue lake recipes. They do not SSH-lake.
+**Running and compiling** (lake, PackageTypecheck, compile-one on surmount-1) is **only [lake-coord]**. `[lake-coord]` runs remote niced Lake on surmount-1 once implementor work is ready to test (queue file). Implementors land files, dest-missing systems-host, and queue lake recipes. They do not SSH-lake.
 
-Parent thinking dump is not a status report. Do not recitation-loop constraints. Do not spawn implementors from a thinking loop to fill slots.
+Do not mix jobs on one L2. One Lake. Parent thinking dump is not a status report. Do not recitation-loop constraints. Do not spawn implementors from a thinking loop to fill slots.
 
-This pin does not raise the one-Lake cap. Niceness stays under **Lake host and niceness** (`nice -n 19`). Dual-pin: host `~/.grok/AGENTS.md` section *Jobs queue*.
+This pin does not raise the one-Lake cap. Niceness stays under **Lake host and niceness** (`nice -n 19`). Dual-pin: host `~/.grok/AGENTS.md` section *Jobs queue* and section *Six tagged implementors and Grok 4.7 xhigh*.
+
+### Six tagged implementors and Grok 4.7 xhigh (operator 2026-09-21)
+
+Operator: always remember. This supersedes the older three and four tagged implementor caps in this file. Always keep **six tagged implementors**. That cap is six **tagged implementors**, not six L2s total. Dedicated `[lake-coord]`, residual lockstep, and the inventory extra stay extra and do not fill an implementor slot. Before a seventh tagged implementor, wait until one tagged implementor finishes. Raise the cap only when the operator says the new number. On that same turn, update this file, `~/.grok/AGENTS.md`, the living plan by addendum, and `~/.agents/reports/implementor-cap.md`. The same implementor L2 runs its own review L3s. There is no dedicated reviewer L2. Do not mix jobs on one L2. One Lake. This does not raise the one-Lake cap.
+
+Every new subagent uses model **grok-4.7** at **xhigh** effort (thorough: do not skip the review, do not treat a red closed-subset `lean --run` as done). The spawn tool's model slug is `grok-4.7`. There is no separate slug for xhigh. Say xhigh in the spawn prompt. Nested L3s inherit `grok-4.7` when the L2 was spawned with that slug; still pass `grok-4.7` on every L3 spawn.
+
+This does not replace the measured per-wrap rate until a few grok-4.7 wraps are reconciled. The Grok 4.6-era average remains **19.4 minutes** and **167.0k** nested tokens per product wrap until that reconcile. Six busy implementors on disjoint files can shorten calendar time. They do not by themselves lower nested tokens per wrap. xhigh can spend more tokens per wrap than that 167.0k estimate. Do not publish a shorter day count as a fact about Grok 4.7 until those wraps are reconciled.
+
+Dual-pin: host `~/.grok/AGENTS.md` section *Six tagged implementors and Grok 4.7 xhigh*.
+
+### Wrap targets come from the inventory on disk (operator 2026-09-21)
+
+Parent picks the next wrap from the unwrapped-product inventory of files that exist (`/home/hunter/.agents/reports/grok-impl-summary-inventory-verify.md`, which replaced `/home/hunter/.agents/reports/grok-impl-summary-unwrapped-modules.md`). Confirm the path with `test -f` before spawn.
+
+Do **not** invent a collapsed name (`ForeignLink.lean` when the inventory lists five `*ForeignLink.lean` files). Do **not** invent a `*Theorems` peel that is not in that list (`CompilePathTheorems.lean`, `HostKernelTheorems.lean` when those theorems already live in `CompilePath.lean` / `HostKernel.lean`). A skip of a missing file is not remaining-work progress. It does not reduce the unwrapped count.
+
+### Inventory extra verifies every listed path (operator 2026-09-21)
+
+Inventory correctness is its own L2 extra. It does not fill a tagged implementor slot. Dedicated `[lake-coord]` and residual lockstep stay extra too.
+
+That inventory L2 must spawn L3s that point at **every** listed product path, run `test -f`, record `wc -l` when the file exists, and research missing names with git history (`git log --follow`, `git log --diff-filter=D`, basename search). One paragraph of what happened to each missing name. Do not invent a replacement file.
+
+Living remaining integer is parser-existence remaining in `/home/hunter/.agents/reports/grok-impl-summary-inventory-verify.md` (third review PASS **228**: 147 unwrapped seeds plus 38 unwrapped extras plus 43 unwrapped mill Mains). The old 313 headline and the 295 freeze are stale. Invented peels are not remaining. Missing-file skips leave the remaining integer unchanged until a real product file gains a living HostFrontLive parser plus SlakeTypecheck driver.
 
 ---
 
@@ -263,7 +287,7 @@ Plan (waves): `.agents/plans/plan-paydown-shell-c-surfaces.md`.
 | Lake / host writers | Thin just: short banner (one stage id), `lake build` / `lake exe`, then re-eval pure gate or rely on `just systems-llvm-ir`. |
 | Sleep / print / recipe chain | Thin orchestration only (`just llvm-unit-package` may call `just llvm-mult-text` ... then pure join). |
 
-**Just as wrapper:** `just` calls pure Nix presence plus existing Lean (`lean --run`) or already-named binaries. Algorithms live in Nix or Lean. Do not grow long bash in justfiles. Example: `just slake-produced-elf` evals `nix/slake-produced-elf.nix` then runs `lean --run` on `SystemsLean/SlakeProducedElf.lean`. Live clang/lean is fail-closed process glue, not a fake pure derivation of a host PATH ELF. Dest stays `out/slake-produced-elf/slake-hello`. Not mill leanc.
+**Just as wrapper:** `just` calls pure Nix presence plus existing Lean (`lean --run`) or already-named binaries. Algorithms live in Nix or Lean. Do not grow long bash in justfiles. Example: `just slake-produced-elf` evals `nix/slake-produced-elf.nix` then runs `lean --run` on `SystemsLean/SlakeProducedElf.lean`. Live clang/lean is fail-closed process glue, not a fake pure derivation of a host PATH ELF. Dest stays `out/slake-produced-elf/slake-hello`. Not mill leanc. Example: `just systems-mill-packed-extras` evals `nix/systems-mill-packed-extras.nix` (mill 68 packed 16 extras and mill 69 packed 0 extras; presence only; does not mill).
 
 **Forbidden in just recipe bodies:**
 
@@ -365,8 +389,25 @@ Chat replies, plans, residual Names, watcher text, and handoff status use **plai
 | "Checklist before we claim host develop no longer needs Lake day to day" | Bare "free bar" |
 | First use of any acronym: unpack in parentheses | Acronym soup and stage codes as chat language |
 | Keep classic Lean ahead-of-time C, freestanding product C, and our string-printed helpers separate | One vague "Lean prints C" ban |
+| "the remaining work is Slake typechecking the Systems Lean sources" | Bare **Open Name** as if the operator already knows residual queue jargon |
 
 Write **thoughtful, concise, natural language**. This is not a jargon dump or acronym soup.
+
+- **Precise numbers, declarative English (operator 2026-09-20):** never
+  say **same** as a table cell, a status shortcut, or a stand-in for
+  copied numbers. Repeat the actual wall-clock and token figures. Speak
+  in complete declarative sentences (what is true, what the estimate is).
+  Do not issue the operator a command list when a report is owed.
+  Finish-line, reconcile, and live-job status use **markdown tables**
+  with every number spelled. Do not collapse those into a paragraph to
+  save tokens. Dual-pin: `~/.grok/AGENTS.md` same heading.
+
+- **Do not say Open Name to the operator (operator 2026-09-20):** residual
+  ledgers use an Open queue of named work items. That is file structure.
+  Chat with the operator names the real remaining work in ordinary English
+  (what Slake still does not do, which modules, what test is still red).
+  Never say **Open Name**, **the Name**, or **Name 10** as if those were
+  English. Dual-pin: this subsection.
 
 - **Low time preference (operator 2026-08-12):** Surmount Systems finishes work
   that is already in flight. Completeness over park. Do not leave a half-done
@@ -397,7 +438,7 @@ High time preference is not "formulaic chat" as the definition, and not
   tools." Parallelize within constraints (disjoint write paths, one host
   Lean).
 
-**Plan roles** (keep at least two L2s live; never mix jobs on one L2):
+**Plan roles** (always keep six tagged implementors; dedicated `[lake-coord]`, residual lockstep, and the inventory extra do not fill a slot; never mix jobs on one L2):
 
 | Role | Owns |
 |------|------|
@@ -434,6 +475,45 @@ Dual-pin: `~/.grok/AGENTS.md` section *Low time preference and completeness*.
   units (one agent slice / hours / how many host modules still lack the
   check), not a decoder-ring count. Dual-pin: `~/.grok/AGENTS.md`
   section *Status reports in ordinary English*.
+- **Finish-line clock every turn (operator 2026-09-20):** every parent
+  status names how close we are to the real remaining work in ordinary
+  English (what Slake still does not do, remaining names or modules).
+  Do not skip this because a dest landed. Do **not** use midnight, or
+  any other clock-on-the-wall, as a table column or fake deadline.
+  Remaining-work, reconcile, and live-job status are **markdown tables**.
+  Every number spelled. Nested tokens: **N.Nk** if under **1000.0k**;
+  **N.Nm** if **1000.0k** or more (example: **20.4m**, not **20410.0k**).
+  Every wall-clock guess in those tables, including the Basis column and
+  the closing prose: **minutes** if at most **60**; **N.N hours** if over
+  **60** minutes and at most **24** hours; **N.N days** if over **24**
+  hours. Never leave a figure over **60** minutes written as minutes.
+  Operator 2026-09-20 restated token millions after **20410.0k**. Dual-pin:
+  `~/.grok/AGENTS.md` same heading.
+- **Estimate then reconcile (operator 2026-09-20):** before starting a
+  new tagged implementor job, write a wall-clock estimate in **minutes**
+  and a nested-token estimate as **N.Nk** if under **1000.0k**, or
+  **N.Nm** if **1000.0k** or more (example: **112.4k**, **20.4m**). When
+  that job finishes, the parent reconciles in the **same format**.
+  Remaining-work wall guesses: minutes if at most 60, **N.N hours** if
+  over 60 minutes and at most 24 hours, **N.N days** if over 24 hours.
+  Dual-pin: `~/.grok/AGENTS.md` section *Estimate then reconcile*.
+- **Comprehensive estimate and reconcile (operator 2026-09-21):** always
+  remember. Estimate then reconcile is not a one-line aside. Every parent
+  status that reports work includes one markdown table for every finished
+  job in the wave and every live job. Columns are the job, estimate wall,
+  estimate nested tokens, actual wall or elapsed, actual nested tokens,
+  and what that means (under the estimate, over the estimate, or still
+  open). Spell every number. Never write **same** for a copied figure.
+  If billed tokens were not printed, the actual token cell is
+  **not_fetched**. Do not copy the estimate into the actual cell. A
+  one-second `lean --run` is not the job wall. The job wall runs from
+  spawn to the finish report. Remaining work is a second table: file
+  count, the rate used, serial agent-time, calendar at the live
+  implementor count, and total nested tokens, with the arithmetic written
+  out. Do not replace the standing rate with one fast job. The standing
+  product-wrap rate stays **19.4 minutes** and **167.0k** nested tokens
+  until several Grok 4.7 wraps have both numbers fetched. Dual-pin:
+  `~/.grok/AGENTS.md` section *Comprehensive estimate and reconcile*.
 - **Progress every turn (operator 2026-08-14):** every parent turn and
   every implement slice starts with that natural-language progress
   report: what compiled, what still does not, and what is next. Keep a
@@ -917,18 +997,31 @@ Hunter's environment can **auto-run** residual implement instructions when they 
 When you finish a planned slice:
 
 1. If residual work is **clear and needs no human input**, write the next implement prompt into `WATCHER.md` using the residual **Name / Goal / Done when / Out of scope / Paths / Gates** shape **and** end the reply with that prompt so the harness can continue. Prefer freestanding Slake bootstrap Open Names over inventing theorem canaries.
-2. **Always** put a next implement prompt in the reply final section when the next residual Name is already clear (plan default with checkable Done when, or Open queue non-empty). Use the full `/implement --effort N ...` form the harness expects when work remains. Do not end only with DONE-FOR-NOW prose if plan/residual already names the next clear slice.
-2b. **Do not omit `/implement` because the mill is long (operator 2026-09-08):** when the operator called an implement loop, keep chaining one honest next Name after each GREEN. Host tools without Lake (today a count of inventory `lean_exe` rows; living metric in residual) is one Name per executable. Do **not** drop the slash-command to "avoid grinding" remaining rows. One-at-a-time is the mill. Stopping the loop is not. The operator can cancel the loop; agents must not cancel it for them.
+2. **Always** put a next implement prompt in the reply final section when the next residual Name is already clear (plan default with checkable Done when, or Open queue non-empty). Use the full `/implement --effort N ...` form the harness expects when work remains. Do not end only with DONE-FOR-NOW prose if plan/residual already names the next clear slice. Operator stop or leftover already in a live implementor omits this prompt (see **Omit next implement prompt when operator said stop or leftover is in flight**).
+2b. **Do not omit `/implement` because the mill is long (operator 2026-09-08):** when the operator called an implement loop, keep chaining one honest next Name after each GREEN. Host tools without Lake (today a count of inventory `lean_exe` rows; living metric in residual) is one Name per executable. Do **not** drop the slash-command to "avoid grinding" remaining rows. One-at-a-time is the mill. Stopping the loop is not. The operator can cancel the loop; agents must not cancel it for them. Operator stop or leftover-already-in-flight omits the next implement slash-command (see **Omit next implement prompt when operator said stop or leftover is in flight**). This mill-grind law stays.
 2c. **A leftover heading is not residual empty (operator 2026-09-12):** if a leftover heading has no checkable Done when and no test, that is not "residual empty." Keep going on the next real job: the next mill row that can compile, the next Open Name with Done when, lockstep, or review. Do not omit the next `/implement` prompt unless there is no real job left. Operator-gated leftovers stay gated: HostModuleCheck is built (mill 67 ELF GREEN; recipe EXIT 1 was helper file(1) PATH miss; do not claim recipe EXIT 0; do not mill it now); ProductPathWriteHc is built (mill 66 GREEN); MultFsWrite is built (mill 68 GREEN; packed 16 extras); SelfHostComplete is built (mill 69 ELF GREEN; do not mill it again); two-target emit stays a program banner until the operator Opens a Name with a real test. DualEqWriteApi is built (mill 65 GREEN). ProductPathWriteHc is built (mill 66 GREEN). HostModuleCheck is built (mill 67 ELF GREEN). MultFsWrite is built (mill 68 ELF GREEN). SelfHostComplete is built (mill 69 ELF GREEN). The mill fence is **69 of 69**. There is no leftover inventory `lean_exe` that cannot mill honestly. Keep Open. Do not mill mill 69 again. Refusing to invent a job from a heading with no file and no failing test is correct. Treating that refusal as "nothing left" and dropping the next implement prompt while a real job remains is a process miss.
 3. **Clear plan defaults count as residual work (hard rule):** when Open is empty but a durable plan (e.g. `.agents/plans/plan-close-six-claims.md`) names a residual with checkable Done when -- first residual **or** the next sequential planned phase after a partial slice -- a `/implement` residual loop **opens that Name** in `RESIDUAL-systems.md` (or keeps remaining Done when on the current Name) and implements it. That is not "inventing Open Names" for theorem canaries -- it is executing the planned product program.
    - **Banned:** park and wait for the human to "Open" residual Names when a durable plan already names the next residual with checkable Done when.
    - **Banned:** empty Open + BLOCKED done-for-now between sequential planned phases while the plan still has a next checkable phase (e.g. Track 3 B after evidence partial, Phase 2 A after Phase 1).
-   - **Required:** open next Name **or** leave remaining Done when on the current Name, and put `/implement` in `WATCHER.md` + reply final section.
+   - **Required:** open next Name **or** leave remaining Done when on the current Name, and put `/implement` in `WATCHER.md` + reply final section (see **Omit next implement prompt when operator said stop or leftover is in flight**).
    - **Still forbidden:** invent unrelated Names; forge free/complete/PROVABLY/llvm; start deferred tracks the plan holds.
-4. If **blocked or ambiguous** (no plan default and no checkable Done when), put a short blocked note in `WATCHER.md` (what is unclear); do not invent fake work. The blocked fence and the reply final section must **not** contain the implement slash-command token (even as "do not auto-run ..." prose) -- the harness will re-queue it as a new implement pass.
+4. If **blocked or ambiguous** (no plan default and no checkable Done when), put a short blocked note in `WATCHER.md` (what is unclear); do not invent fake work. The blocked fence and the reply final section must **not** contain the implement slash-command token (even as "do not auto-run ..." prose) -- the harness will re-queue it as a new implement pass. Same token ban when the operator said stop or the leftover is already in a live implementor (see **Omit next implement prompt when operator said stop or leftover is in flight**).
 5. Never use the loop to race git, forge freestanding/PROVABLY claims, or start deferred tracks (e.g. `out/llvm-ir` before self-host).
 6. **While a niced Lake occupies surmount-1, keep a parallel extract-first agent on the next named subset** (operator 2026-08-24; restated 2026-08-25). New probe / helper / walk files only. No second Lake. No shared-fold edits until the occupying lakes exit 0. Detail: section **Lake host and niceness**.
 6. Keep `RESIDUAL.md` as the join board (Open Names); `RESIDUAL-systems.md` as Systems detail; `WATCHER.md` as only the **next action**.
+
+#### Omit next implement prompt when operator said stop or leftover is in flight (operator 2026-09-20)
+
+Auto-run keys on a trailing `## Next implement prompt` block whose body starts with `/implement`. Omit the leading slash-command and omit the whole `## Next implement prompt` section when:
+
+(a) the operator said stop giving next implement prompts, or
+(b) the leftover is already in flight (already in a live implementor).
+
+Operator 2026-09-20: "Stop giving next implement prompts." Do not emit that block in chat or in `WATCHER.md` in those two cases. The harness re-queues the implement slash-command token if it appears in the WATCHER fence. Item 4 already forbids that token in blocked fences. The same rule applies here: ordinary leftover prose, no implement slash-command.
+
+This does not empty Open. This does not invent Open Names. Catch return-1 leftover stays named. This does not cancel item 2c leftover-heading honesty: a leftover heading is still not residual empty. Omitting the slash-command is not "nothing left."
+
+Items 2 and 2b still chain `/implement` when the operator called an implement loop **and** the operator has not said stop **and** the leftover is not already in a live implementor.
 
 ### Forks (Idris side / Lean side / Systems / Coordinator)
 
@@ -1351,7 +1444,14 @@ recipe `just N-host-tool` is lean then leanc and never lake on that step. The
 compile still runs on **surmount-1** (`ssh nixbuilder@surmount-1`, tree
 `/home/nixbuilder/iso`), not on **horizon**. Horizon skip is for Lake and for
 this mill compile. A mill that only runs on the laptop is a process miss: the
-operator cannot see it on remotebuilder btop, and the builder sits idle. Mill
+operator cannot see it on remotebuilder btop, and the builder sits idle.
+
+**Closed-subset `lean --run` on horizon, Lake on surmount-1 (operator
+2026-09-20):** live `lean --run` of `SlakeTypecheck*` drivers runs on
+**horizon**, niced, `LEAN_NUM_THREADS=1`. That is allowed. It is mill-class
+RSS, not OccupancyProbe. **Lake** still runs only on **surmount-1** through
+the standing `[lake-coord]` L2. Host-tools mill `just N-host-tool` (lean then
+leanc) still runs on surmount-1. Dual-pin: this subsection. Mill
 L2 rsyncs or copies as needed, then runs the just recipe on the builder. Shared
 mill directory `build/first-host-tool/` lives on that tree. Do not start mill
 lean/leanc on horizon. Lake still goes only through the standing `[lake-coord]`
@@ -1365,7 +1465,15 @@ operator says they only see the Lake coordinator, do not argue that a mill
 L2 is running. Fix what they see: keep mill tagged `[implementer]`
 mill-on-nixbuilder, keep Lake tagged `[lake-coord]`, do not leave a
 finished Lake row as the only painted-live agent, and do not make mill L2
-a forty-minute wait on lean. The mill compile is a niced process on
+a forty-minute wait on lean.
+
+**Finished implementor overlays are the parent's job (operator 2026-09-20):**
+when an implementor L2 exits, kill that id the same turn so it does not stay
+painted as a paused Implementer tab. Do **not** tell the operator to close
+the tab as the fix. If kill returns already-exited and the overlay is still
+on screen, say that plainly: the host kept a finished nested session in
+`[pause]`. That window is not live work. Do not describe finished paused
+tabs as running. Dual-pin: this subsection. The mill compile is a niced process on
 nixbuilder. Parallel L2s must be actually visible work (next-row just
 module, briefs, lockstep of a finished mill), not a parent wait. Mill L2
 must not sit in a long wait on the mill compile. That is waiting on the

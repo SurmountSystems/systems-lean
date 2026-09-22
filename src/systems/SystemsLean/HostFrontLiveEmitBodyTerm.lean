@@ -128,14 +128,37 @@ def cmdAddsEmitBodyTerm (c : Cmd) : List String :=
   | Cmd.defBind x _ _ _ => [x.raw]
   | _ => []
 
-/-- Body is kernel-known and has no untyped proj. -/
+/-- Tokenizer drops `++`, so `"a" ++ "b"` becomes app of two string lits.
+    Kernel cannot apply String. Skip any Term.app (keep lits / const / ite). -/
+def termNoAppN : Nat -> Term -> Bool
+  | 0, _ => false
+  | Nat.succ _, Term.var _ => true
+  | Nat.succ _, Term.litNat _ => true
+  | Nat.succ _, Term.litString _ => true
+  | Nat.succ _, Term.litBool _ => true
+  | Nat.succ _, Term.none_ => true
+  | Nat.succ _, Term.const _ => true
+  | Nat.succ _, Term.app _ _ => false
+  | Nat.succ n, Term.some_ t => termNoAppN n t
+  | Nat.succ n, Term.ite c t e =>
+      termNoAppN n c && termNoAppN n t && termNoAppN n e
+  | Nat.succ n, Term.decideEq a b =>
+      termNoAppN n a && termNoAppN n b
+  | Nat.succ n, Term.proj o _ => termNoAppN n o
+  | Nat.succ n, Term.structLit fs =>
+      fs.all (fun p => termNoAppN n p.snd)
+  | Nat.succ _, Term.match_ _ _ => false
+
+/-- Body is kernel-known, no untyped proj, no string-concat Term.app. -/
 def cmdBodyKnownEmitBodyTerm (kn : List String) : Cmd -> Bool
   | Cmd.def_ _ _ body =>
       termKnownN liveHostTermParseFuel kn body
         && termNoBadProjN liveEmitBodyTermParseFuel body
+        && termNoAppN liveEmitBodyTermParseFuel body
   | Cmd.defBind _ _ _ body =>
       termKnownN liveHostTermParseFuel kn body
         && termNoBadProjN liveEmitBodyTermParseFuel body
+        && termNoAppN liveEmitBodyTermParseFuel body
   | _ => true
 
 /-- Parse one command. none means skip this keyword (caller skipUntilCmd). -/

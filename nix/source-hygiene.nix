@@ -29,6 +29,7 @@ let
     || name == "build"
     # Host ELF dest (Nix readFile cannot load binaries as strings).
     || name == "slake-produced-elf"
+    || name == "slake-host-tool-elf"
     || lib.hasPrefix "result" name;
 
   skipFile =

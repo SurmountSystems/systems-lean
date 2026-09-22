@@ -8,9 +8,10 @@
 # Mills 55-66 pass LEAN_NUM_THREADS=16 on the helper. Do not just-export
 # that at module scope: imports share a namespace with OccupancyProbe /
 # lake recipes, which stay LEAN_NUM_THREADS=1.
-# sixty-seventh uses --extras-file, not packed argv. sixty-eighth is packed
-# 16 extras for MultFsWrite (FILE on the same just line as the helper).
-# sixty-ninth is SelfHostComplete (0 extras; FILE on the same just line).
+# sixty-seventh uses --extras-file, not packed argv (FILE and PATH on the
+# same just line as the helper). sixty-eighth is packed 16 extras for
+# MultFsWrite (FILE on the same just line as the helper). sixty-ninth is
+# SelfHostComplete (0 extras; FILE on the same just line).
 # Living mill metric is 69 of 69 after mill 69 ELF GREEN. Do not mill
 # mill 69 again. Do not mill HostModuleCheck. Do not mill MultFsWrite.
 # Occupancy stays 49 names.
@@ -138,13 +139,11 @@ sixty-sixth-host-tool: sixty-fifth-host-tool
 
 # Sixty-seventh inventory compile. Uses extras-file, not 130 argv tokens.
 # HostModuleCheck ELF is GREEN (11069328 bytes). Mill 67 fire missed
-# file(1) on PATH (recipe EXIT 1). Sibling PATH prepend now lives here.
+# file(1) on PATH (recipe EXIT 1). FILE and PATH live on the same just
+# line as the helper (same mill 68/69 pattern). Do not remill.
 # Occupancy stays 49 names. Living mill metric is 69 of 69.
 sixty-seventh-host-tool:
-    export LEAN_NUM_THREADS=16
-    export FILE="${FILE:-/nix/store/36cxvi2s369aw85pp7fyzq2dqv459d7c-file-5.48/bin/file}"
-    export PATH="$(dirname "$FILE"):${PATH}"
-    just _compile-inventory-exe slake-host-module-check HostModuleCheck command-host-module-check.log --extras-file src/systems/mill-extras-host-module-check.txt
+    LEAN_NUM_THREADS=16 FILE="/nix/store/36cxvi2s369aw85pp7fyzq2dqv459d7c-file-5.48/bin/file" PATH="/nix/store/36cxvi2s369aw85pp7fyzq2dqv459d7c-file-5.48/bin:${PATH}" just _compile-inventory-exe slake-host-module-check HostModuleCheck command-host-module-check.log --extras-file src/systems/mill-extras-host-module-check.txt
     echo "sixty-seventh-host-tool: GREEN $PWD/build/first-host-tool/slake-host-module-check"
 
 # Sixty-eighth inventory compile. Packed 16 extras (not extras-file).

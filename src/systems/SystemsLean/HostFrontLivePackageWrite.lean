@@ -125,6 +125,64 @@ def cmdAddsPackageWrite (c : Cmd) : List String :=
   | Cmd.defBind x _ _ _ => [x.raw]
   | _ => []
 
+/-- Parse-fold fuel. HostPackageWrite has more command keywords than HostTerm. -/
+def livePackageWriteParseFuel : Nat := 512
+
+/-- Skip fuel. HostPackageWrite filterArgs leftover `|` and do-block acceptors
+    exceed liveHostTermParseFuel 256 tokens. Same role as liveGraphSkipFuel. -/
+def livePackageWriteSkipFuel : Nat := 4096
+
+/-- If rest is not a command start, skip to the next command.
+    parseOneCmdHt can accept a short typed def and leave `|` equations or
+    `do` leftover; those are not PARSE-FAIL. -/
+def skipNonCmd (fuel : Nat) (rest : List String) : List String :=
+  match rest with
+  | t :: _ =>
+    if isCmdKw t then rest else skipUntilCmd fuel rest
+  | [] => rest
+
+/-- Shallow Bool / String / Nat atoms. Nested ite (long && chains) exceeds
+    kernelCheckN remaining fuel on a 60-command fold. -/
+def boolKeepSimplePw : Term -> Bool
+  | Term.litBool _ => true
+  | Term.litString _ => true
+  | Term.litNat _ => true
+  | Term.const _ => true
+  | Term.var _ => true
+  | _ => false
+
+/-- Bool bodies the kernel can check (lits, aliases, one-level && / !, ==).
+    Drop nested &&, List.any proj, and IO / do-block defs. -/
+def boolKeepPw : Term -> Bool
+  | Term.litBool _ => true
+  | Term.const _ => true
+  | Term.var _ => true
+  | Term.ite c t e =>
+      boolKeepSimplePw c && boolKeepSimplePw t && boolKeepSimplePw e
+  | Term.decideEq a b =>
+      boolKeepSimplePw a && boolKeepSimplePw b
+  | _ => false
+
+/-- Return type is a kernel-keep shape. Named List / IO binders skip. -/
+def retKeepPw : HostType -> Term -> Bool
+  | HostType.bool, body => boolKeepPw body
+  | HostType.string, Term.litString _ => true
+  | HostType.string, Term.const _ => true
+  | HostType.string, Term.var _ => true
+  | HostType.nat, Term.litNat _ => true
+  | HostType.nat, Term.const _ => true
+  | HostType.nat, Term.var _ => true
+  | _, _ => false
+
+/-- Body of a typed def is kernel-known and return-shaped. -/
+def cmdBodyKnownPw (kn : List String) : Cmd -> Bool
+  | Cmd.def_ _ (some ty) body =>
+      termKnownN liveHostTermParseFuel kn body && retKeepPw ty body
+  | Cmd.defBind _ _ ret body =>
+      termKnownN liveHostTermParseFuel kn body && retKeepPw ret body
+  | Cmd.def_ _ none _ => false
+  | _ => true
+
 /-- Fold commands. Skip theorem / example / set_option / un-kernelable defs. -/
 def parseCmdsPackageWrite : Nat -> List String -> List String -> List Cmd ->
     Option (List Cmd)
@@ -132,17 +190,18 @@ def parseCmdsPackageWrite : Nat -> List String -> List String -> List Cmd ->
   | 0, _ :: _, _, _ => none
   | Nat.succ _, [], _, acc => some acc
   | Nat.succ n, toks, kn, acc =>
-    match parseOneCmdHt liveHostTermParseFuel toks with
+    match parseOneCmdHt livePackageWriteParseFuel toks with
     | some (c, rest) =>
-      if cmdBodyKnown kn c then
-        parseCmdsPackageWrite n rest (kn ++ cmdAddsPackageWrite c) (acc ++ [c])
+      let rest2 := skipNonCmd livePackageWriteSkipFuel rest
+      if cmdBodyKnownPw kn c then
+        parseCmdsPackageWrite n rest2 (kn ++ cmdAddsPackageWrite c) (acc ++ [c])
       else
-        parseCmdsPackageWrite n rest kn acc
+        parseCmdsPackageWrite n rest2 kn acc
     | none =>
       match toks with
       | t :: rest =>
         if isCmdKw t then
-          let rest2 := skipUntilCmd liveHostTermParseFuel rest
+          let rest2 := skipUntilCmd livePackageWriteSkipFuel rest
           if rest2.length < toks.length then
             parseCmdsPackageWrite n rest2 kn acc
           else none
@@ -155,7 +214,7 @@ def parseLivePackageWriteSource (src : String) : FrontResult :=
   let toks := tokenizeHostTerm (stripComments src)
   if toks.isEmpty then FrontResult.reject reasonEmptyModule
   else
-    match parseCmdsPackageWrite liveHostTermParseFuel toks [] [] with
+    match parseCmdsPackageWrite livePackageWriteParseFuel toks [] [] with
     | none => FrontResult.reject reasonParseFail
     | some cmds =>
       if cmds.isEmpty then FrontResult.reject reasonEmptyModule

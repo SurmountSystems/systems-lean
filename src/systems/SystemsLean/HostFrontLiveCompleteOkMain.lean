@@ -1,0 +1,17 @@
+/-
+  SYSTEMS_LEAN_HOST partial -- thin driver for PARSE-LIVE-COMPLETEOK.
+  Root for optional lean --run of live CompleteOk.lean parse + kernelCheck.
+  Body lives in SystemsLean.HostFrontLiveCompleteOk.
+  Greppable: SystemsLean.HostFrontLiveCompleteOkMain, HostFrontLiveCompleteOkMain,
+  HOST-FRONT-LIVE-COMPLETEOK, SLAKE_HOST_FRONT_LIVE_COMPLETEOK_V0, PARSE-LIVE-COMPLETEOK,
+  parseLiveCompleteOkSource, kernelCheckLiveCompleteOkSource, SYSTEMS_LEAN_HOST.
+  Module: SystemsLean.HostFrontLiveCompleteOkMain
+  Not mill 70. Not occupancy name 50. Not FullHost.
+  Module must stay ASCII. Not freestanding residual free. Not PROVABLY. SKELETON.
+-/
+
+import SystemsLean.HostFrontLiveCompleteOk
+
+/-- lean --run entry: forward argv (repo root). -/
+def main (args : List String) : IO UInt32 :=
+  SystemsLean.HostFrontLiveCompleteOk.main args

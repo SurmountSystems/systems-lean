@@ -63,9 +63,19 @@ def hostFrontLiveHostTermProvablyUnlocked : Bool := false
 /-- Parse fuel (HostTerm is larger than Extract). -/
 def liveHostTermParseFuel : Nat := 256
 
+/-- Skip fuel. HostTerm dotted leftovers, equation defs, where helpers, and
+    fixture lists exceed liveHostTermParseFuel 256 tokens. Same role as
+    liveGraphSkipFuel. -/
+def liveHostTermSkipFuel : Nat := 4096
+
 /-- Seed names from SystemsLean.Mult import plus String/List builtins. -/
 def seedKnown : List String :=
   ["mult0", "mult1", "multOmega", "ofNat?", "name", "isValid", "isSome", "isEmpty"]
+
+/-- Builtin names the kernel treats as String/List ops (not Mult grades).
+    Dotted `import SystemsLean.Mult` parses as import SystemsLean; skip-fold
+    drops `. Mult`. Keep isSome/isEmpty so nameOk is still kernel-known. -/
+def seedBuiltins : List String := ["isSome", "isEmpty"]
 
 /-- Stop tokens: Extract stops plus `==` so decideEq is not an app arg. -/
 def hostTermIsStop (t : String) : Bool :=
@@ -168,6 +178,30 @@ def skipUntilCmd : Nat -> List String -> List String
       | none => []
     else
       skipUntilCmd n rest
+
+/-- If rest is not a command start, skip to the next command.
+    parseOneCmdHt can accept import/namespace first segment and leave `.`
+    leftover, or a short typed def and leave `|` equations; those are not
+    PARSE-FAIL. -/
+def skipNonCmd (fuel : Nat) (rest : List String) : List String :=
+  match rest with
+  | t :: _ =>
+    if isCmdKw t then rest else skipUntilCmd fuel rest
+  | [] => rest
+
+/-- Deriving class list; stop at the next command keyword so `deriving Repr`
+    does not swallow the following `def`. -/
+def parseDerivingHt : List String -> Option (Prod (List Name) (List String))
+  | [] => some ([], [])
+  | "," :: rest => parseDerivingHt rest
+  | t :: rest =>
+    if isCmdKw t then some ([], t :: rest)
+    else if liveIsIdent t then
+      match parseDerivingHt rest with
+      | some (ns, rest2) => some (HostTerm.n t :: ns, rest2)
+      | none => none
+    else
+      some ([], t :: rest)
 
 /-- Skip zero or more `(x : T)` groups after a ctor name. -/
 def skipCtorArgs : Nat -> List String -> List String
@@ -459,8 +493,8 @@ def parseDefHt (fuel : Nat) (dname : String) (rest : List String) :
             | some (body, rest4) =>
               let rest5 :=
                 match rest4 with
-                | "where" :: more => skipUntilCmd fuel more
-                | _ => rest4
+                | "where" :: more => skipUntilCmd liveHostTermSkipFuel more
+                | _ => skipNonCmd liveHostTermSkipFuel rest4
               if bs.isEmpty then
                 some (Cmd.def_ dn (some ty) body, rest5)
               else
@@ -495,7 +529,7 @@ def parseOneCmdHt (fuel : Nat) (toks : List String) :
         else
           match rest2 with
           | "deriving" :: rest3 =>
-            match parseDerivingLive rest3 with
+            match parseDerivingHt rest3 with
             | some (der, rest4) =>
               some (Cmd.structure_ (HostTerm.n (lastSeg name)) fields der, rest4)
             | none => none
@@ -511,7 +545,7 @@ def parseOneCmdHt (fuel : Nat) (toks : List String) :
         else
           match rest2 with
           | "deriving" :: rest3 =>
-            match parseDerivingLive rest3 with
+            match parseDerivingHt rest3 with
             | some (der, rest4) =>
               some (Cmd.inductive_ (HostTerm.n (lastSeg name)) ctors der, rest4)
             | none => none
@@ -538,15 +572,16 @@ def parseCmdsHt : Nat -> List String -> List String -> List Cmd ->
   | Nat.succ n, toks, kn, acc =>
     match parseOneCmdHt liveHostTermParseFuel toks with
     | some (c, rest) =>
+      let rest2 := skipNonCmd liveHostTermSkipFuel rest
       if cmdBodyKnown kn c then
-        parseCmdsHt n rest (kn ++ cmdAdds c) (acc ++ [c])
+        parseCmdsHt n rest2 (kn ++ cmdAdds c) (acc ++ [c])
       else
-        parseCmdsHt n rest kn acc
+        parseCmdsHt n rest2 kn acc
     | none =>
       match toks with
       | t :: rest =>
         if isCmdKw t then
-          let rest2 := skipUntilCmd liveHostTermParseFuel rest
+          let rest2 := skipUntilCmd liveHostTermSkipFuel rest
           if rest2.length < toks.length then
             parseCmdsHt n rest2 kn acc
           else none
@@ -559,7 +594,7 @@ def parseLiveHostTermSource (src : String) : FrontResult :=
   let toks := tokenizeHostTerm (stripComments src)
   if toks.isEmpty then FrontResult.reject reasonEmptyModule
   else
-    match parseCmdsHt liveHostTermParseFuel toks [] [] with
+    match parseCmdsHt liveHostTermParseFuel toks seedBuiltins [] with
     | none => FrontResult.reject reasonParseFail
     | some cmds =>
       if cmds.isEmpty then FrontResult.reject reasonEmptyModule

@@ -25,6 +25,17 @@ import 'just/llvm.just'
 import 'just/llvm-ssa.just'
 import 'just/llvm-link-smoke.just'
 import 'just/slake-produced-elf.just'
+import 'just/slake-typecheck-closed.just'
+import 'just/slake-typecheck-closed-more.just'
+import 'just/slake-typecheck-closed-later.just'
+import 'just/slake-typecheck-closed-parity.just'
+import 'just/slake-typecheck-closed-kernel.just'
+import 'just/slake-typecheck-closed-compilepath.just'
+import 'just/slake-typecheck-closed-hostkernel.just'
+import 'just/slake-typecheck-closed-joinmaptheorems.just'
+import 'just/slake-typecheck-closed-linearusefaildecide.just'
+import 'just/slake-typecheck-closed-linearusefailkeep.just'
+import 'just/slake-host-tool-elf.just'
 import 'just/subset-emit.just'
 import 'just/subset-join.just'
 import 'just/host.just'
@@ -53,7 +64,7 @@ pre-commit: check
 # Full suite: product wire first (just build), then pure gates + flake + process glue
 # (elaborators, systems-cc-probe, product CompCert matrix via ccomp).
 # Live pure gates (systems-host, systems-emit-wire, systems-llvm-ir, idris-side,
-# lean-side, systems-mill-extras-fit, hygiene) use impure eval of the worktree and do not require new
+# lean-side, systems-mill-extras-fit, systems-mill-inventory, systems-mill-packed-extras, systems-mill-file-path, systems-mill-recipe-count, hygiene) use impure eval of the worktree and do not require new
 # nix/ files to be git-tracked. nix flake check only sees tracked files -- after
 # adding under nix/ (or related flake copy paths), the human must stage those
 # paths before flake/continuous integration (CI) match. Agents never git add /
@@ -62,7 +73,7 @@ pre-commit: check
 # suite exits non-zero.
 # SYSTEMS_PRODUCT_WIRE_FRESH=1: systems-cc-probe and freestanding-under-ccomp skip
 # a second just build (wire already from check dependency).
-check: build hygiene systems-host systems-emit-wire systems-llvm-ir idris-side lean-side systems-mill-extras-fit
+check: build hygiene systems-host systems-emit-wire systems-llvm-ir idris-side lean-side systems-mill-extras-fit systems-mill-inventory systems-mill-packed-extras systems-mill-file-path systems-mill-recipe-count
     #!/usr/bin/env bash
     set -euo pipefail
     export SYSTEMS_PRODUCT_WIRE_FRESH=1
@@ -73,7 +84,7 @@ check: build hygiene systems-host systems-emit-wire systems-llvm-ir idris-side l
     if [[ "$flake_rc" -ne 0 ]]; then
       echo "WARN: nix flake check failed (rc=$flake_rc)." >&2
       echo "Live pure gates already ran (just systems-host, just systems-emit-wire," >&2
-      echo "just systems-llvm-ir, just idris-side, just lean-side, just systems-mill-extras-fit, just hygiene)." >&2
+      echo "just systems-llvm-ir, just idris-side, just lean-side, just systems-mill-extras-fit, just systems-mill-inventory, just systems-mill-packed-extras, just systems-mill-file-path, just systems-mill-recipe-count, just hygiene)." >&2
       echo "If the flake error is missing/untracked paths: that is human-in-the-loop (HITL)" >&2
       echo "stage -- not agent work. Agents never git add, stage, or commit to silence this WARN." >&2
       echo "Human: stage the untracked paths named in the flake error (or git status under" >&2

@@ -1,0 +1,24 @@
+/-
+  SYSTEMS_LEAN_HOST partial -- thin driver for PARSE-LIVE-LINEAR-USE-FAIL-DECIDE.
+  Root for optional lean --run of live LinearUseFail/Decide.lean parse +
+  kernelCheck.
+  Body lives in SystemsLean.HostFrontLiveLinearUseFailDecide.
+  Unique needles (trailing newline so LinearUseFail wrap is not a prefix):
+  HostFrontLiveLinearUseFailDecideMain
+  PARSE-LIVE-LINEAR-USE-FAIL-DECIDE
+  HOST-FRONT-LIVE-LINEAR-USE-FAIL-DECIDE
+  SLAKE_HOST_FRONT_LIVE_LINEAR_USE_FAIL_DECIDE_V0
+  Greppable: SystemsLean.HostFrontLiveLinearUseFailDecideMain,
+  parseLiveLinearUseFailDecideSource,
+  kernelCheckLiveLinearUseFailDecideSource,
+  SYSTEMS_LEAN_HOST.
+  Module: SystemsLean.HostFrontLiveLinearUseFailDecideMain
+  Not mill 70. Not occupancy name 50. Not FullHost.
+  Module must stay ASCII. Not freestanding residual free. Not PROVABLY. SKELETON.
+-/
+
+import SystemsLean.HostFrontLiveLinearUseFailDecide
+
+/-- lean --run entry: forward argv (repo root). -/
+def main (args : List String) : IO UInt32 :=
+  SystemsLean.HostFrontLiveLinearUseFailDecide.main args

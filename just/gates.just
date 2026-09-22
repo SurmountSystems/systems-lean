@@ -73,6 +73,38 @@ let
 in if h.ok then h.summary + "\n" else throw h.summary
 '''
 
+_systems_mill_inventory := '''
+let
+  lib = (import (builtins.getFlake "nixpkgs") {}).lib;
+  novel = import ./nix/novel-source.nix { inherit lib; src = ./.; };
+  h = import ./nix/systems-mill-inventory.nix { inherit lib; root = novel; };
+in if h.ok then h.summary + "\n" else throw h.summary
+'''
+
+_systems_mill_packed_extras := '''
+let
+  lib = (import (builtins.getFlake "nixpkgs") {}).lib;
+  novel = import ./nix/novel-source.nix { inherit lib; src = ./.; };
+  h = import ./nix/systems-mill-packed-extras.nix { inherit lib; root = novel; };
+in if h.ok then h.summary + "\n" else throw h.summary
+'''
+
+_systems_mill_file_path := '''
+let
+  lib = (import (builtins.getFlake "nixpkgs") {}).lib;
+  novel = import ./nix/novel-source.nix { inherit lib; src = ./.; };
+  h = import ./nix/systems-mill-file-path.nix { inherit lib; root = novel; };
+in if h.ok then h.summary + "\n" else throw h.summary
+'''
+
+_systems_mill_recipe_count := '''
+let
+  lib = (import (builtins.getFlake "nixpkgs") {}).lib;
+  novel = import ./nix/novel-source.nix { inherit lib; src = ./.; };
+  h = import ./nix/systems-mill-recipe-count.nix { inherit lib; root = novel; };
+in if h.ok then h.summary + "\n" else throw h.summary
+'''
+
 hygiene:
     @nix eval --impure --raw --expr {{quote(_hygiene)}}
 
@@ -127,6 +159,27 @@ lean-side:
 # Live impure worktree eval. Does not mill. Does not claim mill GREEN.
 systems-mill-extras-fit:
     @nix eval --impure --raw --expr {{quote(_systems_mill_extras_fit)}}
+
+# Pure Nix mill inventory fence (lakefile lean_exe count + mill-69 recipe tokens).
+# Live impure worktree eval. Does not mill. Does not rewrite N-host-tool compile.
+systems-mill-inventory:
+    @nix eval --impure --raw --expr {{quote(_systems_mill_inventory)}}
+
+# Pure Nix mill packed-extras fence (mill 66 packed 34 extras; mill 68 packed 16 extras; mill 69 packed 0).
+# Live impure worktree eval. Does not mill. Does not rewrite N-host-tool compile.
+systems-mill-packed-extras:
+    @nix eval --impure --raw --expr {{quote(_systems_mill_packed_extras)}}
+
+# Pure Nix mill file(1) helper-path fence (mill 67/68/69 FILE PATH on the
+# helper just line). Live impure worktree eval. Does not mill.
+systems-mill-file-path:
+    @nix eval --impure --raw --expr {{quote(_systems_mill_file_path)}}
+
+# Pure Nix mill recipe-name fence (living *-host-tool recipes in
+# first-host-tool.just plus later-host-tools.just vs mill 69). Live impure
+# worktree eval. Does not mill. Does not count lakefile lean_exe rows.
+systems-mill-recipe-count:
+    @nix eval --impure --raw --expr {{quote(_systems_mill_recipe_count)}}
 
 # Optional idris2 --check on dual examples. Skip GREEN if idris2 missing; RED if check fails.
 # Static presence: just idris-side. Module names match basenames (ConsumeToken, ...).

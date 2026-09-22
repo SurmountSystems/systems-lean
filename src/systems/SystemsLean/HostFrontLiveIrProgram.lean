@@ -334,9 +334,17 @@ mutual
         | some (t, rest2) =>
           match parseTermTailIr n bs t rest2 with
           | some (t2, rest3) =>
-            some (Term.ite t2 (Term.litBool false) (Term.litBool true), rest3)
+            let neg := Term.ite t2 (Term.litBool false) (Term.litBool true)
+            match rest3 with
+            | "&&" :: rest4 =>
+              match parseTermIr n bs rest4 with
+              | some (t3, rest5) =>
+                some (Term.ite neg t3 (Term.litBool false), rest5)
+              | none => none
+            | _ => some (neg, rest3)
           | none => none
         | none => none
+
       | _ =>
         match parseAtomIr n bs toks with
         | none => none

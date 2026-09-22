@@ -1,6 +1,6 @@
 /-
   SYSTEMS_LEAN_HOST partial -- Systems Lean package root (classic elaborator).
-  Imports Mult + MultTheorems + Linear + LinearTheorems + Types + TypesTheorems + ordered IR program + IrProgramTheorems + Erasure + ErasureTheorems + Extract +
+  Imports Mult + MultTheorems + Linear + LinearTheorems + LinearUseFail.NotEqNot + Types + TypesTheorems + ordered IR program + IrProgramTheorems + Erasure + ErasureTheorems + Extract +
   ExtractTheorems +
   IrGraph + IrGraphTheorems + HostCompose + HostComposeTheorems + HostCost + HostCostTheorems + EmitPlan + EmitPlanScaffold + EmitApply + EmitApplyScaffold + EmitBody + EmitBanner + EmitBannerScaffold + CompilePath + CompilePathBody + CompilePathErasure + CompilePathPlan + CompilePathApply + CompilePathGraph + CompilePathCompose + CompilePathMult + FirstSurface + MultSubsetEmit + MultSubsetRebuild + MultFsDeepen + CompilePathLinear + LinearSubsetEmit + LinearSubsetRebuild + CompilePathTypes + TypesSubsetEmit + TypesSubsetRebuild + CompilePathProgram + ProgramSubsetEmit + ProgramSubsetRebuild + CompilePathExtract + ExtractSubsetEmit + ExtractSubsetRebuild + ErasureSubsetEmit + ErasureSubsetRebuild + GraphSubsetEmit + GraphSubsetRebuild + ComposeSubsetEmit + ComposeSubsetRebuild + SubsetFront + SubsetPackageJoin + FrontMultPackage + HostTerm + HostFrontGoldens + HostFront + HostFrontLiveMult + HostFrontLiveTypes + HostFrontLiveErasure + HostFrontLiveExtract + HostFrontLiveHostTerm + HostFrontLiveGoldens + HostFrontLivePackageWrite + HostFrontLivePackageWriteTheorems + HostFrontLiveMultTheorems + HostFrontLiveImportSeeds + HostFrontLiveImportLoadOkLater + HostFrontLiveImportModel + HostFrontLiveImportMods + HostFrontLiveImportModsLater + HostModuleCheckImportModsLaterKernel + HostFrontLiveImportWalkLater + HostFrontLiveImportWalk + HostFrontLiveRequiredDecls + HostFrontLiveFixtures + HostFrontLiveFrontTheorems + HostFrontLiveGraphTheorems + HostFrontLiveGraph +
   HostCheck + HostGraph + HostGraphTheorems + HostFrontTheorems + HostPackageWrite + HostPackageWriteTheorems +
@@ -41,6 +41,7 @@ import SystemsLean.Mult
 import SystemsLean.MultTheorems
 import SystemsLean.Linear
 import SystemsLean.LinearTheorems
+import SystemsLean.LinearUseFail.NotEqNot
 import SystemsLean.Types
 import SystemsLean.TypesTheorems
 import SystemsLean.IrProgram
@@ -122,6 +123,68 @@ import SystemsLean.HostModuleCheckExtractTheoremsKernel
 import SystemsLean.HostFrontLiveIrProgramTheorems
 import SystemsLean.HostModuleCheckIrProgramTheoremsKernel
 import SystemsLean.SlakeProducedElf
+import SystemsLean.SlakeHostToolElf
+import SystemsLean.SlakeHostToolElfLink
+import SystemsLean.SlakeHostToolElfMeasureFields
+import SystemsLean.SlakeHostToolElfMeasureGreen
+import SystemsLean.SlakeHostToolElfMeasure
+import SystemsLean.SlakeHostToolElfMeasureX86
+import SystemsLean.SlakeHostToolElfMeasureFieldsX86
+import SystemsLean.SlakeHostToolElfCompleteOk
+import SystemsLean.CompleteOk
+import SystemsLean.CatchReturn
+import SystemsLean.SlakeHostToolElfMainCatch
+import SystemsLean.SlakeHostToolElfMainCatchX86
+import SystemsLean.SlakeHostToolElfMainCatchDest
+import SystemsLean.SlakeHostToolElfMeasureReloc
+import SystemsLean.SlakeTypecheckMult
+import SystemsLean.SlakeTypecheckTypes
+import SystemsLean.SlakeTypecheckErasure
+import SystemsLean.SlakeTypecheckExtract
+import SystemsLean.SlakeTypecheckIrProgram
+import SystemsLean.SlakeTypecheckGraph
+import SystemsLean.SlakeTypecheckPackageWrite
+import SystemsLean.SlakeTypecheckPackageRoots
+import SystemsLean.SlakeTypecheckHostTerm
+import SystemsLean.SlakeTypecheckGoldens
+import SystemsLean.SlakeTypecheckFront
+import SystemsLean.SlakeTypecheckFrontTheorems
+import SystemsLean.SlakeTypecheckGraphTheorems
+import SystemsLean.SlakeTypecheckPackageWriteTheorems
+import SystemsLean.SlakeTypecheckImportSeeds
+import SystemsLean.SlakeTypecheckImportLoadOkLater
+import SystemsLean.SlakeTypecheckImportModel
+import SystemsLean.SlakeTypecheckImportMods
+import SystemsLean.SlakeTypecheckImportModsLater
+import SystemsLean.SlakeTypecheckImportWalkLater
+import SystemsLean.SlakeTypecheckImportWalk
+import SystemsLean.SlakeTypecheckRequiredDecls
+import SystemsLean.SlakeTypecheckFixtures
+import SystemsLean.SlakeTypecheckCheckers
+import SystemsLean.SlakeTypecheckSurface
+import SystemsLean.SlakeTypecheckCheckersLater
+import SystemsLean.SlakeTypecheckEmitBodyTerm
+import SystemsLean.SlakeTypecheckKernelMultTerm
+import SystemsLean.SlakeTypecheckKernelLinearTerm
+import SystemsLean.SlakeTypecheckKernelTypesTerm
+import SystemsLean.SlakeTypecheckKernelProgramTerm
+import SystemsLean.SlakeTypecheckKernelEmitTerm
+import SystemsLean.SlakeTypecheckParityMultTerm
+import SystemsLean.SlakeTypecheckParityLinearTerm
+import SystemsLean.SlakeTypecheckParityTypesTerm
+import SystemsLean.SlakeTypecheckParityProgramTerm
+import SystemsLean.SlakeTypecheckCheck
+import SystemsLean.SlakeTypecheckKernelMult
+import SystemsLean.SlakeTypecheckCompilePath
+import SystemsLean.SlakeTypecheckHostKernel
+import SystemsLean.SlakeTypecheckJoinMapTheorems
+import SystemsLean.SlakeTypecheckLinearUseFailDecide
+import SystemsLean.SlakeTypecheckLinearUseFailKeep
+import SystemsLean.SlakeTypecheckExtractTheorems
+import SystemsLean.SlakeTypecheckMultTheorems
+import SystemsLean.SlakeTypecheckTypesTheorems
+import SystemsLean.SlakeTypecheckErasureTheorems
+import SystemsLean.SlakeTypecheckIrProgramTheorems
 import SystemsLean.HostFrontLivePackageRoots
 import SystemsLean.HostFrontLiveImportSeeds
 import SystemsLean.HostModuleCheckImportSeedsKernel
@@ -145,6 +208,12 @@ import SystemsLean.HostFrontLiveCheckersLater
 import SystemsLean.HostModuleCheckCheckersLaterKernel
 import SystemsLean.HostFrontLiveFixtures
 import SystemsLean.HostModuleCheckFixturesKernel
+import SystemsLean.HostFrontLiveKernelMult
+import SystemsLean.HostFrontLiveCompilePath
+import SystemsLean.HostFrontLiveHostKernel
+import SystemsLean.HostFrontLiveJoinMapTheorems
+import SystemsLean.HostFrontLiveLinearUseFailDecide
+import SystemsLean.HostFrontLiveLinearUseFailKeep
 import SystemsLean.HostFrontLiveKernelMultTerm
 import SystemsLean.HostModuleCheckKernelMultTermKernel
 import SystemsLean.HostFrontLiveKernelProgramTerm

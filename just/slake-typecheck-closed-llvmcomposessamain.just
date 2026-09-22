@@ -1,0 +1,120 @@
+# Modular just: just/slake-typecheck-closed-llvmcomposessamain.just -- thin wrapper.
+# Closed-subset Slake typecheck driver for live LlvmComposeSsaMain product wrap
+# (not occupancy Term). Compiles the import chain to oleans under
+# build/slake-typecheck-llvmcomposessamain then lean --run. Not mill leanc. Not lake on the step.
+# FullHost false. slakeOwnsPackageTypecheck false. FullBackend false. Mill 69 of 69. Occupancy 49.
+# Not mill 56 remill. Not mill 69 remill. Root justfile does not import this module (dests skipped this slice).
+# This wrap is not an LLVM backend claim. Do not copy sibling LlvmLinearSsaMain wrap oleans.
+# Do not copy sibling LlvmMultSsaMain wrap oleans.
+# Do not copy sibling LlvmTypesSsaMain wrap oleans.
+# Do not copy sibling LlvmProgramSsaMain wrap oleans.
+# Do not copy sibling LlvmGraphSsaMain wrap oleans.
+# Do not copy HostFrontLiveLlvmComposeSsa library oleans (that file must not exist).
+# Do not wrap LlvmComposeSsa.lean (library). Not mill 56 remill. Not an LLVM backend claim.
+# Do not wrap IrGraph.lean. Do not wrap Linear.lean (QTT Linear module).
+# Do not wrap ComposeSubsetEmit.lean. Do not wrap ComposeSubsetEmitMain.lean.
+# Do not wrap ComposeSubsetRebuildMain.lean. Do not wrap CapableComposeMain.lean.
+# Do not steal HostFrontLiveLlvmLinearSsaMain (sibling LINEAR mill wrap).
+# Do not steal HostFrontLiveLlvmMultSsaMain (sibling MULT mill wrap).
+
+# Driver: SystemsLean/SlakeTypecheckLlvmComposeSsaMain.lean
+# Greppable: slake-typecheck-llvmcomposessamain, SLAKE_TYPECHECK_LLVM_COMPOSE_SSA_MAIN_V0, HOST-SLAKE-TYPECHECK-LLVM-COMPOSE-SSA-MAIN, PARSE-LIVE-LLVM-COMPOSE-SSA-MAIN, LLVM-COMPOSE-SSA-MAIN, HOST-LLVM-COMPOSE-SSA-MAIN, SKELETON.
+
+slake-typecheck-llvmcomposessamain:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    root="$(cd "{{justfile_directory()}}/.." && pwd)"
+    src_root="$root/src/systems"
+    src="$src_root/SystemsLean/SlakeTypecheckLlvmComposeSsaMain.lean"
+    live="$src_root/SystemsLean/LlvmComposeSsaMain.lean"
+    modroot="$root/build/slake-typecheck-llvmcomposessamain"
+    echo "SLAKE_TYPECHECK_LLVM_COMPOSE_SSA_MAIN_V0 / HOST-SLAKE-TYPECHECK-LLVM-COMPOSE-SSA-MAIN"
+    if ! command -v lean >/dev/null 2>&1; then
+      if [[ -x /var/lib/elan/bin/lean ]]; then
+        export ELAN_HOME="${ELAN_HOME:-/var/lib/elan}"
+        export PATH="/var/lib/elan/bin:${PATH}"
+      elif [[ -x "${HOME}/.elan/bin/lean" ]]; then
+        export PATH="${HOME}/.elan/bin:${PATH}"
+      fi
+    fi
+    if ! command -v lean >/dev/null 2>&1; then
+      echo "slake-typecheck-llvmcomposessamain RED: miss lean not on PATH" >&2
+      exit 1
+    fi
+    if [[ ! -f "$src" ]]; then
+      echo "slake-typecheck-llvmcomposessamain RED: miss $src" >&2
+      exit 1
+    fi
+    if [[ ! -f "$live" ]]; then
+      echo "slake-typecheck-llvmcomposessamain RED: miss $live" >&2
+      exit 1
+    fi
+    : "${LEAN_NUM_THREADS:=1}"
+    export LEAN_NUM_THREADS
+    mkdir -p "$modroot/SystemsLean"
+    prefix_mod=""
+    if [[ -d "$root/build/slake-typecheck-llvmlinearssamain/SystemsLean" ]]; then
+      prefix_mod="$root/build/slake-typecheck-llvmlinearssamain/SystemsLean"
+    elif [[ -d "$root/build/slake-typecheck-llvmgraphssamain/SystemsLean" ]]; then
+      prefix_mod="$root/build/slake-typecheck-llvmgraphssamain/SystemsLean"
+    elif [[ -d "$root/build/slake-typecheck-llvmmultssamain/SystemsLean" ]]; then
+      prefix_mod="$root/build/slake-typecheck-llvmmultssamain/SystemsLean"
+    elif [[ -d "$root/build/slake-typecheck-llvmtypesssamain/SystemsLean" ]]; then
+      prefix_mod="$root/build/slake-typecheck-llvmtypesssamain/SystemsLean"
+    elif [[ -d "$root/build/slake-typecheck-llvmprogramssamain/SystemsLean" ]]; then
+      prefix_mod="$root/build/slake-typecheck-llvmprogramssamain/SystemsLean"
+    elif [[ -d "$root/build/slake-typecheck-hostimportgraphmain/SystemsLean" ]]; then
+      prefix_mod="$root/build/slake-typecheck-hostimportgraphmain/SystemsLean"
+    elif [[ -d "$root/build/slake-typecheck-hostgraphmain/SystemsLean" ]]; then
+      prefix_mod="$root/build/slake-typecheck-hostgraphmain/SystemsLean"
+    elif [[ -d "$root/build/slake-typecheck-hostcheckmain/SystemsLean" ]]; then
+      prefix_mod="$root/build/slake-typecheck-hostcheckmain/SystemsLean"
+    elif [[ -d "$root/build/slake-typecheck-productpathwritehcmain/SystemsLean" ]]; then
+      prefix_mod="$root/build/slake-typecheck-productpathwritehcmain/SystemsLean"
+    elif [[ -d "$root/build/slake-typecheck-capablewritehcmain/SystemsLean" ]]; then
+      prefix_mod="$root/build/slake-typecheck-capablewritehcmain/SystemsLean"
+    elif [[ -d "$root/build/slake-typecheck-erasuresubsetemitmain/SystemsLean" ]]; then
+      prefix_mod="$root/build/slake-typecheck-erasuresubsetemitmain/SystemsLean"
+    elif [[ -d "$root/build/slake-typecheck-multfswritemain/SystemsLean" ]]; then
+      prefix_mod="$root/build/slake-typecheck-multfswritemain/SystemsLean"
+    elif [[ -d "$root/build/slake-typecheck-capablefullbarmain/SystemsLean" ]]; then
+      prefix_mod="$root/build/slake-typecheck-capablefullbarmain/SystemsLean"
+    fi
+    if [[ -n "$prefix_mod" ]]; then
+      for o in Mult HostTerm HostFrontGoldens HostFront HostKernel \
+        HostFrontLiveMult HostFrontLiveTypes HostFrontLiveExtract \
+        HostFrontLiveHostTermSource HostFrontLiveHostTerm; do
+        if [[ -f "$prefix_mod/${o}.olean" ]]; then
+          cp -f "$prefix_mod/${o}.olean" "$modroot/SystemsLean/${o}.olean"
+        fi
+      done
+    fi
+    recd="-D maxRecDepth=131072 -D maxHeartbeats=4000000"
+    compile_one() {
+      local name="$1"
+      local srcf="$src_root/SystemsLean/${name}.lean"
+      local ole="$modroot/SystemsLean/${name}.olean"
+      if [[ -f "$ole" && "$ole" -nt "$srcf" ]]; then
+        return 0
+      fi
+      if [[ "$name" == "Mult" ]]; then
+        nice -n 19 lean -R "$src_root" $recd -o "$ole" "$srcf"
+      else
+        LEAN_PATH="$modroot" nice -n 19 lean -R "$src_root" $recd -o "$ole" "$srcf"
+      fi
+    }
+    compile_one Mult
+    compile_one HostTerm
+    compile_one HostFrontGoldens
+    compile_one HostFront
+    compile_one HostKernel
+    compile_one HostFrontLiveMult
+    compile_one HostFrontLiveTypes
+    compile_one HostFrontLiveExtract
+    compile_one HostFrontLiveHostTermSource
+    compile_one HostFrontLiveHostTerm
+    LEAN_PATH="$modroot" nice -n 19 lean -R "$src_root" $recd -o "$modroot/SystemsLean/HostFrontLiveLlvmComposeSsaMainSource.olean" \
+      "$src_root/SystemsLean/HostFrontLiveLlvmComposeSsaMainSource.lean"
+    LEAN_PATH="$modroot" nice -n 19 lean -R "$src_root" $recd -o "$modroot/SystemsLean/HostFrontLiveLlvmComposeSsaMain.olean" \
+      "$src_root/SystemsLean/HostFrontLiveLlvmComposeSsaMain.lean"
+    LEAN_PATH="$modroot" nice -n 19 lean -R "$src_root" $recd --run "$src" "$root"

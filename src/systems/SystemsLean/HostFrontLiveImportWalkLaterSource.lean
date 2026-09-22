@@ -13,8 +13,7 @@ namespace SystemsLean.HostFrontLiveImportWalkLater
 
 /-- Dual-pinned live HostImportGraphWalkLater.lean bytes (must match on-disk file).
     Greppable: liveImportWalkLaterSource, PARSE-LIVE-IMPORT-WALK-LATER. -/
-def liveImportWalkLaterSource : String := r#"
-/-
+def liveImportWalkLaterSource : String := r#"/-
   SYSTEMS_LEAN_HOST partial -- HostImportGraph later on-disk order edge walk.
   Side: classic Lean elaborator under src/systems/ (not freestanding C).
   Long-file peel companion of HostImportGraphWalk. Namespace SystemsLean.HostImportGraph.

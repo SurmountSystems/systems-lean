@@ -61,6 +61,8 @@
   Module must stay ASCII. NO FreestandingEmit import.
 -/
 
+import SystemsLean.CatchReturn
+
 namespace SystemsLean.SelfHostComplete
 
 /-- Greppable primary stage id (claim B complete). -/
@@ -327,14 +329,9 @@ def freestandingProductSelfHostCompletePartialReady : Bool :=
     && !llvmUnlocked
     && provablyUnlocked
 
-/-- CLI: print complete measure. Fail-closed if Ok false. -/
-def main (_args : List String) : IO UInt32 := do
-  try
-    printSelfHostCompleteMeasure
-    pure 0
-  catch e =>
-    IO.eprintln s!"{e}"
-    pure 1
+/-- CLI: print complete measure. Fail-closed if Ok false. Catch lives in CatchReturn. -/
+def main (_args : List String) : IO UInt32 :=
+  SystemsLean.CatchReturn.withCatch printSelfHostCompleteMeasure
 
 end SystemsLean.SelfHostComplete
 

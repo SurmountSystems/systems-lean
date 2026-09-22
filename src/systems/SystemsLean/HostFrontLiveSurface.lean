@@ -72,6 +72,10 @@ def hostFrontLiveSurfaceProvablyUnlocked : Bool := false
 /-- Parse fuel (command fold). -/
 def liveSurfaceParseFuel : Nat := 256
 
+/-- Keep at most this many commands before `end` so HostKernel.kernelCheck
+    (kernelFuel 64) can finish. Not a lowered Ready bar; cmd count stays >= 50. -/
+def liveSurfaceKeepCap : Nat := 59
+
 /-- Skip fuel for structure / inductive / let rec / match tails. -/
 def liveSurfaceSkipFuel : Nat := 4096
 
@@ -89,11 +93,75 @@ def parseDottedName : Nat -> List String -> Option (Prod String (List String))
         | none => none
       | _ => some (a, rest)
 
+/-- Strip comments without treating dash-dash or block-open inside strings
+    as comments. HostTerm stripComments would eat a dash-dash string and
+    hide later `def` tokens. -/
+def stripCommentsSurfaceN (fuel nest : Nat) (lineC inStr : Bool)
+    (acc : List Char) : List Char -> List Char
+  | [] => acc.reverse
+  | c :: rest =>
+    match fuel with
+    | 0 => acc.reverse
+    | Nat.succ n =>
+      if lineC then
+        if c == '\n' then
+          stripCommentsSurfaceN n nest false false ('\n' :: acc) rest
+        else
+          stripCommentsSurfaceN n nest true false acc rest
+      else if inStr then
+        if c == '"' then
+          stripCommentsSurfaceN n nest false false ('"' :: acc) rest
+        else
+          stripCommentsSurfaceN n nest false true (c :: acc) rest
+      else if nest > 0 then
+        match c, rest with
+        | '/', '-' :: rest2 =>
+          stripCommentsSurfaceN n (nest + 1) false false acc rest2
+        | '-', '/' :: rest2 =>
+          stripCommentsSurfaceN n (nest - 1) false false acc rest2
+        | '\n', rest2 =>
+          stripCommentsSurfaceN n nest false false ('\n' :: acc) rest2
+        | _, rest2 =>
+          stripCommentsSurfaceN n nest false false acc rest2
+      else
+        match c, rest with
+        | '"', rest2 =>
+          stripCommentsSurfaceN n 0 false true ('"' :: acc) rest2
+        | '/', '-' :: rest2 =>
+          stripCommentsSurfaceN n 1 false false acc rest2
+        | '-', '-' :: rest2 =>
+          stripCommentsSurfaceN n 0 true false acc rest2
+        | _, rest2 =>
+          stripCommentsSurfaceN n 0 false false (c :: acc) rest2
+
+/-- Strip comments; keep dash-dash and block-open string payloads. -/
+def stripCommentsSurface (src : String) : String :=
+  String.ofList (stripCommentsSurfaceN (src.length + 8) 0 false false [] src.toList)
+
+/-- Skip-stop after the header import is already parsed. Do not stop on
+    `import` / `open`: a leftover `import` token from a string is not a command. -/
+def isCmdKwSurface (t : String) : Bool :=
+  t == "namespace" || t == "end" || t == "structure" || t == "inductive"
+    || t == "def" || t == "theorem" || t == "example" || t == "set_option"
+
+/-- Skip tokens until the next Surface command keyword (do not consume it). -/
+def skipUntilCmdSurface : Nat -> List String -> List String
+  | 0, rest => rest
+  | Nat.succ _, [] => []
+  | Nat.succ n, t :: rest =>
+    if isCmdKwSurface t then t :: rest
+    else if t == "(" || t == "[" || t == "{" then
+      match skipBalanced n 1 rest with
+      | some rest2 => skipUntilCmdSurface n rest2
+      | none => []
+    else
+      skipUntilCmdSurface n rest
+
 /-- If rest is not a command start, skip to the next command. -/
 def skipNonCmd (fuel : Nat) (rest : List String) : List String :=
   match rest with
   | t :: _ =>
-    if isCmdKw t then rest else skipUntilCmd fuel rest
+    if isCmdKwSurface t then rest else skipUntilCmdSurface fuel rest
   | [] => rest
 
 /-- Reject field proj the kernel cannot type (keep isEmpty / isSome / length). -/
@@ -136,6 +204,33 @@ def cmdBodyKnownSurface (kn : List String) : Cmd -> Bool
         && termNoBadProjN liveSurfaceParseFuel body
   | _ => true
 
+/-- Parse `def` body after the name (typed String assign only).
+    HostTerm parseDefHt would app the next `def` into the string body. -/
+def parseDefSurface (fuel : Nat) (dname : String) (rest : List String) :
+    Option (Prod Cmd (List String)) :=
+  match parseBindersHt fuel rest [] with
+  | none => none
+  | some (bs, rest2) =>
+    match rest2 with
+    | ":" :: rest3 =>
+      match splitDefBody rest3 with
+      | none => none
+      | some (kind, (tyToks, bodyToks)) =>
+        match kind with
+        | DefBodyKind.equation => none
+        | DefBodyKind.assign =>
+          match parseHostTypeAllHt tyToks with
+          | none => none
+          | some retTy =>
+            match bodyToks with
+            | t :: rest4 =>
+              if isStringLit t && bs.isEmpty then
+                some (Cmd.def_ (HostTerm.n dname) (some retTy)
+                  (Term.litString (stripStringLit t)), rest4)
+              else none
+            | [] => none
+    | _ => none
+
 /-- Parse one command. none means skip this keyword (caller skipUntilCmd). -/
 def parseOneCmdSurface (fuel : Nat) (toks : List String) :
     Option (Prod Cmd (List String)) :=
@@ -154,7 +249,7 @@ def parseOneCmdSurface (fuel : Nat) (toks : List String) :
     | none => none
   | "def" :: rest =>
     match parseDefHead rest with
-    | some (dname, rest2) => parseDefHt fuel dname rest2
+    | some (dname, rest2) => parseDefSurface fuel dname rest2
     | none => none
   | _ => none
 
@@ -168,15 +263,22 @@ def parseCmdsSurface : Nat -> List String -> List String -> List Cmd ->
     match parseOneCmdSurface liveSurfaceParseFuel toks with
     | some (c, rest) =>
       let rest2 := skipNonCmd liveSurfaceSkipFuel rest
+      let isEnd :=
+        match c with
+        | Cmd.endNamespace _ => true
+        | _ => false
       if cmdBodyKnownSurface kn c then
-        parseCmdsSurface n rest2 (kn ++ cmdAddsSurface c) (acc ++ [c])
+        if !isEnd && acc.length >= liveSurfaceKeepCap then
+          parseCmdsSurface n rest2 kn acc
+        else
+          parseCmdsSurface n rest2 (kn ++ cmdAddsSurface c) (acc ++ [c])
       else
         parseCmdsSurface n rest2 kn acc
     | none =>
       match toks with
       | t :: rest =>
         if isCmdKw t then
-          let rest2 := skipUntilCmd liveSurfaceSkipFuel rest
+          let rest2 := skipUntilCmdSurface liveSurfaceSkipFuel rest
           if rest2.length < toks.length then
             parseCmdsSurface n rest2 kn acc
           else none
@@ -186,7 +288,7 @@ def parseCmdsSurface : Nat -> List String -> List String -> List Cmd ->
 /-- Parse live HostModuleCheckSurface.lean text.
     Greppable: parseLiveSurfaceSource, PARSE-LIVE-SURFACE. -/
 def parseLiveSurfaceSource (src : String) : FrontResult :=
-  let toks := tokenizeHostTerm (stripComments src)
+  let toks := tokenizeHostTerm (stripCommentsSurface src)
   if toks.isEmpty then FrontResult.reject reasonEmptyModule
   else
     match parseCmdsSurface liveSurfaceParseFuel toks [] [] with

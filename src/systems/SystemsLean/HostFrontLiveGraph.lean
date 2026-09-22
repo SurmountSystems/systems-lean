@@ -114,6 +114,52 @@ def cmdAddsGraph (c : Cmd) : List String :=
   | Cmd.defBind x _ _ _ => [x.raw]
   | _ => []
 
+/-- Parse-fold fuel. HostGraph has more command keywords than HostTerm. -/
+def liveGraphParseFuel : Nat := 512
+
+/-- Skip fuel. HostGraph golden concatenations and runGraphSuite do-block
+    exceed liveHostTermParseFuel 256 tokens. Same role as liveFrontSkipFuel. -/
+def liveGraphSkipFuel : Nat := 4096
+
+/-- If rest is not a command start, skip to the next command.
+    parseOneCmdHt can accept a short typed def and leave `++` concat, `|`
+    equations, or `let rec` leftover; those are not PARSE-FAIL. -/
+def skipNonCmd (fuel : Nat) (rest : List String) : List String :=
+  match rest with
+  | t :: _ =>
+    if isCmdKw t then rest else skipUntilCmd fuel rest
+  | [] => rest
+
+/-- Bool bodies the kernel can check (lits, aliases, &&, ==). Drop List.any proj. -/
+def boolKeepGraph : Term -> Bool
+  | Term.litBool _ => true
+  | Term.const _ => true
+  | Term.var _ => true
+  | Term.ite c t e =>
+      boolKeepGraph c && boolKeepGraph t && boolKeepGraph e
+  | Term.decideEq _ _ => true
+  | _ => false
+
+/-- Return type is a kernel-keep shape. Named List / GraphResult binders skip. -/
+def retKeepGraph : HostType -> Term -> Bool
+  | HostType.bool, body => boolKeepGraph body
+  | HostType.string, Term.litString _ => true
+  | HostType.string, Term.const _ => true
+  | HostType.string, Term.var _ => true
+  | HostType.nat, Term.litNat _ => true
+  | HostType.nat, Term.const _ => true
+  | HostType.nat, Term.var _ => true
+  | _, _ => false
+
+/-- Body of a typed def is kernel-known and return-shaped. -/
+def cmdBodyKnownGraph (kn : List String) : Cmd -> Bool
+  | Cmd.def_ _ (some ty) body =>
+      termKnownN liveHostTermParseFuel kn body && retKeepGraph ty body
+  | Cmd.defBind _ _ ret body =>
+      termKnownN liveHostTermParseFuel kn body && retKeepGraph ret body
+  | Cmd.def_ _ none _ => false
+  | _ => true
+
 /-- Fold commands. Skip theorem / example / set_option / un-kernelable defs. -/
 def parseCmdsGraph : Nat -> List String -> List String -> List Cmd ->
     Option (List Cmd)
@@ -121,17 +167,18 @@ def parseCmdsGraph : Nat -> List String -> List String -> List Cmd ->
   | 0, _ :: _, _, _ => none
   | Nat.succ _, [], _, acc => some acc
   | Nat.succ n, toks, kn, acc =>
-    match parseOneCmdHt liveHostTermParseFuel toks with
+    match parseOneCmdHt liveGraphParseFuel toks with
     | some (c, rest) =>
-      if cmdBodyKnown kn c then
-        parseCmdsGraph n rest (kn ++ cmdAddsGraph c) (acc ++ [c])
+      let rest2 := skipNonCmd liveGraphSkipFuel rest
+      if cmdBodyKnownGraph kn c then
+        parseCmdsGraph n rest2 (kn ++ cmdAddsGraph c) (acc ++ [c])
       else
-        parseCmdsGraph n rest kn acc
+        parseCmdsGraph n rest2 kn acc
     | none =>
       match toks with
       | t :: rest =>
         if isCmdKw t then
-          let rest2 := skipUntilCmd liveHostTermParseFuel rest
+          let rest2 := skipUntilCmd liveGraphSkipFuel rest
           if rest2.length < toks.length then
             parseCmdsGraph n rest2 kn acc
           else none
@@ -144,7 +191,7 @@ def parseLiveHostGraphSource (src : String) : FrontResult :=
   let toks := tokenizeHostTerm (stripComments src)
   if toks.isEmpty then FrontResult.reject reasonEmptyModule
   else
-    match parseCmdsGraph liveHostTermParseFuel toks [] [] with
+    match parseCmdsGraph liveGraphParseFuel toks [] [] with
     | none => FrontResult.reject reasonParseFail
     | some cmds =>
       if cmds.isEmpty then FrontResult.reject reasonEmptyModule
