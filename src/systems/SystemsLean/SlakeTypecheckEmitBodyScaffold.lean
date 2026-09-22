@@ -1,75 +1,75 @@
 /-
-  SYSTEMS_LEAN_HOST -- Slake typechecks live SystemsLean.LlvmHold.
-  Short role: named driver for just slake-typecheck-llvmhold.
-  Ready is HostFrontLiveLlvmHold parse plus HostKernel.kernelCheck
-  of live LlvmHold.lean, not a hardcoded true, not lake build
-  SystemsLean.LlvmHold.
-  liveRel is LlvmHold.lean.
-  This wrap is LlvmHold.lean. It is not LlvmHoldTheorems.lean.
+  SYSTEMS_LEAN_HOST -- Slake typechecks live SystemsLean.EmitBody.
+  Short role: named driver for just slake-typecheck-emitbodyscaffold.
+  Ready is HostFrontLiveEmitBodyScaffold parse plus HostKernel.kernelCheck
+  of live EmitBodyScaffold.lean, not a hardcoded true, not lake build
+  SystemsLean.EmitBody.
+  liveRel is EmitBodyScaffold.lean.
+  This wrap is EmitBodyScaffold.lean. It is not EmitBody.lean.
   Not an LLVM backend. FullBackend stays false.
   Not mill. Not occupancy name 50. Not FullHost.
   slakeOwnsPackageTypecheck stays false. Mill stays 69 of 69.
   Not the full src/systems package walk.
-  Greppable: SYSTEMS_LEAN_HOST, HOST-SLAKE-TYPECHECK-LLVM-HOLD,
-  SLAKE_TYPECHECK_LLVM_HOLD, slake-typecheck-llvmhold,
-  slakeTypecheckLlvmHoldReady,
-  kernelCheckLiveLlvmHoldSource,
-  PARSE-LIVE-LLVM-HOLD.
-  Module: SystemsLean.SlakeTypecheckLlvmHold
-  Checkable writer: just slake-typecheck-llvmhold
+  Greppable: SYSTEMS_LEAN_HOST, HOST-SLAKE-TYPECHECK-EMIT-BODY-SCAFFOLD,
+  SLAKE_TYPECHECK_EMIT_BODY_SCAFFOLD, slake-typecheck-emitbodyscaffold,
+  slakeTypecheckEmitBodyScaffoldReady,
+  kernelCheckLiveEmitBodyScaffoldSource,
+  PARSE-LIVE-EMIT-BODY-SCAFFOLD.
+  Module: SystemsLean.SlakeTypecheckEmitBodyScaffold
+  Checkable writer: just slake-typecheck-emitbodyscaffold
   (lean --run; no mill; no lake).
 -/
 
-import SystemsLean.HostFrontLiveLlvmHold
+import SystemsLean.HostFrontLiveEmitBodyScaffold
 
 /-- Greppable stage id. -/
-def stageId : String := "SLAKE_TYPECHECK_LLVM_HOLD"
+def stageId : String := "SLAKE_TYPECHECK_EMIT_BODY_SCAFFOLD"
 
 /-- Greppable host map id. -/
-def hostId : String := "HOST-SLAKE-TYPECHECK-LLVM-HOLD"
+def hostId : String := "HOST-SLAKE-TYPECHECK-EMIT-BODY-SCAFFOLD"
 
-/-- Named just recipe. Not lake build SystemsLean.LlvmHold. -/
-def justRecipeSlakeTypecheckLlvmHold : String :=
-  "slake-typecheck-llvmhold"
+/-- Named just recipe. Not lake build SystemsLean.EmitBody. -/
+def justRecipeSlakeTypecheckEmitBodyScaffold : String :=
+  "slake-typecheck-emitbodyscaffold"
 
 /-- Live file relative to repo root. Dual-pin path. -/
-def liveLlvmHoldRel : String :=
-  SystemsLean.HostFrontLiveLlvmHold.liveLlvmHoldRel
+def liveEmitBodyScaffoldRel : String :=
+  SystemsLean.HostFrontLiveEmitBodyScaffold.liveEmitBodyScaffoldRel
 
-/-- Ready names HostFrontLiveLlvmHold parse plus kernelCheck,
+/-- Ready names HostFrontLiveEmitBodyScaffold parse plus kernelCheck,
     not a hardcoded true.
-    Greppable: slakeTypecheckLlvmHoldReady,
-    kernelCheckLiveLlvmHoldSource. -/
-def slakeTypecheckLlvmHoldReady : Bool :=
-  SystemsLean.HostFrontLiveLlvmHold.hostFrontLiveLlvmHoldReady
+    Greppable: slakeTypecheckEmitBodyScaffoldReady,
+    kernelCheckLiveEmitBodyScaffoldSource. -/
+def slakeTypecheckEmitBodyScaffoldReady : Bool :=
+  SystemsLean.HostFrontLiveEmitBodyScaffold.hostFrontLiveEmitBodyScaffoldReady
 
-/-- Honesty: this command is not lake build of LlvmHold. -/
-def slakeTypecheckLlvmHoldDoesNotUseLake : Bool := true
+/-- Honesty: this command is not lake build of EmitBodyScaffold. -/
+def slakeTypecheckEmitBodyScaffoldDoesNotUseLake : Bool := true
 
 /-- Honesty: FullHost stays false. -/
-def slakeTypecheckLlvmHoldFullHost : Bool := false
+def slakeTypecheckEmitBodyScaffoldFullHost : Bool := false
 
 /-- Honesty: FullBackend stays false. Not an LLVM backend. -/
-def slakeTypecheckLlvmHoldFullBackend : Bool := false
+def slakeTypecheckEmitBodyScaffoldFullBackend : Bool := false
 
 /-- Honesty: package typecheck pin stays false. -/
-def slakeTypecheckLlvmHoldOwnsPackageTypecheck : Bool := false
+def slakeTypecheckEmitBodyScaffoldOwnsPackageTypecheck : Bool := false
 
-/-- lean --run entry: parse plus kernelCheck live LlvmHold.lean.
-    Ready is HostFrontLiveLlvmHold.hostFrontLiveLlvmHoldReady
+/-- lean --run entry: parse plus kernelCheck live EmitBodyScaffold.lean.
+    Ready is HostFrontLiveEmitBodyScaffold.hostFrontLiveEmitBodyScaffoldReady
     (parse plus kernelCheck), not a hardcoded true. Evaluated inside
-    HostFrontLiveLlvmHold.main at runtime. -/
+    HostFrontLiveEmitBodyScaffold.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
-  IO.println s!"== {stageId}: {justRecipeSlakeTypecheckLlvmHold} =="
-  IO.println s!"liveRel={SystemsLean.HostFrontLiveLlvmHold.liveRel}"
-  IO.println s!"  host={hostId} file={liveLlvmHoldRel}"
-  unless (!slakeTypecheckLlvmHoldFullHost) do
+  IO.println s!"== {stageId}: {justRecipeSlakeTypecheckEmitBodyScaffold} =="
+  IO.println s!"liveRel={SystemsLean.HostFrontLiveEmitBodyScaffold.liveRel}"
+  IO.println s!"  host={hostId} file={liveEmitBodyScaffoldRel}"
+  unless (!slakeTypecheckEmitBodyScaffoldFullHost) do
     IO.eprintln "error: FullHost must stay false"
     return 1
-  unless (!slakeTypecheckLlvmHoldFullBackend) do
+  unless (!slakeTypecheckEmitBodyScaffoldFullBackend) do
     IO.eprintln "error: FullBackend must stay false"
     return 1
-  unless (!slakeTypecheckLlvmHoldOwnsPackageTypecheck) do
+  unless (!slakeTypecheckEmitBodyScaffoldOwnsPackageTypecheck) do
     IO.eprintln "error: slakeOwnsPackageTypecheck must stay false"
     return 1
-  SystemsLean.HostFrontLiveLlvmHold.main args
+  SystemsLean.HostFrontLiveEmitBodyScaffold.main args

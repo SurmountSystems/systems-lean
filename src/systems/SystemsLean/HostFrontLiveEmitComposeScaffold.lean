@@ -6,7 +6,8 @@
   This wrap is EmitComposeScaffold.lean. It is not a theorems file.
   The live namespace is SystemsLean.EmitCompose. There is no import.
   Literal defs stay. Compound defs are skipped only when the body is not
-  kernel-checkable. String-append bodies are skipped.
+  kernel-checkable. String-append bodies are skipped. App bodies stay
+  skipped. Comment strip keeps slash-dash inside string payloads.
   theorem count is 1. example count is 12. set_option count is 2.
   Not a backend. FullBackend stays false.
   FullHost stays false.
@@ -72,9 +73,10 @@ def liveEmitComposeScaffoldParseFuel : Nat := 1024
 /-- Skip fuel for defs whose bodies are not kernel-checkable. -/
 def liveEmitComposeScaffoldSkipFuel : Nat := 8192
 
-/-- Kept commands: namespace, six literal string defs, emitComposeSurfaceOk,
-    and end. EmitComposeScaffold.lean has no import.
-    A smaller count would drop the literal defs. -/
+/-- Kept commands: namespace, six one-line string defs,
+    emitComposeSurfaceOk (&& is ite, not an app), and end.
+    App bodies and aliases of skipped names stay out.
+    EmitComposeScaffold.lean has no import. -/
 def liveEmitComposeScaffoldKeptCmds : Nat := 9
 
 /-- theorem keyword count. One theorem: emitComposeReady_true. -/
@@ -85,6 +87,57 @@ def liveEmitComposeScaffoldExampleCount : Nat := 12
 
 /-- set_option keyword count. maxRecDepth and maxHeartbeats. -/
 def liveEmitComposeScaffoldSetOptionCount : Nat := 2
+
+/-- Strip comments; keep dash-dash and block-open inside string payloads.
+    HostFrontLiveMult.stripComments is not in-string safe. A live string
+    holds a block-open between digits. Backslash keeps the next char
+    inside a string. -/
+def stripCommentsEmitComposeScaffoldN (fuel nest : Nat) (lineC inStr : Bool)
+    (acc : List Char) : List Char -> List Char
+  | [] => acc.reverse
+  | c :: rest =>
+    match fuel with
+    | 0 => acc.reverse
+    | Nat.succ n =>
+      if lineC then
+        if c == '\n' then
+          stripCommentsEmitComposeScaffoldN n nest false false ('\n' :: acc) rest
+        else
+          stripCommentsEmitComposeScaffoldN n nest true false acc rest
+      else if inStr then
+        if c == '\\' then
+          match rest with
+          | d :: rest2 =>
+            stripCommentsEmitComposeScaffoldN n nest false true (d :: c :: acc) rest2
+          | [] => (c :: acc).reverse
+        else if c == '"' then
+          stripCommentsEmitComposeScaffoldN n nest false false ('"' :: acc) rest
+        else
+          stripCommentsEmitComposeScaffoldN n nest false true (c :: acc) rest
+      else if nest > 0 then
+        match c, rest with
+        | '/', '-' :: rest2 =>
+          stripCommentsEmitComposeScaffoldN n (nest + 1) false false acc rest2
+        | '-', '/' :: rest2 =>
+          stripCommentsEmitComposeScaffoldN n (nest - 1) false false acc rest2
+        | '\n', rest2 =>
+          stripCommentsEmitComposeScaffoldN n nest false false ('\n' :: acc) rest2
+        | _, rest2 =>
+          stripCommentsEmitComposeScaffoldN n nest false false acc rest2
+      else
+        match c, rest with
+        | '"', rest2 =>
+          stripCommentsEmitComposeScaffoldN n 0 false true ('"' :: acc) rest2
+        | '/', '-' :: rest2 =>
+          stripCommentsEmitComposeScaffoldN n 1 false false acc rest2
+        | '-', '-' :: rest2 =>
+          stripCommentsEmitComposeScaffoldN n 0 true false acc rest2
+        | _, rest2 =>
+          stripCommentsEmitComposeScaffoldN n 0 false false (c :: acc) rest2
+
+/-- String-safe comment strip for live EmitComposeScaffold.lean bytes. -/
+def stripCommentsEmitComposeScaffold (src : String) : String :=
+  String.ofList (stripCommentsEmitComposeScaffoldN (src.length + 8) 0 false false [] src.toList)
 
 /-- Dotted ident `SystemsLean . EmitCompose`. -/
 def parseDottedName : Nat -> List String -> Option (Prod String (List String))
@@ -229,7 +282,7 @@ def toksCountKw : Nat -> List String -> String -> Nat -> Nat
     Greppable: parseLiveEmitComposeScaffoldSource,
     PARSE-LIVE-EMIT-COMPOSE-SCAFFOLD. -/
 def parseLiveEmitComposeScaffoldSource (src : String) : FrontResult :=
-  let toks := tokenizeHostTerm (stripComments src)
+  let toks := tokenizeHostTerm (stripCommentsEmitComposeScaffold src)
   if toks.isEmpty then FrontResult.reject reasonEmptyModule
   else
     match parseCmdsEmitComposeScaffold liveEmitComposeScaffoldParseFuel
@@ -275,7 +328,8 @@ def liveParseCmdCountOk : Bool :=
   | some m => m.commands.length == liveEmitComposeScaffoldKeptCmds
   | none => false
 
-/-- Literal defs the kernel must keep. -/
+/-- One-line string defs the command list must keep.
+    emitComposeSurfaceOk is a source needle only (its body is &&). -/
 def liveParseHasLiteralDefs : Bool :=
   match liveEmitComposeScaffoldParsed? with
   | none => false
@@ -291,7 +345,6 @@ def liveParseHasLiteralDefs : Bool :=
       && has "acceptancePath"
       && has "hostModulePath"
       && has "ssotArtifactPath"
-      && has "emitComposeSurfaceOk"
 
 /-- Wrap module lastSeg is EmitCompose (namespace; no module line in the live file). -/
 def liveParseHasEmitComposeModule : Bool :=
@@ -333,7 +386,7 @@ def liveParseHasNoImport : Bool :=
 
 /-- Count one keyword in the stripped live source. -/
 def liveKwCount (kw : String) : Nat :=
-  let toks := tokenizeHostTerm (stripComments liveEmitComposeScaffoldSource)
+  let toks := tokenizeHostTerm (stripCommentsEmitComposeScaffold liveEmitComposeScaffoldSource)
   toksCountKw liveEmitComposeScaffoldSkipFuel toks kw 0
 
 /-- Keyword counts: one theorem, twelve examples, two set_option. -/

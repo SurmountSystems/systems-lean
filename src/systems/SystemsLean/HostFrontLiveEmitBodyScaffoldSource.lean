@@ -1,174 +1,414 @@
 /-
-  SYSTEMS_LEAN_HOST partial -- dual-pin live LlvmHold.lean bytes.
+  SYSTEMS_LEAN_HOST partial -- dual-pin live EmitBodyScaffold.lean bytes.
   Side: classic Lean elaborator under src/systems/ (not freestanding C).
-  Short role: HostFrontLiveLlvmHoldSource. Not occupancy name 50. Not mill 70.
-  This wrap is LlvmHold.lean. It is not LlvmHoldTheorems.lean.
-  Greppable: SYSTEMS_LEAN_HOST, liveLlvmHoldSource,
-  HOST-FRONT-LIVE-LLVM-HOLD, liveRel, UNIT_SURFACE host surface.
-  Module: SystemsLean.HostFrontLiveLlvmHoldSource
+  Short role: HostFrontLiveEmitBodyScaffoldSource. Not occupancy name 50. Not mill 70.
+  This wrap is EmitBodyScaffold.lean. It is not EmitBody.lean.
+  Greppable: SYSTEMS_LEAN_HOST, liveEmitBodyScaffoldSource,
+  HOST-FRONT-LIVE-EMIT-BODY-SCAFFOLD, liveRel, UNIT_SURFACE host surface.
+  Module: SystemsLean.HostFrontLiveEmitBodyScaffoldSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Not a backend. FullBackend stays false in the wrap.
   Module must stay ASCII.
 -/
 
-namespace SystemsLean.HostFrontLiveLlvmHold
+namespace SystemsLean.HostFrontLiveEmitBodyScaffold
 
-/-- Dual-pinned live LlvmHold.lean bytes (must match on-disk file).
-    Greppable: liveLlvmHoldSource, HOST-FRONT-LIVE-LLVM-HOLD. -/
-def liveLlvmHoldSource : String := r#"/-
-  SYSTEMS_LEAN_HOST partial -- llvm hold gate + unlock residual (SH6).
+/-- Dual-pinned live EmitBodyScaffold.lean bytes (must match on-disk file).
+    Greppable: liveEmitBodyScaffoldSource, HOST-FRONT-LIVE-EMIT-BODY-SCAFFOLD. -/
+def liveEmitBodyScaffoldSource : String := r##"/-
+  SYSTEMS_LEAN_HOST partial -- freestanding emit body product C scaffolding.
   Side: classic Lean elaborator under src/systems/ (not freestanding C runtime).
-  Pair map (read-only): SelfApply.lean SH5 host self-application readiness;
-    SelfHost.lean direction canary (P5); surface-matrix.md llvm / PROVABLY
-    rows; self-host.md acceptance (SH6 unlock with evidence).
+  Owns HOST-EMIT-BODY product-text fragments (bodyHeaderFragment /
+  bodyBodyFragment), stage/map ids, ownership honesty, and emitBodyReady used by
+  SystemsLean.EmitBody. Core body fragment dialect (Body, buildFragment,
+  bodyFromCompose, theorems, EMIT-BODY-SMOKE) stays in EmitBody. Same namespace
+  SystemsLean.EmitBody so call sites stay unqualified.
 
-  Spec (readable, separate from any future proof):
-  - SLAKE_SELF_HOST_LLVM_HOLD_V0 / HOST-LLVM-HOLD / SELF-HOST-LLVM-HOLD:
-    greppable SH6 hold gate -- residual honesty is code-backed, not prose alone.
-  - HOST-PROVABLY-HOLD: greppable PROVABLY claim sibling (matrix + pin; not llvm).
-  - llvmUnlocked: true after LLVM IR unlock residual (Mult..Graph text ladder +
-    lake elaborator proof). Living SSoT only here. Not full CFG/SSA backend;
-    not Rust-native link success; not production opt pipeline.
-  - provablyUnlocked: true after PROVABLY evidence residual (green product
-    CompCert matrix + lake elaborator proof). Orthogonal to llvm unlock.
-  - freestandingProductSelfHostComplete: MUST decide false on this hold module
-    (LlvmHold local complete pin; living tip complete lives on SelfApplyFs).
-  - llvmHoldReady / sh6HoldReady: true when hold surface + honesty +
-    SelfApply composition are present after unlock residual.
-  - Host model = structural hold honesty. Not an AI/ML model. Not product C.
+  Spec (readable):
+  - productStageId / hostEmitBodyId / selfHostEmitBodyId: greppable stage map.
+  - bodyHeaderFragment / bodyBodyFragment: freestanding C scaffolding SSoT text
+    (BODY_C_HEADER / BODY_C_BODY map; FreestandingEmit embeds durable SSOT file).
+  - emitBodyReady: surface + header/body piece honesty (cheap; not residual free).
 
-  Theorems (LLVM-HOLD-THEOREM / HOST-LLVM-HOLD-THEOREM -- partial LlvmHold):
-  - Live in SystemsLean.LlvmHoldTheorems (same namespace; long-file split).
-  - llvmHoldReady_true / llvmUnlocked_true / provablyUnlocked_true
-  - freestandingProductSelfHostComplete_false / selfApplyDoesNotUnlockLlvm_true
-  - stageId_eq / hostLlvmHoldId_eq / sh6HoldReady_eq_llvmHoldReady
-  These LlvmHold theorems do NOT set SpecProof.proofCompleteClaimed true.
-  llvmUnlocked true with evidence. PROVABLY true. Unlock is not full backend.
+  Intentional non-claims:
+  - Scaffolding ownership only -- NOT freestanding residual free.
+  - NOT PROVABLY. NOT proof complete. NOT full product module emit / CFG/SSA.
+  - Durable file host_emit_body_fragment.ssot.txt remains HOST-EMIT-SSOT dialect
+    authority for freestanding embed; Lean fragments are dual map PARTIAL.
 
-  Intentional non-claims / honesty after unlock:
-  - Unlock claimed with Mult..Graph text ladder + lake proof (not greps alone).
-  - Does not invent full CFG/SSA or production opt pipeline.
-  - Does not wire just out-llvm-ir as a green full-backend residual-free path.
-  - Does not open P6 residual rows as open work to mill without named residual.
-  - Still not freestanding residual free forge on this module. Still not
-    freestanding product self-host complete on this local pin.
-  - PROVABLY claimed (provablyUnlocked true); unlock orthogonal to PROVABLY.
-  - Not proof complete (SpecProof.proofCompleteClaimed stays false).
-  - Does not grow bash EMIT_* residual treadmill. No new EMIT_* C stage.
-  - Not full LLVM backend. Not Rust-native link success.
-
-  Greppable: SYSTEMS_LEAN_HOST, SLAKE_SELF_HOST_LLVM_HOLD_V0, HOST-LLVM-HOLD,
-  SELF-HOST-LLVM-HOLD, HOST-PROVABLY-HOLD, LLVM-HOLD-SMOKE, HOST-LLVM-HOLD-SMOKE,
-  llvmHoldReady, sh6HoldReady, llvmUnlocked, provablyUnlocked,
-  freestandingProductSelfHostComplete, selfApplyDoesNotUnlockLlvm,
-  HOST-SELF-APPLY, selfApplyReady, SELF-HOST, MULT-0, MULT-1, MULT-OMEGA,
-  JOIN-ALG, ConsumeToken, LLVM-HOLD-THEOREM, HOST-LLVM-HOLD-THEOREM,
-  llvmHoldReady_true, llvmUnlocked_true, provablyUnlocked_true,
-  sh6HoldReady_eq_llvmHoldReady, LlvmHoldTheorems,
-  UNIT_SURFACE host surface.
-  Module: SystemsLean.LlvmHold
-  Long-file split: LLVM-HOLD-THEOREM / HOST-LLVM-HOLD-THEOREM / LLVM-HOLD-SMOKE
-  in SystemsLean.LlvmHoldTheorems (same namespace). Core hold Bools stay here.
-  Not freestanding emit. Not freestanding residual free forge. PROVABLY claimed.
-  Not freestanding emit residual free. Not full LLVM backend. Not proof complete.
-  Red/green: just systems-host; lake build when toolchain installed.
+  Greppable: SYSTEMS_LEAN_HOST, SLAKE_SELF_HOST_EMIT_BODY_V0, HOST-EMIT-BODY,
+  SELF-HOST-EMIT-BODY, bodyHeaderFragment, bodyBodyFragment, emitBodyReady,
+  emitBodyOk, bodyHeaderHonestyOk, bodyScaffoldHonestyOk, emitBodySurfaceOk,
+  EMIT-BODY-PRODUCT-SMOKE, HOST-EMIT-BODY-SMOKE, EmitBodyScaffold,
+  UNIT_SURFACE host surface, HOST-EMIT-SSOT, NON-SSOT, RUNTIME-FS.
+  Module: SystemsLean.EmitBodyScaffold
+  Red/green: just systems-host; lake build SystemsLean.EmitBody.
   Module must stay ASCII.
+  Not freestanding residual free. Not PROVABLY. Not freestanding emit residual free.
+  Stage honesty: not residual free; not PROVABLY; no product GC.
 -/
 
-import SystemsLean.SelfApply
+namespace SystemsLean.EmitBody
 
-namespace SystemsLean.LlvmHold
+/-! ### Host-owned freestanding emit body product C scaffolding (HOST-EMIT-BODY)
+    Greppable: HOST-EMIT-BODY, SELF-HOST-EMIT-BODY, SLAKE_SELF_HOST_EMIT_BODY_V0,
+    bodyHeaderFragment, bodyBodyFragment, emitBodyReady.
+    Dialect keys remain HOST-EMIT-SSOT (__SSOT_*__ after FreestandingEmit embed).
+    maxHeartbeats raised: body scaffolding honesty needs room for decide. -/
 
-/-- Greppable primary stage id for llvm / PROVABLY hold gate (SH6). -/
-def stageId : String := "SLAKE_SELF_HOST_LLVM_HOLD_V0"
+/-- Greppable primary stage id for host-owned emit body product emit. -/
+def productStageId : String := "SLAKE_SELF_HOST_EMIT_BODY_V0"
 
-/-- Greppable host map id (HOST-LLVM-HOLD). -/
-def hostLlvmHoldId : String := "HOST-LLVM-HOLD"
+/-- Greppable short map id (HOST-EMIT-BODY). -/
+def hostEmitBodyId : String := "HOST-EMIT-BODY"
 
-/-- Greppable short map id (SELF-HOST-LLVM-HOLD). -/
-def selfHostLlvmHoldId : String := "SELF-HOST-LLVM-HOLD"
-
-/-- Greppable PROVABLY hold sibling id (HOST-PROVABLY-HOLD). -/
-def hostProvablyHoldId : String := "HOST-PROVABLY-HOLD"
+/-- Greppable short map id (SELF-HOST-EMIT-BODY). -/
+def selfHostEmitBodyId : String := "SELF-HOST-EMIT-BODY"
 
 /-- Read-only acceptance prose path cite (not a filesystem read). -/
-def acceptancePath : String := "src/systems/self-host.md"
+def productAcceptancePath : String := "src/systems/self-host.md"
 
-/-- Read-only this-module path cite (not a filesystem read). -/
-def hostModulePath : String := "src/systems/SystemsLean/LlvmHold.lean"
+/-- Read-only this-module path cite for product ownership (not a filesystem read). -/
+def productHostModulePath : String := "src/systems/SystemsLean/EmitBody.lean"
 
-/-- Prior SH5 self-apply stage cite (composed into hold honesty). -/
-def selfApplyStageCite : String := "SLAKE_SELF_HOST_SELF_APPLY_V0"
+/-- Durable emit body SSOT artifact path cite (not a filesystem read). -/
+def bodySsotArtifactPath : String := "src/systems/emit/host_emit_body_fragment.ssot.txt"
 
-/-- Product path cite (unlocked residual; not full backend claim). -/
-def llvmIrPathCite : String := "out/llvm-ir"
+/-- Ownership comment shared by header and body scaffolding fragments. -/
+def bodyOwnershipComment : String :=
+  " * HOST-EMIT-BODY: scaffolding from SystemsLean.EmitBody + host_emit_body_fragment.ssot.txt\n"
+    ++ " * (Lean FreestandingEmit embeds this emit body product text).\n"
 
-/-- Surface canary: stage ids + path cites + prior SelfApply stage cite. -/
-def llvmHoldSurfaceOk : Bool :=
-  (stageId == "SLAKE_SELF_HOST_LLVM_HOLD_V0")
-    && (hostLlvmHoldId == "HOST-LLVM-HOLD")
-    && (selfHostLlvmHoldId == "SELF-HOST-LLVM-HOLD")
-    && (hostProvablyHoldId == "HOST-PROVABLY-HOLD")
-    && (acceptancePath == "src/systems/self-host.md")
-    && (hostModulePath == "src/systems/SystemsLean/LlvmHold.lean")
-    && (selfApplyStageCite == "SLAKE_SELF_HOST_SELF_APPLY_V0")
-    && (llvmIrPathCite == "out/llvm-ir")
+/-- Dialect ownership comment (HOST-EMIT-SSOT keys remain separate). -/
+def bodyDialectOwnershipComment : String :=
+  " * HOST-EMIT-SSOT: dialect from SystemsLean.EmitBody.buildFragment +\n"
+    ++ " *   host_emit_body_fragment.ssot.txt (put_str keys; no second fragment format).\n"
 
-/-- llvmUnlocked -- true after LLVM IR unlock residual (text ladder Mult..Graph
-    + lake elaborator proof). Living SSoT only on this module.
-    Not full CFG/SSA; not Rust link; not production backend.
-    Greppable: llvmUnlocked. -/
-def llvmUnlocked : Bool := true
+/-- Emit body section open comment (header; includes ownership). -/
+def bodyHeaderOpen : String :=
+  "/* ---- EMIT_BODY_V0 -- freestanding C body fragment (not residual free; not CFG/SSA)\n"
+    ++ " * Deterministic ASCII fragment from a checked host compose via plan + apply.\n"
+    ++ " * Not full product module emit; not CFG/SSA; not residual free; no product GC.\n"
+    ++ bodyOwnershipComment
+    ++ bodyDialectOwnershipComment
+    ++ " * Greppable: EMIT_BODY_V0, EMIT_APPLY_V0, EMIT_PLAN_V0, HOST_COMPOSE_V0,\n"
+    ++ " *            RUNTIME-FS, EMIT-BOUNDARY, HOST-EMIT-BODY, HOST-EMIT-SSOT\n"
+    ++ " *\n"
+    ++ " * Fragment shape (deterministic C comment lines; HOST-EMIT-SSOT):\n"
+    ++ " *   EMIT_BODY_V0 RUNTIME-FS r=N e=M\n"
+    ++ " *   tI mult=X kind=Y\n"
+    ++ " * Tag mult/kind use EMIT_APPLY_V0 packing: mult high nibble, kind low nibble.\n"
+    ++ " * MULT-0 tags may still be listed (erased inventory honesty, not product wire claim).\n"
+    ++ " */\n"
 
-/-- provablyUnlocked -- true after PROVABLY evidence residual (resolved ccomp +
-    green product CompCert matrix + lake elaborator proof on this pin flip).
-    Orthogonal to llvm unlock. Greppable: provablyUnlocked, HOST-PROVABLY-HOLD. -/
-def provablyUnlocked : Bool := true
+/-- Emit body CAP + typedef + function decls. -/
+def bodyApiDecls : String :=
+  "#define SLAKE_EMIT_BODY_CAP 256\n"
+    ++ "\n"
+    ++ "typedef struct slake_emit_body {\n"
+    ++ "  char buf[SLAKE_EMIT_BODY_CAP]; /* NUL-terminated fragment on success */\n"
+    ++ "  uint16_t len;  /* strlen of buf on success (excluding NUL) */\n"
+    ++ "  uint8_t valid; /* 1 after successful build */\n"
+    ++ "} slake_emit_body;\n"
+    ++ "\n"
+    ++ "const char *slake_emit_body_id(void); /* exact \"EMIT_BODY_V0\" */\n"
+    ++ "\n"
+    ++ "/* Build body from checked host compose.\n"
+    ++ " * 0 ok; -1 null out/hc, plan/apply/check fail, or buffer would overflow.\n"
+    ++ " * On failure: if out non-null, valid=0, len=0, buf[0]=0 (fail closed).\n"
+    ++ " * On success:\n"
+    ++ " *   - require plan ready + apply valid (call those APIs; do not reimplement checks)\n"
+    ++ " *   - write deterministic ASCII fragment into buf, NUL-terminated\n"
+    ++ " *   - must contain greppable substrings: EMIT_BODY_V0 and RUNTIME-FS\n"
+    ++ " *   - include decimal runtime_nodes and erased_nodes from plan\n"
+    ++ " *   - for each apply tag index 0..count-1, append one short line encoding mult/kind\n"
+    ++ " *     (same packing as EMIT_APPLY_V0: mult high nibble, kind low)\n"
+    ++ " *   - MULT-0 tags may still be listed (erased inventory) -- honesty, not product wire claim\n"
+    ++ " * Greppable: EMIT_BODY_V0, EMIT_APPLY_V0, EMIT_PLAN_V0, RUNTIME-FS, EMIT-BOUNDARY\n"
+    ++ " * Honesty: not residual free; fragment is not full product module emit.\n"
+    ++ " */\n"
+    ++ "int slake_emit_body_from_compose(const slake_host_compose *hc, slake_emit_body *out);\n"
+    ++ "\n"
+    ++ "/* 1 if non-null, valid, len < CAP, buf[len]==0; else 0 */\n"
+    ++ "int slake_emit_body_is_valid(const slake_emit_body *b);\n"
 
-/-- freestandingProductSelfHostComplete -- MUST decide false on this hold module
-    (local pin; living tip complete lives on SelfApplyFs). SH5 host-structural
-    kernelRebuildsKernel and freestandingSelfApplyReady do not complete this
-    local pin. Greppable: freestandingProductSelfHostComplete. -/
-def freestandingProductSelfHostComplete : Bool := false
+/-- bodyHeaderFragment -- freestanding emit body header text (HOST-EMIT-BODY SSoT). -/
+def bodyHeaderFragment : String :=
+  bodyHeaderOpen
+    ++ bodyApiDecls
 
-/-- holdHonestyOk -- after unlock residual: living llvmUnlocked is true with
-    evidence; LlvmHold local freestanding complete stays false (complete lives
-    on SelfApplyFs). FAIL-CLOSED: local freestanding complete claim fails hold.
-    Unlock does not mean freestanding complete on this module.
-    Greppable: holdHonestyOk. -/
-def holdHonestyOk : Bool :=
-  llvmUnlocked && (!freestandingProductSelfHostComplete)
+/-- Body section open for emit body scaffolding. -/
+def bodyScaffoldOpen : String :=
+  "/* ---- EMIT_BODY_V0 (freestanding C body fragment; not residual free; not CFG/SSA) ----\n"
+    ++ " * Builds a fixed-buffer deterministic ASCII fragment via plan + apply APIs.\n"
+    ++ " * No snprintf/stdlib; manual digit write. Greppable: EMIT_BODY_V0, RUNTIME-FS,\n"
+    ++ " * EMIT_APPLY_V0, EMIT_PLAN_V0, EMIT-BOUNDARY, HOST-EMIT-BODY, HOST-EMIT-SSOT.\n"
+    ++ bodyOwnershipComment
+    ++ " * Fragment dialect: HOST-EMIT-SSOT (SystemsLean.EmitBody.buildFragment +\n"
+    ++ " * host_emit_body_fragment.ssot.txt); Lean freestanding emit embeds HOST-EMIT-SSOT put_str text.\n"
+    ++ " */\n"
 
-/-- selfApplyDoesNotUnlockLlvm -- SH5 host-structural selfApplyReady does NOT
-    by itself forge llvm unlock without residual (historical composition).
-    Living pin may be true after unlock residual; readiness still composes
-    SelfApply honesty. Greppable: selfApplyDoesNotUnlockLlvm, selfApplyReady. -/
-def selfApplyDoesNotUnlockLlvm : Bool :=
-  SelfApply.selfApplyReady
+/-- Emit body function bodies (product wire scaffolding; __SSOT_*__ keys remain). -/
+def bodyScaffoldBodies : String :=
+  "/* HOST-EMIT-SSOT empty-compose fragment (matches EmitBody.emptyComposeFragmentSsot).\n"
+    ++ " * Greppable contract text; returned only for honesty / smoke of dialect embed. */\n"
+    ++ "static const char slake_emit_body_empty_ssot[] = \"__SSOT_EMPTY_FRAGMENT__\\n\";\n"
+    ++ "\n"
+    ++ "const char *slake_emit_body_id(void)\n"
+    ++ "{\n"
+    ++ "  /* Touch empty SSOT string so freestanding link keeps the greppable literal. */\n"
+    ++ "  if (slake_emit_body_empty_ssot[0] == 0) {\n"
+    ++ "    return \"EMIT_BODY_V0\";\n"
+    ++ "  }\n"
+    ++ "  return \"EMIT_BODY_V0\";\n"
+    ++ "}\n"
+    ++ "\n"
+    ++ "/* Append one char; leave room for trailing NUL. Returns 0 ok, -1 overflow. */\n"
+    ++ "static int slake_emit_body_put_char(slake_emit_body *out, char c)\n"
+    ++ "{\n"
+    ++ "  if (out->len + 1u >= (uint16_t)SLAKE_EMIT_BODY_CAP) {\n"
+    ++ "    return -1;\n"
+    ++ "  }\n"
+    ++ "  out->buf[out->len] = c;\n"
+    ++ "  out->len = (uint16_t)(out->len + 1u);\n"
+    ++ "  return 0;\n"
+    ++ "}\n"
+    ++ "\n"
+    ++ "static int slake_emit_body_put_str(slake_emit_body *out, const char *s)\n"
+    ++ "{\n"
+    ++ "  if (s == 0) {\n"
+    ++ "    return -1;\n"
+    ++ "  }\n"
+    ++ "  while (*s != 0) {\n"
+    ++ "    if (slake_emit_body_put_char(out, *s) != 0) {\n"
+    ++ "      return -1;\n"
+    ++ "    }\n"
+    ++ "    s = s + 1;\n"
+    ++ "  }\n"
+    ++ "  return 0;\n"
+    ++ "}\n"
+    ++ "\n"
+    ++ "/* Decimal write of uint8_t (0..255); freestanding, no snprintf. */\n"
+    ++ "static int slake_emit_body_put_u8(slake_emit_body *out, uint8_t v)\n"
+    ++ "{\n"
+    ++ "  char digs[3];\n"
+    ++ "  int n;\n"
+    ++ "  uint8_t x;\n"
+    ++ "\n"
+    ++ "  if (v == 0) {\n"
+    ++ "    return slake_emit_body_put_char(out, '0');\n"
+    ++ "  }\n"
+    ++ "  n = 0;\n"
+    ++ "  x = v;\n"
+    ++ "  while (x > 0 && n < 3) {\n"
+    ++ "    digs[n] = (char)('0' + (x % 10u));\n"
+    ++ "    n = n + 1;\n"
+    ++ "    x = (uint8_t)(x / 10u);\n"
+    ++ "  }\n"
+    ++ "  while (n > 0) {\n"
+    ++ "    n = n - 1;\n"
+    ++ "    if (slake_emit_body_put_char(out, digs[n]) != 0) {\n"
+    ++ "      return -1;\n"
+    ++ "    }\n"
+    ++ "  }\n"
+    ++ "  return 0;\n"
+    ++ "}\n"
+    ++ "\n"
+    ++ "static void slake_emit_body_fail_closed(slake_emit_body *out)\n"
+    ++ "{\n"
+    ++ "  out->len = 0;\n"
+    ++ "  out->valid = 0;\n"
+    ++ "  out->buf[0] = 0;\n"
+    ++ "}\n"
+    ++ "\n"
+    ++ "int slake_emit_body_from_compose(const slake_host_compose *hc, slake_emit_body *out)\n"
+    ++ "{\n"
+    ++ "  slake_emit_plan plan;\n"
+    ++ "  slake_emit_apply applied;\n"
+    ++ "  uint8_t i;\n"
+    ++ "  uint8_t mult;\n"
+    ++ "  uint8_t kind;\n"
+    ++ "\n"
+    ++ "  if (out == 0) {\n"
+    ++ "    return -1;\n"
+    ++ "  }\n"
+    ++ "  /* Fail closed: zero before any further checks. */\n"
+    ++ "  slake_emit_body_fail_closed(out);\n"
+    ++ "\n"
+    ++ "  if (hc == 0) {\n"
+    ++ "    return -1;\n"
+    ++ "  }\n"
+    ++ "\n"
+    ++ "  /* Require plan ready via plan API (does not reimplement check). */\n"
+    ++ "  if (slake_emit_plan_from_compose(hc, &plan) != 0) {\n"
+    ++ "    return -1;\n"
+    ++ "  }\n"
+    ++ "  if (slake_emit_plan_is_ready(&plan) != 1) {\n"
+    ++ "    return -1;\n"
+    ++ "  }\n"
+    ++ "\n"
+    ++ "  /* Require apply valid via apply API. */\n"
+    ++ "  if (slake_emit_apply_from_compose(hc, &applied) != 0) {\n"
+    ++ "    return -1;\n"
+    ++ "  }\n"
+    ++ "  if (slake_emit_apply_is_valid(&applied) != 1) {\n"
+    ++ "    return -1;\n"
+    ++ "  }\n"
+    ++ "\n"
+    ++ "  /* Header line: HOST-EMIT-SSOT dialect (EMIT_BODY_V0 RUNTIME-FS r=N e=M). */\n"
+    ++ "  if (slake_emit_body_put_str(out, \"__SSOT_HEADER_OPEN__\") != 0) {\n"
+    ++ "    slake_emit_body_fail_closed(out);\n"
+    ++ "    return -1;\n"
+    ++ "  }\n"
+    ++ "  if (slake_emit_body_put_u8(out, plan.runtime_nodes) != 0) {\n"
+    ++ "    slake_emit_body_fail_closed(out);\n"
+    ++ "    return -1;\n"
+    ++ "  }\n"
+    ++ "  if (slake_emit_body_put_str(out, \"__SSOT_HEADER_E__\") != 0) {\n"
+    ++ "    slake_emit_body_fail_closed(out);\n"
+    ++ "    return -1;\n"
+    ++ "  }\n"
+    ++ "  if (slake_emit_body_put_u8(out, plan.erased_nodes) != 0) {\n"
+    ++ "    slake_emit_body_fail_closed(out);\n"
+    ++ "    return -1;\n"
+    ++ "  }\n"
+    ++ "  if (slake_emit_body_put_str(out, \"__SSOT_HEADER_CLOSE__\\n\") != 0) {\n"
+    ++ "    slake_emit_body_fail_closed(out);\n"
+    ++ "    return -1;\n"
+    ++ "  }\n"
+    ++ "\n"
+    ++ "  /* One line per apply tag: HOST-EMIT-SSOT tI mult=X kind=Y. */\n"
+    ++ "  for (i = 0; i < applied.count; i++) {\n"
+    ++ "    mult = (uint8_t)((applied.tags[i] >> 4) & 0xFu);\n"
+    ++ "    kind = (uint8_t)(applied.tags[i] & 0xFu);\n"
+    ++ "    if (slake_emit_body_put_str(out, \"__SSOT_TAG_OPEN__\") != 0) {\n"
+    ++ "      slake_emit_body_fail_closed(out);\n"
+    ++ "      return -1;\n"
+    ++ "    }\n"
+    ++ "    if (slake_emit_body_put_u8(out, i) != 0) {\n"
+    ++ "      slake_emit_body_fail_closed(out);\n"
+    ++ "      return -1;\n"
+    ++ "    }\n"
+    ++ "    if (slake_emit_body_put_str(out, \"__SSOT_TAG_MULT__\") != 0) {\n"
+    ++ "      slake_emit_body_fail_closed(out);\n"
+    ++ "      return -1;\n"
+    ++ "    }\n"
+    ++ "    if (slake_emit_body_put_u8(out, mult) != 0) {\n"
+    ++ "      slake_emit_body_fail_closed(out);\n"
+    ++ "      return -1;\n"
+    ++ "    }\n"
+    ++ "    if (slake_emit_body_put_str(out, \"__SSOT_TAG_KIND__\") != 0) {\n"
+    ++ "      slake_emit_body_fail_closed(out);\n"
+    ++ "      return -1;\n"
+    ++ "    }\n"
+    ++ "    if (slake_emit_body_put_u8(out, kind) != 0) {\n"
+    ++ "      slake_emit_body_fail_closed(out);\n"
+    ++ "      return -1;\n"
+    ++ "    }\n"
+    ++ "    if (slake_emit_body_put_str(out, \"__SSOT_TAG_CLOSE__\\n\") != 0) {\n"
+    ++ "      slake_emit_body_fail_closed(out);\n"
+    ++ "      return -1;\n"
+    ++ "    }\n"
+    ++ "  }\n"
+    ++ "\n"
+    ++ "  out->buf[out->len] = 0;\n"
+    ++ "  out->valid = 1;\n"
+    ++ "  return 0;\n"
+    ++ "}\n"
+    ++ "\n"
+    ++ "int slake_emit_body_is_valid(const slake_emit_body *b)\n"
+    ++ "{\n"
+    ++ "  if (b == 0 || b->valid == 0) {\n"
+    ++ "    return 0;\n"
+    ++ "  }\n"
+    ++ "  if (b->len >= (uint16_t)SLAKE_EMIT_BODY_CAP) {\n"
+    ++ "    return 0;\n"
+    ++ "  }\n"
+    ++ "  if (b->buf[b->len] != 0) {\n"
+    ++ "    return 0;\n"
+    ++ "  }\n"
+    ++ "  return 1;\n"
+    ++ "}\n"
 
-/-- llvmHoldReady -- SH6 hold gate ready after unlock residual.
-    FAIL-CLOSED: surface + honesty + SelfApply composition +
-    selfApply historical non-forge composition.
-    Greppable: llvmHoldReady, HOST-LLVM-HOLD. -/
-def llvmHoldReady : Bool :=
-  llvmHoldSurfaceOk
-    && holdHonestyOk
-    && SelfApply.selfApplyReady
-    && selfApplyDoesNotUnlockLlvm
+/-- bodyBodyFragment -- freestanding emit body scaffolding text (HOST-EMIT-BODY SSoT). -/
+def bodyBodyFragment : String :=
+  bodyScaffoldOpen
+    ++ "\n"
+    ++ bodyScaffoldBodies
 
-/-- sh6HoldReady -- definitional alias of llvmHoldReady for SH6 residual greps
-    (joint-name honesty only; not a stronger gate).
-    Greppable: sh6HoldReady, SELF-HOST-LLVM-HOLD, sh6HoldReady_eq_llvmHoldReady. -/
-def sh6HoldReady : Bool := llvmHoldReady
+/-- Ownership comment carries HOST-EMIT-BODY + FreestandingEmit embed honesty. -/
+def bodyOwnershipHonestyOk : Bool :=
+  (bodyOwnershipComment
+    == " * HOST-EMIT-BODY: scaffolding from SystemsLean.EmitBody + host_emit_body_fragment.ssot.txt\n"
+      ++ " * (Lean FreestandingEmit embeds this emit body product text).\n")
+    && (bodyDialectOwnershipComment
+      == " * HOST-EMIT-SSOT: dialect from SystemsLean.EmitBody.buildFragment +\n"
+        ++ " *   host_emit_body_fragment.ssot.txt (put_str keys; no second fragment format).\n")
 
-/-- Full SH6 hold inventory ok (alias of llvmHoldReady for inventory greps). -/
-def llvmHoldOk : Bool := llvmHoldReady
+/-- Header piece honesty: ownership + stage id cites (cheap; no multi-kLOC reduce).
+    Full BODY_C_HEADER text lives in host_emit_body_fragment.ssot.txt; FreestandingEmit +
+    pure Nix gate product tokens. Dual SSOT PARTIAL: Lean bodyHeaderFragment kept for map. -/
+def bodyHeaderHonestyOk : Bool :=
+  bodyOwnershipHonestyOk
+    && (hostEmitBodyId == "HOST-EMIT-BODY")
+    && (productStageId == "SLAKE_SELF_HOST_EMIT_BODY_V0")
 
-/- Theorems live in SystemsLean.LlvmHoldTheorems
-   (same namespace SystemsLean.LlvmHold; long-file split). Parent keeps
-   hold Bools only -- do not import LlvmHoldTheorems here (import cycle). -/
+/-- Body piece honesty: ownership + map id cites.
+    Full BODY_C_BODY (put_char / put_u8 / from_compose) lives in SSOT file; FreestandingEmit
+    embeds file blocks; pure Nix requires put_char / put_u8 tokens. Avoids decide timeout. -/
+def bodyScaffoldHonestyOk : Bool :=
+  bodyOwnershipHonestyOk
+    && (selfHostEmitBodyId == "SELF-HOST-EMIT-BODY")
+    && (bodySsotArtifactPath == "src/systems/emit/host_emit_body_fragment.ssot.txt")
 
-end SystemsLean.LlvmHold
-"#
+/-- Surface canary: stage ids + path cites. -/
+def emitBodySurfaceOk : Bool :=
+  (productStageId == "SLAKE_SELF_HOST_EMIT_BODY_V0")
+    && (hostEmitBodyId == "HOST-EMIT-BODY")
+    && (selfHostEmitBodyId == "SELF-HOST-EMIT-BODY")
+    && (productAcceptancePath == "src/systems/self-host.md")
+    && (productHostModulePath == "src/systems/SystemsLean/EmitBody.lean")
+    && (bodySsotArtifactPath == "src/systems/emit/host_emit_body_fragment.ssot.txt")
 
-end SystemsLean.HostFrontLiveLlvmHold
+/-- emitBodyReady -- emit body host-owned scaffolding readiness.
+    FAIL-CLOSED: surface + header/body piece honesty (cheap).
+    Full scaffolding bulk honesty is FreestandingEmit load + pure Nix BODY_C_* tokens.
+    Greppable: emitBodyReady, HOST-EMIT-BODY, SELF-HOST-EMIT-BODY. -/
+def emitBodyReady : Bool :=
+  emitBodySurfaceOk && bodyHeaderHonestyOk && bodyScaffoldHonestyOk
+
+/-- Full inventory ok (alias of emitBodyReady for inventory greps). -/
+def emitBodyOk : Bool := emitBodyReady
+
+set_option maxRecDepth 32768
+set_option maxHeartbeats 800000
+
+/-- EMIT-BODY-PRODUCT-SMOKE / HOST-EMIT-BODY-SMOKE: stage / map ids. -/
+example : productStageId = "SLAKE_SELF_HOST_EMIT_BODY_V0" := by decide
+example : hostEmitBodyId = "HOST-EMIT-BODY" := by decide
+example : selfHostEmitBodyId = "SELF-HOST-EMIT-BODY" := by decide
+example : productAcceptancePath = "src/systems/self-host.md" := by decide
+example : productHostModulePath = "src/systems/SystemsLean/EmitBody.lean" := by decide
+example : bodySsotArtifactPath = "src/systems/emit/host_emit_body_fragment.ssot.txt" := by decide
+example : emitBodySurfaceOk = true := by decide
+
+/-- HOST-EMIT-BODY-SMOKE: ownership + header decls. -/
+example : bodyOwnershipHonestyOk = true := by decide
+example : bodyHeaderHonestyOk = true := by decide
+
+/-- HOST-EMIT-BODY-SMOKE: scaffolding piece honesty. -/
+example : bodyScaffoldHonestyOk = true := by decide
+
+/-- EMIT-BODY-PRODUCT-SMOKE: full emit readiness. -/
+example : emitBodyReady = true := by decide
+example : emitBodyOk = true := by decide
+
+/-- EMIT-BODY-PRODUCT-SMOKE: free / complete stay false (not claimed on this surface).
+    Ready is product-text ownership only -- not residual free / not complete. -/
+theorem emitBodyReady_true : emitBodyReady = true := by decide
+
+
+end SystemsLean.EmitBody
+"##
+
+end SystemsLean.HostFrontLiveEmitBodyScaffold

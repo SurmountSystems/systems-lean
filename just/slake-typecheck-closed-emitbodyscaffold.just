@@ -1,28 +1,28 @@
-# Modular just: just/slake-typecheck-closed-llvmhold.just -- thin wrapper.
-# Closed-subset Slake typecheck driver for live LlvmHold product wrap
+# Modular just: just/slake-typecheck-closed-emitbodyscaffold.just -- thin wrapper.
+# Closed-subset Slake typecheck driver for live EmitBodyScaffold product wrap
 # (not occupancy Term). Compiles the import chain to oleans under
-# build/slake-typecheck-llvmhold then lean --run. Not mill leanc. Not lake on the step.
+# build/slake-typecheck-emitbodyscaffold then lean --run. Not mill leanc. Not lake on the step.
 # FullHost false. FullBackend false. Not an LLVM backend.
-# This wrap is LlvmHold.lean. It is not LlvmHoldTheorems.lean.
+# This wrap is EmitBodyScaffold.lean. It is not EmitBody.lean.
 # slakeOwnsPackageTypecheck false. Mill 69 of 69. Occupancy 49.
 # Split so this module stays under 1000 lines.
 
-# Driver: SystemsLean/SlakeTypecheckLlvmHold.lean
-# Live: SystemsLean/LlvmHold.lean
-# Greppable: slake-typecheck-llvmhold, SLAKE_TYPECHECK_LLVM_HOLD, HOST-SLAKE-TYPECHECK-LLVM-HOLD, PARSE-LIVE-LLVM-HOLD, LLVM-HOLD-THEOREM.
+# Driver: SystemsLean/SlakeTypecheckEmitBodyScaffold.lean
+# Live: SystemsLean/EmitBodyScaffold.lean
+# Greppable: slake-typecheck-emitbodyscaffold, SLAKE_TYPECHECK_EMIT_BODY_SCAFFOLD, HOST-SLAKE-TYPECHECK-EMIT-BODY-SCAFFOLD, PARSE-LIVE-EMIT-BODY-SCAFFOLD, EMIT-BODY-SCAFFOLD-THEOREM.
 
-slake-typecheck-llvmhold:
+slake-typecheck-emitbodyscaffold:
     #!/usr/bin/env bash
     set -euo pipefail
     root="$(pwd)"
-    if [[ ! -f "$root/src/systems/SystemsLean/SlakeTypecheckLlvmHold.lean" && -f "$root/../src/systems/SystemsLean/SlakeTypecheckLlvmHold.lean" ]]; then
+    if [[ ! -f "$root/src/systems/SystemsLean/SlakeTypecheckEmitBodyScaffold.lean" && -f "$root/../src/systems/SystemsLean/SlakeTypecheckEmitBodyScaffold.lean" ]]; then
       root="$(cd "$root/.." && pwd)"
     fi
     src_root="$root/src/systems"
-    src="$src_root/SystemsLean/SlakeTypecheckLlvmHold.lean"
-    live="$src_root/SystemsLean/LlvmHold.lean"
-    modroot="$root/build/slake-typecheck-llvmhold"
-    echo "SLAKE_TYPECHECK_LLVM_HOLD / HOST-SLAKE-TYPECHECK-LLVM-HOLD"
+    src="$src_root/SystemsLean/SlakeTypecheckEmitBodyScaffold.lean"
+    live="$src_root/SystemsLean/EmitBodyScaffold.lean"
+    modroot="$root/build/slake-typecheck-emitbodyscaffold"
+    echo "SLAKE_TYPECHECK_EMIT_BODY_SCAFFOLD / HOST-SLAKE-TYPECHECK-EMIT-BODY-SCAFFOLD"
     if ! command -v lean >/dev/null 2>&1; then
       if [[ -x /var/lib/elan/bin/lean ]]; then
         export ELAN_HOME="${ELAN_HOME:-/var/lib/elan}"
@@ -32,15 +32,15 @@ slake-typecheck-llvmhold:
       fi
     fi
     if ! command -v lean >/dev/null 2>&1; then
-      echo "slake-typecheck-llvmhold RED: miss lean not on PATH" >&2
+      echo "slake-typecheck-emitbodyscaffold RED: miss lean not on PATH" >&2
       exit 1
     fi
     if [[ ! -f "$src" ]]; then
-      echo "slake-typecheck-llvmhold RED: miss $src" >&2
+      echo "slake-typecheck-emitbodyscaffold RED: miss $src" >&2
       exit 1
     fi
     if [[ ! -f "$live" ]]; then
-      echo "slake-typecheck-llvmhold RED: miss $live" >&2
+      echo "slake-typecheck-emitbodyscaffold RED: miss $live" >&2
       exit 1
     fi
     : "${LEAN_NUM_THREADS:=1}"
@@ -66,8 +66,8 @@ slake-typecheck-llvmhold:
       "$src_root/SystemsLean/HostFrontLiveHostTermSource.lean"
     LEAN_PATH="$modroot" nice -n 19 lean -R "$src_root" -D maxRecDepth=8192 -o "$modroot/SystemsLean/HostFrontLiveHostTerm.olean" \
       "$src_root/SystemsLean/HostFrontLiveHostTerm.lean"
-    LEAN_PATH="$modroot" nice -n 19 lean -R "$src_root" -D maxRecDepth=8192 -o "$modroot/SystemsLean/HostFrontLiveLlvmHoldSource.olean" \
-      "$src_root/SystemsLean/HostFrontLiveLlvmHoldSource.lean"
-    LEAN_PATH="$modroot" nice -n 19 lean -R "$src_root" -D maxRecDepth=8192 -o "$modroot/SystemsLean/HostFrontLiveLlvmHold.olean" \
-      "$src_root/SystemsLean/HostFrontLiveLlvmHold.lean"
+    LEAN_PATH="$modroot" nice -n 19 lean -R "$src_root" -D maxRecDepth=8192 -o "$modroot/SystemsLean/HostFrontLiveEmitBodyScaffoldSource.olean" \
+      "$src_root/SystemsLean/HostFrontLiveEmitBodyScaffoldSource.lean"
+    LEAN_PATH="$modroot" nice -n 19 lean -R "$src_root" -D maxRecDepth=8192 -o "$modroot/SystemsLean/HostFrontLiveEmitBodyScaffold.olean" \
+      "$src_root/SystemsLean/HostFrontLiveEmitBodyScaffold.lean"
     LEAN_PATH="$modroot" nice -n 19 lean -R "$src_root" -D maxRecDepth=8192 --run "$src" "$root"
