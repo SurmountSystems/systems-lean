@@ -4,6 +4,7 @@
   Ready is HostFrontLiveEmitProgramScaffold parse plus HostKernel.kernelCheck
   of live EmitProgramScaffold.lean, not := true, not lake build
   SystemsLean.EmitProgramScaffold.
+  liveRel is EmitProgramScaffold.lean.
   Not mill. Not occupancy name 50. Not FullHost.
   slakeOwnsPackageTypecheck stays false. Mill stays 69 of 69.
   Not Lake-gone. Not the full src/systems package walk.
@@ -59,6 +60,7 @@ def slakeTypecheckEmitProgramScaffoldOwnsPackageTypecheck : Bool := false
     HostFrontLiveEmitProgramScaffold.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckEmitProgramScaffold} =="
+  IO.println s!"liveRel={SystemsLean.HostFrontLiveEmitProgramScaffold.liveRel}"
   IO.println s!"  host={hostId} file={liveEmitProgramScaffoldRel}"
   unless (!slakeTypecheckEmitProgramScaffoldFullHost) do
     IO.eprintln "error: FullHost must stay false"

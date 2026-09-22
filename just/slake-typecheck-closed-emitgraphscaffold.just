@@ -12,6 +12,9 @@ slake-typecheck-emitgraphscaffold:
     #!/usr/bin/env bash
     set -euo pipefail
     root="$(pwd)"
+    if [[ ! -f "$root/src/systems/SystemsLean/SlakeTypecheckEmitGraphScaffold.lean" && -f "$root/../src/systems/SystemsLean/SlakeTypecheckEmitGraphScaffold.lean" ]]; then
+      root="$(cd "$root/.." && pwd)"
+    fi
     src_root="$root/src/systems"
     src="$src_root/SystemsLean/SlakeTypecheckEmitGraphScaffold.lean"
     live="$src_root/SystemsLean/EmitGraphScaffold.lean"

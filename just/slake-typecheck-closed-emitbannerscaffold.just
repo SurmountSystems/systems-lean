@@ -12,6 +12,9 @@ slake-typecheck-emitbannerscaffold:
     #!/usr/bin/env bash
     set -euo pipefail
     root="$(pwd)"
+    if [[ ! -f "$root/src/systems/SystemsLean/SlakeTypecheckEmitBannerScaffold.lean" && -f "$root/../src/systems/SystemsLean/SlakeTypecheckEmitBannerScaffold.lean" ]]; then
+      root="$(cd "$root/.." && pwd)"
+    fi
     src_root="$root/src/systems"
     src="$src_root/SystemsLean/SlakeTypecheckEmitBannerScaffold.lean"
     live="$src_root/SystemsLean/EmitBannerScaffold.lean"

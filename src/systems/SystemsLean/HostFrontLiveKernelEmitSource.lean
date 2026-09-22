@@ -3,7 +3,8 @@
   Side: classic Lean elaborator under src/systems/ (not freestanding C).
   Short role: HostFrontLiveKernelEmitSource. Not occupancy name 50. Not mill 70.
   Greppable: SYSTEMS_LEAN_HOST, PARSE-LIVE-KERNEL-EMIT, liveKernelEmitSource,
-  HOST-FRONT-LIVE-KERNEL-EMIT, UNIT_SURFACE host surface.
+  liveRel, HOST-FRONT-LIVE-KERNEL-EMIT, UNIT_SURFACE host surface.
+  liveRel is KernelEmit.lean on HostFrontLiveKernelEmit.
   Module: SystemsLean.HostFrontLiveKernelEmitSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

@@ -7,7 +7,7 @@
   PARSE-LIVE-EMIT-GRAPH-SCAFFOLD
   HOST-FRONT-LIVE-EMIT-GRAPH-SCAFFOLD
   Greppable: SYSTEMS_LEAN_HOST, liveEmitGraphScaffoldSource,
-  UNIT_SURFACE host surface.
+  liveRel, UNIT_SURFACE host surface.
   Module: SystemsLean.HostFrontLiveEmitGraphScaffoldSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

@@ -3,6 +3,7 @@
   Short role: named driver for just slake-typecheck-kernelemit.
   Ready is HostFrontLiveKernelEmit parse plus HostKernel.kernelCheck of live
   KernelEmit.lean, not := true, not lake build SystemsLean.KernelEmit.
+  liveRel is KernelEmit.lean.
   Not mill. Not occupancy name 50. Not FullHost.
   slakeOwnsPackageTypecheck stays false. Mill stays 69 of 69.
   Not Lake-gone. Not the full src/systems package walk.
@@ -51,6 +52,7 @@ def slakeTypecheckKernelEmitOwnsPackageTypecheck : Bool := false
     HostFrontLiveKernelEmit.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckKernelEmit} =="
+  IO.println s!"liveRel={SystemsLean.HostFrontLiveKernelEmit.liveRel}"
   IO.println s!"  host={hostId} file={liveKernelEmitRel}"
   unless (!slakeTypecheckKernelEmitFullHost) do
     IO.eprintln "error: FullHost must stay false"

@@ -35,7 +35,7 @@
   kernelCheckLiveProductPathPerformStepSource,
   hostFrontLiveProductPathPerformStepReady,
   liveProductPathPerformStepSource,
-  liveProductPathPerformStepRel, UNIT_SURFACE host surface, MULT-0,
+  liveProductPathPerformStepRel, liveRel, UNIT_SURFACE host surface, MULT-0,
   liveParseDoesNotUseMultFixture.
   Module: SystemsLean.HostFrontLiveProductPathPerformStep
   Red/green: closed lean --run on horizon.
@@ -65,9 +65,10 @@ def hostId : String := "HOST-FRONT-LIVE-PRODUCT-PATH-PERFORM-STEP"
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-PRODUCT-PATH-PERFORM-STEP"
 
-/-- Live file relative to repo root. -/
+/-- Live file relative to repo root. Dual-pin path.
+    liveRel is the bare basename from the Source module. -/
 def liveProductPathPerformStepRel : String :=
-  "src/systems/SystemsLean/ProductPathPerformStep.lean"
+  "src/systems/SystemsLean/" ++ liveRel
 
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
@@ -389,8 +390,9 @@ def hostFrontLiveProductPathPerformStepReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_PRODUCT_PATH_PERFORM_STEP_V0")
     && (hostId == "HOST-FRONT-LIVE-PRODUCT-PATH-PERFORM-STEP")
     && (parseId == "PARSE-LIVE-PRODUCT-PATH-PERFORM-STEP")
+    && (liveRel == "ProductPathPerformStep.lean")
     && (liveProductPathPerformStepRel
-      == "src/systems/SystemsLean/ProductPathPerformStep.lean")
+      == "src/systems/SystemsLean/" ++ liveRel)
     && liveParseDoesNotUseMultFixture
     && !hostFrontLiveProductPathPerformStepFullHost
     && !hostFrontLiveProductPathPerformStepResidualFreeClaimed
@@ -422,7 +424,7 @@ def cmdDefNames : List Cmd -> List String
 def runLiveProductPathPerformStep (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: PARSE-LIVE-PRODUCT-PATH-PERFORM-STEP =="
   IO.println s!"  host={hostId} file={liveProductPathPerformStepRel}"
-  IO.println s!"liveRel=ProductPathPerformStep.lean"
+  IO.println s!"liveRel={liveRel}"
   let path := root / liveProductPathPerformStepRel
   unless (<- path.pathExists) do
     IO.eprintln s!"error: missing {liveProductPathPerformStepRel}"
@@ -438,7 +440,7 @@ def runLiveProductPathPerformStep (root : System.FilePath) : IO Unit := do
     throw (IO.userError s!"PARSE-LIVE-PRODUCT-PATH-PERFORM-STEP reject {reason}")
   | FrontResult.accept m =>
     let k := HostKernel.kernelCheck m
-    IO.println s!"PASS PARSE-LIVE-PRODUCT-PATH-PERFORM-STEP ACCEPT liveRel=ProductPathPerformStep.lean cmds={m.commands.length} kernelCheck={k}"
+    IO.println s!"PASS PARSE-LIVE-PRODUCT-PATH-PERFORM-STEP ACCEPT liveRel={liveRel} cmds={m.commands.length} kernelCheck={k}"
     IO.println s!"checkedDefs={String.intercalate " " (cmdDefNames m.commands)}"
     unless k do
       IO.eprintln "error: kernelCheck live ProductPathPerformStep parse false"

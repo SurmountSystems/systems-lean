@@ -80,13 +80,35 @@ This pin does not raise the one-Lake cap. Niceness stays under **Lake host and n
 
 ### Six tagged implementors and Grok 4.7 xhigh (operator 2026-09-21)
 
-Operator: always remember. This supersedes the older three and four tagged implementor caps in this file. Always keep **six tagged implementors**. That cap is six **tagged implementors**, not six L2s total. Dedicated `[lake-coord]`, residual lockstep, and the inventory extra stay extra and do not fill an implementor slot. Before a seventh tagged implementor, wait until one tagged implementor finishes. Raise the cap only when the operator says the new number. On that same turn, update this file, `~/.grok/AGENTS.md`, the living plan by addendum, and `~/.agents/reports/implementor-cap.md`. The same implementor L2 runs its own review L3s. There is no dedicated reviewer L2. Do not mix jobs on one L2. One Lake. This does not raise the one-Lake cap.
+Operator: always remember. This supersedes the older three and four tagged implementor caps in this file.
+
+For Systems Lean wrap work until /home/hunter/.agents/reports/grok-impl-summary-inventory-verify.md is finished, follow the subsection "Five tagged implementors for wrap work (operator 2026-09-22)", not the earlier cap of three tagged implementors.
+
+Always keep **six tagged implementors**. That cap is six **tagged implementors**, not six L2s total. Dedicated `[lake-coord]`, residual lockstep, and the inventory extra stay extra and do not fill an implementor slot. Before a seventh tagged implementor, wait until one tagged implementor finishes. Raise the cap only when the operator says the new number. On that same turn, update this file, `~/.grok/AGENTS.md`, the living plan by addendum, and `~/.agents/reports/implementor-cap.md`. The same implementor L2 runs its own review L3s. There is no dedicated reviewer L2. Do not mix jobs on one L2. One Lake. This does not raise the one-Lake cap.
 
 Every new subagent uses model **grok-4.7** at **xhigh** effort (thorough: do not skip the review, do not treat a red closed-subset `lean --run` as done). The spawn tool's model slug is `grok-4.7`. There is no separate slug for xhigh. Say xhigh in the spawn prompt. Nested L3s inherit `grok-4.7` when the L2 was spawned with that slug; still pass `grok-4.7` on every L3 spawn.
 
 This does not replace the measured per-wrap rate until a few grok-4.7 wraps are reconciled. The Grok 4.6-era average remains **19.4 minutes** and **167.0k** nested tokens per product wrap until that reconcile. Six busy implementors on disjoint files can shorten calendar time. They do not by themselves lower nested tokens per wrap. xhigh can spend more tokens per wrap than that 167.0k estimate. Do not publish a shorter day count as a fact about Grok 4.7 until those wraps are reconciled.
 
 Dual-pin: host `~/.grok/AGENTS.md` section *Six tagged implementors and Grok 4.7 xhigh*.
+
+### Five tagged implementors for wrap work (operator 2026-09-22)
+
+Systems Lean wrap work uses five tagged implementors at once until the unwrapped-product inventory at /home/hunter/.agents/reports/grok-impl-summary-inventory-verify.md is finished, and this supersedes the earlier cap of three tagged implementors for that work. Five also supersedes the 2026-09-21 six-implementor subsection for Systems Lean wrap work until /home/hunter/.agents/reports/grok-impl-summary-inventory-verify.md is finished.
+
+Dedicated lake coordinator and residual lockstep stay extra and do not count as one of the five. One implementor owns one file. Write paths stay disjoint. Do not mix jobs. Do not invent a product file name. Confirm the file exists before wrapping it. Full host elaboration stays false. Occupancy stays 49. Do not claim 50. Do not mill again. The host-tool count stays 69 of 69.
+
+Leave earlier paragraphs that state a cap of three tagged implementors in place. For wrap work until that inventory is finished, follow this subsection, not the cap of three.
+
+### Five remains the living cap (operator 2026-09-22, later the same hour)
+
+The living cap is five tagged implementor L2s at once, always, until the unwrapped-product inventory at /home/hunter/.agents/reports/grok-impl-summary-inventory-verify.md is finished. Four was a mistype from the operator, corrected in the same hour. Do not delete the older three, five, or six paragraphs. Dedicated lake coordinator and residual lockstep stay extra and do not count as one of the five. For that wrap work, follow this note for the count, not a cap of four.
+
+Before each wrap starts, state the per-job wall, the nested-token estimate, the five-wide calendar estimate, and the remaining-inventory estimate, with every number spelled. Do not write the word same as a stand-in for a number.
+
+### 2026-09-22
+
+Operator 2026-09-22 says keep five implementor L2 coordinators until /home/hunter/.agents/reports/remaining-unwrapped-2026-09-22.md has no file left that lacks a parser and a driver. The recount is extra and does not fill one of the five implementor slots. Every status includes a per-job estimate, a reconcile, and a remaining table. Those statuses spell every number. A new wrap estimate is 24.0 minutes and 1.64m nested tokens. A finish of an existing parser is 15 minutes and 800.0k nested tokens, and 800.0k is a guess. A check every 30 minutes fills empty slots and does not double-write a file.
 
 ### Wrap targets come from the inventory on disk (operator 2026-09-21)
 
@@ -101,6 +123,8 @@ Inventory correctness is its own L2 extra. It does not fill a tagged implementor
 That inventory L2 must spawn L3s that point at **every** listed product path, run `test -f`, record `wc -l` when the file exists, and research missing names with git history (`git log --follow`, `git log --diff-filter=D`, basename search). One paragraph of what happened to each missing name. Do not invent a replacement file.
 
 Living remaining integer is parser-existence remaining in `/home/hunter/.agents/reports/grok-impl-summary-inventory-verify.md` (third review PASS **228**: 147 unwrapped seeds plus 38 unwrapped extras plus 43 unwrapped mill Mains). The old 313 headline and the 295 freeze are stale. Invented peels are not remaining. Missing-file skips leave the remaining integer unchanged until a real product file gains a living HostFrontLive parser plus SlakeTypecheck driver.
+
+Measurement 2026-09-22 supersedes the 228 figure in the sentence above. That sentence stays. The living remaining integer is 117: 81 seeds, 19 extras, and 17 mill Mains. Linear.lean and IrGraph.lean stay out of that count. The table is in `/home/hunter/.agents/reports/grok-impl-summary-inventory-verify.md` under Measurement 2026-09-22.
 
 ---
 

@@ -54,7 +54,7 @@
   parseLiveEmitBannerScaffoldSource,
   kernelCheckLiveEmitBannerScaffoldSource,
   hostFrontLiveEmitBannerScaffoldReady, liveEmitBannerScaffoldSource,
-  liveEmitBannerScaffoldRel, UNIT_SURFACE host surface, MULT-0,
+  liveRel, liveEmitBannerScaffoldRel, UNIT_SURFACE host surface, MULT-0,
   liveParseDoesNotUseMultFixture, EMIT-BANNER-SCAFFOLD.
   Module: SystemsLean.HostFrontLiveEmitBannerScaffold
   Red/green: dest-missing until barrel; lake build
@@ -85,9 +85,12 @@ def hostId : String := "HOST-FRONT-LIVE-EMIT-BANNER-SCAFFOLD"
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-EMIT-BANNER-SCAFFOLD"
 
+/-- Live file basename. -/
+def liveRel : String := "EmitBannerScaffold.lean"
+
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveEmitBannerScaffoldRel : String :=
-  "src/systems/SystemsLean/EmitBannerScaffold.lean"
+  "src/systems/SystemsLean/" ++ liveRel
 
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
@@ -352,6 +355,7 @@ def hostFrontLiveEmitBannerScaffoldReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_EMIT_BANNER_SCAFFOLD_V0")
     && (hostId == "HOST-FRONT-LIVE-EMIT-BANNER-SCAFFOLD")
     && (parseId == "PARSE-LIVE-EMIT-BANNER-SCAFFOLD")
+    && (liveRel == "EmitBannerScaffold.lean")
     && (liveEmitBannerScaffoldRel
       == "src/systems/SystemsLean/EmitBannerScaffold.lean")
     && liveParseDoesNotUseMultFixture
@@ -376,6 +380,7 @@ def liveParseRejectsEmpty : Bool :=
 def runLiveEmitBannerScaffold (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: PARSE-LIVE-EMIT-BANNER-SCAFFOLD =="
   IO.println s!"  host={hostId} file={liveEmitBannerScaffoldRel}"
+  IO.println s!"liveRel={liveRel}"
   let path := root / liveEmitBannerScaffoldRel
   unless (<- path.pathExists) do
     IO.eprintln s!"error: missing {liveEmitBannerScaffoldRel}"
@@ -398,6 +403,9 @@ def runLiveEmitBannerScaffold (root : System.FilePath) : IO Unit := do
     unless hostFrontLiveEmitBannerScaffoldReady do
       IO.eprintln "error: hostFrontLiveEmitBannerScaffoldReady false"
       throw (IO.userError "hostFrontLiveEmitBannerScaffoldReady false")
+    unless liveParseRejectsEmpty do
+      IO.eprintln "error: empty EmitBannerScaffold source was accepted"
+      throw (IO.userError "empty EmitBannerScaffold source was accepted")
     IO.println s!"GREEN {stageId}: live EmitBannerScaffold.lean parse kernelCheck; not mill 70"
 
 def main (args : List String) : IO UInt32 := do

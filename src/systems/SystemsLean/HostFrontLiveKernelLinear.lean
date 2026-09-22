@@ -12,9 +12,8 @@
   Spec (readable):
   - parseLiveKernelLinearSource turns live KernelLinear.lean text into HostTerm.Module.
   - Module name is SystemsLean.KernelLinear even without a module line.
-  - kernelCheckLiveKernelLinearSource is HostKernel.kernelCheckN of that parse
-    with Mult / Types / IrProgram / CompilePath / HostCompose import seeds
-    (HostKernel.lean is locked; seed locally).
+  - kernelCheckLiveKernelLinearSource is HostKernel.kernelCheck of that parse.
+    Empty start environment. No local seedImports bypass.
   - Skip theorems, examples, set_option, open, un-kernelable match/let/app
     bodies and dotted Types.mkNode? / HostCompose.* / .isNone / .linear.live.
     Keep kernelable string/Nat defs, dotted imports, namespace, end.
@@ -29,7 +28,8 @@
   SLAKE_HOST_FRONT_LIVE_KERNEL_LINEAR_V0,
   PARSE-LIVE-KERNEL-LINEAR, parseLiveKernelLinearSource,
   kernelCheckLiveKernelLinearSource,
-  hostFrontLiveKernelLinearReady, liveKernelLinearSource, liveKernelLinearRel,
+  hostFrontLiveKernelLinearReady, liveKernelLinearSource, liveRel,
+  liveKernelLinearRel,
   UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveKernelLinear
   Red/green: dest-missing until barrel; lean --run SlakeTypecheckKernelLinear;
@@ -60,8 +60,12 @@ def hostId : String := "HOST-FRONT-LIVE-KERNEL-LINEAR"
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-KERNEL-LINEAR"
 
+/-- Live file basename. -/
+def liveRel : String := "KernelLinear.lean"
+
 /-- Live file relative to repo root. Dual-pin path. -/
-def liveKernelLinearRel : String := "src/systems/SystemsLean/KernelLinear.lean"
+def liveKernelLinearRel : String :=
+  "src/systems/SystemsLean/" ++ liveRel
 
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
@@ -116,18 +120,6 @@ def parseDottedName : Nat -> List String -> Option (Prod String (List String))
         | some (more, rest3) => some (a ++ "." ++ more, rest3)
         | none => none
       | _ => some (a, rest)
-
-/-- Kernel env for Mult / Types / IrProgram / CompilePath / HostCompose imports. -/
-def seedImports (env : Env) : Env :=
-  ("mult0", HostType.named (HostTerm.n "Mult"))
-    :: ("mult1", HostType.named (HostTerm.n "Mult"))
-    :: ("multOmega", HostType.named (HostTerm.n "Mult"))
-    :: ("isValidTag", HostType.arrow HostType.nat HostType.bool)
-    :: ("programCompileReady", HostType.arrow (HostType.named (HostTerm.n "Program")) HostType.bool)
-    :: ("gradeSurfaceOk", HostType.bool)
-    :: ("checkFailClosed", HostType.arrow (HostType.named (HostTerm.n "Host")) HostType.bool)
-    :: ("extractOkFs", HostType.arrow (HostType.named (HostTerm.n "Host")) HostType.bool)
-    :: env
 
 /-- If rest is not a command start, skip to the next command. -/
 def skipNonCmd (fuel : Nat) (rest : List String) : List String :=
@@ -277,13 +269,11 @@ def parseLiveKernelLinearSource (src : String) : FrontResult :=
         if isWellFormed m then FrontResult.accept m
         else FrontResult.reject reasonNotWellFormed
 
-/-- Kernel-check live KernelLinear parse with import seeds.
+/-- Kernel-check live KernelLinear parse. Not a fixture.
     Greppable: kernelCheckLiveKernelLinearSource, PARSE-LIVE-KERNEL-LINEAR. -/
 def kernelCheckLiveKernelLinearSource (src : String) : Bool :=
   match parseLiveKernelLinearSource src with
-  | FrontResult.accept m =>
-    isWellFormed m
-      && kernelCheckN kernelFuel (seedImports []) [] m.commands
+  | FrontResult.accept m => HostKernel.kernelCheck m
   | FrontResult.reject _ => false
 
 /-- Accepted live module when parse succeeds. -/
@@ -343,6 +333,7 @@ def hostFrontLiveKernelLinearReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_KERNEL_LINEAR_V0")
     && (hostId == "HOST-FRONT-LIVE-KERNEL-LINEAR")
     && (parseId == "PARSE-LIVE-KERNEL-LINEAR")
+    && (liveRel == "KernelLinear.lean")
     && (liveKernelLinearRel == "src/systems/SystemsLean/KernelLinear.lean")
     && liveParseDoesNotUseMultFixture
     && !hostFrontLiveKernelLinearFullHost
@@ -365,6 +356,7 @@ def liveParseRejectsEmpty : Bool :=
 def runLiveKernelLinear (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: PARSE-LIVE-KERNEL-LINEAR =="
   IO.println s!"  host={hostId} file={liveKernelLinearRel}"
+  IO.println s!"liveRel={liveRel}"
   let path := root / liveKernelLinearRel
   unless (<- path.pathExists) do
     IO.eprintln s!"error: missing {liveKernelLinearRel}"
@@ -379,9 +371,7 @@ def runLiveKernelLinear (root : System.FilePath) : IO Unit := do
     IO.eprintln s!"error: PARSE-LIVE-KERNEL-LINEAR reject {reason}"
     throw (IO.userError s!"PARSE-LIVE-KERNEL-LINEAR reject {reason}")
   | FrontResult.accept m =>
-    let k :=
-      isWellFormed m
-        && kernelCheckN kernelFuel (seedImports []) [] m.commands
+    let k := HostKernel.kernelCheck m
     IO.println s!"PASS PARSE-LIVE-KERNEL-LINEAR ACCEPT cmds={m.commands.length} kernelCheck={k}"
     unless k do
       IO.eprintln "error: kernelCheck live KernelLinear parse false"

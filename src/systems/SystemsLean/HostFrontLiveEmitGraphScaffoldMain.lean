@@ -11,6 +11,7 @@
   Greppable: SystemsLean.HostFrontLiveEmitGraphScaffoldMain,
   parseLiveEmitGraphScaffoldSource,
   kernelCheckLiveEmitGraphScaffoldSource,
+  liveRel,
   SYSTEMS_LEAN_HOST.
   Module: SystemsLean.HostFrontLiveEmitGraphScaffoldMain
   Not mill 70. Not occupancy name 50. Not FullHost.

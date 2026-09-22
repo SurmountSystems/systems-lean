@@ -27,7 +27,8 @@
   SLAKE_HOST_FRONT_LIVE_BOOTSTRAP_HONESTY_V0,
   PARSE-LIVE-BOOTSTRAP-HONESTY, parseLiveBootstrapHonestySource,
   kernelCheckLiveBootstrapHonestySource,
-  hostFrontLiveBootstrapHonestyReady, liveBootstrapHonestySource, liveBootstrapHonestyRel,
+  hostFrontLiveBootstrapHonestyReady, liveBootstrapHonestySource, liveRel,
+  liveBootstrapHonestyRel,
   UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveBootstrapHonesty
   Red/green: just slake-typecheck-bootstraphonesty; dests skipped;
@@ -58,8 +59,12 @@ def hostId : String := "HOST-FRONT-LIVE-BOOTSTRAP-HONESTY"
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-BOOTSTRAP-HONESTY"
 
+/-- Live file basename. Not a path. -/
+def liveRel : String := "BootstrapHonesty.lean"
+
 /-- Live file relative to repo root. Dual-pin path. -/
-def liveBootstrapHonestyRel : String := "src/systems/SystemsLean/BootstrapHonesty.lean"
+def liveBootstrapHonestyRel : String :=
+  "src/systems/SystemsLean/" ++ liveRel
 
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
@@ -378,6 +383,7 @@ def hostFrontLiveBootstrapHonestyReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_BOOTSTRAP_HONESTY_V0")
     && (hostId == "HOST-FRONT-LIVE-BOOTSTRAP-HONESTY")
     && (parseId == "PARSE-LIVE-BOOTSTRAP-HONESTY")
+    && (liveRel == "BootstrapHonesty.lean")
     && (liveBootstrapHonestyRel == "src/systems/SystemsLean/BootstrapHonesty.lean")
     && liveParseDoesNotUseMultFixture
     && !hostFrontLiveBootstrapHonestyFullHost
@@ -399,7 +405,8 @@ def liveParseRejectsEmpty : Bool :=
 
 def runLiveBootstrapHonesty (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: PARSE-LIVE-BOOTSTRAP-HONESTY =="
-  IO.println s!"  host={hostId} file={liveBootstrapHonestyRel} liveRel={liveBootstrapHonestyRel}"
+  IO.println s!"  host={hostId} file={liveBootstrapHonestyRel}"
+  IO.println s!"liveRel={liveRel}"
   let path := root / liveBootstrapHonestyRel
   unless (<- path.pathExists) do
     IO.eprintln s!"error: missing {liveBootstrapHonestyRel}"

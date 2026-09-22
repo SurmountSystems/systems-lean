@@ -51,6 +51,7 @@ def slakeTypecheckKernelLinearOwnsPackageTypecheck : Bool := false
     HostFrontLiveKernelLinear.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckKernelLinear} =="
+  IO.println s!"liveRel={SystemsLean.HostFrontLiveKernelLinear.liveRel}"
   IO.println s!"  host={hostId} file={liveKernelLinearRel}"
   unless (!slakeTypecheckKernelLinearFullHost) do
     IO.eprintln "error: FullHost must stay false"

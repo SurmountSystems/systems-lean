@@ -10,7 +10,7 @@
   HOST-FRONT-LIVE-PRODUCT-PATH-PERFORM-STEP
   SLAKE_HOST_FRONT_LIVE_PRODUCT_PATH_PERFORM_STEP_V0
   Greppable: SYSTEMS_LEAN_HOST, liveProductPathPerformStepSource,
-  UNIT_SURFACE host surface.
+  liveRel, UNIT_SURFACE host surface.
   Module: SystemsLean.HostFrontLiveProductPathPerformStepSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.
@@ -168,5 +168,8 @@ end SystemsLean.ProductPathPerformStep
 -- No top-level main so SelfApplyFs may import Ok / PartialReady bulk without
 -- main clash.
 "#
+
+/-- Live file basename. Bare basename only. Not a path. -/
+def liveRel : String := "ProductPathPerformStep.lean"
 
 end SystemsLean.HostFrontLiveProductPathPerformStep

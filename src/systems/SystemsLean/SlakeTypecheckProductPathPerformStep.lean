@@ -4,6 +4,7 @@
   Ready is HostFrontLiveProductPathPerformStep parse plus HostKernel.kernelCheck
   of live ProductPathPerformStep.lean, not := true, not lake build
   SystemsLean.ProductPathPerformStep.
+  liveRel is ProductPathPerformStep.lean.
   Not mill. Not occupancy name 50. Not FullHost.
   slakeOwnsPackageTypecheck stays false. Mill stays 69 of 69.
   Not Lake-gone. Not the full src/systems package walk.
@@ -61,8 +62,8 @@ def slakeTypecheckProductPathPerformStepOwnsPackageTypecheck : Bool := false
     HostFrontLiveProductPathPerformStep.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckProductPathPerformStep} =="
+  IO.println s!"liveRel={SystemsLean.HostFrontLiveProductPathPerformStep.liveRel}"
   IO.println s!"  host={hostId} file={liveProductPathPerformStepRel}"
-  IO.println s!"liveRel=ProductPathPerformStep.lean"
   unless (!slakeTypecheckProductPathPerformStepFullHost) do
     IO.eprintln "error: FullHost must stay false"
     return 1

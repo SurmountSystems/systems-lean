@@ -7,7 +7,7 @@
   HostFrontLiveKernelEmitMain, HOST-FRONT-LIVE-KERNEL-EMIT,
   SLAKE_HOST_FRONT_LIVE_KERNEL_EMIT_V0, PARSE-LIVE-KERNEL-EMIT,
   parseLiveKernelEmitSource, kernelCheckLiveKernelEmitSource,
-  SYSTEMS_LEAN_HOST.
+  liveRel, SYSTEMS_LEAN_HOST.
   Module: SystemsLean.HostFrontLiveKernelEmitMain
   Not mill 70. Not occupancy name 50. Not FullHost.
   Module must stay ASCII. Not freestanding residual free. Not PROVABLY. SKELETON.

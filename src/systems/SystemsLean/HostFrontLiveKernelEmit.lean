@@ -27,7 +27,7 @@
   Greppable: SYSTEMS_LEAN_HOST, HOST-FRONT-LIVE-KERNEL-EMIT,
   SLAKE_HOST_FRONT_LIVE_KERNEL_EMIT_V0, PARSE-LIVE-KERNEL-EMIT,
   parseLiveKernelEmitSource, kernelCheckLiveKernelEmitSource,
-  hostFrontLiveKernelEmitReady, liveKernelEmitSource,
+  hostFrontLiveKernelEmitReady, liveKernelEmitSource, liveRel,
   liveKernelEmitRel, UNIT_SURFACE host surface, MULT-0,
   liveParseDoesNotUseMultFixture.
   Module: SystemsLean.HostFrontLiveKernelEmit
@@ -59,9 +59,12 @@ def hostId : String := "HOST-FRONT-LIVE-KERNEL-EMIT"
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-KERNEL-EMIT"
 
+/-- Live basename. Greppable: liveRel. Must be KernelEmit.lean. -/
+def liveRel : String := "KernelEmit.lean"
+
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveKernelEmitRel : String :=
-  "src/systems/SystemsLean/KernelEmit.lean"
+  "src/systems/SystemsLean/" ++ liveRel
 
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
@@ -297,6 +300,7 @@ def hostFrontLiveKernelEmitReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_KERNEL_EMIT_V0")
     && (hostId == "HOST-FRONT-LIVE-KERNEL-EMIT")
     && (parseId == "PARSE-LIVE-KERNEL-EMIT")
+    && (liveRel == "KernelEmit.lean")
     && (liveKernelEmitRel
       == "src/systems/SystemsLean/KernelEmit.lean")
     && liveParseDoesNotUseMultFixture
@@ -320,6 +324,7 @@ def liveParseRejectsEmpty : Bool :=
 def runLiveKernelEmit (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: PARSE-LIVE-KERNEL-EMIT =="
   IO.println s!"  host={hostId} file={liveKernelEmitRel}"
+  IO.println s!"liveRel={liveRel}"
   let path := root / liveKernelEmitRel
   unless (<- path.pathExists) do
     IO.eprintln s!"error: missing {liveKernelEmitRel}"

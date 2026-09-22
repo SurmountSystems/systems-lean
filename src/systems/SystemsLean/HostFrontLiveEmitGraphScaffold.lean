@@ -34,9 +34,9 @@
   - Imports/opens skip-fold: dotted import kept; open skipped.
     parseOneCmd none => skipUntilCmd. Drop defs whose body fails termKnownN.
   - private is not isCmdKw; peel private then skip or drop the def.
-  - Living namespace lastSeg is EmitGraph (shared with EmitGraph.lean).
-    Identity uses wrap lastSeg EmitGraphScaffold plus live rel
-    EmitGraphScaffold.lean.
+  - Living namespace is SystemsLean.EmitGraph (shared lastSeg with
+    EmitGraph.lean). Identity uses wrap lastSeg EmitGraphScaffold.
+  - liveRel is the exact basename EmitGraphScaffold.lean.
   - Live product has no import line; parse keeps namespace plus end plus
     kernelable stage/path string defs.
 
@@ -58,7 +58,7 @@
   parseLiveEmitGraphScaffoldSource,
   kernelCheckLiveEmitGraphScaffoldSource,
   hostFrontLiveEmitGraphScaffoldReady, liveEmitGraphScaffoldSource,
-  liveEmitGraphScaffoldRel, UNIT_SURFACE host surface,
+  liveRel, liveEmitGraphScaffoldRel, UNIT_SURFACE host surface,
   liveParseDoesNotUseMultFixture, EMIT-GRAPH-SCAFFOLD.
   Module: SystemsLean.HostFrontLiveEmitGraphScaffold
   Red/green: dest-missing until barrel; lake build
@@ -89,9 +89,12 @@ def hostId : String := "HOST-FRONT-LIVE-EMIT-GRAPH-SCAFFOLD"
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-EMIT-GRAPH-SCAFFOLD"
 
+/-- Live file basename. -/
+def liveRel : String := "EmitGraphScaffold.lean"
+
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveEmitGraphScaffoldRel : String :=
-  "src/systems/SystemsLean/EmitGraphScaffold.lean"
+  "src/systems/SystemsLean/" ++ liveRel
 
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
@@ -110,6 +113,20 @@ def liveEmitGraphScaffoldParseFuel : Nat := 256
 
 /-- Skip fuel for theorem / example / un-kernelable tails. -/
 def liveEmitGraphScaffoldSkipFuel : Nat := 8192
+
+/-- Kept commands: namespace, six literal string defs, emitGraphSurfaceOk,
+    and end. String-concat defs are skip-folded. No import.
+    From EmitGraphScaffold.lean. -/
+def liveEmitGraphScaffoldKeptCmds : Nat := 9
+
+/-- theorem keyword count. One theorem: emitGraphReady_true. -/
+def liveEmitGraphScaffoldTheoremCount : Nat := 1
+
+/-- example keyword count. Twelve decide examples. -/
+def liveEmitGraphScaffoldExampleCount : Nat := 12
+
+/-- set_option keyword count. Two set_option lines. -/
+def liveEmitGraphScaffoldSetOptionCount : Nat := 2
 
 /-- Dotted ident `SystemsLean . EmitGraphScaffold`. -/
 def parseDottedName : Nat -> List String -> Option (Prod String (List String))
@@ -263,6 +280,13 @@ def toksHaveTheoremNamed : Nat -> List String -> String -> Bool
     t == nm || toksHaveTheoremNamed n rest nm
   | Nat.succ n, _ :: rest, nm => toksHaveTheoremNamed n rest nm
 
+/-- Count a command keyword. Tail-recursive on the token list. -/
+def toksCountKw : Nat -> List String -> String -> Nat -> Nat
+  | 0, _, _, acc => acc
+  | Nat.succ _, [], _, acc => acc
+  | Nat.succ n, t :: rest, kw, acc =>
+    toksCountKw n rest kw (if t == kw then acc + 1 else acc)
+
 /-- Parse live EmitGraphScaffold.lean text.
     Greppable: parseLiveEmitGraphScaffoldSource,
     PARSE-LIVE-EMIT-GRAPH-SCAFFOLD. -/
@@ -306,14 +330,11 @@ def liveParseHasNoCheckCmd : Bool :=
       | Cmd.check _ _ => true
       | _ => false)
 
-/-- Live parse command count (namespace / end plus kernelable string defs).
-    Real lower bound, not hardcoded true. Un-kernelable string-concat defs,
-    examples, and theorem emitGraphReady_true skipped. Live product has no
-    import. Horizon lean --run measured cmds=9: namespace plus end plus
-    seven kernelable stage/path/surface defs. -/
+/-- Live parse command count. Literal defs are kept.
+    Namespace, end, and kernel-checkable defs. Not a lower bound. -/
 def liveParseCmdCountOk : Bool :=
   match liveEmitGraphScaffoldParsed? with
-  | some m => m.commands.length >= 9
+  | some m => m.commands.length == liveEmitGraphScaffoldKeptCmds
   | none => false
 
 /-- Wrap module lastSeg is EmitGraphScaffold (no module line in the live file). -/
@@ -322,14 +343,43 @@ def liveParseHasEmitGraphScaffoldModule : Bool :=
   | none => false
   | some m => lastSeg m.name.raw == "EmitGraphScaffold"
 
-/-- Live parse has the living EmitGraph namespace command. -/
+/-- Literal defs the kernel must keep. String-concat fragments are not
+    in this list. emitGraphSurfaceOk only names those literals. -/
+def liveParseHasLiteralDefs : Bool :=
+  match liveEmitGraphScaffoldParsed? with
+  | none => false
+  | some m =>
+    let has (nm : String) : Bool :=
+      m.commands.any fun c =>
+        match c with
+        | Cmd.def_ x _ _ => x.raw == nm
+        | _ => false
+    has "stageId"
+      && has "hostEmitGraphId"
+      && has "selfHostEmitGraphId"
+      && has "acceptancePath"
+      && has "hostModulePath"
+      && has "ssotArtifactPath"
+      && has "emitGraphSurfaceOk"
+
+/-- Live parse has namespace SystemsLean.EmitGraph. -/
 def liveParseHasEmitGraphNs : Bool :=
   match liveEmitGraphScaffoldParsed? with
   | none => false
   | some m =>
     m.commands.any fun c =>
       match c with
-      | Cmd.namespace x => lastSeg x.raw == "EmitGraph"
+      | Cmd.namespace x => x.raw == "SystemsLean.EmitGraph"
+      | _ => false
+
+/-- Live parse ends namespace SystemsLean.EmitGraph. -/
+def liveParseHasEmitGraphEnd : Bool :=
+  match liveEmitGraphScaffoldParsed? with
+  | none => false
+  | some m =>
+    m.commands.any fun c =>
+      match c with
+      | Cmd.endNamespace x => x.raw == "SystemsLean.EmitGraph"
       | _ => false
 
 /-- Live product has no import; parse must not invent one. -/
@@ -359,6 +409,66 @@ def liveParseHasCoreDefs : Bool :=
       && toksHaveTheoremNamed liveEmitGraphScaffoldSkipFuel toks
         "emitGraphReady_true"
 
+/-- Keyword counts from the live text. -/
+def liveParseKwCountsOk : Bool :=
+  match liveEmitGraphScaffoldParsed? with
+  | none => false
+  | some _ =>
+    let toks := tokenizeHostTerm (stripComments liveEmitGraphScaffoldSource)
+    let fuel := liveEmitGraphScaffoldSkipFuel
+    toksCountKw fuel toks "theorem" 0 == liveEmitGraphScaffoldTheoremCount
+      && toksCountKw fuel toks "example" 0 == liveEmitGraphScaffoldExampleCount
+      && toksCountKw fuel toks "set_option" 0
+        == liveEmitGraphScaffoldSetOptionCount
+
+/-- Namespace needle with a trailing newline. -/
+def needleNamespace : String := "namespace SystemsLean.EmitGraph\n"
+
+/-- stageId def needle with a trailing newline. -/
+def needleStageId : String :=
+  "def stageId : String := \"SLAKE_SELF_HOST_EMIT_GRAPH_V0\"\n"
+
+/-- hostEmitGraphId def needle with a trailing newline. -/
+def needleHostEmitGraphId : String :=
+  "def hostEmitGraphId : String := \"HOST-EMIT-GRAPH\"\n"
+
+/-- selfHostEmitGraphId def needle with a trailing newline. -/
+def needleSelfHostEmitGraphId : String :=
+  "def selfHostEmitGraphId : String := \"SELF-HOST-EMIT-GRAPH\"\n"
+
+/-- acceptancePath def needle with a trailing newline. -/
+def needleAcceptancePath : String :=
+  "def acceptancePath : String := \"src/systems/self-host.md\"\n"
+
+/-- hostModulePath def needle with a trailing newline. -/
+def needleHostModulePath : String :=
+  "def hostModulePath : String := \"src/systems/SystemsLean/EmitGraph.lean\"\n"
+
+/-- ssotArtifactPath def needle with a trailing newline. -/
+def needleSsotArtifactPath : String :=
+  "def ssotArtifactPath : String := \"src/systems/emit/host_emit_graph.ssot.txt\"\n"
+
+/-- Theorem needle with a trailing newline. -/
+def needleTheorem : String :=
+  "theorem emitGraphReady_true : emitGraphReady = true := by decide\n"
+
+/-- End needle with a trailing newline. -/
+def needleEnd : String := "end SystemsLean.EmitGraph\n"
+
+/-- Each needle occurs in the pinned live source. splitOn, not a prefix check.
+    No import needle. graphHeaderFragment is not a token-walk needle. -/
+def liveNeedlesOk : Bool :=
+  let src := liveEmitGraphScaffoldSource
+  (src.splitOn needleNamespace).length > 1
+    && (src.splitOn needleStageId).length > 1
+    && (src.splitOn needleHostEmitGraphId).length > 1
+    && (src.splitOn needleSelfHostEmitGraphId).length > 1
+    && (src.splitOn needleAcceptancePath).length > 1
+    && (src.splitOn needleHostModulePath).length > 1
+    && (src.splitOn needleSsotArtifactPath).length > 1
+    && (src.splitOn needleTheorem).length > 1
+    && (src.splitOn needleEnd).length > 1
+
 /-- End-to-end ready: live text parse kernel-checks.
     Greppable: hostFrontLiveEmitGraphScaffoldReady,
     PARSE-LIVE-EMIT-GRAPH-SCAFFOLD,
@@ -368,6 +478,7 @@ def hostFrontLiveEmitGraphScaffoldReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_EMIT_GRAPH_SCAFFOLD_V0")
     && (hostId == "HOST-FRONT-LIVE-EMIT-GRAPH-SCAFFOLD")
     && (parseId == "PARSE-LIVE-EMIT-GRAPH-SCAFFOLD")
+    && (liveRel == "EmitGraphScaffold.lean")
     && (liveEmitGraphScaffoldRel
       == "src/systems/SystemsLean/EmitGraphScaffold.lean")
     && liveParseDoesNotUseMultFixture
@@ -377,9 +488,13 @@ def hostFrontLiveEmitGraphScaffoldReady : Bool :=
     && kernelCheckLiveEmitGraphScaffoldSource liveEmitGraphScaffoldSource
     && liveParseHasNoCheckCmd
     && liveParseCmdCountOk
+    && liveParseHasLiteralDefs
     && liveParseHasEmitGraphScaffoldModule
     && liveParseHasEmitGraphNs
+    && liveParseHasEmitGraphEnd
     && liveParseHasNoImport
+    && liveParseKwCountsOk
+    && liveNeedlesOk
     && liveParseHasCoreDefs
 
 /-- Empty source rejects. -/
@@ -393,6 +508,7 @@ def liveParseRejectsEmpty : Bool :=
 def runLiveEmitGraphScaffold (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: PARSE-LIVE-EMIT-GRAPH-SCAFFOLD =="
   IO.println s!"  host={hostId} file={liveEmitGraphScaffoldRel}"
+  IO.println s!"liveRel={liveRel}"
   let path := root / liveEmitGraphScaffoldRel
   unless (<- path.pathExists) do
     IO.eprintln s!"error: missing {liveEmitGraphScaffoldRel}"
