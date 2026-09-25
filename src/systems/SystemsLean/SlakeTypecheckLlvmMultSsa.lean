@@ -67,6 +67,7 @@ def slakeTypecheckLlvmMultSsaOwnsPackageTypecheck : Bool := false
     HostFrontLiveLlvmMultSsa.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckLlvmMultSsa} =="
+  IO.println s!"liveRel={SystemsLean.HostFrontLiveLlvmMultSsa.liveRel}"
   IO.println s!"  host={hostId} file={liveLlvmMultSsaRel}"
   unless (!slakeTypecheckLlvmMultSsaFullHost) do
     IO.eprintln "error: FullHost must stay false"

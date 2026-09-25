@@ -74,6 +74,9 @@ def parseId : String := "PARSE-LIVE-TYPESFOREIGNLINK"
 def liveTypesForeignLinkRel : String :=
   "src/systems/SystemsLean/TypesForeignLink.lean"
 
+/-- Live basename. Filename only, not a path. -/
+def liveRel : String := "TypesForeignLink.lean"
+
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
 

@@ -61,6 +61,7 @@ def slakeTypecheckProductPathPerformTheoremsOwnsPackageTypecheck : Bool := false
     HostFrontLiveProductPathPerformTheorems.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckProductPathPerformTheorems} =="
+  IO.println s!"liveRel={SystemsLean.HostFrontLiveProductPathPerformTheorems.liveRel}"
   IO.println s!"  host={hostId} file={liveProductPathPerformTheoremsRel}"
   unless (!slakeTypecheckProductPathPerformTheoremsFullHost) do
     IO.eprintln "error: FullHost must stay false"

@@ -65,7 +65,7 @@
   parseLiveHostCheckMainSource,
   kernelCheckLiveHostCheckMainSource,
   hostFrontLiveHostCheckMainReady, liveHostCheckMainSource,
-  liveHostCheckMainRel, UNIT_SURFACE host surface, MULT-0,
+  liveHostCheckMainRel, liveRel, UNIT_SURFACE host surface, MULT-0,
   liveParseDoesNotUseMultFixture.
   Module: SystemsLean.HostFrontLiveHostCheckMain
   Red/green: dests-skipped until barrel; lake build
@@ -96,7 +96,11 @@ def hostId : String := "HOST-FRONT-LIVE-HOST-CHECK-MAIN"
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-HOST-CHECK-MAIN"
 
-/-- Live file relative to repo root. Dual-pin path. -/
+/-- Live basename. Greppable: liveRel. Must be HostCheckMain.lean. -/
+def liveRel : String := "HostCheckMain.lean"
+
+/-- Live file relative to repo root. Dual-pin path.
+    Disk reads stay on this path. liveRel stays the bare basename. -/
 def liveHostCheckMainRel : String :=
   "src/systems/SystemsLean/HostCheckMain.lean"
 
@@ -467,6 +471,7 @@ def hostFrontLiveHostCheckMainReady : Bool :=
     && (parseId == "PARSE-LIVE-HOST-CHECK-MAIN")
     && (liveHostCheckMainRel
       == "src/systems/SystemsLean/HostCheckMain.lean")
+    && (liveRel == "HostCheckMain.lean")
     && liveParseDoesNotUseMultFixture
     && !hostFrontLiveHostCheckMainFullHost
     && !hostFrontLiveHostCheckMainResidualFreeClaimed
@@ -489,6 +494,10 @@ def liveParseRejectsEmpty : Bool :=
 def runLiveHostCheckMain (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: PARSE-LIVE-HOST-CHECK-MAIN =="
   IO.println s!"  host={hostId} file={liveHostCheckMainRel}"
+  IO.println s!"liveRel={liveRel}"
+  unless (liveRel == "HostCheckMain.lean") do
+    IO.eprintln "error: liveRel must be HostCheckMain.lean"
+    throw (IO.userError "liveRel must be HostCheckMain.lean")
   let path := root / liveHostCheckMainRel
   unless (<- path.pathExists) do
     IO.eprintln s!"error: missing {liveHostCheckMainRel}"

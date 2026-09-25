@@ -66,8 +66,12 @@ def hostId : String := "HOST-FRONT-LIVE-EMIT-BANNER"
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-EMIT-BANNER"
 
-/-- Live file relative to repo root. Dual-pin path. Exact, not a prefix. -/
-def liveRel : String := "src/systems/SystemsLean/EmitBanner.lean"
+/-- Live basename. Exact, not a directory prefix. Greppable: liveRel. -/
+def liveRel : String := "EmitBanner.lean"
+
+/-- Live file relative to repo root. Dual-pin path. -/
+def liveEmitBannerRel : String :=
+  "src/systems/SystemsLean/" ++ liveRel
 
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
@@ -285,7 +289,9 @@ def hostFrontLiveEmitBannerReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_EMIT_BANNER_V0")
     && (hostId == "HOST-FRONT-LIVE-EMIT-BANNER")
     && (parseId == "PARSE-LIVE-EMIT-BANNER")
-    && (liveRel == "src/systems/SystemsLean/EmitBanner.lean")
+    && (liveRel == "EmitBanner.lean")
+    && (liveEmitBannerRel
+      == "src/systems/SystemsLean/EmitBanner.lean")
     && liveParseDoesNotUseMultFixture
     && !hostFrontLiveEmitBannerFullHost
     && !hostFrontLiveEmitBannerResidualFreeClaimed
@@ -304,11 +310,12 @@ def hostFrontLiveEmitBannerReady : Bool :=
 
 def runLiveEmitBanner (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: PARSE-LIVE-EMIT-BANNER =="
-  IO.println s!"  host={hostId} file={liveRel} liveRel={liveRel}"
-  let path := root / liveRel
+  IO.println s!"  host={hostId} file={liveEmitBannerRel}"
+  IO.println s!"liveRel={liveRel}"
+  let path := root / liveEmitBannerRel
   unless (<- path.pathExists) do
-    IO.eprintln s!"error: missing {liveRel}"
-    throw (IO.userError s!"missing {liveRel}")
+    IO.eprintln s!"error: missing {liveEmitBannerRel}"
+    throw (IO.userError s!"missing {liveEmitBannerRel}")
   let disk <- IO.FS.readFile path
   if disk != liveEmitBannerSource then
     IO.eprintln "error: dual-pin mismatch: on-disk EmitBanner.lean != liveEmitBannerSource"
@@ -320,7 +327,7 @@ def runLiveEmitBanner (root : System.FilePath) : IO Unit := do
     throw (IO.userError s!"PARSE-LIVE-EMIT-BANNER reject {reason}")
   | FrontResult.accept m =>
     let k := HostKernel.kernelCheck m
-    IO.println s!"PASS PARSE-LIVE-EMIT-BANNER ACCEPT cmds={m.commands.length} kernelCheck={k} liveRel={liveRel}"
+    IO.println s!"PASS PARSE-LIVE-EMIT-BANNER ACCEPT cmds={m.commands.length} kernelCheck={k}"
     unless k do
       IO.eprintln "error: kernelCheck live EmitBanner parse false"
       throw (IO.userError "kernelCheck live EmitBanner parse false")

@@ -113,6 +113,9 @@ def parseId : String := "PARSE-LIVE-LLVM-COMPOSE-SSA-MAIN"
 def liveLlvmComposeSsaMainRel : String :=
   "src/systems/SystemsLean/LlvmComposeSsaMain.lean"
 
+/-- Live basename. Filename only, not a path. -/
+def liveRel : String := "LlvmComposeSsaMain.lean"
+
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
 
@@ -483,6 +486,7 @@ def hostFrontLiveLlvmComposeSsaMainReady : Bool :=
     && (parseId == "PARSE-LIVE-LLVM-COMPOSE-SSA-MAIN")
     && (liveLlvmComposeSsaMainRel
       == "src/systems/SystemsLean/LlvmComposeSsaMain.lean")
+    && (liveRel == "LlvmComposeSsaMain.lean")
     && liveParseDoesNotUseMultFixture
     && !hostFrontLiveLlvmComposeSsaMainFullHost
     && !hostFrontLiveLlvmComposeSsaMainFullBackend
@@ -505,6 +509,7 @@ def liveParseRejectsEmpty : Bool :=
 
 def runLiveLlvmComposeSsaMain (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: PARSE-LIVE-LLVM-COMPOSE-SSA-MAIN =="
+  IO.println s!"liveRel={liveRel}"
   IO.println s!"  host={hostId} file={liveLlvmComposeSsaMainRel}"
   let path := root / liveLlvmComposeSsaMainRel
   unless (<- path.pathExists) do

@@ -1,13 +1,14 @@
 /-
   SYSTEMS_LEAN_HOST -- Slake typechecks live SystemsLean.ProductPathOwnershipRegenerateMain.
   Short role: named driver for just slake-typecheck-productpathownershipregeneratemain.
-  Ready is HostFrontLiveProductPathOwnershipRegenerateMain parse plus HostKernel.kernelCheck
+  Ready is HostFrontLiveProductPathOwnershipRegenerateMainSource parse plus HostKernel.kernelCheck
   of live ProductPathOwnershipRegenerateMain.lean, not := true, not lake build
   SystemsLean.ProductPathOwnershipRegenerateMain.
   Not mill 10 remill (just tenth-host-tool / inventory row 13).
   Not occupancy name 50. Not FullHost.
   This wrap parses ProductPathOwnershipRegenerateMain.lean only. Do not wrap ProductPathOwnershipRegenerate.lean.
-  Short name is free because HostFrontLiveProductPathOwnershipRegenerate (library wrap) does not exist.
+  The thin forwarder HostFrontLiveProductPathOwnershipRegenerateMain stays byte-for-byte.
+  This driver calls the Source checker, not that forwarder.
   Do not mint HostFrontLiveHostProductPathOwnershipRegenerateMain.
   Do not wrap Linear.lean. Not ComposeSubsetEmit. Not IrGraph. Not HostModuleCheckMain.
   Not CapableComposeMain. Not ProductPathComposePlanMain. Not LlvmMultSsaMain.
@@ -31,7 +32,7 @@
   (lean --run; no mill; no lake). Dests skipped this slice.
 -/
 
-import SystemsLean.HostFrontLiveProductPathOwnershipRegenerateMain
+import SystemsLean.HostFrontLiveProductPathOwnershipRegenerateMainSource
 
 /-- Greppable stage id. -/
 def stageId : String := "SLAKE_TYPECHECK_PRODUCT_PATH_OWNERSHIP_REGENERATE_MAIN_V0"
@@ -43,16 +44,15 @@ def hostId : String := "HOST-SLAKE-TYPECHECK-PRODUCT-PATH-OWNERSHIP-REGENERATE-M
 def justRecipeSlakeTypecheckProductPathOwnershipRegenerateMain : String :=
   "slake-typecheck-productpathownershipregeneratemain"
 
-/-- Live file relative to repo root. Dual-pin path. -/
+/-- Live file basename. Not a path. -/
 def liveProductPathOwnershipRegenerateMainRel : String :=
-  SystemsLean.HostFrontLiveProductPathOwnershipRegenerateMain.liveProductPathOwnershipRegenerateMainRel
+  SystemsLean.HostFrontLiveProductPathOwnershipRegenerateMainSource.liveRel
 
-/-- Ready names HostFrontLiveProductPathOwnershipRegenerateMain parse plus kernelCheck,
-    not := true.
+/-- Ready names the Source parse plus kernelCheck, not := true.
     Greppable: slakeTypecheckProductPathOwnershipRegenerateMainReady,
     kernelCheckLiveProductPathOwnershipRegenerateMainSource. -/
 def slakeTypecheckProductPathOwnershipRegenerateMainReady : Bool :=
-  SystemsLean.HostFrontLiveProductPathOwnershipRegenerateMain.hostFrontLiveProductPathOwnershipRegenerateMainReady
+  SystemsLean.HostFrontLiveProductPathOwnershipRegenerateMainSource.hostFrontLiveProductPathOwnershipRegenerateMainSourceReady
 
 /-- Honesty: this command is not lake build of ProductPathOwnershipRegenerateMain. -/
 def slakeTypecheckProductPathOwnershipRegenerateMainDoesNotUseLake : Bool := true
@@ -63,12 +63,10 @@ def slakeTypecheckProductPathOwnershipRegenerateMainFullHost : Bool := false
 /-- Honesty: package typecheck pin stays false. -/
 def slakeTypecheckProductPathOwnershipRegenerateMainOwnsPackageTypecheck : Bool := false
 
-/-- lean --run entry: parse plus kernelCheck live ProductPathOwnershipRegenerateMain.lean.
-    Ready is HostFrontLiveProductPathOwnershipRegenerateMain.hostFrontLiveProductPathOwnershipRegenerateMainReady
-    (parse plus kernelCheck), not := true. Evaluated inside
-    HostFrontLiveProductPathOwnershipRegenerateMain.main at runtime. -/
+/-- lean --run entry: parse plus kernelCheck live ProductPathOwnershipRegenerateMain.lean. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckProductPathOwnershipRegenerateMain} =="
+  IO.println s!"liveRel={SystemsLean.HostFrontLiveProductPathOwnershipRegenerateMainSource.liveRel}"
   IO.println s!"  host={hostId} file={liveProductPathOwnershipRegenerateMainRel}"
   unless (!slakeTypecheckProductPathOwnershipRegenerateMainFullHost) do
     IO.eprintln "error: FullHost must stay false"
@@ -76,4 +74,4 @@ def main (args : List String) : IO UInt32 := do
   unless (!slakeTypecheckProductPathOwnershipRegenerateMainOwnsPackageTypecheck) do
     IO.eprintln "error: slakeOwnsPackageTypecheck must stay false"
     return 1
-  SystemsLean.HostFrontLiveProductPathOwnershipRegenerateMain.main args
+  SystemsLean.HostFrontLiveProductPathOwnershipRegenerateMainSource.main args

@@ -85,6 +85,9 @@ def hostId : String := "HOST-FRONT-LIVE-COMPILE-PATH-COMPOSE"
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-COMPILE-PATH-COMPOSE"
 
+/-- Live file basename. Not a path. -/
+def liveRel : String := "CompilePathCompose.lean"
+
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveCompilePathComposeRel : String :=
   "src/systems/SystemsLean/CompilePathCompose.lean"
@@ -528,6 +531,7 @@ def runLiveCompilePathCompose (root : System.FilePath) : IO Unit := do
     IO.println s!"GREEN {stageId}: live CompilePathCompose.lean parse kernelCheck; mill stays 69 of 69"
 
 def main (args : List String) : IO UInt32 := do
+  IO.println s!"liveRel={liveRel}"
   let root : System.FilePath :=
     match HostFront.filterArgs args with
     | r :: _ => System.FilePath.mk r

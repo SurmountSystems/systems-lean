@@ -77,6 +77,7 @@ def slakeTypecheckLlvmLinearSsaDestsSkipped : Bool := true
     HostFrontLiveLlvmLinearSsa.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckLlvmLinearSsa} =="
+  IO.println s!"liveRel={SystemsLean.HostFrontLiveLlvmLinearSsa.liveRel}"
   IO.println s!"  host={hostId} file={liveLlvmLinearSsaRel}"
   IO.println "dests skipped"
   unless slakeTypecheckLlvmLinearSsaDestsSkipped do

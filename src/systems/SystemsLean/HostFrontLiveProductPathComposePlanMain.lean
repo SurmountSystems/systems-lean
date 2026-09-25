@@ -108,6 +108,9 @@ def parseId : String := "PARSE-LIVE-PRODUCT-PATH-COMPOSE-PLAN-MAIN"
 def liveProductPathComposePlanMainRel : String :=
   "src/systems/SystemsLean/ProductPathComposePlanMain.lean"
 
+/-- Live basename. Filename only, not a path. -/
+def liveRel : String := "ProductPathComposePlanMain.lean"
+
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
 

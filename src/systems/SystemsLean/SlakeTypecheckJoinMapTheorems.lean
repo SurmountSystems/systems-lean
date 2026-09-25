@@ -33,6 +33,10 @@ def justRecipeSlakeTypecheckJoinMapTheorems : String :=
 def liveJoinMapTheoremsRel : String :=
   SystemsLean.HostFrontLiveJoinMapTheorems.liveJoinMapTheoremsRel
 
+/-- Live basename. Exact equality. No slash. -/
+def liveRel : String :=
+  SystemsLean.HostFrontLiveJoinMapTheorems.liveRel
+
 /-- Ready names HostFrontLiveJoinMapTheorems parse plus kernelCheck,
     not := true.
     Greppable: slakeTypecheckJoinMapTheoremsReady,
@@ -55,7 +59,11 @@ def slakeTypecheckJoinMapTheoremsOwnsPackageTypecheck : Bool := false
     HostFrontLiveJoinMapTheorems.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckJoinMapTheorems} =="
+  IO.println s!"liveRel={liveRel}"
   IO.println s!"  host={hostId} file={liveJoinMapTheoremsRel}"
+  unless (liveRel == "JoinMapTheorems.lean") do
+    IO.eprintln "error: liveRel must be JoinMapTheorems.lean"
+    return 1
   unless (!slakeTypecheckJoinMapTheoremsFullHost) do
     IO.eprintln "error: FullHost must stay false"
     return 1

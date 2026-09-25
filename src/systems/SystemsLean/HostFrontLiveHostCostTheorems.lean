@@ -44,7 +44,7 @@
   parseLiveHostCostTheoremsSource,
   kernelCheckLiveHostCostTheoremsSource,
   hostFrontLiveHostCostTheoremsReady, liveHostCostTheoremsSource,
-  liveHostCostTheoremsRel, UNIT_SURFACE host surface, MULT-0,
+  liveHostCostTheoremsRel, liveRel, UNIT_SURFACE host surface, MULT-0,
   liveParseDoesNotUseMultFixture.
   Module: SystemsLean.HostFrontLiveHostCostTheorems
   Red/green: dest-missing until barrel; lake build
@@ -75,7 +75,11 @@ def hostId : String := "HOST-FRONT-LIVE-HOST-COST-THEOREMS"
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-HOST-COST-THEOREMS"
 
-/-- Live file relative to repo root. Dual-pin path. -/
+/-- Live basename. Greppable: liveRel. Must be HostCostTheorems.lean. -/
+def liveRel : String := "HostCostTheorems.lean"
+
+/-- Live file relative to repo root. Dual-pin path.
+    Disk reads stay on this path. liveRel stays the bare basename. -/
 def liveHostCostTheoremsRel : String :=
   "src/systems/SystemsLean/HostCostTheorems.lean"
 
@@ -350,6 +354,7 @@ def hostFrontLiveHostCostTheoremsReady : Bool :=
     && (parseId == "PARSE-LIVE-HOST-COST-THEOREMS")
     && (liveHostCostTheoremsRel
       == "src/systems/SystemsLean/HostCostTheorems.lean")
+    && (liveRel == "HostCostTheorems.lean")
     && liveParseDoesNotUseMultFixture
     && !hostFrontLiveHostCostTheoremsFullHost
     && !hostFrontLiveHostCostTheoremsResidualFreeClaimed
@@ -373,6 +378,10 @@ def liveParseRejectsEmpty : Bool :=
 def runLiveHostCostTheorems (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: PARSE-LIVE-HOST-COST-THEOREMS =="
   IO.println s!"  host={hostId} file={liveHostCostTheoremsRel}"
+  IO.println s!"liveRel={liveRel}"
+  unless (liveRel == "HostCostTheorems.lean") do
+    IO.eprintln "error: liveRel must be HostCostTheorems.lean"
+    throw (IO.userError "liveRel must be HostCostTheorems.lean")
   let path := root / liveHostCostTheoremsRel
   unless (<- path.pathExists) do
     IO.eprintln s!"error: missing {liveHostCostTheoremsRel}"

@@ -42,7 +42,7 @@
   kernelCheckLiveLinearTheoremsSource,
   hostFrontLiveLinearTheoremsReady,
   liveLinearTheoremsSource,
-  liveLinearTheoremsRel, UNIT_SURFACE host surface, MULT-0,
+  liveLinearTheoremsRel, liveRel, UNIT_SURFACE host surface, MULT-0,
   liveParseDoesNotUseMultFixture.
   Module: SystemsLean.HostFrontLiveLinearTheorems
   Red/green: dests-skipped until barrel; closed lean --run on horizon.
@@ -71,6 +71,9 @@ def hostId : String := "HOST-FRONT-LIVE-LINEAR-THEOREMS"
 
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-LINEAR-THEOREMS"
+
+/-- Bare product basename. No slash. -/
+def liveRel : String := "LinearTheorems.lean"
 
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveLinearTheoremsRel : String :=
@@ -381,6 +384,7 @@ def hostFrontLiveLinearTheoremsReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_LINEAR_THEOREMS_V0")
     && (hostId == "HOST-FRONT-LIVE-LINEAR-THEOREMS")
     && (parseId == "PARSE-LIVE-LINEAR-THEOREMS")
+    && (liveRel == "LinearTheorems.lean")
     && (liveLinearTheoremsRel
       == "src/systems/SystemsLean/LinearTheorems.lean")
     && liveParseDoesNotUseMultFixture
@@ -421,7 +425,7 @@ def runLiveLinearTheorems (root : System.FilePath) : IO Unit := do
     throw (IO.userError s!"PARSE-LIVE-LINEAR-THEOREMS reject {reason}")
   | FrontResult.accept m =>
     let k := HostKernel.kernelCheck m
-    IO.println s!"PASS PARSE-LIVE-LINEAR-THEOREMS ACCEPT liveRel=LinearTheorems.lean cmds={m.commands.length} kernelCheck={k}"
+    IO.println s!"PASS PARSE-LIVE-LINEAR-THEOREMS ACCEPT liveRel={liveRel} cmds={m.commands.length} kernelCheck={k}"
     unless k do
       IO.eprintln "error: kernelCheck live LinearTheorems parse false"
       throw (IO.userError "kernelCheck live LinearTheorems parse false")
@@ -431,6 +435,7 @@ def runLiveLinearTheorems (root : System.FilePath) : IO Unit := do
     IO.println s!"GREEN {stageId}: live LinearTheorems.lean parse kernelCheck; not mill 70"
 
 def main (args : List String) : IO UInt32 := do
+  IO.println s!"liveRel={liveRel}"
   let root : System.FilePath :=
     match HostFront.filterArgs args with
     | r :: _ => System.FilePath.mk r

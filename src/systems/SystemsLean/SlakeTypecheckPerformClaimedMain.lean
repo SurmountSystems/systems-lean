@@ -67,6 +67,7 @@ def slakeTypecheckPerformClaimedMainOwnsPackageTypecheck : Bool := false
     HostFrontLiveHostPerformClaimedMain.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckPerformClaimedMain} =="
+  IO.println s!"liveRel={SystemsLean.HostFrontLiveHostPerformClaimedMain.liveRel}"
   IO.println s!"  host={hostId} file={livePerformClaimedMainRel}"
   unless (!slakeTypecheckPerformClaimedMainFullHost) do
     IO.eprintln "error: FullHost must stay false"

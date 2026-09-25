@@ -42,10 +42,12 @@ def slakeTypecheckErasureFullHost : Bool := false
 def slakeTypecheckErasureOwnsPackageTypecheck : Bool := false
 
 /-- lean --run entry: parse plus kernelCheck live Erasure.lean.
+    Prints liveRel from that def (Erasure.lean), then the HostFrontLive main.
     Ready is HostFrontLiveErasure.hostFrontLiveErasureReady (parse plus kernelCheck),
     not := true. Evaluated inside HostFrontLiveErasure.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckErasure} =="
+  IO.println s!"liveRel={SystemsLean.HostFrontLiveErasure.liveRel}"
   IO.println s!"  host={hostId} file={liveErasureRel}"
   unless (!slakeTypecheckErasureFullHost) do
     IO.eprintln "error: FullHost must stay false"

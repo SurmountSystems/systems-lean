@@ -59,6 +59,7 @@ def slakeTypecheckSurfaceMatrixTheoremsOwnsPackageTypecheck : Bool := false
     HostFrontLiveSurfaceMatrixTheorems.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckSurfaceMatrixTheorems} =="
+  IO.println s!"liveRel={SystemsLean.HostFrontLiveSurfaceMatrixTheorems.liveRel}"
   IO.println s!"  host={hostId} file={liveSurfaceMatrixTheoremsRel}"
   unless (!slakeTypecheckSurfaceMatrixTheoremsFullHost) do
     IO.eprintln "error: FullHost must stay false"

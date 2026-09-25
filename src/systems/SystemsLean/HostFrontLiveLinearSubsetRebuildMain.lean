@@ -68,7 +68,7 @@
   parseLiveLinearSubsetRebuildMainSource,
   kernelCheckLiveLinearSubsetRebuildMainSource,
   hostFrontLiveLinearSubsetRebuildMainReady, liveLinearSubsetRebuildMainSource,
-  liveLinearSubsetRebuildMainRel, UNIT_SURFACE host surface, MULT-0,
+  liveLinearSubsetRebuildMainRel, liveRel, UNIT_SURFACE host surface, MULT-0,
   liveParseDoesNotUseMultFixture.
   Module: SystemsLean.HostFrontLiveLinearSubsetRebuildMain
   Red/green: dests-skipped until barrel; lake build
@@ -98,6 +98,9 @@ def hostId : String := "HOST-FRONT-LIVE-LINEAR-SUBSET-REBUILD-MAIN"
 
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-LINEAR-SUBSET-REBUILD-MAIN"
+
+/-- Bare product basename. No slash. -/
+def liveRel : String := "LinearSubsetRebuildMain.lean"
 
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveLinearSubsetRebuildMainRel : String :=
@@ -468,6 +471,7 @@ def hostFrontLiveLinearSubsetRebuildMainReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_LINEAR_SUBSET_REBUILD_MAIN_V0")
     && (hostId == "HOST-FRONT-LIVE-LINEAR-SUBSET-REBUILD-MAIN")
     && (parseId == "PARSE-LIVE-LINEAR-SUBSET-REBUILD-MAIN")
+    && (liveRel == "LinearSubsetRebuildMain.lean")
     && (liveLinearSubsetRebuildMainRel
       == "src/systems/SystemsLean/LinearSubsetRebuildMain.lean")
     && liveParseDoesNotUseMultFixture
@@ -517,6 +521,7 @@ def runLiveLinearSubsetRebuildMain (root : System.FilePath) : IO Unit := do
     IO.println s!"GREEN {stageId}: live LinearSubsetRebuildMain.lean parse kernelCheck; not mill 33 remill; mill stays 69 of 69"
 
 def main (args : List String) : IO UInt32 := do
+  IO.println s!"liveRel={liveRel}"
   let root : System.FilePath :=
     match HostFront.filterArgs args with
     | r :: _ => System.FilePath.mk r

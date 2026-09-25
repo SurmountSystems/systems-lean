@@ -103,6 +103,9 @@ def parseId : String := "PARSE-LIVE-PERFORM-CLAIMED-MAIN"
 def livePerformClaimedMainRel : String :=
   "src/systems/SystemsLean/PerformClaimedMain.lean"
 
+/-- Live basename. Filename only, not a path. -/
+def liveRel : String := "PerformClaimedMain.lean"
+
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
 

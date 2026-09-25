@@ -60,6 +60,7 @@ def slakeTypecheckProductOutKernelTheoremsOwnsPackageTypecheck : Bool := false
     HostFrontLiveProductOutKernelTheorems.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckProductOutKernelTheorems} =="
+  IO.println s!"liveRel={SystemsLean.HostFrontLiveProductOutKernelTheorems.liveRel}"
   IO.println s!"  host={hostId} file={liveProductOutKernelTheoremsRel}"
   unless (!slakeTypecheckProductOutKernelTheoremsFullHost) do
     IO.eprintln "error: FullHost must stay false"

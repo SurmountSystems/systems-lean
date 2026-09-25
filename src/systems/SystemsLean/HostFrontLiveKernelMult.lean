@@ -9,9 +9,9 @@
   Spec (readable):
   - parseLiveKernelMultSource turns live KernelMult.lean text into HostTerm.Module.
   - Module name is SystemsLean.KernelMult even without a module line.
-  - kernelCheckLiveKernelMultSource is HostKernel.kernelCheckN of that parse
-    with Mult / Types / IrProgram / CompilePath import seeds (HostKernel.lean
-    is locked; seed locally).
+  - kernelCheckLiveKernelMultSource is HostKernel.kernelCheck of that parse.
+    Not kernelCheckN. Not constant true. kernelFuel stays 64 in HostKernel.
+    Dotted import, namespace, and end names stay intact.
 
   Intentional non-claims:
   - Not full Lean 4. Not FullHost. Not live HostTerm.lean / HostFront.lean.
@@ -22,7 +22,8 @@
   Greppable: SYSTEMS_LEAN_HOST, HOST-FRONT-LIVE-KERNELMULT,
   SLAKE_HOST_FRONT_LIVE_KERNELMULT_V0,
   PARSE-LIVE-KERNELMULT, parseLiveKernelMultSource, kernelCheckLiveKernelMultSource,
-  hostFrontLiveKernelMultReady, liveKernelMultSource, liveKernelMultRel,
+  hostFrontLiveKernelMultReady, liveKernelMultSource, liveRel,
+  liveKernelMultRel,
   UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveKernelMult
   Red/green: just slake-typecheck-kernelmult; just systems-host dest rows;
@@ -52,6 +53,9 @@ def hostId : String := "HOST-FRONT-LIVE-KERNELMULT"
 
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-KERNELMULT"
+
+/-- Bare product basename. No slash. -/
+def liveRel : String := "KernelMult.lean"
 
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveKernelMultRel : String := "src/systems/SystemsLean/KernelMult.lean"
@@ -89,16 +93,6 @@ def seedIrProgram : List String :=
 /-- Seed names from SystemsLean.CompilePath import. -/
 def seedCompilePath : List String :=
   ["programCompileReady", "gradeSurfaceOk"]
-
-/-- Kernel env for Mult / Types / IrProgram / CompilePath imports. -/
-def seedImports (env : Env) : Env :=
-  ("mult0", HostType.named (HostTerm.n "Mult"))
-    :: ("mult1", HostType.named (HostTerm.n "Mult"))
-    :: ("multOmega", HostType.named (HostTerm.n "Mult"))
-    :: ("isValidTag", HostType.arrow HostType.nat HostType.bool)
-    :: ("programCompileReady", HostType.arrow (HostType.named (HostTerm.n "Program")) HostType.bool)
-    :: ("gradeSurfaceOk", HostType.bool)
-    :: env
 
 /-- If rest is not a command start, skip to the next command. -/
 def skipNonCmd (fuel : Nat) (rest : List String) : List String :=
@@ -177,6 +171,39 @@ def cmdBodyKnownKernelMult (kn : List String) : Cmd -> Bool
         && termNoAppN liveKernelMultParseFuel body
   | _ => true
 
+/-- Dotted ident `SystemsLean . KernelMult`. -/
+def parseDottedName : Nat -> List String -> Option (Prod String (List String))
+  | 0, _ => none
+  | Nat.succ _, [] => none
+  | Nat.succ n, a :: rest =>
+    if !liveIsIdent a then none
+    else
+      match rest with
+      | "." :: rest2 =>
+        match parseDottedName n rest2 with
+        | some (more, rest3) => some (a ++ "." ++ more, rest3)
+        | none => none
+      | _ => some (a, rest)
+
+/-- Import, namespace, and end keep dotted names. Other commands use the
+    HostTerm command parser. -/
+def parseOneCmdKernelMult (fuel : Nat) (toks : List String) :
+    Option (Prod Cmd (List String)) :=
+  match toks with
+  | "import" :: rest =>
+    match parseDottedName fuel rest with
+    | some (nm, rest2) => some (Cmd.importModule (HostTerm.n nm), rest2)
+    | none => none
+  | "namespace" :: rest =>
+    match parseDottedName fuel rest with
+    | some (nm, rest2) => some (Cmd.namespace (HostTerm.n nm), rest2)
+    | none => none
+  | "end" :: rest =>
+    match parseDottedName fuel rest with
+    | some (nm, rest2) => some (Cmd.endNamespace (HostTerm.n nm), rest2)
+    | none => none
+  | _ => parseOneCmdHt fuel toks
+
 /-- Fold commands. Skip theorem / example / set_option / un-kernelable defs. -/
 def parseCmdsKernelMult : Nat -> List String -> List String -> List Cmd ->
     Option (List Cmd)
@@ -184,7 +211,7 @@ def parseCmdsKernelMult : Nat -> List String -> List String -> List Cmd ->
   | 0, _ :: _, _, _ => none
   | Nat.succ _, [], _, acc => some acc
   | Nat.succ n, toks, kn, acc =>
-    match parseOneCmdHt liveHostTermParseFuel toks with
+    match parseOneCmdKernelMult liveHostTermParseFuel toks with
     | some (c, rest) =>
       let rest2 := skipNonCmd liveKernelMultSkipFuel rest
       if cmdBodyKnownKernelMult kn c then
@@ -228,13 +255,11 @@ def parseLiveKernelMultSource (src : String) : FrontResult :=
         if isWellFormed m then FrontResult.accept m
         else FrontResult.reject reasonNotWellFormed
 
-/-- Kernel-check live KernelMult parse with import seeds.
+/-- Kernel-check live KernelMult parse. Not a fixture.
     Greppable: kernelCheckLiveKernelMultSource, PARSE-LIVE-KERNELMULT. -/
 def kernelCheckLiveKernelMultSource (src : String) : Bool :=
   match parseLiveKernelMultSource src with
-  | FrontResult.accept m =>
-    isWellFormed m
-      && kernelCheckN kernelFuel (seedImports []) [] m.commands
+  | FrontResult.accept m => HostKernel.kernelCheck m
   | FrontResult.reject _ => false
 
 /-- Accepted live module when parse succeeds. -/
@@ -304,6 +329,7 @@ def hostFrontLiveKernelMultReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_KERNELMULT_V0")
     && (hostId == "HOST-FRONT-LIVE-KERNELMULT")
     && (parseId == "PARSE-LIVE-KERNELMULT")
+    && (liveRel == "KernelMult.lean")
     && (liveKernelMultRel == "src/systems/SystemsLean/KernelMult.lean")
     && liveParseDoesNotUseMultFixture
     && !hostFrontLiveKernelMultFullHost
@@ -341,9 +367,7 @@ def runLiveKernelMult (root : System.FilePath) : IO Unit := do
     IO.eprintln s!"error: PARSE-LIVE-KERNELMULT reject {reason}"
     throw (IO.userError s!"PARSE-LIVE-KERNELMULT reject {reason}")
   | FrontResult.accept m =>
-    let k :=
-      isWellFormed m
-        && kernelCheckN kernelFuel (seedImports []) [] m.commands
+    let k := HostKernel.kernelCheck m
     IO.println s!"PASS PARSE-LIVE-KERNELMULT ACCEPT cmds={m.commands.length} kernelCheck={k}"
     unless k do
       IO.eprintln "error: kernelCheck live KernelMult parse false"
@@ -354,6 +378,7 @@ def runLiveKernelMult (root : System.FilePath) : IO Unit := do
     IO.println s!"GREEN {stageId}: live KernelMult.lean parse kernelCheck; not mill 70"
 
 def main (args : List String) : IO UInt32 := do
+  IO.println s!"liveRel={liveRel}"
   let root : System.FilePath :=
     match HostFront.filterArgs args with
     | r :: _ => System.FilePath.mk r

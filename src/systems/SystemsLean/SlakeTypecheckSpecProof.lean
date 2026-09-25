@@ -51,6 +51,7 @@ def slakeTypecheckSpecProofOwnsPackageTypecheck : Bool := false
     HostFrontLiveSpecProof.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckSpecProof} =="
+  IO.println s!"liveRel={SystemsLean.HostFrontLiveSpecProof.liveRel}"
   IO.println s!"  host={hostId} file={liveSpecProofRel}"
   unless (!slakeTypecheckSpecProofFullHost) do
     IO.eprintln "error: FullHost must stay false"

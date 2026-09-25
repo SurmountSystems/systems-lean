@@ -51,6 +51,7 @@ def slakeTypecheckSlakeHostToolElfLinkOwnsPackageTypecheck : Bool := false
     HostFrontLiveSlakeHostToolElfLink.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckSlakeHostToolElfLink} =="
+  IO.println s!"liveRel={SystemsLean.HostFrontLiveSlakeHostToolElfLink.liveRel}"
   IO.println s!"  host={hostId} file={liveSlakeHostToolElfLinkRel}"
   unless (!slakeTypecheckSlakeHostToolElfLinkFullHost) do
     IO.eprintln "error: FullHost must stay false"

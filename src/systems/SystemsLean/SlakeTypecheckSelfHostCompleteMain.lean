@@ -61,6 +61,7 @@ def slakeTypecheckSelfHostCompleteMainOwnsPackageTypecheck : Bool := false
     HostFrontLiveSelfHostCompleteMain.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckSelfHostCompleteMain} =="
+  IO.println s!"liveRel={SystemsLean.HostFrontLiveSelfHostCompleteMain.liveRel}"
   IO.println s!"  host={hostId} file={liveSelfHostCompleteMainRel}"
   unless (!slakeTypecheckSelfHostCompleteMainFullHost) do
     IO.eprintln "error: FullHost must stay false"

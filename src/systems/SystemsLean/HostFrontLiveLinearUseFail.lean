@@ -31,7 +31,7 @@
   PARSE-LIVE-LINEAR-USE-FAIL, parseLiveLinearUseFailSource,
   kernelCheckLiveLinearUseFailSource,
   hostFrontLiveLinearUseFailReady, liveLinearUseFailSource, liveLinearUseFailRel,
-  UNIT_SURFACE host surface, MULT-0.
+  liveRel, UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveLinearUseFail
   Red/green: just slake-typecheck-linearusefail; dests skipped (JoinMapTheorems lock);
   lake build SystemsLean.HostFrontLiveLinearUseFail on surmount-1 (queued, not run here).
@@ -60,6 +60,9 @@ def hostId : String := "HOST-FRONT-LIVE-LINEAR-USE-FAIL"
 
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-LINEAR-USE-FAIL"
+
+/-- Bare product basename. No slash. -/
+def liveRel : String := "LinearUseFail.lean"
 
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveLinearUseFailRel : String := "src/systems/SystemsLean/LinearUseFail.lean"
@@ -367,6 +370,7 @@ def hostFrontLiveLinearUseFailReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_LINEAR_USE_FAIL_V0")
     && (hostId == "HOST-FRONT-LIVE-LINEAR-USE-FAIL")
     && (parseId == "PARSE-LIVE-LINEAR-USE-FAIL")
+    && (liveRel == "LinearUseFail.lean")
     && (liveLinearUseFailRel == "src/systems/SystemsLean/LinearUseFail.lean")
     && liveParseDoesNotUseMultFixture
     && !hostFrontLiveLinearUseFailFullHost
@@ -405,7 +409,7 @@ def runLiveLinearUseFail (root : System.FilePath) : IO Unit := do
     throw (IO.userError s!"PARSE-LIVE-LINEAR-USE-FAIL reject {reason}")
   | FrontResult.accept m =>
     let k := HostKernel.kernelCheck m
-    IO.println s!"PASS PARSE-LIVE-LINEAR-USE-FAIL ACCEPT cmds={m.commands.length} kernelCheck={k}"
+    IO.println s!"PASS PARSE-LIVE-LINEAR-USE-FAIL ACCEPT liveRel={liveRel} cmds={m.commands.length} kernelCheck={k}"
     unless k do
       IO.eprintln "error: kernelCheck live LinearUseFail parse false"
       throw (IO.userError "kernelCheck live LinearUseFail parse false")
@@ -415,6 +419,7 @@ def runLiveLinearUseFail (root : System.FilePath) : IO Unit := do
     IO.println s!"GREEN {stageId}: live LinearUseFail.lean parse kernelCheck; not mill 70"
 
 def main (args : List String) : IO UInt32 := do
+  IO.println s!"liveRel={liveRel}"
   let root : System.FilePath :=
     match HostFront.filterArgs args with
     | r :: _ => System.FilePath.mk r

@@ -25,7 +25,7 @@
   (lean --run; no mill; no lake). Dests skipped this slice.
 -/
 
-import SystemsLean.HostFrontLiveLlvmComposeTextMain
+import SystemsLean.HostFrontLiveLlvmComposeTextMainSource
 
 /-- Greppable stage id. -/
 def stageId : String := "SLAKE_TYPECHECK_LLVM_COMPOSE_TEXT_MAIN_V0"

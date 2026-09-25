@@ -53,7 +53,7 @@
   parseLiveFreestandingEmitMainSource,
   kernelCheckLiveFreestandingEmitMainSource,
   hostFrontLiveFreestandingEmitMainReady, liveFreestandingEmitMainSource,
-  liveFreestandingEmitMainRel, UNIT_SURFACE host surface, MULT-0,
+  liveRel, liveFreestandingEmitMainRel, UNIT_SURFACE host surface, MULT-0,
   liveParseDoesNotUseMultFixture.
   Module: SystemsLean.HostFrontLiveFreestandingEmitMain
   Red/green: dests-skipped until barrel; lake build
@@ -87,7 +87,11 @@ def parseId : String := "PARSE-LIVE-FREESTANDING-EMIT-MAIN"
 /-- Greppable hyphenated mill-Main stage id. -/
 def millMainId : String := "FREESTANDING-EMIT-MAIN"
 
-/-- Live file relative to repo root. Dual-pin path. -/
+/-- Live basename. Greppable: liveRel. Must be FreestandingEmitMain.lean. -/
+def liveRel : String := "FreestandingEmitMain.lean"
+
+/-- Live file relative to repo root. Dual-pin path.
+    Disk reads stay on this path. liveRel stays the bare basename. -/
 def liveFreestandingEmitMainRel : String :=
   "src/systems/SystemsLean/FreestandingEmitMain.lean"
 
@@ -468,6 +472,7 @@ def hostFrontLiveFreestandingEmitMainReady : Bool :=
     && (millMainId == "FREESTANDING-EMIT-MAIN")
     && (liveFreestandingEmitMainRel
       == "src/systems/SystemsLean/FreestandingEmitMain.lean")
+    && (liveRel == "FreestandingEmitMain.lean")
     && liveParseDoesNotUseMultFixture
     && !hostFrontLiveFreestandingEmitMainFullHost
     && !hostFrontLiveFreestandingEmitMainResidualFreeClaimed
@@ -491,6 +496,10 @@ def liveParseRejectsEmpty : Bool :=
 def runLiveFreestandingEmitMain (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: PARSE-LIVE-FREESTANDING-EMIT-MAIN =="
   IO.println s!"  host={hostId} file={liveFreestandingEmitMainRel}"
+  IO.println s!"liveRel={liveRel}"
+  unless (liveRel == "FreestandingEmitMain.lean") do
+    IO.eprintln "error: liveRel must be FreestandingEmitMain.lean"
+    throw (IO.userError "liveRel must be FreestandingEmitMain.lean")
   let path := root / liveFreestandingEmitMainRel
   unless (<- path.pathExists) do
     IO.eprintln s!"error: missing {liveFreestandingEmitMainRel}"

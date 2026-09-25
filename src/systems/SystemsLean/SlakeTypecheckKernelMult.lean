@@ -30,6 +30,10 @@ def justRecipeSlakeTypecheckKernelMult : String :=
 def liveKernelMultRel : String :=
   SystemsLean.HostFrontLiveKernelMult.liveKernelMultRel
 
+/-- Live basename. Exact equality. No slash. -/
+def liveRel : String :=
+  SystemsLean.HostFrontLiveKernelMult.liveRel
+
 /-- Ready names HostFrontLiveKernelMult parse plus kernelCheck, not := true.
     Greppable: slakeTypecheckKernelMultReady,
     kernelCheckLiveKernelMultSource. -/
@@ -51,7 +55,11 @@ def slakeTypecheckKernelMultOwnsPackageTypecheck : Bool := false
     HostFrontLiveKernelMult.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckKernelMult} =="
+  IO.println s!"liveRel={liveRel}"
   IO.println s!"  host={hostId} file={liveKernelMultRel}"
+  unless (liveRel == "KernelMult.lean") do
+    IO.eprintln "error: liveRel must be KernelMult.lean"
+    return 1
   unless (!slakeTypecheckKernelMultFullHost) do
     IO.eprintln "error: FullHost must stay false"
     return 1

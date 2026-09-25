@@ -102,6 +102,9 @@ def hostId : String := "HOST-FRONT-LIVE-EXTRACT-SUBSET-EMIT-MAIN"
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-EXTRACT-SUBSET-EMIT-MAIN"
 
+/-- Live file basename. Not the disk path. -/
+def liveRel : String := "ExtractSubsetEmitMain.lean"
+
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveExtractSubsetEmitMainRel : String :=
   "src/systems/SystemsLean/ExtractSubsetEmitMain.lean"
@@ -471,6 +474,7 @@ def hostFrontLiveExtractSubsetEmitMainReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_EXTRACT_SUBSET_EMIT_MAIN_V0")
     && (hostId == "HOST-FRONT-LIVE-EXTRACT-SUBSET-EMIT-MAIN")
     && (parseId == "PARSE-LIVE-EXTRACT-SUBSET-EMIT-MAIN")
+    && (liveRel == "ExtractSubsetEmitMain.lean")
     && (liveExtractSubsetEmitMainRel
       == "src/systems/SystemsLean/ExtractSubsetEmitMain.lean")
     && liveParseDoesNotUseMultFixture
@@ -495,6 +499,7 @@ def liveParseRejectsEmpty : Bool :=
 def runLiveExtractSubsetEmitMain (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: PARSE-LIVE-EXTRACT-SUBSET-EMIT-MAIN =="
   IO.println s!"  host={hostId} file={liveExtractSubsetEmitMainRel}"
+  IO.println s!"liveRel={liveRel}"
   let path := root / liveExtractSubsetEmitMainRel
   unless (<- path.pathExists) do
     IO.eprintln s!"error: missing {liveExtractSubsetEmitMainRel}"

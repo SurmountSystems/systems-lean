@@ -1,7 +1,7 @@
 /-
   SYSTEMS_LEAN_HOST -- Slake typechecks live SystemsLean.CapableFullBarMain.
   Short role: named driver for just slake-typecheck-capablefullbarmain.
-  Ready is HostFrontLiveCapableFullBarMain parse plus HostKernel.kernelCheck
+  Ready is HostFrontLiveCapableFullBarMainParse parse plus HostKernel.kernelCheck
   of live CapableFullBarMain.lean, not := true, not lake build
   SystemsLean.CapableFullBarMain.
   Not mill remill. Not occupancy name 50. Not FullHost.
@@ -23,7 +23,7 @@
   (lean --run; no mill; no lake). Dests skipped this slice.
 -/
 
-import SystemsLean.HostFrontLiveCapableFullBarMain
+import SystemsLean.HostFrontLiveCapableFullBarMainParse
 
 /-- Greppable stage id. -/
 def stageId : String := "SLAKE_TYPECHECK_CAPABLE_FULL_BAR_MAIN_V0"
@@ -37,14 +37,18 @@ def justRecipeSlakeTypecheckCapableFullBarMain : String :=
 
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveCapableFullBarMainRel : String :=
-  SystemsLean.HostFrontLiveCapableFullBarMain.liveCapableFullBarMainRel
+  SystemsLean.HostFrontLiveCapableFullBarMainParse.liveCapableFullBarMainRel
 
-/-- Ready names HostFrontLiveCapableFullBarMain parse plus kernelCheck,
+/-- Bare basename. Not the src/systems path. -/
+def liveRel : String :=
+  SystemsLean.HostFrontLiveCapableFullBarMainParse.liveRel
+
+/-- Ready names HostFrontLiveCapableFullBarMainParse parse plus kernelCheck,
     not := true.
     Greppable: slakeTypecheckCapableFullBarMainReady,
     kernelCheckLiveCapableFullBarMainSource. -/
 def slakeTypecheckCapableFullBarMainReady : Bool :=
-  SystemsLean.HostFrontLiveCapableFullBarMain.hostFrontLiveCapableFullBarMainReady
+  SystemsLean.HostFrontLiveCapableFullBarMainParse.hostFrontLiveCapableFullBarMainReady
 
 /-- Honesty: this command is not lake build of CapableFullBarMain. -/
 def slakeTypecheckCapableFullBarMainDoesNotUseLake : Bool := true
@@ -56,16 +60,17 @@ def slakeTypecheckCapableFullBarMainFullHost : Bool := false
 def slakeTypecheckCapableFullBarMainOwnsPackageTypecheck : Bool := false
 
 /-- lean --run entry: parse plus kernelCheck live CapableFullBarMain.lean.
-    Ready is HostFrontLiveCapableFullBarMain.hostFrontLiveCapableFullBarMainReady
+    Ready is HostFrontLiveCapableFullBarMainParse.hostFrontLiveCapableFullBarMainReady
     (parse plus kernelCheck), not := true. Evaluated inside
-    HostFrontLiveCapableFullBarMain.main at runtime. -/
+    HostFrontLiveCapableFullBarMainParse.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckCapableFullBarMain} =="
   IO.println s!"  host={hostId} file={liveCapableFullBarMainRel}"
+  IO.println s!"liveRel={liveRel}"
   unless (!slakeTypecheckCapableFullBarMainFullHost) do
     IO.eprintln "error: FullHost must stay false"
     return 1
   unless (!slakeTypecheckCapableFullBarMainOwnsPackageTypecheck) do
     IO.eprintln "error: slakeOwnsPackageTypecheck must stay false"
     return 1
-  SystemsLean.HostFrontLiveCapableFullBarMain.main args
+  SystemsLean.HostFrontLiveCapableFullBarMainParse.main args

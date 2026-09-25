@@ -92,6 +92,9 @@ def parseId : String := "PARSE-LIVE-SELF-HOST-COMPLETE"
 def liveSelfHostCompleteRel : String :=
   "src/systems/SystemsLean/SelfHostComplete.lean"
 
+/-- Live basename. Filename only, not a path. -/
+def liveRel : String := "SelfHostComplete.lean"
+
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
 

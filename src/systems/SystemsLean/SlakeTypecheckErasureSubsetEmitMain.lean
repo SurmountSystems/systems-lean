@@ -35,9 +35,13 @@ def hostId : String := "HOST-SLAKE-TYPECHECK-ERASURE-SUBSET-EMIT-MAIN"
 def justRecipeSlakeTypecheckErasureSubsetEmitMain : String :=
   "slake-typecheck-erasuresubsetemitmain"
 
-/-- Live file relative to repo root. Dual-pin path. -/
+/-- Live file relative to repo root. Dual-pin path. Disk reads stay on this path. -/
 def liveErasureSubsetEmitMainRel : String :=
   SystemsLean.HostFrontLiveErasureSubsetEmitMain.liveErasureSubsetEmitMainRel
+
+/-- Live basename. Exact equality. Not a directory prefix. -/
+def liveRel : String :=
+  SystemsLean.HostFrontLiveErasureSubsetEmitMain.liveRel
 
 /-- Ready names HostFrontLiveErasureSubsetEmitMain parse plus kernelCheck,
     not := true.
@@ -61,7 +65,11 @@ def slakeTypecheckErasureSubsetEmitMainOwnsPackageTypecheck : Bool := false
     HostFrontLiveErasureSubsetEmitMain.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckErasureSubsetEmitMain} =="
+  IO.println s!"liveRel={liveRel}"
   IO.println s!"  host={hostId} file={liveErasureSubsetEmitMainRel}"
+  unless (liveRel == "ErasureSubsetEmitMain.lean") do
+    IO.eprintln "error: liveRel must be ErasureSubsetEmitMain.lean"
+    return 1
   unless (!slakeTypecheckErasureSubsetEmitMainFullHost) do
     IO.eprintln "error: FullHost must stay false"
     return 1

@@ -101,6 +101,9 @@ def hostId : String := "HOST-FRONT-LIVE-INSTALL-OUT-MAIN"
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-INSTALL-OUT-MAIN"
 
+/-- Live file basename. Not a path. -/
+def liveRel : String := "InstallOutMain.lean"
+
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveInstallOutMainRel : String :=
   "src/systems/SystemsLean/InstallOutMain.lean"
@@ -470,6 +473,7 @@ def hostFrontLiveInstallOutMainReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_INSTALL_OUT_MAIN_V0")
     && (hostId == "HOST-FRONT-LIVE-INSTALL-OUT-MAIN")
     && (parseId == "PARSE-LIVE-INSTALL-OUT-MAIN")
+    && (liveRel == "InstallOutMain.lean")
     && (liveInstallOutMainRel
       == "src/systems/SystemsLean/InstallOutMain.lean")
     && liveParseDoesNotUseMultFixture
@@ -519,6 +523,7 @@ def runLiveInstallOutMain (root : System.FilePath) : IO Unit := do
     IO.println s!"GREEN {stageId}: live InstallOutMain.lean parse kernelCheck; not mill 9 remill; mill stays 69 of 69"
 
 def main (args : List String) : IO UInt32 := do
+  IO.println s!"liveRel={liveRel}"
   let root : System.FilePath :=
     match HostFront.filterArgs args with
     | r :: _ => System.FilePath.mk r

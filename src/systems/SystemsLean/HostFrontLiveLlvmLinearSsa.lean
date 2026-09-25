@@ -65,6 +65,9 @@ def parseId : String := "PARSE-LIVE-LLVM-LINEAR-SSA"
 def liveLlvmLinearSsaRel : String :=
   "src/systems/SystemsLean/LlvmLinearSsa.lean"
 
+/-- Live basename. Filename only, not a path. -/
+def liveRel : String := "LlvmLinearSsa.lean"
+
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
 

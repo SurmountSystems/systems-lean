@@ -32,8 +32,12 @@ def hostId : String := "HOST-SLAKE-TYPECHECK-EMIT-PROGRAM"
 /-- Named just recipe. Not lake build SystemsLean.EmitProgram. -/
 def justRecipeSlakeTypecheckEmitProgram : String := "slake-typecheck-emitprogram"
 
-/-- Live file relative to repo root. Dual-pin path. Exact equality. -/
+/-- Live file basename. Exact. Not EmitProgramScaffold.lean. -/
 def liveRel : String := SystemsLean.HostFrontLiveEmitProgram.liveRel
+
+/-- Live file relative to repo root. Dual-pin path. -/
+def liveEmitProgramRel : String :=
+  SystemsLean.HostFrontLiveEmitProgram.liveEmitProgramRel
 
 /-- Ready names HostFrontLiveEmitProgram parse plus kernelCheck, not := true.
     Greppable: slakeTypecheckEmitProgramReady,
@@ -55,9 +59,12 @@ def slakeTypecheckEmitProgramOwnsPackageTypecheck : Bool := false
     (parse plus kernelCheck), not := true. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckEmitProgram} =="
-  IO.println s!"  host={hostId} file={liveRel} liveRel={liveRel}"
-  unless (liveRel == "src/systems/SystemsLean/EmitProgram.lean") do
-    IO.eprintln "error: liveRel must be src/systems/SystemsLean/EmitProgram.lean"
+  IO.println s!"  host={hostId} file={liveEmitProgramRel} liveRel={liveRel}"
+  unless (liveRel == "EmitProgram.lean") do
+    IO.eprintln "error: liveRel must be EmitProgram.lean"
+    return 1
+  unless (liveEmitProgramRel == "src/systems/SystemsLean/EmitProgram.lean") do
+    IO.eprintln "error: live path must be src/systems/SystemsLean/EmitProgram.lean"
     return 1
   unless (!slakeTypecheckEmitProgramFullHost) do
     IO.eprintln "error: FullHost must stay false"

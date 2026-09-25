@@ -70,6 +70,7 @@ def slakeTypecheckLlvmLinearSsaMainOwnsPackageTypecheck : Bool := false
     HostFrontLiveLlvmLinearSsaMain.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckLlvmLinearSsaMain} =="
+  IO.println s!"liveRel={SystemsLean.HostFrontLiveLlvmLinearSsaMain.liveRel}"
   IO.println s!"  host={hostId} file={liveLlvmLinearSsaMainRel}"
   unless (!slakeTypecheckLlvmLinearSsaMainFullHost) do
     IO.eprintln "error: FullHost must stay false"

@@ -51,6 +51,7 @@ def slakeTypecheckMultTheoremsOwnsPackageTypecheck : Bool := false
     HostFrontLiveMultTheorems.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckMultTheorems} =="
+  IO.println s!"liveRel={SystemsLean.HostFrontLiveMultTheorems.liveRel}"
   IO.println s!"  host={hostId} file={liveMultTheoremsRel}"
   unless (!slakeTypecheckMultTheoremsFullHost) do
     IO.eprintln "error: FullHost must stay false"

@@ -87,6 +87,9 @@ def parseId : String := "PARSE-LIVE-MULT-FS-WRITE"
 def liveMultFsWriteRel : String :=
   "src/systems/SystemsLean/MultFsWrite.lean"
 
+/-- Live basename. Filename only, not a path. -/
+def liveRel : String := "MultFsWrite.lean"
+
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
 

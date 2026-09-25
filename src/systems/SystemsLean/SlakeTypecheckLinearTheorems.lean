@@ -17,7 +17,7 @@
   Greppable: SYSTEMS_LEAN_HOST,
   slakeTypecheckLinearTheoremsReady,
   kernelCheckLiveLinearTheoremsSource,
-  PARSE-LIVE-LINEAR-THEOREMS, SKELETON.
+  liveRel, PARSE-LIVE-LINEAR-THEOREMS, SKELETON.
   Module: SystemsLean.SlakeTypecheckLinearTheorems
   Checkable writer: just slake-typecheck-lineartheorems
   (lean --run; no mill; no lake).
@@ -38,6 +38,10 @@ def justRecipeSlakeTypecheckLinearTheorems : String :=
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveLinearTheoremsRel : String :=
   SystemsLean.HostFrontLiveLinearTheorems.liveLinearTheoremsRel
+
+/-- Live basename. Exact equality. No slash. -/
+def liveRel : String :=
+  SystemsLean.HostFrontLiveLinearTheorems.liveRel
 
 /-- Ready names HostFrontLiveLinearTheorems parse plus kernelCheck,
     not := true.
@@ -61,7 +65,11 @@ def slakeTypecheckLinearTheoremsOwnsPackageTypecheck : Bool := false
     HostFrontLiveLinearTheorems.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckLinearTheorems} =="
+  IO.println s!"liveRel={liveRel}"
   IO.println s!"  host={hostId} file={liveLinearTheoremsRel}"
+  unless (liveRel == "LinearTheorems.lean") do
+    IO.eprintln "error: liveRel must be LinearTheorems.lean"
+    return 1
   unless (!slakeTypecheckLinearTheoremsFullHost) do
     IO.eprintln "error: FullHost must stay false"
     return 1

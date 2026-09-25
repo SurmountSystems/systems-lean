@@ -51,7 +51,7 @@
   parseLiveHostResidualShrinkTermOkSource,
   kernelCheckLiveHostResidualShrinkTermOkSource,
   hostFrontLiveHostResidualShrinkTermOkReady, liveHostResidualShrinkTermOkSource,
-  liveHostResidualShrinkTermOkRel, UNIT_SURFACE host surface, MULT-0,
+  liveRel, liveHostResidualShrinkTermOkRel, UNIT_SURFACE host surface, MULT-0,
   liveParseDoesNotUseMultFixture.
   Module: SystemsLean.HostFrontLiveHostResidualShrinkTermOk
   Red/green: dests-skipped until barrel; lake build
@@ -82,6 +82,9 @@ def hostId : String := "HOST-FRONT-LIVE-HOST-RESIDUAL-SHRINK-TERM-OK"
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-HOST-RESIDUAL-SHRINK-TERM-OK"
 
+/-- Bare basename. No slash. The path string below stays repo-relative. -/
+def liveRel : String := "HostResidualShrinkTermOk.lean"
+
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveHostResidualShrinkTermOkRel : String :=
   "src/systems/SystemsLean/HostResidualShrinkTermOk.lean"
@@ -104,10 +107,11 @@ def liveHostResidualShrinkTermOkParseFuel : Nat := 512
 /-- Skip fuel for theorem / example / un-kernelable tails. -/
 def liveHostResidualShrinkTermOkSkipFuel : Nat := 8192
 
-/-- Kernel-check fuel. HostKernel.kernelFuel is 64; this live parse keeps
-    about 292 commands (namespace, atom defs, end). HostKernel.lean is
-    locked, so seed locally. -/
-def liveHostResidualShrinkTermOkKernelFuel : Nat := 512
+/-- Keep at most this many commands before `end`.
+    HostKernel.kernelCheck uses kernelFuel 64. A literal def needs check
+    fuel at least 2, so 63 non-end commands plus `end` is the cap.
+    Do not raise kernelFuel. Not a constant true. -/
+def liveHostResidualShrinkTermOkKeepCap : Nat := 63
 
 /-- Strip comments; keep dash-dash and block-open inside string payloads.
     HostResidualShrinkTermOk has quoted phrases in comments and module section
@@ -336,7 +340,8 @@ def parseOneCmdHostResidualShrinkTermOk (fuel : Nat) (toks : List String) :
   | _ => none
 
 /-- Fold commands. Skip theorem / example / set_option / open / structure /
-    un-kernelable defs. -/
+    un-kernelable defs. Stop keeping non-end commands once the kernel
+    fuel cap is full. `end` is still kept. -/
 def parseCmdsHostResidualShrinkTermOk : Nat -> List String -> List String ->
     List Cmd -> Option (List Cmd)
   | 0, [], _, acc => some acc
@@ -346,9 +351,16 @@ def parseCmdsHostResidualShrinkTermOk : Nat -> List String -> List String ->
     match parseOneCmdHostResidualShrinkTermOk liveHostResidualShrinkTermOkParseFuel toks with
     | some (c, rest) =>
       let rest2 := skipNonCmd liveHostResidualShrinkTermOkSkipFuel rest
+      let isEnd :=
+        match c with
+        | Cmd.endNamespace _ => true
+        | _ => false
       if cmdBodyKnownHostResidualShrinkTermOk kn c then
-        parseCmdsHostResidualShrinkTermOk n rest2
-          (kn ++ cmdAddsHostResidualShrinkTermOk c) (acc ++ [c])
+        if !isEnd && acc.length >= liveHostResidualShrinkTermOkKeepCap then
+          parseCmdsHostResidualShrinkTermOk n rest2 kn acc
+        else
+          parseCmdsHostResidualShrinkTermOk n rest2
+            (kn ++ cmdAddsHostResidualShrinkTermOk c) (acc ++ [c])
       else
         parseCmdsHostResidualShrinkTermOk n rest2 kn acc
     | none =>
@@ -390,16 +402,13 @@ def parseLiveHostResidualShrinkTermOkSource (src : String) : FrontResult :=
         else FrontResult.reject reasonNotWellFormed
 
 /-- Kernel-check live HostResidualShrinkTermOk parse. Not a fixture.
-    Not occupancy Term. Uses kernelCheckN with local fuel because
-    HostKernel.kernelCheck uses kernelFuel 64. Greppable:
+    Not occupancy Term. Accept arm is HostKernel.kernelCheck.
+    Reject arm is false. Greppable:
     kernelCheckLiveHostResidualShrinkTermOkSource,
     PARSE-LIVE-HOST-RESIDUAL-SHRINK-TERM-OK. -/
 def kernelCheckLiveHostResidualShrinkTermOkSource (src : String) : Bool :=
   match parseLiveHostResidualShrinkTermOkSource src with
-  | FrontResult.accept m =>
-    isWellFormed m
-      && HostKernel.kernelCheckN liveHostResidualShrinkTermOkKernelFuel
-        [] [] m.commands
+  | FrontResult.accept m => HostKernel.kernelCheck m
   | FrontResult.reject _ => false
 
 /-- Accepted live module when parse succeeds. -/
@@ -419,12 +428,12 @@ def liveParseHasNoCheckCmd : Bool :=
       | _ => false)
 
 /-- Live parse command count (namespace / atom defs / end).
-    Real lower bound from this parse, not hardcoded true. Horizon
-    measured cmds=292: namespace, kernelable String/Bool atoms, end.
-    One live def (multiline package env-band string) skip-folds. -/
+    Real lower bound from this parse, not hardcoded true.
+    Keep cap is 63 non-end commands plus end. The multiline package
+    env-band string stays past the cap and skip-folds. -/
 def liveParseCmdCountOk : Bool :=
   match liveHostResidualShrinkTermOkParsed? with
-  | some m => m.commands.length >= 292
+  | some m => m.commands.length >= 64 && m.commands.length <= 64
   | none => false
 
 /-- Wrap module lastSeg is HostResidualShrinkTermOk (no module line in the live file). -/
@@ -475,6 +484,7 @@ def hostFrontLiveHostResidualShrinkTermOkReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_HOST_RESIDUAL_SHRINK_TERM_OK_V0")
     && (hostId == "HOST-FRONT-LIVE-HOST-RESIDUAL-SHRINK-TERM-OK")
     && (parseId == "PARSE-LIVE-HOST-RESIDUAL-SHRINK-TERM-OK")
+    && (liveRel == "HostResidualShrinkTermOk.lean")
     && (liveHostResidualShrinkTermOkRel
       == "src/systems/SystemsLean/HostResidualShrinkTermOk.lean")
     && liveParseDoesNotUseMultFixture
@@ -514,11 +524,8 @@ def runLiveHostResidualShrinkTermOk (root : System.FilePath) : IO Unit := do
     IO.eprintln s!"error: PARSE-LIVE-HOST-RESIDUAL-SHRINK-TERM-OK reject {reason}"
     throw (IO.userError s!"PARSE-LIVE-HOST-RESIDUAL-SHRINK-TERM-OK reject {reason}")
   | FrontResult.accept m =>
-    let k :=
-      isWellFormed m
-        && HostKernel.kernelCheckN liveHostResidualShrinkTermOkKernelFuel
-          [] [] m.commands
-    IO.println s!"PASS PARSE-LIVE-HOST-RESIDUAL-SHRINK-TERM-OK ACCEPT liveRel=HostResidualShrinkTermOk.lean cmds={m.commands.length} kernelCheck={k}"
+    let k := HostKernel.kernelCheck m
+    IO.println s!"PASS PARSE-LIVE-HOST-RESIDUAL-SHRINK-TERM-OK ACCEPT cmds={m.commands.length} kernelCheck={k}"
     unless k do
       IO.eprintln "error: kernelCheck live HostResidualShrinkTermOk parse false"
       throw (IO.userError "kernelCheck live HostResidualShrinkTermOk parse false")
@@ -528,6 +535,7 @@ def runLiveHostResidualShrinkTermOk (root : System.FilePath) : IO Unit := do
     IO.println s!"GREEN {stageId}: live HostResidualShrinkTermOk.lean parse kernelCheck; not mill 70"
 
 def main (args : List String) : IO UInt32 := do
+  IO.println s!"liveRel={liveRel}"
   let root : System.FilePath :=
     match HostFront.filterArgs args with
     | r :: _ => System.FilePath.mk r

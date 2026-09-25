@@ -30,6 +30,10 @@ def justRecipeSlakeTypecheckLinearForeignLink : String :=
 def liveLinearForeignLinkRel : String :=
   SystemsLean.HostFrontLiveLinearForeignLink.liveLinearForeignLinkRel
 
+/-- Live basename. Exact equality. No slash. -/
+def liveRel : String :=
+  SystemsLean.HostFrontLiveLinearForeignLink.liveRel
+
 /-- Ready names HostFrontLiveLinearForeignLink parse plus kernelCheck, not := true.
     Greppable: slakeTypecheckLinearForeignLinkReady,
     kernelCheckLiveLinearForeignLinkSource. -/
@@ -51,7 +55,11 @@ def slakeTypecheckLinearForeignLinkOwnsPackageTypecheck : Bool := false
     HostFrontLiveLinearForeignLink.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckLinearForeignLink} =="
+  IO.println s!"liveRel={liveRel}"
   IO.println s!"  host={hostId} file={liveLinearForeignLinkRel}"
+  unless (liveRel == "LinearForeignLink.lean") do
+    IO.eprintln "error: liveRel must be LinearForeignLink.lean"
+    return 1
   unless (!slakeTypecheckLinearForeignLinkFullHost) do
     IO.eprintln "error: FullHost must stay false"
     return 1

@@ -15,7 +15,7 @@
   Greppable: SYSTEMS_LEAN_HOST, slake-typecheck-linearusefailtheorems,
   slakeTypecheckLinearUseFailTheoremsReady,
   kernelCheckLiveLinearUseFailTheoremsSource,
-  SKELETON.
+  liveRel, SKELETON.
   Module: SystemsLean.SlakeTypecheckLinearUseFailTheorems
   Checkable writer: just slake-typecheck-linearusefailtheorems
   (lean --run; no mill; no lake). Dests skipped; recipe not invoked here.
@@ -36,6 +36,10 @@ def justRecipeSlakeTypecheckLinearUseFailTheorems : String :=
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveLinearUseFailTheoremsRel : String :=
   SystemsLean.HostFrontLiveLinearUseFailTheorems.liveLinearUseFailTheoremsRel
+
+/-- Live basename. Exact equality. No slash. -/
+def liveRel : String :=
+  SystemsLean.HostFrontLiveLinearUseFailTheorems.liveRel
 
 /-- Ready names HostFrontLiveLinearUseFailTheorems parse plus kernelCheck,
     not := true.
@@ -59,7 +63,11 @@ def slakeTypecheckLinearUseFailTheoremsOwnsPackageTypecheck : Bool := false
     HostFrontLiveLinearUseFailTheorems.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckLinearUseFailTheorems} =="
+  IO.println s!"liveRel={liveRel}"
   IO.println s!"  host={hostId} file={liveLinearUseFailTheoremsRel}"
+  unless (liveRel == "LinearUseFailTheorems.lean") do
+    IO.eprintln "error: liveRel must be LinearUseFailTheorems.lean"
+    return 1
   unless (!slakeTypecheckLinearUseFailTheoremsFullHost) do
     IO.eprintln "error: FullHost must stay false"
     return 1

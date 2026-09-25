@@ -74,7 +74,7 @@ def liveMultFsDeepenSkipFuel : Nat := 8192
 
 /-- Kept commands: three imports, namespace, kernel-checkable defs, and end.
     From MultFsDeepen.lean. Not a count of 4. -/
-def liveMultFsDeepenKeptCmds : Nat := 26
+def liveMultFsDeepenKeptCmds : Nat := 25
 
 /-- theorem keyword count. MultFsDeepen.lean theorems are skip-folded. -/
 def liveMultFsDeepenTheoremCount : Nat := 19

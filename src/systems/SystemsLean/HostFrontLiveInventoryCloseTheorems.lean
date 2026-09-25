@@ -37,7 +37,7 @@
   parseLiveInventoryCloseTheoremsSource,
   kernelCheckLiveInventoryCloseTheoremsSource,
   hostFrontLiveInventoryCloseTheoremsReady, liveInventoryCloseTheoremsSource,
-  liveInventoryCloseTheoremsRel, UNIT_SURFACE host surface, MULT-0,
+  liveInventoryCloseTheoremsRel, liveRel, UNIT_SURFACE host surface, MULT-0,
   liveParseDoesNotUseMultFixture.
   Module: SystemsLean.HostFrontLiveInventoryCloseTheorems
   Red/green: dest-missing until barrel; lake build
@@ -67,6 +67,9 @@ def hostId : String := "HOST-FRONT-LIVE-INVENTORY-CLOSE-THEOREMS"
 
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-INVENTORY-CLOSE-THEOREMS"
+
+/-- Bare basename. No slash. The path string below stays repo-relative. -/
+def liveRel : String := "InventoryCloseTheorems.lean"
 
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveInventoryCloseTheoremsRel : String :=
@@ -330,6 +333,7 @@ def hostFrontLiveInventoryCloseTheoremsReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_INVENTORY_CLOSE_THEOREMS_V0")
     && (hostId == "HOST-FRONT-LIVE-INVENTORY-CLOSE-THEOREMS")
     && (parseId == "PARSE-LIVE-INVENTORY-CLOSE-THEOREMS")
+    && (liveRel == "InventoryCloseTheorems.lean")
     && (liveInventoryCloseTheoremsRel
       == "src/systems/SystemsLean/InventoryCloseTheorems.lean")
     && liveParseDoesNotUseMultFixture
@@ -379,6 +383,7 @@ def runLiveInventoryCloseTheorems (root : System.FilePath) : IO Unit := do
     IO.println s!"GREEN {stageId}: live InventoryCloseTheorems.lean parse kernelCheck; not mill 70"
 
 def main (args : List String) : IO UInt32 := do
+  IO.println s!"liveRel={liveRel}"
   let root : System.FilePath :=
     match HostFront.filterArgs args with
     | r :: _ => System.FilePath.mk r

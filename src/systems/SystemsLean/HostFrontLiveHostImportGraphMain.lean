@@ -72,7 +72,7 @@
   parseLiveHostImportGraphMainSource,
   kernelCheckLiveHostImportGraphMainSource,
   hostFrontLiveHostImportGraphMainReady, liveHostImportGraphMainSource,
-  liveHostImportGraphMainRel, UNIT_SURFACE host surface, MULT-0,
+  liveHostImportGraphMainRel, liveRel, UNIT_SURFACE host surface, MULT-0,
   liveParseDoesNotUseMultFixture.
   Module: SystemsLean.HostFrontLiveHostImportGraphMain
   Red/green: dests skipped this slice (no barrel, no dest rows).
@@ -102,7 +102,11 @@ def hostId : String := "HOST-FRONT-LIVE-HOST-IMPORT-GRAPH-MAIN"
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-HOST-IMPORT-GRAPH-MAIN"
 
-/-- Live file relative to repo root. Dual-pin path. -/
+/-- Live basename. Greppable: liveRel. Must be HostImportGraphMain.lean. -/
+def liveRel : String := "HostImportGraphMain.lean"
+
+/-- Live file relative to repo root.
+    Disk reads stay on this path. liveRel stays the bare basename. -/
 def liveHostImportGraphMainRel : String :=
   "src/systems/SystemsLean/HostImportGraphMain.lean"
 
@@ -465,7 +469,7 @@ def liveParseHasCoreDefs : Bool :=
     Greppable: hostFrontLiveHostImportGraphMainReady,
     PARSE-LIVE-HOST-IMPORT-GRAPH-MAIN,
     HOST-FRONT-LIVE-HOST-IMPORT-GRAPH-MAIN.
-    Real conjunction: parse+kernel plus honesty pins. Not hardcoded true.
+    Real conjunction: parse plus kernelCheck plus liveRel. Not hardcoded true.
     This mill Main has no namespace command; do not require one. -/
 def hostFrontLiveHostImportGraphMainReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_HOST_IMPORT_GRAPH_MAIN_V0")
@@ -473,6 +477,7 @@ def hostFrontLiveHostImportGraphMainReady : Bool :=
     && (parseId == "PARSE-LIVE-HOST-IMPORT-GRAPH-MAIN")
     && (liveHostImportGraphMainRel
       == "src/systems/SystemsLean/HostImportGraphMain.lean")
+    && (liveRel == "HostImportGraphMain.lean")
     && liveParseDoesNotUseMultFixture
     && !hostFrontLiveHostImportGraphMainFullHost
     && !hostFrontLiveHostImportGraphMainResidualFreeClaimed
@@ -495,6 +500,10 @@ def liveParseRejectsEmpty : Bool :=
 def runLiveHostImportGraphMain (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: PARSE-LIVE-HOST-IMPORT-GRAPH-MAIN =="
   IO.println s!"  host={hostId} file={liveHostImportGraphMainRel}"
+  IO.println s!"liveRel={liveRel}"
+  unless (liveRel == "HostImportGraphMain.lean") do
+    IO.eprintln "error: liveRel must be HostImportGraphMain.lean"
+    throw (IO.userError "liveRel must be HostImportGraphMain.lean")
   let path := root / liveHostImportGraphMainRel
   unless (<- path.pathExists) do
     IO.eprintln s!"error: missing {liveHostImportGraphMainRel}"

@@ -85,6 +85,9 @@ def bannerId : String := "LLVM-MULT-SSA"
 def liveLlvmMultSsaRel : String :=
   "src/systems/SystemsLean/LlvmMultSsa.lean"
 
+/-- Live basename. Filename only, not a path. -/
+def liveRel : String := "LlvmMultSsa.lean"
+
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
 

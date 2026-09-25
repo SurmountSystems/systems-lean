@@ -61,6 +61,7 @@ def slakeTypecheckSlakeProducedElfOwnsPackageTypecheck : Bool := false
     HostFrontLiveSlakeProducedElf.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckSlakeProducedElf} =="
+  IO.println s!"liveRel={SystemsLean.HostFrontLiveSlakeProducedElf.liveRel}"
   IO.println s!"  host={hostId} file={liveSlakeProducedElfRel}"
   unless (!slakeTypecheckSlakeProducedElfFullHost) do
     IO.eprintln "error: FullHost must stay false"

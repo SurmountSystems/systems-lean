@@ -245,7 +245,7 @@ def hostFrontLiveEmitLinearReady : Bool :=
 
 def runLiveEmitLinear (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: PARSE-LIVE-EMIT-LINEAR =="
-  IO.println s!"  host={hostId} file={liveEmitLinearRel}"
+  IO.println s!"  host={hostId} file={liveEmitLinearRel} liveRel={liveRel}"
   let path := root / liveEmitLinearRel
   unless (<- path.pathExists) do
     IO.eprintln s!"error: missing {liveEmitLinearRel}"
@@ -261,7 +261,7 @@ def runLiveEmitLinear (root : System.FilePath) : IO Unit := do
     throw (IO.userError s!"PARSE-LIVE-EMIT-LINEAR reject {reason}")
   | FrontResult.accept m =>
     let k := HostKernel.kernelCheck m
-    IO.println s!"PASS PARSE-LIVE-EMIT-LINEAR ACCEPT cmds={m.commands.length} kernelCheck={k}"
+    IO.println s!"PASS PARSE-LIVE-EMIT-LINEAR ACCEPT cmds={m.commands.length} kernelCheck={k} liveRel={liveRel}"
     unless k do
       IO.eprintln "error: kernelCheck live EmitLinear parse false"
       throw (IO.userError "kernelCheck live EmitLinear parse false")

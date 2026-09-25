@@ -31,6 +31,9 @@ def justRecipeSlakeTypecheckEmitCompose : String :=
 def liveEmitComposeRel : String :=
   SystemsLean.HostFrontLiveEmitCompose.liveEmitComposeRel
 
+/-- Live basename. Exact equality. Not a directory prefix. -/
+def liveRel : String := SystemsLean.HostFrontLiveEmitCompose.liveRel
+
 /-- Ready names HostFrontLiveEmitCompose parse plus kernelCheck, not := true.
     Greppable: slakeTypecheckEmitComposeReady,
     kernelCheckLiveEmitComposeSource. -/
@@ -52,11 +55,21 @@ def slakeTypecheckEmitComposeOwnsPackageTypecheck : Bool := false
     HostFrontLiveEmitCompose.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckEmitCompose} =="
+  IO.println s!"liveRel={liveRel}"
   IO.println s!"  host={hostId} file={liveEmitComposeRel}"
+  unless (liveRel == "EmitCompose.lean") do
+    IO.eprintln "error: liveRel must be EmitCompose.lean"
+    return 1
   unless (!slakeTypecheckEmitComposeFullHost) do
     IO.eprintln "error: FullHost must stay false"
     return 1
   unless (!slakeTypecheckEmitComposeOwnsPackageTypecheck) do
     IO.eprintln "error: slakeOwnsPackageTypecheck must stay false"
+    return 1
+  unless slakeTypecheckEmitComposeDoesNotUseLake do
+    IO.eprintln "error: doesNotUseLake must stay true"
+    return 1
+  unless slakeTypecheckEmitComposeReady do
+    IO.eprintln "error: slakeTypecheckEmitComposeReady false"
     return 1
   SystemsLean.HostFrontLiveEmitCompose.main args

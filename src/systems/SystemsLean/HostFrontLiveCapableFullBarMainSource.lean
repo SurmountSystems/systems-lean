@@ -21,7 +21,7 @@
   Module must stay ASCII.
 -/
 
-namespace SystemsLean.HostFrontLiveCapableFullBarMain
+namespace SystemsLean.HostFrontLiveCapableFullBarMainSource
 
 /-- Dual-pinned live CapableFullBarMain.lean bytes (must match on-disk file).
     Greppable: liveCapableFullBarMainSource, PARSE-LIVE-CAPABLE-FULL-BAR-MAIN. -/
@@ -57,4 +57,12 @@ def main (args : List String) : IO UInt32 :=
   SystemsLean.CapableFullBar.main args
 "#
 
-end SystemsLean.HostFrontLiveCapableFullBarMain
+end SystemsLean.HostFrontLiveCapableFullBarMainSource
+
+namespace SystemsLean.HostFrontLiveCapableFullBarMainParse
+
+/-- Same bytes, visible in the parser namespace. Not a second copy. -/
+def liveCapableFullBarMainSource : String :=
+  SystemsLean.HostFrontLiveCapableFullBarMainSource.liveCapableFullBarMainSource
+
+end SystemsLean.HostFrontLiveCapableFullBarMainParse

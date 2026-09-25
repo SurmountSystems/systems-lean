@@ -37,7 +37,7 @@
   parseLiveJoinMapTheoremsSource,
   kernelCheckLiveJoinMapTheoremsSource,
   hostFrontLiveJoinMapTheoremsReady, liveJoinMapTheoremsSource,
-  liveJoinMapTheoremsRel, UNIT_SURFACE host surface, MULT-0,
+  liveRel, liveJoinMapTheoremsRel, UNIT_SURFACE host surface, MULT-0,
   liveParseDoesNotUseMultFixture.
   Module: SystemsLean.HostFrontLiveJoinMapTheorems
   Red/green: dest-missing until barrel; lake build
@@ -67,6 +67,9 @@ def hostId : String := "HOST-FRONT-LIVE-JOIN-MAP-THEOREMS"
 
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-JOIN-MAP-THEOREMS"
+
+/-- Bare product basename. No slash. -/
+def liveRel : String := "JoinMapTheorems.lean"
 
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveJoinMapTheoremsRel : String :=
@@ -330,6 +333,7 @@ def hostFrontLiveJoinMapTheoremsReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_JOIN_MAP_THEOREMS_V0")
     && (hostId == "HOST-FRONT-LIVE-JOIN-MAP-THEOREMS")
     && (parseId == "PARSE-LIVE-JOIN-MAP-THEOREMS")
+    && (liveRel == "JoinMapTheorems.lean")
     && (liveJoinMapTheoremsRel
       == "src/systems/SystemsLean/JoinMapTheorems.lean")
     && liveParseDoesNotUseMultFixture
@@ -379,6 +383,7 @@ def runLiveJoinMapTheorems (root : System.FilePath) : IO Unit := do
     IO.println s!"GREEN {stageId}: live JoinMapTheorems.lean parse kernelCheck; not mill 70"
 
 def main (args : List String) : IO UInt32 := do
+  IO.println s!"liveRel={liveRel}"
   let root : System.FilePath :=
     match HostFront.filterArgs args with
     | r :: _ => System.FilePath.mk r

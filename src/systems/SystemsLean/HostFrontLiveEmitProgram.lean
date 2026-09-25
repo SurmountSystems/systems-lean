@@ -16,7 +16,7 @@
     That import is not this module name.
   - Namespace and end use full raw SystemsLean.EmitProgram.
     lastSeg EmitProgram alone is not identity. Identity is that full raw
-    name plus liveRel src/systems/SystemsLean/EmitProgram.lean.
+    name plus liveRel EmitProgram.lean.
   - kernelCheckLiveEmitProgramSource is HostKernel.kernelCheck of that parse.
   - After strip, the shape is import, namespace, and end. No def and no
     theorem in this file. Doc comments are block comments. stripComments strips them.
@@ -39,7 +39,7 @@
   parseLiveEmitProgramSource,
   kernelCheckLiveEmitProgramSource,
   hostFrontLiveEmitProgramReady, liveEmitProgramSource,
-  liveRel, UNIT_SURFACE host surface, MULT-0,
+  liveRel, liveEmitProgramRel, UNIT_SURFACE host surface, MULT-0,
   liveParseDoesNotUseMultFixture.
   Module: SystemsLean.HostFrontLiveEmitProgram
   Red/green: dest-missing until barrel; closed lean --run on horizon.
@@ -69,8 +69,12 @@ def hostId : String := "HOST-FRONT-LIVE-EMIT-PROGRAM"
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-EMIT-PROGRAM"
 
-/-- Live file relative to repo root. Dual-pin path. Exact, not a prefix. -/
-def liveRel : String := "src/systems/SystemsLean/EmitProgram.lean"
+/-- Live file basename. Exact, not a prefix. -/
+def liveRel : String := "EmitProgram.lean"
+
+/-- Live file relative to repo root. Dual-pin path. -/
+def liveEmitProgramRel : String :=
+  "src/systems/SystemsLean/" ++ liveRel
 
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
@@ -241,7 +245,7 @@ def liveParseCmdCountOk : Bool :=
 /-- Parsed module name is SystemsLean.EmitProgram.
     lastSeg EmitProgram alone is not identity: EmitProgramScaffold.lean
     uses namespace SystemsLean.EmitProgram too. Identity is this full raw
-    name plus liveRel src/systems/SystemsLean/EmitProgram.lean. -/
+    name plus liveRel EmitProgram.lean. -/
 def liveParseHasEmitProgramModule : Bool :=
   match liveEmitProgramParsed? with
   | none => false
@@ -295,7 +299,8 @@ def hostFrontLiveEmitProgramReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_EMIT_PROGRAM_V0")
     && (hostId == "HOST-FRONT-LIVE-EMIT-PROGRAM")
     && (parseId == "PARSE-LIVE-EMIT-PROGRAM")
-    && (liveRel == "src/systems/SystemsLean/EmitProgram.lean")
+    && (liveRel == "EmitProgram.lean")
+    && (liveEmitProgramRel == "src/systems/SystemsLean/EmitProgram.lean")
     && liveParseDoesNotUseMultFixture
     && !hostFrontLiveEmitProgramFullHost
     && !hostFrontLiveEmitProgramResidualFreeClaimed
@@ -314,11 +319,11 @@ def hostFrontLiveEmitProgramReady : Bool :=
 
 def runLiveEmitProgram (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: PARSE-LIVE-EMIT-PROGRAM =="
-  IO.println s!"  host={hostId} file={liveRel} liveRel={liveRel}"
-  let path := root / liveRel
+  IO.println s!"  host={hostId} file={liveEmitProgramRel} liveRel={liveRel}"
+  let path := root / liveEmitProgramRel
   unless (<- path.pathExists) do
-    IO.eprintln s!"error: missing {liveRel}"
-    throw (IO.userError s!"missing {liveRel}")
+    IO.eprintln s!"error: missing {liveEmitProgramRel}"
+    throw (IO.userError s!"missing {liveEmitProgramRel}")
   let disk <- IO.FS.readFile path
   if disk != liveEmitProgramSource then
     IO.eprintln "error: dual-pin mismatch: on-disk EmitProgram.lean != liveEmitProgramSource"

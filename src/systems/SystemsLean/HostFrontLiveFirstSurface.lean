@@ -44,6 +44,7 @@
   PARSE-LIVE-FIRST-SURFACE, parseLiveFirstSurfaceSource,
   kernelCheckLiveFirstSurfaceSource,
   hostFrontLiveFirstSurfaceReady, liveFirstSurfaceSource, liveFirstSurfaceRel,
+  liveRel,
   UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveFirstSurface
   Red/green: dests skipped (sibling Graph/Body dest lock; last dests GREEN 693
@@ -75,7 +76,11 @@ def hostId : String := "HOST-FRONT-LIVE-FIRST-SURFACE"
 /-- Greppable parse id. Hyphenated FIRST-SURFACE. -/
 def parseId : String := "PARSE-LIVE-FIRST-SURFACE"
 
-/-- Live file relative to repo root. Dual-pin path. -/
+/-- Live basename. Greppable: liveRel. Must be FirstSurface.lean. -/
+def liveRel : String := "FirstSurface.lean"
+
+/-- Live file relative to repo root. Dual-pin path.
+    Disk reads stay on this path. liveRel stays the bare basename. -/
 def liveFirstSurfaceRel : String := "src/systems/SystemsLean/FirstSurface.lean"
 
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
@@ -367,6 +372,7 @@ def hostFrontLiveFirstSurfaceReady : Bool :=
     && (hostId == "HOST-FRONT-LIVE-FIRST-SURFACE")
     && (parseId == "PARSE-LIVE-FIRST-SURFACE")
     && (liveFirstSurfaceRel == "src/systems/SystemsLean/FirstSurface.lean")
+    && (liveRel == "FirstSurface.lean")
     && liveParseDoesNotUseMultFixture
     && !hostFrontLiveFirstSurfaceFullHost
     && !hostFrontLiveFirstSurfaceResidualFreeClaimed
@@ -389,6 +395,10 @@ def liveParseRejectsEmpty : Bool :=
 def runLiveFirstSurface (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: PARSE-LIVE-FIRST-SURFACE =="
   IO.println s!"  host={hostId} file={liveFirstSurfaceRel}"
+  IO.println s!"liveRel={liveRel}"
+  unless (liveRel == "FirstSurface.lean") do
+    IO.eprintln "error: liveRel must be FirstSurface.lean"
+    throw (IO.userError "liveRel must be FirstSurface.lean")
   let path := root / liveFirstSurfaceRel
   unless (<- path.pathExists) do
     IO.eprintln s!"error: missing {liveFirstSurfaceRel}"

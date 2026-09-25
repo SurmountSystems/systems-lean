@@ -28,7 +28,8 @@
   SLAKE_HOST_FRONT_LIVE_GRAPH_FOREIGN_LINK_V0,
   PARSE-LIVE-GRAPH-FOREIGN-LINK, parseLiveGraphForeignLinkSource,
   kernelCheckLiveGraphForeignLinkSource,
-  hostFrontLiveGraphForeignLinkReady, liveGraphForeignLinkSource, liveGraphForeignLinkRel,
+  hostFrontLiveGraphForeignLinkReady, liveGraphForeignLinkSource, liveRel,
+  liveGraphForeignLinkRel,
   UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveGraphForeignLink
   Red/green: just slake-typecheck-graphforeignlink; dests skipped (sibling wrap lock);
@@ -59,7 +60,11 @@ def hostId : String := "HOST-FRONT-LIVE-GRAPH-FOREIGN-LINK"
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-GRAPH-FOREIGN-LINK"
 
-/-- Live file relative to repo root. Dual-pin path. -/
+/-- Live basename. Greppable: liveRel. Must be GraphForeignLink.lean. -/
+def liveRel : String := "GraphForeignLink.lean"
+
+/-- Live file relative to repo root. Dual-pin path.
+    Disk reads stay on this path. liveRel stays the bare basename. -/
 def liveGraphForeignLinkRel : String := "src/systems/SystemsLean/GraphForeignLink.lean"
 
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
@@ -407,6 +412,7 @@ def hostFrontLiveGraphForeignLinkReady : Bool :=
     && (hostId == "HOST-FRONT-LIVE-GRAPH-FOREIGN-LINK")
     && (parseId == "PARSE-LIVE-GRAPH-FOREIGN-LINK")
     && (liveGraphForeignLinkRel == "src/systems/SystemsLean/GraphForeignLink.lean")
+    && (liveRel == "GraphForeignLink.lean")
     && liveParseDoesNotUseMultFixture
     && !hostFrontLiveGraphForeignLinkFullHost
     && !hostFrontLiveGraphForeignLinkResidualFreeClaimed
@@ -429,6 +435,10 @@ def liveParseRejectsEmpty : Bool :=
 def runLiveGraphForeignLink (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: PARSE-LIVE-GRAPH-FOREIGN-LINK =="
   IO.println s!"  host={hostId} file={liveGraphForeignLinkRel}"
+  IO.println s!"liveRel={liveRel}"
+  unless (liveRel == "GraphForeignLink.lean") do
+    IO.eprintln "error: liveRel must be GraphForeignLink.lean"
+    throw (IO.userError "liveRel must be GraphForeignLink.lean")
   let path := root / liveGraphForeignLinkRel
   unless (<- path.pathExists) do
     IO.eprintln s!"error: missing {liveGraphForeignLinkRel}"

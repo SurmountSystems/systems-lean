@@ -1,43 +1,30 @@
 /-
-  SYSTEMS_LEAN_HOST partial -- dual-pin live ProgramSubsetRebuildMain.lean bytes.
-  Side: classic Lean elaborator under src/systems/ (not freestanding C).
-  Short role: HostFrontLiveProgramSubsetRebuildMainSource. Not occupancy name 50.
-  Not mill remill (just twenty-fifth-host-tool / inventory table row 37). Mill stays 69 of 69.
-  This wrap parses ProgramSubsetRebuildMain.lean only. Do not wrap ProgramSubsetRebuild.lean.
-  Do not invent HostFrontLiveProgramSubsetRebuild (library wrap).
-  Do not steal HostFrontLiveProgramMain (library wrap of Program.lean; none existed).
-  Do not invent HostFrontLiveProgram (library wrap of Program.lean).
-  This wrap is not ProgramSubsetEmitMain. This wrap is not TypesSubsetRebuildMain.
-  Not Linear. Not ComposeSubsetEmit. Not IrGraph.
-  DualEqWrite.lean does not exist and is not invented.
-  CapableWrite.lean does not exist. HostResidualShrinkFacts.lean does not exist.
-  Do not split DualPinOk.
-  Unique needles use trailing newline so HostFrontLiveProgramSubsetRebuildMain is not a
-  prefix hit on HostFrontLiveProgramSubsetRebuildMainSource.
-  Occupancy leftover Term files are not this wrap.
-  Unique needles (trailing newline so HostFrontLiveProgramSubsetRebuildMain is not a prefix):
-  HostFrontLiveProgramSubsetRebuildMainSource
-  PARSE-LIVE-PROGRAM-SUBSET-REBUILD-MAIN
-  HOST-FRONT-LIVE-PROGRAM-SUBSET-REBUILD-MAIN
-  PROGRAM-SUBSET-REBUILD-MAIN
-  HOST-PROGRAM-SUBSET-REBUILD-MAIN
-  Live product needles:
-  ProgramSubsetRebuildMain
-  slake-program-subset-rebuild
-  import SystemsLean.ProgramSubsetRebuild
-  PROGRAM-SUBSET-REBUILD
-  SLAKE_PROGRAM_SUBSET_REBUILD
-  Greppable: SYSTEMS_LEAN_HOST, liveProgramSubsetRebuildMainSource,
-  UNIT_SURFACE host surface.
+  SYSTEMS_LEAN_HOST partial -- live ProgramSubsetRebuildMain.lean.
+  The thin forwarder HostFrontLiveProgramSubsetRebuildMain stays
+  byte-for-byte and still calls the neighbor body. This module is the
+  checker for the Main file. It does not retarget that neighbor.
+  liveRel is ProgramSubsetRebuildMain.lean. Not a path.
+  Greppable: liveRel, kernelCheckLiveProgramSubsetRebuildMainSource,
+  PARSE-LIVE-PROGRAM-SUBSET-REBUILD-MAIN.
   Module: SystemsLean.HostFrontLiveProgramSubsetRebuildMainSource
-  Not FullHost. Occupancy 49. Not freestanding residual free. Not PROVABLY.
+  Not FullHost. FullBackend stays false. Not an LLVM backend.
+  Occupancy stays 49. Mill stays 69 of 69.
+  slakeOwnsPackageTypecheck stays false.
   Module must stay ASCII.
 -/
 
-namespace SystemsLean.HostFrontLiveProgramSubsetRebuildMain
+import SystemsLean.HostFrontLiveLlvmComposeTextMainSource
 
-/-- Dual-pinned live ProgramSubsetRebuildMain.lean bytes (must match on-disk file).
-    Greppable: liveProgramSubsetRebuildMainSource, PARSE-LIVE-PROGRAM-SUBSET-REBUILD-MAIN. -/
+namespace SystemsLean.HostFrontLiveProgramSubsetRebuildMainSource
+
+open SystemsLean.HostFront
+open SystemsLean.HostKernel
+open SystemsLean.HostFrontLiveLlvmComposeTextMain
+
+/-- Live basename. Filename only, not a path. -/
+def liveRel : String := "ProgramSubsetRebuildMain.lean"
+
+/-- Pinned live ProgramSubsetRebuildMain.lean bytes. -/
 def liveProgramSubsetRebuildMainSource : String := r#"/-
   SYSTEMS_LEAN_HOST partial -- thin Lake exe main for Program subset rebuild /
   self-application (SKELETON). Root for lake exe slake-program-subset-rebuild.
@@ -57,4 +44,44 @@ def main (args : List String) : IO UInt32 :=
   SystemsLean.ProgramSubsetRebuild.main args
 "#
 
-end SystemsLean.HostFrontLiveProgramSubsetRebuildMain
+/-- Accepted parse of the Main file calls HostKernel.kernelCheck.
+    Not a constant true. -/
+def kernelCheckLiveProgramSubsetRebuildMainSource (src : String) : Bool :=
+  match parseLiveLlvmComposeTextMainSource src with
+  | FrontResult.accept m => HostKernel.kernelCheck m
+  | FrontResult.reject _ => false
+
+/-- Ready is parse plus kernelCheck of the pinned Main text. -/
+def hostFrontLiveProgramSubsetRebuildMainSourceReady : Bool :=
+  liveRel == "ProgramSubsetRebuildMain.lean"
+    && kernelCheckLiveProgramSubsetRebuildMainSource
+      liveProgramSubsetRebuildMainSource
+
+def runLive (root : System.FilePath) : IO Unit := do
+  IO.println s!"liveRel={liveRel}"
+  let path := root / "src/systems/SystemsLean" / liveRel
+  unless (<- path.pathExists) do
+    throw (IO.userError s!"missing {liveRel}")
+  let disk <- IO.FS.readFile path
+  if disk != liveProgramSubsetRebuildMainSource then
+    throw (IO.userError "dual-pin mismatch ProgramSubsetRebuildMain.lean")
+  let k := kernelCheckLiveProgramSubsetRebuildMainSource disk
+  IO.println s!"kernelCheck={k}"
+  unless k do
+    throw (IO.userError "kernelCheck live ProgramSubsetRebuildMain parse false")
+  unless hostFrontLiveProgramSubsetRebuildMainSourceReady do
+    throw (IO.userError "ready false")
+
+def main (args : List String) : IO UInt32 := do
+  let root : System.FilePath :=
+    match args with
+    | r :: _ => System.FilePath.mk r
+    | [] => "."
+  try
+    runLive root
+    pure 0
+  catch e =>
+    IO.eprintln s!"{e}"
+    pure 1
+
+end SystemsLean.HostFrontLiveProgramSubsetRebuildMainSource

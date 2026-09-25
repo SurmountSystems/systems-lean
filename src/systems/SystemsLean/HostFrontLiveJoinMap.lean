@@ -22,7 +22,7 @@
   SLAKE_HOST_FRONT_LIVE_JOINMAP_V0, PARSE-LIVE-JOINMAP,
   parseLiveJoinMapSource, kernelCheckLiveJoinMapSource,
   hostFrontLiveJoinMapReady, liveJoinMapSource,
-  liveJoinMapRel, UNIT_SURFACE host surface, MULT-0.
+  liveRel, liveJoinMapRel, UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveJoinMap
   Red/green: just systems-host dest rows when dests can land;
   lake build SystemsLean.HostFrontLiveJoinMap on surmount-1 (queued).
@@ -51,6 +51,9 @@ def hostId : String := "HOST-FRONT-LIVE-JOINMAP"
 
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-JOINMAP"
+
+/-- Bare product basename. No slash. -/
+def liveRel : String := "JoinMap.lean"
 
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveJoinMapRel : String :=
@@ -293,6 +296,7 @@ def hostFrontLiveJoinMapReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_JOINMAP_V0")
     && (hostId == "HOST-FRONT-LIVE-JOINMAP")
     && (parseId == "PARSE-LIVE-JOINMAP")
+    && (liveRel == "JoinMap.lean")
     && (liveJoinMapRel
       == "src/systems/SystemsLean/JoinMap.lean")
     && liveParseDoesNotUseMultFixture
@@ -344,6 +348,7 @@ def runLiveJoinMap (root : System.FilePath) : IO Unit := do
       s!"GREEN {stageId}: live JoinMap.lean parse kernelCheck; not mill 70"
 
 def main (args : List String) : IO UInt32 := do
+  IO.println s!"liveRel={liveRel}"
   let root : System.FilePath :=
     match HostFront.filterArgs args with
     | r :: _ => System.FilePath.mk r

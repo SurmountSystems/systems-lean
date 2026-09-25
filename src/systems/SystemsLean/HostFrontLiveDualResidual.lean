@@ -66,6 +66,9 @@ def hostId : String := "HOST-FRONT-LIVE-DUAL-RESIDUAL"
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-DUAL-RESIDUAL"
 
+/-- Live file basename. Not a path. -/
+def liveRel : String := "DualResidual.lean"
+
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveDualResidualRel : String := "src/systems/SystemsLean/DualResidual.lean"
 
@@ -468,6 +471,7 @@ def runLiveDualResidual (root : System.FilePath) : IO Unit := do
     IO.println s!"GREEN {stageId}: live DualResidual.lean parse kernelCheck; not mill 70"
 
 def main (args : List String) : IO UInt32 := do
+  IO.println s!"liveRel={liveRel}"
   let root : System.FilePath :=
     match HostFront.filterArgs args with
     | r :: _ => System.FilePath.mk r

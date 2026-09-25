@@ -30,6 +30,10 @@ def justRecipeSlakeTypecheckErasureTheorems : String :=
 def liveErasureTheoremsRel : String :=
   SystemsLean.HostFrontLiveErasureTheorems.liveErasureTheoremsRel
 
+/-- Live basename. Exact equality. Not Erasure.lean. -/
+def liveRel : String :=
+  SystemsLean.HostFrontLiveErasureTheorems.liveRel
+
 /-- Ready names HostFrontLiveErasureTheorems parse plus kernelCheck, not := true.
     Greppable: slakeTypecheckErasureTheoremsReady,
     kernelCheckLiveErasureTheoremsSource. -/
@@ -51,7 +55,11 @@ def slakeTypecheckErasureTheoremsOwnsPackageTypecheck : Bool := false
     HostFrontLiveErasureTheorems.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckErasureTheorems} =="
+  IO.println s!"liveRel={liveRel}"
   IO.println s!"  host={hostId} file={liveErasureTheoremsRel}"
+  unless (liveRel == "ErasureTheorems.lean") do
+    IO.eprintln "error: liveRel must be ErasureTheorems.lean"
+    return 1
   unless (!slakeTypecheckErasureTheoremsFullHost) do
     IO.eprintln "error: FullHost must stay false"
     return 1

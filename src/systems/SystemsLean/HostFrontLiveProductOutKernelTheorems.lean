@@ -77,6 +77,9 @@ def parseId : String := "PARSE-LIVE-PRODUCT-OUT-KERNEL-THEOREMS"
 def liveProductOutKernelTheoremsRel : String :=
   "src/systems/SystemsLean/ProductOutKernelTheorems.lean"
 
+/-- Live basename. Filename only, not a path. -/
+def liveRel : String := "ProductOutKernelTheorems.lean"
+
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
 

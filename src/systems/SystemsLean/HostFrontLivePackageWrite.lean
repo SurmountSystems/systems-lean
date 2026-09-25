@@ -9,9 +9,8 @@
   - parseLivePackageWriteSource turns live HostPackageWrite.lean text into
     HostTerm.Module.
   - Module name is SystemsLean.HostPackageWrite even without a module line.
-  - kernelCheckLivePackageWriteSource is HostKernel.kernelCheckN of that parse
-    with LOCAL HostFront / HostGraph / subset-emit seeds (HostKernel.lean is
-    locked; seed locally).
+  - kernelCheckLivePackageWriteSource is HostKernel.kernelCheck of that parse.
+    Reject is false. Not a constant true. Not kernelCheckN with local seeds.
 
   Intentional non-claims:
   - Not full Lean 4. Not FullHost. Not live HostTerm.lean / HostFront.lean.
@@ -22,6 +21,7 @@
   SLAKE_HOST_FRONT_LIVE_PACKAGEWRITE_V0, PARSE-LIVE-PACKAGEWRITE,
   parseLivePackageWriteSource, kernelCheckLivePackageWriteSource,
   hostFrontLivePackageWriteReady, livePackageWriteSource, livePackageWriteRel,
+  liveRel,
   UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLivePackageWrite
   Red/green: just systems-host dest rows later (HostTerm holds nix/systems-host-presence);
@@ -51,6 +51,9 @@ def hostId : String := "HOST-FRONT-LIVE-PACKAGEWRITE"
 
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-PACKAGEWRITE"
+
+/-- Live file basename. Not a path. -/
+def liveRel : String := "HostPackageWrite.lean"
 
 /-- Live file relative to repo root. Dual-pin path. -/
 def livePackageWriteRel : String := "src/systems/SystemsLean/HostPackageWrite.lean"
@@ -115,15 +118,53 @@ def seedPackageWrite (env : Env) : Env :=
     :: ("composeSubsetEmitWroteExpected", HostType.bool)
     :: env
 
-/-- Names a command adds to the known-const set (import seeds). -/
+/-- Names a command adds to the known-const set.
+    HostKernel.kernelCheck does not seed HostFront / HostGraph / subset-emit
+    imports, so those names stay unknown and their defs are skipped. -/
 def cmdAddsPackageWrite (c : Cmd) : List String :=
   match c with
-  | Cmd.importModule x =>
-    if importSeeds (lastSeg x.raw) then seedKnown else []
   | Cmd.inductive_ _ ctors _ => ctors.map (fun d => d.name.raw)
   | Cmd.def_ x _ _ => [x.raw]
   | Cmd.defBind x _ _ _ => [x.raw]
   | _ => []
+
+/-- Dotted ident `SystemsLean . HostPackageWrite`. -/
+def parseDottedName : Nat -> List String -> Option (Prod String (List String))
+  | 0, _ => none
+  | Nat.succ _, [] => none
+  | Nat.succ n, a :: rest =>
+    if !liveIsIdent a then none
+    else
+      match rest with
+      | "." :: rest2 =>
+        match parseDottedName n rest2 with
+        | some (more, rest3) => some (a ++ "." ++ more, rest3)
+        | none => none
+      | _ => some (a, rest)
+
+/-- Parse one command. Dotted import / open / namespace / end.
+    def delegates to the HostTerm skip-fold. none means skip. -/
+def parseOneCmdPackageWrite (fuel : Nat) (toks : List String) :
+    Option (Prod Cmd (List String)) :=
+  match toks with
+  | "import" :: rest =>
+    match parseDottedName fuel rest with
+    | some (nm, rest2) => some (Cmd.importModule (HostTerm.n nm), rest2)
+    | none => none
+  | "open" :: rest =>
+    match parseDottedName fuel rest with
+    | some (nm, rest2) => some (Cmd.openNs [HostTerm.n nm], rest2)
+    | none => none
+  | "namespace" :: rest =>
+    match parseDottedName fuel rest with
+    | some (nm, rest2) => some (Cmd.namespace (HostTerm.n nm), rest2)
+    | none => none
+  | "end" :: rest =>
+    match parseDottedName fuel rest with
+    | some (nm, rest2) => some (Cmd.endNamespace (HostTerm.n nm), rest2)
+    | none => none
+  | "def" :: _ => parseOneCmdHt fuel toks
+  | _ => none
 
 /-- Parse-fold fuel. HostPackageWrite has more command keywords than HostTerm. -/
 def livePackageWriteParseFuel : Nat := 512
@@ -190,7 +231,7 @@ def parseCmdsPackageWrite : Nat -> List String -> List String -> List Cmd ->
   | 0, _ :: _, _, _ => none
   | Nat.succ _, [], _, acc => some acc
   | Nat.succ n, toks, kn, acc =>
-    match parseOneCmdHt livePackageWriteParseFuel toks with
+    match parseOneCmdPackageWrite livePackageWriteParseFuel toks with
     | some (c, rest) =>
       let rest2 := skipNonCmd livePackageWriteSkipFuel rest
       if cmdBodyKnownPw kn c then
@@ -224,13 +265,11 @@ def parseLivePackageWriteSource (src : String) : FrontResult :=
         if isWellFormed m then FrontResult.accept m
         else FrontResult.reject reasonNotWellFormed
 
-/-- Kernel-check live HostPackageWrite parse with local seeds.
+/-- Kernel-check live HostPackageWrite parse.
     Greppable: kernelCheckLivePackageWriteSource, PARSE-LIVE-PACKAGEWRITE. -/
 def kernelCheckLivePackageWriteSource (src : String) : Bool :=
   match parseLivePackageWriteSource src with
-  | FrontResult.accept m =>
-    isWellFormed m
-      && kernelCheckN kernelFuel (seedPackageWrite []) [] m.commands
+  | FrontResult.accept m => HostKernel.kernelCheck m
   | FrontResult.reject _ => false
 
 /-- Accepted live module when parse succeeds. -/
@@ -299,6 +338,7 @@ def hostFrontLivePackageWriteReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_PACKAGEWRITE_V0")
     && (hostId == "HOST-FRONT-LIVE-PACKAGEWRITE")
     && (parseId == "PARSE-LIVE-PACKAGEWRITE")
+    && (liveRel == "HostPackageWrite.lean")
     && (livePackageWriteRel == "src/systems/SystemsLean/HostPackageWrite.lean")
     && liveParseDoesNotUseMultFixture
     && !hostFrontLivePackageWriteFullHost
@@ -336,9 +376,7 @@ def runLivePackageWrite (root : System.FilePath) : IO Unit := do
     IO.eprintln s!"error: PARSE-LIVE-PACKAGEWRITE reject {reason}"
     throw (IO.userError s!"PARSE-LIVE-PACKAGEWRITE reject {reason}")
   | FrontResult.accept m =>
-    let k :=
-      isWellFormed m
-        && kernelCheckN kernelFuel (seedPackageWrite []) [] m.commands
+    let k := HostKernel.kernelCheck m
     IO.println s!"PASS PARSE-LIVE-PACKAGEWRITE ACCEPT cmds={m.commands.length} kernelCheck={k}"
     unless k do
       IO.eprintln "error: kernelCheck live HostPackageWrite parse false"
@@ -349,6 +387,7 @@ def runLivePackageWrite (root : System.FilePath) : IO Unit := do
     IO.println s!"GREEN {stageId}: live HostPackageWrite.lean parse kernelCheck; not mill 70"
 
 def main (args : List String) : IO UInt32 := do
+  IO.println s!"liveRel={liveRel}"
   let root : System.FilePath :=
     match HostFront.filterArgs args with
     | r :: _ => System.FilePath.mk r

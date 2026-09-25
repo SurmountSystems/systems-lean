@@ -346,11 +346,42 @@ def liveParseRejectsEmpty : Bool :=
   | FrontResult.reject _ => true
   | FrontResult.accept _ => false
 
+/-- Kernel-check of an empty command list. Not the accepted parse.
+    isWellFormed rejects empty, so this is false. -/
+def kernelCheckEmptyEmitErasureCommands : Bool :=
+  HostKernel.kernelCheck
+    { name := HostTerm.n "SystemsLean.EmitErasure", commands := [] }
+
+/-- One command, short text. -/
+def cmdKind : Cmd -> String
+  | Cmd.importModule x => "import " ++ x.raw
+  | Cmd.namespace x => "namespace " ++ x.raw
+  | Cmd.endNamespace x => "end " ++ x.raw
+  | Cmd.openNs _ => "open"
+  | Cmd.inductive_ x _ _ => "inductive " ++ x.raw
+  | Cmd.def_ x _ _ => "def " ++ x.raw
+  | Cmd.check _ _ => "check"
+  | Cmd.structure_ x _ _ => "structure " ++ x.raw
+  | Cmd.defBind x _ _ _ => "def " ++ x.raw
+
+/-- Join command kinds. -/
+def cmdTrace (cs : List Cmd) : String :=
+  String.intercalate "; " (cs.map cmdKind)
+
+/-- Definition command count. The live file is zero. -/
+def defCount (cs : List Cmd) : Nat :=
+  cs.foldl (fun n c =>
+    match c with
+    | Cmd.def_ _ _ _ => n + 1
+    | Cmd.defBind _ _ _ _ => n + 1
+    | _ => n) 0
+
 /-! ### Driver (short banners; dual-pin file equality). Not mill 70. -/
 
 def runLiveEmitErasure (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: PARSE-LIVE-EMIT-ERASURE =="
   IO.println s!"  host={hostId} file={liveEmitErasureRel}"
+  IO.println s!"liveRel={liveRel}"
   let path := root / liveEmitErasureRel
   unless (<- path.pathExists) do
     IO.eprintln s!"error: missing {liveEmitErasureRel}"
@@ -366,12 +397,17 @@ def runLiveEmitErasure (root : System.FilePath) : IO Unit := do
     throw (IO.userError s!"PARSE-LIVE-EMIT-ERASURE reject {reason}")
   | FrontResult.accept m =>
     let k := HostKernel.kernelCheck m
-    IO.println s!"PASS PARSE-LIVE-EMIT-ERASURE ACCEPT cmds={m.commands.length} kernelCheck={k}"
+    IO.println s!"PASS PARSE-LIVE-EMIT-ERASURE ACCEPT cmds={m.commands.length} defs={defCount m.commands} kernelCheck={k}"
+    IO.println s!"  kinds={cmdTrace m.commands}"
+    IO.println s!"  empty command list kernelCheck={kernelCheckEmptyEmitErasureCommands}"
     unless k do
       IO.eprintln "error: kernelCheck live EmitErasure parse false"
       throw (IO.userError "kernelCheck live EmitErasure parse false")
+    unless (liveRel == "EmitErasure.lean") do
+      IO.eprintln "error: liveRel must be EmitErasure.lean"
+      throw (IO.userError "liveRel must be EmitErasure.lean")
     unless hostFrontLiveEmitErasureReady do
-      IO.eprintln "error: hostFrontLiveEmitErasureReady false"
+      IO.eprintln s!"error: hostFrontLiveEmitErasureReady false cmds={m.commands.length} countOk={liveParseCmdCountOk} ns={liveParseHasEmitErasureNs} endOk={liveParseHasEmitErasureEnd} importOk={liveParseHasScaffoldImport} noDef={liveParseHasNoLocalDef} noCheck={liveParseHasNoCheckCmd} liveRelOk={liveRel == "EmitErasure.lean"} kernel={k}"
       throw (IO.userError "hostFrontLiveEmitErasureReady false")
     unless liveParseRejectsEmpty do
       IO.eprintln "error: empty EmitErasure source must reject"

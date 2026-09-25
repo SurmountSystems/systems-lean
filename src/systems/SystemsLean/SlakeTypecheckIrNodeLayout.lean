@@ -30,6 +30,10 @@ def justRecipeSlakeTypecheckIrNodeLayout : String :=
 def liveIrNodeLayoutRel : String :=
   SystemsLean.HostFrontLiveIrNodeLayout.liveIrNodeLayoutRel
 
+/-- Live basename. Exact equality. No slash. -/
+def liveRel : String :=
+  SystemsLean.HostFrontLiveIrNodeLayout.liveRel
+
 /-- Ready names HostFrontLiveIrNodeLayout parse plus kernelCheck, not := true.
     Greppable: slakeTypecheckIrNodeLayoutReady,
     kernelCheckLiveIrNodeLayoutSource. -/
@@ -51,7 +55,11 @@ def slakeTypecheckIrNodeLayoutOwnsPackageTypecheck : Bool := false
     HostFrontLiveIrNodeLayout.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckIrNodeLayout} =="
+  IO.println s!"liveRel={liveRel}"
   IO.println s!"  host={hostId} file={liveIrNodeLayoutRel}"
+  unless (liveRel == "IrNodeLayout.lean") do
+    IO.eprintln "error: liveRel must be IrNodeLayout.lean"
+    return 1
   unless (!slakeTypecheckIrNodeLayoutFullHost) do
     IO.eprintln "error: FullHost must stay false"
     return 1

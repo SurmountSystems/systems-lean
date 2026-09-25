@@ -64,6 +64,9 @@ def parseId : String := "PARSE-LIVE-SPEC-PROOF"
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveSpecProofRel : String := "src/systems/SystemsLean/SpecProof.lean"
 
+/-- Live basename. Filename only, not a path. -/
+def liveRel : String := "SpecProof.lean"
+
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
 

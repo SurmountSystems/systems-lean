@@ -64,6 +64,9 @@ def parseId : String := "PARSE-LIVE-TYPESTHEOREMS"
 def liveTypesTheoremsRel : String :=
   "src/systems/SystemsLean/TypesTheorems.lean"
 
+/-- Live basename. Filename only, not a path. -/
+def liveRel : String := "TypesTheorems.lean"
+
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
 

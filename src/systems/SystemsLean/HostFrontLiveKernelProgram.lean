@@ -21,7 +21,7 @@
   Greppable: SYSTEMS_LEAN_HOST, HOST-FRONT-LIVE-KERNELPROGRAM,
   SLAKE_HOST_FRONT_LIVE_KERNELPROGRAM_V0, PARSE-LIVE-KERNELPROGRAM,
   parseLiveKernelProgramSource, kernelCheckLiveKernelProgramSource,
-  hostFrontLiveKernelProgramReady, liveKernelProgramSource,
+  hostFrontLiveKernelProgramReady, liveKernelProgramSource, liveRel,
   liveKernelProgramRel, UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveKernelProgram
   Red/green: just systems-host dest rows when dests can land;
@@ -51,6 +51,9 @@ def hostId : String := "HOST-FRONT-LIVE-KERNELPROGRAM"
 
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-KERNELPROGRAM"
+
+/-- Bare product basename. No slash. -/
+def liveRel : String := "KernelProgram.lean"
 
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveKernelProgramRel : String :=
@@ -293,6 +296,7 @@ def hostFrontLiveKernelProgramReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_KERNELPROGRAM_V0")
     && (hostId == "HOST-FRONT-LIVE-KERNELPROGRAM")
     && (parseId == "PARSE-LIVE-KERNELPROGRAM")
+    && (liveRel == "KernelProgram.lean")
     && (liveKernelProgramRel
       == "src/systems/SystemsLean/KernelProgram.lean")
     && liveParseDoesNotUseMultFixture
@@ -344,6 +348,7 @@ def runLiveKernelProgram (root : System.FilePath) : IO Unit := do
       s!"GREEN {stageId}: live KernelProgram.lean parse kernelCheck; not mill 70"
 
 def main (args : List String) : IO UInt32 := do
+  IO.println s!"liveRel={liveRel}"
   let root : System.FilePath :=
     match HostFront.filterArgs args with
     | r :: _ => System.FilePath.mk r

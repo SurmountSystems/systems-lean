@@ -75,6 +75,9 @@ def parseId : String := "PARSE-LIVE-PRODUCT-PATH-PERFORM-THEOREMS"
 def liveProductPathPerformTheoremsRel : String :=
   "src/systems/SystemsLean/ProductPathPerformTheorems.lean"
 
+/-- Live basename. Filename only, not a path. -/
+def liveRel : String := "ProductPathPerformTheorems.lean"
+
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
 

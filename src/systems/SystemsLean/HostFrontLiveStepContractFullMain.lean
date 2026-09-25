@@ -103,6 +103,9 @@ def parseId : String := "PARSE-LIVE-STEP-CONTRACT-FULL-MAIN"
 def liveStepContractFullMainRel : String :=
   "src/systems/SystemsLean/StepContractFullMain.lean"
 
+/-- Live basename. Filename only, not a path. -/
+def liveRel : String := "StepContractFullMain.lean"
+
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
 

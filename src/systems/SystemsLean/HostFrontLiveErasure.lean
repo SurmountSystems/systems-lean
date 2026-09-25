@@ -15,7 +15,8 @@
 
   Greppable: SYSTEMS_LEAN_HOST, HOST-FRONT-LIVE-ERASURE, SLAKE_HOST_FRONT_LIVE_ERASURE_V0,
   PARSE-LIVE-ERASURE, parseLiveErasureSource, kernelCheckLiveErasureSource,
-  hostFrontLiveErasureReady, liveErasureSource, liveErasureRel, UNIT_SURFACE host surface.
+  hostFrontLiveErasureReady, liveErasureSource, liveRel, liveErasureRel,
+  UNIT_SURFACE host surface.
   Module: SystemsLean.HostFrontLiveErasure
   Red/green: just systems-host; lake build SystemsLean.HostFrontLiveErasure on
   surmount-1. Not package typecheck GREEN. Not FullHost. Not Lake-gone.
@@ -42,8 +43,12 @@ def hostId : String := "HOST-FRONT-LIVE-ERASURE"
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-ERASURE"
 
-/-- Live file relative to repo root. Dual-pin path. -/
-def liveErasureRel : String := "src/systems/SystemsLean/Erasure.lean"
+/-- Live file basename. Filename only, not a path. -/
+def liveRel : String := "Erasure.lean"
+
+/-- Live file relative to repo root. Disk read path. Not the basename. -/
+def liveErasureRel : String :=
+  "src/systems/SystemsLean/" ++ liveRel
 
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
@@ -533,6 +538,7 @@ def hostFrontLiveErasureReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_ERASURE_V0")
     && (hostId == "HOST-FRONT-LIVE-ERASURE")
     && (parseId == "PARSE-LIVE-ERASURE")
+    && (liveRel == "Erasure.lean")
     && (liveErasureRel == "src/systems/SystemsLean/Erasure.lean")
     && liveParseDoesNotUseMultFixture
     && !hostFrontLiveErasureFullHost
@@ -556,6 +562,7 @@ def liveParseRejectsEmpty : Bool :=
 def runLiveErasure (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: PARSE-LIVE-ERASURE =="
   IO.println s!"  host={hostId} file={liveErasureRel}"
+  IO.println s!"liveRel={liveRel}"
   let path := root / liveErasureRel
   unless (<- path.pathExists) do
     IO.eprintln s!"error: missing {liveErasureRel}"

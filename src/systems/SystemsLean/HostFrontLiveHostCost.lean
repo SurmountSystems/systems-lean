@@ -46,7 +46,7 @@
   parseLiveHostCostSource,
   kernelCheckLiveHostCostSource,
   hostFrontLiveHostCostReady, liveHostCostSource,
-  liveHostCostRel, UNIT_SURFACE host surface, MULT-0,
+  liveRel, liveHostCostRel, UNIT_SURFACE host surface, MULT-0,
   liveParseDoesNotUseMultFixture.
   Module: SystemsLean.HostFrontLiveHostCost
   Red/green: dests-skipped until barrel; lake build
@@ -77,7 +77,11 @@ def hostId : String := "HOST-FRONT-LIVE-HOST-COST"
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-HOST-COST"
 
-/-- Live file relative to repo root. Dual-pin path. -/
+/-- Live basename. Greppable: liveRel. Must be HostCost.lean. -/
+def liveRel : String := "HostCost.lean"
+
+/-- Live file relative to repo root. Dual-pin path.
+    Disk reads stay on this path. liveRel stays the bare basename. -/
 def liveHostCostRel : String :=
   "src/systems/SystemsLean/HostCost.lean"
 
@@ -458,6 +462,7 @@ def hostFrontLiveHostCostReady : Bool :=
     && (parseId == "PARSE-LIVE-HOST-COST")
     && (liveHostCostRel
       == "src/systems/SystemsLean/HostCost.lean")
+    && (liveRel == "HostCost.lean")
     && liveParseDoesNotUseMultFixture
     && !hostFrontLiveHostCostFullHost
     && !hostFrontLiveHostCostResidualFreeClaimed
@@ -481,6 +486,10 @@ def liveParseRejectsEmpty : Bool :=
 def runLiveHostCost (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: PARSE-LIVE-HOST-COST =="
   IO.println s!"  host={hostId} file={liveHostCostRel}"
+  IO.println s!"liveRel={liveRel}"
+  unless (liveRel == "HostCost.lean") do
+    IO.eprintln "error: liveRel must be HostCost.lean"
+    throw (IO.userError "liveRel must be HostCost.lean")
   let path := root / liveHostCostRel
   unless (<- path.pathExists) do
     IO.eprintln s!"error: missing {liveHostCostRel}"

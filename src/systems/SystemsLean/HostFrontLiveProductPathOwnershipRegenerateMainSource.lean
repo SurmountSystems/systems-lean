@@ -1,41 +1,30 @@
 /-
-  SYSTEMS_LEAN_HOST partial -- dual-pin live ProductPathOwnershipRegenerateMain.lean bytes.
-  Side: classic Lean elaborator under src/systems/ (not freestanding C).
-  Short role: HostFrontLiveProductPathOwnershipRegenerateMainSource. Not occupancy name 50.
-  Not mill 10 remill (just tenth-host-tool / inventory row 13). Mill stays 69 of 69.
-  This wrap parses ProductPathOwnershipRegenerateMain.lean only. Do not wrap ProductPathOwnershipRegenerate.lean.
-  Short name is free because HostFrontLiveProductPathOwnershipRegenerate (library wrap) does not exist.
-  Do not mint HostFrontLiveHostProductPathOwnershipRegenerateMain.
-  DualEqWrite.lean does not exist and is not invented.
-  CapableWrite.lean does not exist. HostResidualShrinkFacts.lean does not exist.
-  Do not split DualPinOk.
-  Unique needles use trailing newline so HostFrontLiveProductPathOwnershipRegenerateMain is not a
-  prefix hit on HostFrontLiveProductPathOwnershipRegenerateMainSource.
-  Occupancy leftover Term files are not this wrap.
-  Unique needles (trailing newline so HostFrontLiveProductPathOwnershipRegenerateMain is not a prefix):
-  HostFrontLiveProductPathOwnershipRegenerateMainSource
-  PARSE-LIVE-PRODUCT-PATH-OWNERSHIP-REGENERATE-MAIN
-  HOST-FRONT-LIVE-PRODUCT-PATH-OWNERSHIP-REGENERATE-MAIN
-  PRODUCT-PATH-OWNERSHIP-REGENERATE-MAIN
-  HOST-PRODUCT-PATH-OWNERSHIP-REGENERATE-MAIN
-  Live product needles:
-  ProductPathOwnershipRegenerateMain
-  slake-ownership-regenerate
-  import SystemsLean.ProductPathOwnershipRegenerate
-  productPathOwnershipRegenerate
-  ProductPathOwnershipRegenerate
-  SKELETON
-  Greppable: SYSTEMS_LEAN_HOST, liveProductPathOwnershipRegenerateMainSource,
-  UNIT_SURFACE host surface.
+  SYSTEMS_LEAN_HOST partial -- live ProductPathOwnershipRegenerateMain.lean.
+  The thin forwarder HostFrontLiveProductPathOwnershipRegenerateMain stays
+  byte-for-byte and still calls the neighbor body. This module is the
+  checker for the Main file. It does not retarget that neighbor.
+  liveRel is ProductPathOwnershipRegenerateMain.lean. Not a path.
+  Greppable: liveRel, kernelCheckLiveProductPathOwnershipRegenerateMainSource,
+  PARSE-LIVE-PRODUCT-PATH-OWNERSHIP-REGENERATE-MAIN.
   Module: SystemsLean.HostFrontLiveProductPathOwnershipRegenerateMainSource
-  Not FullHost. Not freestanding residual free. Not PROVABLY.
+  Not FullHost. FullBackend stays false. Not a backend.
+  Occupancy stays 49. Mill stays 69 of 69.
+  slakeOwnsPackageTypecheck stays false.
   Module must stay ASCII.
 -/
 
-namespace SystemsLean.HostFrontLiveProductPathOwnershipRegenerateMain
+import SystemsLean.HostFrontLiveLlvmComposeTextMainSource
 
-/-- Dual-pinned live ProductPathOwnershipRegenerateMain.lean bytes (must match on-disk file).
-    Greppable: liveProductPathOwnershipRegenerateMainSource, PARSE-LIVE-PRODUCT-PATH-OWNERSHIP-REGENERATE-MAIN. -/
+namespace SystemsLean.HostFrontLiveProductPathOwnershipRegenerateMainSource
+
+open SystemsLean.HostFront
+open SystemsLean.HostKernel
+open SystemsLean.HostFrontLiveLlvmComposeTextMain
+
+/-- Live basename. Filename only, not a path. -/
+def liveRel : String := "ProductPathOwnershipRegenerateMain.lean"
+
+/-- Pinned live ProductPathOwnershipRegenerateMain.lean bytes. -/
 def liveProductPathOwnershipRegenerateMainSource : String := r#"/-
   SYSTEMS_LEAN_HOST partial -- thin Lake exe main for ownership regenerate
   substrate (SKELETON). Root for lake exe
@@ -67,4 +56,45 @@ def main (args : List String) : IO UInt32 :=
   SystemsLean.ProductPathOwnershipRegenerate.main args
 "#
 
-end SystemsLean.HostFrontLiveProductPathOwnershipRegenerateMain
+/-- Accepted parse of the Main file calls HostKernel.kernelCheck.
+    Not a constant true. The parser is the thin-main skip-fold used for
+    the same import-plus-def-main shape. -/
+def kernelCheckLiveProductPathOwnershipRegenerateMainSource (src : String) : Bool :=
+  match parseLiveLlvmComposeTextMainSource src with
+  | FrontResult.accept m => HostKernel.kernelCheck m
+  | FrontResult.reject _ => false
+
+/-- Ready is parse plus kernelCheck of the pinned Main text. -/
+def hostFrontLiveProductPathOwnershipRegenerateMainSourceReady : Bool :=
+  liveRel == "ProductPathOwnershipRegenerateMain.lean"
+    && kernelCheckLiveProductPathOwnershipRegenerateMainSource
+      liveProductPathOwnershipRegenerateMainSource
+
+def runLive (root : System.FilePath) : IO Unit := do
+  IO.println s!"liveRel={liveRel}"
+  let path := root / "src/systems/SystemsLean" / liveRel
+  unless (<- path.pathExists) do
+    throw (IO.userError s!"missing {liveRel}")
+  let disk <- IO.FS.readFile path
+  if disk != liveProductPathOwnershipRegenerateMainSource then
+    throw (IO.userError "dual-pin mismatch ProductPathOwnershipRegenerateMain.lean")
+  let k := kernelCheckLiveProductPathOwnershipRegenerateMainSource disk
+  IO.println s!"kernelCheck={k}"
+  unless k do
+    throw (IO.userError "kernelCheck live ProductPathOwnershipRegenerateMain parse false")
+  unless hostFrontLiveProductPathOwnershipRegenerateMainSourceReady do
+    throw (IO.userError "ready false")
+
+def main (args : List String) : IO UInt32 := do
+  let root : System.FilePath :=
+    match args with
+    | r :: _ => System.FilePath.mk r
+    | [] => "."
+  try
+    runLive root
+    pure 0
+  catch e =>
+    IO.eprintln s!"{e}"
+    pure 1
+
+end SystemsLean.HostFrontLiveProductPathOwnershipRegenerateMainSource

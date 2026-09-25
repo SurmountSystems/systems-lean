@@ -933,6 +933,8 @@ Measured nested L2 tokens are session usage counts, not included SuperGrok perio
     - L3 specialists (when spawned)
   - L2 Finish LlvmTypesText lean check
     - L3 specialists (when spawned)
+  - L2 Finish MultFsDeepen closed check
+    - L3 specialists (when spawned)
   - L2 Finish MultSubsetRebuild review
     - L3 specialists (when spawned)
   - L2 Finish OfficialPathAlternate closed check
@@ -3407,6 +3409,8 @@ Measured nested L2 tokens are session usage counts, not included SuperGrok perio
     - L3 specialists (when spawned)
   - L2 Rerun Perform theorems own build
     - L3 specialists (when spawned)
+  - L2 Rerun SubsetPackageJoin lean check
+    - L3 specialists (when spawned)
   - L2 Rerun inventory check to green
     - L3 specialists (when spawned)
   - L2 Rerun typecheck after SSH drop
@@ -4917,6 +4921,8 @@ Measured nested L2 tokens are session usage counts, not included SuperGrok perio
     - L3 specialists (when spawned)
   - L2 Wrap InstallOutTheorems closed check
     - L3 specialists (when spawned)
+  - L2 Wrap InventoryClose on 4.7
+    - L3 specialists (when spawned)
   - L2 Wrap IrGraph theorems
     - L3 specialists (when spawned)
   - L2 Wrap IrGraphTheorems closed check
@@ -4955,6 +4961,10 @@ Measured nested L2 tokens are session usage counts, not included SuperGrok perio
     - L3 specialists (when spawned)
   - L2 Wrap LlvmCfgHonesty living parser
     - L3 specialists (when spawned)
+  - L2 Wrap LlvmComposeText closed check
+    - L3 specialists (when spawned)
+  - L2 Wrap LlvmComposeText on 4.7
+    - L3 specialists (when spawned)
   - L2 Wrap LlvmEmitPath check
     - L3 specialists (when spawned)
   - L2 Wrap LlvmEmitPath closed check
@@ -4980,6 +4990,8 @@ Measured nested L2 tokens are session usage counts, not included SuperGrok perio
   - L2 Wrap LlvmProgramText closed check
     - L3 specialists (when spawned)
   - L2 Wrap LlvmProgramText parser
+    - L3 specialists (when spawned)
+  - L2 Wrap LlvmProgramText tighter
     - L3 specialists (when spawned)
   - L2 Wrap LlvmTypesText check
     - L3 specialists (when spawned)
@@ -5059,7 +5071,11 @@ Measured nested L2 tokens are session usage counts, not included SuperGrok perio
     - L3 specialists (when spawned)
   - L2 Wrap RustIrInterop closed parse
     - L3 specialists (when spawned)
+  - L2 Wrap SelfApplyFs on 4.7
+    - L3 specialists (when spawned)
   - L2 Wrap SelfApplyFsClose parser
+    - L3 specialists (when spawned)
+  - L2 Wrap SelfApplyFsTheorems on 4.7
     - L3 specialists (when spawned)
   - L2 Wrap SelfHostCompleteTheorems
     - L3 specialists (when spawned)
@@ -8286,6 +8302,7 @@ Measured nested L2 tokens are session usage counts, not included SuperGrok perio
 | Finish LlvmLinearText lean run | nested L2 session usage | L2 | 199033 | estimate | exited |
 | Finish LlvmMultText closed check | nested L2 session usage | L2 | 197243 | estimate | exited |
 | Finish LlvmTypesText lean check | nested L2 session usage | L2 | 197509 | estimate | exited |
+| Finish MultFsDeepen closed check | nested L2 session usage | L2 | 167114 | estimate | exited |
 | Finish MultSubsetRebuild review | nested L2 session usage | L2 | 151808 | estimate | exited |
 | Finish OfficialPathAlternate closed check | nested L2 session usage | L2 | 199492 | estimate | exited |
 | Finish OfficialPathAlternate lean check | nested L2 session usage | L2 | 201771 | estimate | exited |
@@ -8890,7 +8907,7 @@ Measured nested L2 tokens are session usage counts, not included SuperGrok perio
 | Land StepContractFull parser driver | nested L2 session usage | L2 | 197652 | estimate | exited |
 | Land StepContractFullMain wrap | nested L2 session usage | L2 | 128843 | estimate | exited |
 | Land SubsetFront parser and driver | nested L2 session usage | L2 | 186520 | estimate | exited |
-| Land SubsetPackageJoin closed check | nested L2 session usage | L2 | 0 | estimate | running |
+| Land SubsetPackageJoin closed check | nested L2 session usage | L2 | 196336 | estimate | exited |
 | Land Surface dests red-green | nested L2 session usage | L2 | 125567 | estimate | exited |
 | Land Surface typecheck driver | nested L2 session usage | L2 | 201761 | estimate | exited |
 | Land SurfaceMatrix wrap files | nested L2 session usage | L2 | 167733 | estimate | exited |
@@ -9523,6 +9540,7 @@ Measured nested L2 tokens are session usage counts, not included SuperGrok perio
 | Rerun LakeRetireInventory after count fix | nested L2 session usage | L2 | 215540 | estimate | exited |
 | Rerun ParityMult closed check | nested L2 session usage | L2 | 160083 | estimate | exited |
 | Rerun Perform theorems own build | nested L2 session usage | L2 | 108403 | estimate | exited |
+| Rerun SubsetPackageJoin lean check | nested L2 session usage | L2 | 98982 | estimate | exited |
 | Rerun inventory check to green | nested L2 session usage | L2 | 155039 | estimate | exited |
 | Rerun typecheck after SSH drop | nested L2 session usage | L2 | 200824 | estimate | exited |
 | Resample lake queue files | nested L2 session usage | L2 | 93944 | estimate | exited |
@@ -9704,7 +9722,7 @@ Measured nested L2 tokens are session usage counts, not included SuperGrok perio
 | Review FixtureTexts occupancy skip | nested L2 session usage | L2 | 98312 | estimate | exited |
 | Review Fixtures dests | nested L2 session usage | L2 | 107314 | estimate | exited |
 | Review FreestandingEmitLoad closed check | nested L2 session usage | L2 | 134154 | estimate | exited |
-| Review FrontMultPackage closed check | nested L2 session usage | L2 | 0 | estimate | running |
+| Review FrontMultPackage closed check | nested L2 session usage | L2 | 123844 | estimate | exited |
 | Review GraphSubsetRebuild closed check | nested L2 session usage | L2 | 138277 | estimate | exited |
 | Review GraphTheorems live parse | nested L2 session usage | L2 | 124679 | estimate | exited |
 | Review GraphTheorems typecheck driver | nested L2 session usage | L2 | 119234 | estimate | exited |
@@ -10056,20 +10074,20 @@ Measured nested L2 tokens are session usage counts, not included SuperGrok perio
 | Stay with FullBarTheorems wrap | nested L2 session usage | L2 | 135819 | estimate | exited |
 | Stay with GraphSubsetRebuild wrap | nested L2 session usage | L2 | 198980 | estimate | exited |
 | Stay with LlvmEmitPath wrap | nested L2 session usage | L2 | 143553 | estimate | exited |
-| Stay with LlvmGraphText wrap | nested L2 session usage | L2 | 112119 | estimate | running |
+| Stay with LlvmGraphText wrap | nested L2 session usage | L2 | 120274 | estimate | running |
 | Stay with LlvmLinearText wrap | nested L2 session usage | L2 | 170892 | estimate | exited |
 | Stay with LlvmMultText wrap | nested L2 session usage | L2 | 151310 | estimate | exited |
 | Stay with LlvmProgramText wrap | nested L2 session usage | L2 | 108658 | estimate | exited |
-| Stay with LlvmProgramText writer | nested L2 session usage | L2 | 128639 | estimate | running |
+| Stay with LlvmProgramText writer | nested L2 session usage | L2 | 137572 | estimate | running |
 | Stay with LlvmTypesText wrap | nested L2 session usage | L2 | 148757 | estimate | exited |
-| Stay with MultFsDeepen wrap | nested L2 session usage | L2 | 118993 | estimate | running |
+| Stay with MultFsDeepen wrap | nested L2 session usage | L2 | 134515 | estimate | running |
 | Stay with MultFsWriteTool wrap | nested L2 session usage | L2 | 133482 | estimate | exited |
 | Stay with MultSubsetRebuild wrap | nested L2 session usage | L2 | 133833 | estimate | exited |
 | Stay with OfficialPathAlternate | nested L2 session usage | L2 | 154714 | estimate | exited |
 | Stay with PerformEvidenceTheorems | nested L2 session usage | L2 | 164372 | estimate | exited |
 | Stay with ProgramSubsetEmit wrap | nested L2 session usage | L2 | 158883 | estimate | exited |
 | Stay with SubsetFront wrap | nested L2 session usage | L2 | 181544 | estimate | exited |
-| Stay with SubsetPackageJoin wrap | nested L2 session usage | L2 | 143523 | estimate | running |
+| Stay with SubsetPackageJoin wrap | nested L2 session usage | L2 | 181108 | estimate | exited |
 | Stay with close-path theorems | nested L2 session usage | L2 | 146142 | estimate | exited |
 | Stay with gap theorems wrap | nested L2 session usage | L2 | 142233 | estimate | exited |
 | Stay with ownership regenerate | nested L2 session usage | L2 | 137978 | estimate | exited |
@@ -10265,7 +10283,7 @@ Measured nested L2 tokens are session usage counts, not included SuperGrok perio
 | Wrap FreestandingEmitLoad check | nested L2 session usage | L2 | 146197 | estimate | exited |
 | Wrap FreestandingEmitLoadScaffold | nested L2 session usage | L2 | 197035 | estimate | exited |
 | Wrap FreestandingEmitMain mill | nested L2 session usage | L2 | 168182 | estimate | exited |
-| Wrap FrontMultPackage closed check | nested L2 session usage | L2 | 147143 | estimate | running |
+| Wrap FrontMultPackage closed check | nested L2 session usage | L2 | 154312 | estimate | exited |
 | Wrap GraphSubsetEmit check | nested L2 session usage | L2 | 114549 | estimate | exited |
 | Wrap GraphSubsetEmit closed check | nested L2 session usage | L2 | 188116 | estimate | exited |
 | Wrap GraphSubsetRebuild check | nested L2 session usage | L2 | 103686 | estimate | exited |
@@ -10278,6 +10296,7 @@ Measured nested L2 tokens are session usage counts, not included SuperGrok perio
 | Wrap InstallOut closed check | nested L2 session usage | L2 | 151487 | estimate | exited |
 | Wrap InstallOutTheorems check | nested L2 session usage | L2 | 105619 | estimate | exited |
 | Wrap InstallOutTheorems closed check | nested L2 session usage | L2 | 193777 | estimate | exited |
+| Wrap InventoryClose on 4.7 | nested L2 session usage | L2 | 70414 | estimate | running |
 | Wrap IrGraph theorems | nested L2 session usage | L2 | 100722 | estimate | exited |
 | Wrap IrGraphTheorems closed check | nested L2 session usage | L2 | 196253 | estimate | exited |
 | Wrap JoinMapTheorems parser | nested L2 session usage | L2 | 161784 | estimate | exited |
@@ -10297,10 +10316,12 @@ Measured nested L2 tokens are session usage counts, not included SuperGrok perio
 | Wrap LinearSubsetRebuild closed check | nested L2 session usage | L2 | 190862 | estimate | exited |
 | Wrap LinearTheorems closed typecheck | nested L2 session usage | L2 | 166668 | estimate | exited |
 | Wrap LlvmCfgHonesty living parser | nested L2 session usage | L2 | 195755 | estimate | exited |
+| Wrap LlvmComposeText closed check | nested L2 session usage | L2 | 70387 | estimate | exited |
+| Wrap LlvmComposeText on 4.7 | nested L2 session usage | L2 | 70234 | estimate | running |
 | Wrap LlvmEmitPath check | nested L2 session usage | L2 | 70290 | estimate | exited |
 | Wrap LlvmEmitPath closed check | nested L2 session usage | L2 | 198372 | estimate | exited |
 | Wrap LlvmGraphText closed check | nested L2 session usage | L2 | 100740 | estimate | exited |
-| Wrap LlvmGraphText parser | nested L2 session usage | L2 | 0 | estimate | running |
+| Wrap LlvmGraphText parser | nested L2 session usage | L2 | 194664 | estimate | exited |
 | Wrap LlvmHoldTheorems parser | nested L2 session usage | L2 | 200290 | estimate | exited |
 | Wrap LlvmLinearSsa library | nested L2 session usage | L2 | 192239 | estimate | exited |
 | Wrap LlvmLinearText check | nested L2 session usage | L2 | 101539 | estimate | exited |
@@ -10310,6 +10331,7 @@ Measured nested L2 tokens are session usage counts, not included SuperGrok perio
 | Wrap LlvmMultText closed check | nested L2 session usage | L2 | 128668 | estimate | exited |
 | Wrap LlvmProgramText closed check | nested L2 session usage | L2 | 70387 | estimate | exited |
 | Wrap LlvmProgramText parser | nested L2 session usage | L2 | 190411 | estimate | exited |
+| Wrap LlvmProgramText tighter | nested L2 session usage | L2 | 0 | estimate | running |
 | Wrap LlvmTypesText check | nested L2 session usage | L2 | 109536 | estimate | exited |
 | Wrap LlvmTypesText closed check | nested L2 session usage | L2 | 198949 | estimate | exited |
 | Wrap MultFsDeepen closed check | nested L2 session usage | L2 | 102205 | estimate | exited |
@@ -10349,7 +10371,9 @@ Measured nested L2 tokens are session usage counts, not included SuperGrok perio
 | Wrap ReadSsot theorems parser | nested L2 session usage | L2 | 177966 | estimate | exited |
 | Wrap RuntimeBenchStackTwin front | nested L2 session usage | L2 | 201727 | estimate | exited |
 | Wrap RustIrInterop closed parse | nested L2 session usage | L2 | 194986 | estimate | exited |
+| Wrap SelfApplyFs on 4.7 | nested L2 session usage | L2 | 70417 | estimate | running |
 | Wrap SelfApplyFsClose parser | nested L2 session usage | L2 | 200562 | estimate | exited |
+| Wrap SelfApplyFsTheorems on 4.7 | nested L2 session usage | L2 | 70435 | estimate | running |
 | Wrap SelfHostCompleteTheorems | nested L2 session usage | L2 | 202075 | estimate | exited |
 | Wrap SlakeHostToolElfLink parser | nested L2 session usage | L2 | 201442 | estimate | exited |
 | Wrap StepContractFull closed check | nested L2 session usage | L2 | 156128 | estimate | exited |
@@ -10662,7 +10686,7 @@ Measured nested L2 tokens are session usage counts, not included SuperGrok perio
 | [implementer] HostFrontLive after Surface | nested L2 session usage | L2 | 152249 | estimate | exited |
 | [implementer] HostFrontLive after Walk | nested L2 session usage | L2 | 140226 | estimate | exited |
 | [implementer] HostFrontLive after next-23 | nested L2 session usage | L2 | 144734 | estimate | exited |
-| [implementer] HostFrontLive next after Goldens | nested L2 session usage | L2 | 0 | estimate | spawned |
+| [implementer] HostFrontLive next after Goldens | nested L2 session usage | L2 | 0 | estimate | exited |
 | [implementer] HostFrontLive next after HostTerm | nested L2 session usage | L2 | 151267 | estimate | exited |
 | [implementer] HostFrontLive next module | nested L2 session usage | L2 | 148988 | estimate | exited |
 | [implementer] HostFrontLiveHostTerm | nested L2 session usage | L2 | 197666 | estimate | exited |
@@ -10951,7 +10975,7 @@ Measured nested L2 tokens are session usage counts, not included SuperGrok perio
 | [implementer] link dest ELF dest-missing | nested L2 session usage | L2 | 96835 | estimate | exited |
 | [implementer] link measure body dest | nested L2 session usage | L2 | 154960 | estimate | exited |
 | [implementer] live Goldens parse | nested L2 session usage | L2 | 121034 | estimate | exited |
-| [implementer] live HostFront kernelCheck | nested L2 session usage | L2 | 0 | estimate | spawned |
+| [implementer] live HostFront kernelCheck | nested L2 session usage | L2 | 0 | estimate | exited |
 | [implementer] live HostGraph parse | nested L2 session usage | L2 | 132760 | estimate | exited |
 | [implementer] live HostTerm parse | nested L2 session usage | L2 | 109475 | estimate | exited |
 | [implementer] live PackageWrite parse | nested L2 session usage | L2 | 144731 | estimate | exited |
@@ -11535,7 +11559,7 @@ Measured nested L2 tokens are session usage counts, not included SuperGrok perio
 | [residual] lockstep Types ready | nested L2 session usage | L2 | 88837 | estimate | exited |
 | [residual] lockstep chunked walker | nested L2 session usage | L2 | 166711 | estimate | exited |
 | [residual] lockstep lake helpers | nested L2 session usage | L2 | 93257 | estimate | exited |
-| [residual] lockstep live parses GREEN | nested L2 session usage | L2 | 0 | estimate | spawned |
+| [residual] lockstep live parses GREEN | nested L2 session usage | L2 | 0 | estimate | exited |
 | [residual] lockstep living DualPinOk and canSeq | nested L2 session usage | L2 | 176776 | estimate | exited |
 | [residual] lockstep living DualPinOk canSeq | nested L2 session usage | L2 | 196414 | estimate | exited |
 | [residual] lockstep living DualPinOk canSeq | nested L2 session usage | L2 | 159863 | estimate | exited |

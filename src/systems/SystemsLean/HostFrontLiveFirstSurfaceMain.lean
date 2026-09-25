@@ -87,7 +87,11 @@ def parseId : String := "PARSE-LIVE-FIRST-SURFACE-MAIN"
 /-- Greppable hyphenated mill-Main stage id. -/
 def millMainId : String := "FIRST-SURFACE-MAIN"
 
-/-- Live file relative to repo root. Dual-pin path. -/
+/-- Live basename. Greppable: liveRel. Must be FirstSurfaceMain.lean. -/
+def liveRel : String := "FirstSurfaceMain.lean"
+
+/-- Live file relative to repo root. Dual-pin path.
+    Disk reads stay on this path. liveRel stays the bare basename. -/
 def liveFirstSurfaceMainRel : String :=
   "src/systems/SystemsLean/FirstSurfaceMain.lean"
 
@@ -468,6 +472,7 @@ def hostFrontLiveFirstSurfaceMainReady : Bool :=
     && (millMainId == "FIRST-SURFACE-MAIN")
     && (liveFirstSurfaceMainRel
       == "src/systems/SystemsLean/FirstSurfaceMain.lean")
+    && (liveRel == "FirstSurfaceMain.lean")
     && liveParseDoesNotUseMultFixture
     && !hostFrontLiveFirstSurfaceMainFullHost
     && !hostFrontLiveFirstSurfaceMainResidualFreeClaimed
@@ -491,6 +496,10 @@ def liveParseRejectsEmpty : Bool :=
 def runLiveFirstSurfaceMain (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: PARSE-LIVE-FIRST-SURFACE-MAIN =="
   IO.println s!"  host={hostId} file={liveFirstSurfaceMainRel}"
+  IO.println s!"liveRel={liveRel}"
+  unless (liveRel == "FirstSurfaceMain.lean") do
+    IO.eprintln "error: liveRel must be FirstSurfaceMain.lean"
+    throw (IO.userError "liveRel must be FirstSurfaceMain.lean")
   let path := root / liveFirstSurfaceMainRel
   unless (<- path.pathExists) do
     IO.eprintln s!"error: missing {liveFirstSurfaceMainRel}"

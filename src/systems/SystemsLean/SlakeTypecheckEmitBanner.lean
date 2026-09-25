@@ -32,7 +32,7 @@ def hostId : String := "HOST-SLAKE-TYPECHECK-EMIT-BANNER"
 /-- Named just recipe. Not lake build SystemsLean.EmitBanner. -/
 def justRecipeSlakeTypecheckEmitBanner : String := "slake-typecheck-emitbanner"
 
-/-- Live file relative to repo root. Dual-pin path. Exact equality. -/
+/-- Live basename. Exact equality. Not a directory prefix. -/
 def liveRel : String := SystemsLean.HostFrontLiveEmitBanner.liveRel
 
 /-- Ready names HostFrontLiveEmitBanner parse plus kernelCheck, not := true.
@@ -55,9 +55,10 @@ def slakeTypecheckEmitBannerOwnsPackageTypecheck : Bool := false
     (parse plus kernelCheck), not := true. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckEmitBanner} =="
-  IO.println s!"  host={hostId} file={liveRel} liveRel={liveRel}"
-  unless (liveRel == "src/systems/SystemsLean/EmitBanner.lean") do
-    IO.eprintln "error: liveRel must be src/systems/SystemsLean/EmitBanner.lean"
+  IO.println s!"liveRel={liveRel}"
+  IO.println s!"  host={hostId} file={SystemsLean.HostFrontLiveEmitBanner.liveEmitBannerRel}"
+  unless (liveRel == "EmitBanner.lean") do
+    IO.eprintln "error: liveRel must be EmitBanner.lean"
     return 1
   unless (!slakeTypecheckEmitBannerFullHost) do
     IO.eprintln "error: FullHost must stay false"

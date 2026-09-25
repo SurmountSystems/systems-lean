@@ -32,7 +32,7 @@
   PARSE-LIVE-KERNEL-MULT-THEOREMS,
   parseLiveKernelMultTheoremsSource,
   kernelCheckLiveKernelMultTheoremsSource,
-  hostFrontLiveKernelMultTheoremsReady, liveKernelMultTheoremsSource,
+  hostFrontLiveKernelMultTheoremsReady, liveKernelMultTheoremsSource, liveRel,
   liveKernelMultTheoremsRel, UNIT_SURFACE host surface, MULT-0,
   liveParseDoesNotUseMultFixture.
   Module: SystemsLean.HostFrontLiveKernelMultTheorems
@@ -63,6 +63,9 @@ def hostId : String := "HOST-FRONT-LIVE-KERNEL-MULT-THEOREMS"
 
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-KERNEL-MULT-THEOREMS"
+
+/-- Bare product basename. No slash. -/
+def liveRel : String := "KernelMultTheorems.lean"
 
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveKernelMultTheoremsRel : String :=
@@ -330,6 +333,7 @@ def hostFrontLiveKernelMultTheoremsReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_KERNEL_MULT_THEOREMS_V0")
     && (hostId == "HOST-FRONT-LIVE-KERNEL-MULT-THEOREMS")
     && (parseId == "PARSE-LIVE-KERNEL-MULT-THEOREMS")
+    && (liveRel == "KernelMultTheorems.lean")
     && (liveKernelMultTheoremsRel
       == "src/systems/SystemsLean/KernelMultTheorems.lean")
     && liveParseDoesNotUseMultFixture
@@ -380,6 +384,7 @@ def runLiveKernelMultTheorems (root : System.FilePath) : IO Unit := do
     IO.println s!"GREEN {stageId}: live KernelMultTheorems.lean parse kernelCheck; not mill 70"
 
 def main (args : List String) : IO UInt32 := do
+  IO.println s!"liveRel={liveRel}"
   let root : System.FilePath :=
     match HostFront.filterArgs args with
     | r :: _ => System.FilePath.mk r

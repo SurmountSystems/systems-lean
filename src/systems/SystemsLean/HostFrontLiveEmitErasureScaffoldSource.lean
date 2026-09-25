@@ -3,9 +3,8 @@
   Side: classic Lean elaborator under src/systems/ (not freestanding C).
   Short role: HostFrontLiveEmitErasureScaffoldSource. Not occupancy name 50. Not mill 70.
   This wrap is EmitErasureScaffold.lean. It is not EmitErasure.lean.
-  liveRel is EmitErasureScaffold.lean.
   Greppable: SYSTEMS_LEAN_HOST, liveEmitErasureScaffoldSource,
-  HOST-FRONT-LIVE-EMIT-ERASURE-SCAFFOLD, liveRel, UNIT_SURFACE host surface.
+  HOST-FRONT-LIVE-EMIT-ERASURE-SCAFFOLD, UNIT_SURFACE host surface.
   Module: SystemsLean.HostFrontLiveEmitErasureScaffoldSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Not a backend. FullBackend stays false in the wrap.
@@ -13,9 +12,6 @@
 -/
 
 namespace SystemsLean.HostFrontLiveEmitErasureScaffold
-
-/-- Live file basename. Exactly EmitErasureScaffold.lean. -/
-def liveRel : String := "EmitErasureScaffold.lean"
 
 /-- Dual-pinned live EmitErasureScaffold.lean bytes (must match on-disk file).
     Greppable: liveEmitErasureScaffoldSource, HOST-FRONT-LIVE-EMIT-ERASURE-SCAFFOLD. -/

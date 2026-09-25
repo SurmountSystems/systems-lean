@@ -27,6 +27,10 @@ def justRecipeSlakeTypecheckIrProgram : String := "slake-typecheck-irprogram"
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveIrProgramRel : String := SystemsLean.HostFrontLiveIrProgram.liveIrProgramRel
 
+/-- Live basename. Exact equality. No slash. -/
+def liveRel : String :=
+  SystemsLean.HostFrontLiveIrProgram.liveRel
+
 /-- Ready names HostFrontLiveIrProgram parse plus kernelCheck, not := true.
     Greppable: slakeTypecheckIrProgramReady, kernelCheckLiveIrProgramSource. -/
 def slakeTypecheckIrProgramReady : Bool :=
@@ -46,7 +50,11 @@ def slakeTypecheckIrProgramOwnsPackageTypecheck : Bool := false
     not := true. Evaluated inside HostFrontLiveIrProgram.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckIrProgram} =="
+  IO.println s!"liveRel={liveRel}"
   IO.println s!"  host={hostId} file={liveIrProgramRel}"
+  unless (liveRel == "IrProgram.lean") do
+    IO.eprintln "error: liveRel must be IrProgram.lean"
+    return 1
   unless (!slakeTypecheckIrProgramFullHost) do
     IO.eprintln "error: FullHost must stay false"
     return 1

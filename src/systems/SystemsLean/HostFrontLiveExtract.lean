@@ -16,7 +16,7 @@
 
   Greppable: SYSTEMS_LEAN_HOST, HOST-FRONT-LIVE-EXTRACT, SLAKE_HOST_FRONT_LIVE_EXTRACT_V0,
   PARSE-LIVE-EXTRACT, parseLiveExtractSource, kernelCheckLiveExtractSource,
-  hostFrontLiveExtractReady, liveExtractSource, liveExtractRel, UNIT_SURFACE host surface.
+  hostFrontLiveExtractReady, liveExtractSource, liveRel, liveExtractRel, UNIT_SURFACE host surface.
   Module: SystemsLean.HostFrontLiveExtract
   Red/green: just systems-host; lake build SystemsLean.HostFrontLiveExtract on
   surmount-1. Not package typecheck GREEN. Not FullHost. Not Lake-gone.
@@ -43,8 +43,12 @@ def hostId : String := "HOST-FRONT-LIVE-EXTRACT"
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-EXTRACT"
 
-/-- Live file relative to repo root. Dual-pin path. -/
-def liveExtractRel : String := "src/systems/SystemsLean/Extract.lean"
+/-- Live file basename. Filename only, not a path. -/
+def liveRel : String := "Extract.lean"
+
+/-- Live file relative to repo root. Disk read path. Not the basename. -/
+def liveExtractRel : String :=
+  "src/systems/SystemsLean/" ++ liveRel
 
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
@@ -671,6 +675,7 @@ def hostFrontLiveExtractReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_EXTRACT_V0")
     && (hostId == "HOST-FRONT-LIVE-EXTRACT")
     && (parseId == "PARSE-LIVE-EXTRACT")
+    && (liveRel == "Extract.lean")
     && (liveExtractRel == "src/systems/SystemsLean/Extract.lean")
     && liveParseDoesNotUseMultFixture
     && !hostFrontLiveExtractFullHost
@@ -695,6 +700,7 @@ def liveParseRejectsEmpty : Bool :=
 def runLiveExtract (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: PARSE-LIVE-EXTRACT =="
   IO.println s!"  host={hostId} file={liveExtractRel}"
+  IO.println s!"liveRel={liveRel}"
   let path := root / liveExtractRel
   unless (<- path.pathExists) do
     IO.eprintln s!"error: missing {liveExtractRel}"

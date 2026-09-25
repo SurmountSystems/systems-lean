@@ -39,7 +39,7 @@
   PARSE-LIVE-LINEAR-FOREIGN-LINK, parseLiveLinearForeignLinkSource,
   kernelCheckLiveLinearForeignLinkSource,
   hostFrontLiveLinearForeignLinkReady, liveLinearForeignLinkSource,
-  liveLinearForeignLinkRel,
+  liveLinearForeignLinkRel, liveRel,
   UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveLinearForeignLink
   Red/green: just slake-typecheck-linearforeignlink (if dests free); just systems-host dest rows
@@ -70,6 +70,9 @@ def hostId : String := "HOST-FRONT-LIVE-LINEAR-FOREIGN-LINK"
 
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-LINEAR-FOREIGN-LINK"
+
+/-- Bare product basename. No slash. -/
+def liveRel : String := "LinearForeignLink.lean"
 
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveLinearForeignLinkRel : String :=
@@ -356,6 +359,7 @@ def hostFrontLiveLinearForeignLinkReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_LINEAR_FOREIGN_LINK_V0")
     && (hostId == "HOST-FRONT-LIVE-LINEAR-FOREIGN-LINK")
     && (parseId == "PARSE-LIVE-LINEAR-FOREIGN-LINK")
+    && (liveRel == "LinearForeignLink.lean")
     && (liveLinearForeignLinkRel
       == "src/systems/SystemsLean/LinearForeignLink.lean")
     && liveParseDoesNotUseMultFixture
@@ -405,6 +409,7 @@ def runLiveLinearForeignLink (root : System.FilePath) : IO Unit := do
     IO.println s!"GREEN {stageId}: live LinearForeignLink.lean parse kernelCheck; not mill 70"
 
 def main (args : List String) : IO UInt32 := do
+  IO.println s!"liveRel={liveRel}"
   let root : System.FilePath :=
     match HostFront.filterArgs args with
     | r :: _ => System.FilePath.mk r

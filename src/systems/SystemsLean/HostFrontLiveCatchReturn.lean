@@ -57,6 +57,9 @@ def hostId : String := "HOST-FRONT-LIVE-CATCH-RETURN"
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-CATCH-RETURN"
 
+/-- Live file basename. Not a path. -/
+def liveRel : String := "CatchReturn.lean"
+
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveCatchReturnRel : String := "src/systems/SystemsLean/CatchReturn.lean"
 
@@ -396,6 +399,7 @@ def runLiveCatchReturn (root : System.FilePath) : IO Unit := do
     IO.println s!"GREEN {stageId}: live CatchReturn.lean parse kernelCheck; not mill 70"
 
 def main (args : List String) : IO UInt32 := do
+  IO.println s!"liveRel={liveRel}"
   let root : System.FilePath :=
     match HostFront.filterArgs args with
     | r :: _ => System.FilePath.mk r

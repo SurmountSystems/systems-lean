@@ -25,7 +25,7 @@
   SLAKE_HOST_FRONT_LIVE_ERASURE_THEOREMS_V0, PARSE-LIVE-ERASURE-THEOREMS,
   parseLiveErasureTheoremsSource, kernelCheckLiveErasureTheoremsSource,
   hostFrontLiveErasureTheoremsReady, liveErasureTheoremsSource,
-  liveErasureTheoremsRel, UNIT_SURFACE host surface, MULT-0.
+  liveErasureTheoremsRel, liveRel, UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveErasureTheorems
   Red/green: just systems-host; lake build SystemsLean.HostFrontLiveErasureTheorems
   on surmount-1 (queued, not run here). Not package typecheck GREEN. Not FullHost.
@@ -53,9 +53,13 @@ def hostId : String := "HOST-FRONT-LIVE-ERASURE-THEOREMS"
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-ERASURE-THEOREMS"
 
-/-- Live file relative to repo root. Dual-pin path. -/
+/-- Live basename. Greppable: liveRel. Must be ErasureTheorems.lean. -/
+def liveRel : String := "ErasureTheorems.lean"
+
+/-- Live file relative to repo root. Dual-pin path.
+    Disk reads stay on src/systems/SystemsLean/ plus liveRel. -/
 def liveErasureTheoremsRel : String :=
-  "src/systems/SystemsLean/ErasureTheorems.lean"
+  "src/systems/SystemsLean/" ++ liveRel
 
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
@@ -192,6 +196,7 @@ def hostFrontLiveErasureTheoremsReady : Bool :=
     && (hostId == "HOST-FRONT-LIVE-ERASURE-THEOREMS")
     && (parseId == "PARSE-LIVE-ERASURE-THEOREMS")
     && (liveErasureTheoremsRel == "src/systems/SystemsLean/ErasureTheorems.lean")
+    && (liveRel == "ErasureTheorems.lean")
     && liveParseDoesNotUseMultFixture
     && !hostFrontLiveErasureTheoremsFullHost
     && !hostFrontLiveErasureTheoremsResidualFreeClaimed
@@ -215,6 +220,10 @@ def liveParseRejectsEmpty : Bool :=
 def runLiveErasureTheorems (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: PARSE-LIVE-ERASURE-THEOREMS =="
   IO.println s!"  host={hostId} file={liveErasureTheoremsRel}"
+  IO.println s!"liveRel={liveRel}"
+  unless (liveRel == "ErasureTheorems.lean") do
+    IO.eprintln "error: liveRel must be ErasureTheorems.lean"
+    throw (IO.userError "liveRel must be ErasureTheorems.lean")
   let path := root / liveErasureTheoremsRel
   unless (<- path.pathExists) do
     IO.eprintln s!"error: missing {liveErasureTheoremsRel}"

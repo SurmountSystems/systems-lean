@@ -73,7 +73,7 @@
   parseLiveHostPackageWriteMainSource,
   kernelCheckLiveHostPackageWriteMainSource,
   hostFrontLiveHostPackageWriteMainReady, liveHostPackageWriteMainSource,
-  liveHostPackageWriteMainRel, UNIT_SURFACE host surface, MULT-0,
+  liveHostPackageWriteMainRel, liveRel, UNIT_SURFACE host surface, MULT-0,
   liveParseDoesNotUseMultFixture.
   Module: SystemsLean.HostFrontLiveHostPackageWriteMain
   Red/green: dests skipped this slice (no barrel, no dest rows).
@@ -102,6 +102,9 @@ def hostId : String := "HOST-FRONT-LIVE-HOST-PACKAGE-WRITE-MAIN"
 
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-HOST-PACKAGE-WRITE-MAIN"
+
+/-- Live file basename. Not a path. -/
+def liveRel : String := "HostPackageWriteMain.lean"
 
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveHostPackageWriteMainRel : String :=
@@ -472,6 +475,7 @@ def hostFrontLiveHostPackageWriteMainReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_HOST_PACKAGE_WRITE_MAIN_V0")
     && (hostId == "HOST-FRONT-LIVE-HOST-PACKAGE-WRITE-MAIN")
     && (parseId == "PARSE-LIVE-HOST-PACKAGE-WRITE-MAIN")
+    && (liveRel == "HostPackageWriteMain.lean")
     && (liveHostPackageWriteMainRel
       == "src/systems/SystemsLean/HostPackageWriteMain.lean")
     && liveParseDoesNotUseMultFixture
@@ -521,6 +525,7 @@ def runLiveHostPackageWriteMain (root : System.FilePath) : IO Unit := do
     IO.println s!"GREEN {stageId}: live HostPackageWriteMain.lean parse kernelCheck; not mill remill; mill stays 69 of 69"
 
 def main (args : List String) : IO UInt32 := do
+  IO.println s!"liveRel={liveRel}"
   let root : System.FilePath :=
     match HostFront.filterArgs args with
     | r :: _ => System.FilePath.mk r

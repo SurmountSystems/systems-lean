@@ -45,6 +45,9 @@ def parseId : String := "PARSE-LIVE-MULT"
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveMultRel : String := "src/systems/SystemsLean/Mult.lean"
 
+/-- Live basename. Filename only, not a path. -/
+def liveRel : String := "Mult.lean"
+
 /-- Honesty: this parser is not the HostTerm fixture. -/
 def liveParseDoesNotUseFixture : Bool := true
 

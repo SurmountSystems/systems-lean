@@ -78,6 +78,9 @@ def parseId : String := "PARSE-LIVE-OFFICIAL-RETIRE-THEOREMS"
 def liveOfficialRetireTheoremsRel : String :=
   "src/systems/SystemsLean/OfficialRetireTheorems.lean"
 
+/-- Live basename. Filename only, not a path. -/
+def liveRel : String := "OfficialRetireTheorems.lean"
+
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
 

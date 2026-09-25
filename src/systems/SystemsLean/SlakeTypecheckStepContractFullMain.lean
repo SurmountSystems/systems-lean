@@ -67,6 +67,7 @@ def slakeTypecheckStepContractFullMainOwnsPackageTypecheck : Bool := false
     HostFrontLiveStepContractFullMain.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckStepContractFullMain} =="
+  IO.println s!"liveRel={SystemsLean.HostFrontLiveStepContractFullMain.liveRel}"
   IO.println s!"  host={hostId} file={liveStepContractFullMainRel}"
   unless (!slakeTypecheckStepContractFullMainFullHost) do
     IO.eprintln "error: FullHost must stay false"

@@ -88,6 +88,9 @@ def hostId : String := "HOST-FRONT-LIVE-CAPABLE-STEP-CONTRACT-MAIN"
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-CAPABLE-STEP-CONTRACT-MAIN"
 
+/-- Live file basename. Not a path. -/
+def liveRel : String := "CapableStepContractMain.lean"
+
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveCapableStepContractMainRel : String :=
   "src/systems/SystemsLean/CapableStepContractMain.lean"
@@ -507,6 +510,7 @@ def runLiveCapableStepContractMain (root : System.FilePath) : IO Unit := do
     IO.println s!"GREEN {stageId}: live CapableStepContractMain.lean parse kernelCheck; not mill remill; mill stays 69 of 69"
 
 def main (args : List String) : IO UInt32 := do
+  IO.println s!"liveRel={liveRel}"
   let root : System.FilePath :=
     match HostFront.filterArgs args with
     | r :: _ => System.FilePath.mk r

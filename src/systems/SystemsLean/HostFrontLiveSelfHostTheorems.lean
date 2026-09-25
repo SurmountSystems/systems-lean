@@ -81,6 +81,9 @@ def parseId : String := "PARSE-LIVE-SELF-HOST-THEOREMS"
 def liveSelfHostTheoremsRel : String :=
   "src/systems/SystemsLean/SelfHostTheorems.lean"
 
+/-- Live basename. Filename only, not a path. -/
+def liveRel : String := "SelfHostTheorems.lean"
+
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
 

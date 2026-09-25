@@ -51,6 +51,7 @@ def slakeTypecheckTypesForeignLinkOwnsPackageTypecheck : Bool := false
     HostFrontLiveTypesForeignLink.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckTypesForeignLink} =="
+  IO.println s!"liveRel={SystemsLean.HostFrontLiveTypesForeignLink.liveRel}"
   IO.println s!"  host={hostId} file={liveTypesForeignLinkRel}"
   unless (!slakeTypecheckTypesForeignLinkFullHost) do
     IO.eprintln "error: FullHost must stay false"

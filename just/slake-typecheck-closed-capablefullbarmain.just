@@ -76,6 +76,6 @@ slake-typecheck-capablefullbarmain:
     compile_one HostFrontLiveHostTerm
     LEAN_PATH="$modroot" nice -n 19 lean -R "$src_root" $recd -o "$modroot/SystemsLean/HostFrontLiveCapableFullBarMainSource.olean" \
       "$src_root/SystemsLean/HostFrontLiveCapableFullBarMainSource.lean"
-    LEAN_PATH="$modroot" nice -n 19 lean -R "$src_root" $recd -o "$modroot/SystemsLean/HostFrontLiveCapableFullBarMain.olean" \
-      "$src_root/SystemsLean/HostFrontLiveCapableFullBarMain.lean"
+    LEAN_PATH="$modroot" nice -n 19 lean -R "$src_root" $recd -o "$modroot/SystemsLean/HostFrontLiveCapableFullBarMainParse.olean" \
+      "$src_root/SystemsLean/HostFrontLiveCapableFullBarMainParse.lean"
     LEAN_PATH="$modroot" nice -n 19 lean -R "$src_root" $recd --run "$src" "$root"

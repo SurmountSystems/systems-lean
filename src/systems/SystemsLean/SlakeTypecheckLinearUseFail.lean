@@ -9,7 +9,7 @@
   Greppable: SYSTEMS_LEAN_HOST, HOST-SLAKE-TYPECHECK-LINEAR-USE-FAIL,
   SLAKE_TYPECHECK_LINEAR_USE_FAIL_V0, slake-typecheck-linearusefail,
   slakeTypecheckLinearUseFailReady, kernelCheckLiveLinearUseFailSource,
-  PARSE-LIVE-LINEAR-USE-FAIL, SKELETON.
+  PARSE-LIVE-LINEAR-USE-FAIL, liveRel, SKELETON.
   Module: SystemsLean.SlakeTypecheckLinearUseFail
   Checkable writer: just slake-typecheck-linearusefail (lean --run; no mill; no lake).
 -/
@@ -29,6 +29,10 @@ def justRecipeSlakeTypecheckLinearUseFail : String :=
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveLinearUseFailRel : String :=
   SystemsLean.HostFrontLiveLinearUseFail.liveLinearUseFailRel
+
+/-- Live basename. Exact equality. No slash. -/
+def liveRel : String :=
+  SystemsLean.HostFrontLiveLinearUseFail.liveRel
 
 /-- Ready names HostFrontLiveLinearUseFail parse plus kernelCheck, not := true.
     Greppable: slakeTypecheckLinearUseFailReady,
@@ -51,7 +55,11 @@ def slakeTypecheckLinearUseFailOwnsPackageTypecheck : Bool := false
     HostFrontLiveLinearUseFail.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckLinearUseFail} =="
+  IO.println s!"liveRel={liveRel}"
   IO.println s!"  host={hostId} file={liveLinearUseFailRel}"
+  unless (liveRel == "LinearUseFail.lean") do
+    IO.eprintln "error: liveRel must be LinearUseFail.lean"
+    return 1
   unless (!slakeTypecheckLinearUseFailFullHost) do
     IO.eprintln "error: FullHost must stay false"
     return 1

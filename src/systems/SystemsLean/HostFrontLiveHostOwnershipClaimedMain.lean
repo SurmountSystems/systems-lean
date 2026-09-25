@@ -99,6 +99,9 @@ def parseId : String := "PARSE-LIVE-HOST-OWNERSHIP-CLAIMED-MAIN"
 def liveHostOwnershipClaimedMainRel : String :=
   "src/systems/SystemsLean/OwnershipClaimedMain.lean"
 
+/-- Live basename. Filename only, not a path. -/
+def liveRel : String := "OwnershipClaimedMain.lean"
+
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
 

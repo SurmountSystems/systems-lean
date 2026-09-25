@@ -68,7 +68,7 @@
   parseLiveGraphSubsetEmitMainSource,
   kernelCheckLiveGraphSubsetEmitMainSource,
   hostFrontLiveGraphSubsetEmitMainReady, liveGraphSubsetEmitMainSource,
-  liveGraphSubsetEmitMainRel, UNIT_SURFACE host surface, MULT-0,
+  liveGraphSubsetEmitMainRel, liveRel, UNIT_SURFACE host surface, MULT-0,
   liveParseDoesNotUseMultFixture.
   Module: SystemsLean.HostFrontLiveGraphSubsetEmitMain
   Red/green: dests-skipped until barrel; lake build
@@ -99,7 +99,11 @@ def hostId : String := "HOST-FRONT-LIVE-GRAPH-SUBSET-EMIT-MAIN"
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-GRAPH-SUBSET-EMIT-MAIN"
 
-/-- Live file relative to repo root. Dual-pin path. -/
+/-- Live basename. Greppable: liveRel. Must be GraphSubsetEmitMain.lean. -/
+def liveRel : String := "GraphSubsetEmitMain.lean"
+
+/-- Live file relative to repo root. Dual-pin path.
+    Disk reads stay on this path. liveRel stays the bare basename. -/
 def liveGraphSubsetEmitMainRel : String :=
   "src/systems/SystemsLean/GraphSubsetEmitMain.lean"
 
@@ -470,6 +474,7 @@ def hostFrontLiveGraphSubsetEmitMainReady : Bool :=
     && (parseId == "PARSE-LIVE-GRAPH-SUBSET-EMIT-MAIN")
     && (liveGraphSubsetEmitMainRel
       == "src/systems/SystemsLean/GraphSubsetEmitMain.lean")
+    && (liveRel == "GraphSubsetEmitMain.lean")
     && liveParseDoesNotUseMultFixture
     && !hostFrontLiveGraphSubsetEmitMainFullHost
     && !hostFrontLiveGraphSubsetEmitMainResidualFreeClaimed
@@ -492,6 +497,10 @@ def liveParseRejectsEmpty : Bool :=
 def runLiveGraphSubsetEmitMain (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: PARSE-LIVE-GRAPH-SUBSET-EMIT-MAIN =="
   IO.println s!"  host={hostId} file={liveGraphSubsetEmitMainRel}"
+  IO.println s!"liveRel={liveRel}"
+  unless (liveRel == "GraphSubsetEmitMain.lean") do
+    IO.eprintln "error: liveRel must be GraphSubsetEmitMain.lean"
+    throw (IO.userError "liveRel must be GraphSubsetEmitMain.lean")
   let path := root / liveGraphSubsetEmitMainRel
   unless (<- path.pathExists) do
     IO.eprintln s!"error: missing {liveGraphSubsetEmitMainRel}"

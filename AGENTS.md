@@ -110,6 +110,16 @@ Before each wrap starts, state the per-job wall, the nested-token estimate, the 
 
 Operator 2026-09-22 says keep five implementor L2 coordinators until /home/hunter/.agents/reports/remaining-unwrapped-2026-09-22.md has no file left that lacks a parser and a driver. The recount is extra and does not fill one of the five implementor slots. Every status includes a per-job estimate, a reconcile, and a remaining table. Those statuses spell every number. A new wrap estimate is 24.0 minutes and 1.64m nested tokens. A finish of an existing parser is 15 minutes and 800.0k nested tokens, and 800.0k is a guess. A check every 30 minutes fills empty slots and does not double-write a file.
 
+### More than five coordinators so five stay working (operator 2026-09-22)
+
+Stop using Grok 4.6 to do the wrap work. New wrap coordinators and the specialists they spawn use grok-4.7. Say xhigh in the specialist prompt.
+
+Five implementors must stay in play. A coordinator that exits in under a minute with zero tool calls is not an implementor in play. Keep more than five L2 coordinators on disjoint files so that when one exits immediately, five are still working. Do not put two coordinators on one file. Do not start a second writer on a file that already has a writer. The working target stays five files being wrapped. The extra coordinators are the buffer. They are not a new occupancy count and not a new host-tool count.
+
+### Five L2 coordinators, not only nested specialists (operator 2026-09-25)
+
+Always remember. The five parallel implementors are five L2 coordinators. Each coordinator owns a disjoint set of the remaining product files and spawns specialists for the file work. A nested specialist does not count as one of the five. Spawning only leaf writers from the main session does not meet this. Keep five L2 coordinators working at once until every product file has been through the close test. When one finishes its range and files remain, that coordinator takes the next unchecked file from the longest remaining range. Do not put two coordinators on one file. Do not start a second writer on a file that already has a writer. Do not spawn a sixth coordinator to look busy. The lake coordinator and a recount stay extra and do not fill one of the five. Dual-pin: `~/.grok/AGENTS.md` same heading.
+
 ### Wrap targets come from the inventory on disk (operator 2026-09-21)
 
 Parent picks the next wrap from the unwrapped-product inventory of files that exist (`/home/hunter/.agents/reports/grok-impl-summary-inventory-verify.md`, which replaced `/home/hunter/.agents/reports/grok-impl-summary-unwrapped-modules.md`). Confirm the path with `test -f` before spawn.
@@ -538,6 +548,28 @@ Dual-pin: `~/.grok/AGENTS.md` section *Low time preference and completeness*.
   product-wrap rate stays **19.4 minutes** and **167.0k** nested tokens
   until several Grok 4.7 wraps have both numbers fetched. Dual-pin:
   `~/.grok/AGENTS.md` section *Comprehensive estimate and reconcile*.
+- **Current remaining count every report (operator 2026-09-25):** always
+  remember. Every parent status that reports work puts the current
+  remaining count in the first screen. Say what the count measures and
+  the time it was counted. For this checker work the count is product
+  files under `src/systems/SystemsLean/` that have no HostFrontLive
+  checker whose `liveRel` is that exact basename. Drop names that start
+  with `HostFrontLive`, `SlakeTypecheck`, or `ElabMeet`, and drop
+  `OccupancyProbe.lean`. Spell the addition: product count = named +
+  missing. Print the number from a set difference. Do not wait for a
+  long write-up. Do not mix this count with files that already have a
+  checker but lack an exit-0 log. Say which count it is. Update the
+  number when a checker lands. Do not quote 117, 131, or an older 126
+  after a newer count exists. Dual-pin: `~/.grok/AGENTS.md` same heading.
+- **Five L2 coordinators, not only nested specialists (operator 2026-09-25):**
+  always remember. Remaining checker work runs as five L2 coordinators
+  at once, on disjoint files, as parallel as the ranges allow. A nested
+  specialist does not count as one of the five. Leaf writers spawned
+  from the main session do not meet this. When a coordinator finishes
+  its range and files remain, it takes the next unchecked file from the
+  longest remaining range. Do not put two coordinators on one file. Do
+  not spawn a sixth coordinator to look busy. Dual-pin: `~/.grok/AGENTS.md`
+  same heading.
 - **Progress every turn (operator 2026-08-14):** every parent turn and
   every implement slice starts with that natural-language progress
   report: what compiled, what still does not, and what is next. Keep a

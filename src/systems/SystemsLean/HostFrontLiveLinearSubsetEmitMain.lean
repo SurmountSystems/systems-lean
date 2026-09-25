@@ -68,7 +68,7 @@
   parseLiveLinearSubsetEmitMainSource,
   kernelCheckLiveLinearSubsetEmitMainSource,
   hostFrontLiveLinearSubsetEmitMainReady, liveLinearSubsetEmitMainSource,
-  liveLinearSubsetEmitMainRel, UNIT_SURFACE host surface, MULT-0,
+  liveLinearSubsetEmitMainRel, liveRel, UNIT_SURFACE host surface, MULT-0,
   liveParseDoesNotUseMultFixture.
   Module: SystemsLean.HostFrontLiveLinearSubsetEmitMain
   Red/green: dests-skipped until barrel; lake build
@@ -98,6 +98,9 @@ def hostId : String := "HOST-FRONT-LIVE-LINEAR-SUBSET-EMIT-MAIN"
 
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-LINEAR-SUBSET-EMIT-MAIN"
+
+/-- Bare product basename. No slash. -/
+def liveRel : String := "LinearSubsetEmitMain.lean"
 
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveLinearSubsetEmitMainRel : String :=
@@ -468,6 +471,7 @@ def hostFrontLiveLinearSubsetEmitMainReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_LINEAR_SUBSET_EMIT_MAIN_V0")
     && (hostId == "HOST-FRONT-LIVE-LINEAR-SUBSET-EMIT-MAIN")
     && (parseId == "PARSE-LIVE-LINEAR-SUBSET-EMIT-MAIN")
+    && (liveRel == "LinearSubsetEmitMain.lean")
     && (liveLinearSubsetEmitMainRel
       == "src/systems/SystemsLean/LinearSubsetEmitMain.lean")
     && liveParseDoesNotUseMultFixture
@@ -517,6 +521,7 @@ def runLiveLinearSubsetEmitMain (root : System.FilePath) : IO Unit := do
     IO.println s!"GREEN {stageId}: live LinearSubsetEmitMain.lean parse kernelCheck; not mill 32 remill; mill stays 69 of 69"
 
 def main (args : List String) : IO UInt32 := do
+  IO.println s!"liveRel={liveRel}"
   let root : System.FilePath :=
     match HostFront.filterArgs args with
     | r :: _ => System.FilePath.mk r

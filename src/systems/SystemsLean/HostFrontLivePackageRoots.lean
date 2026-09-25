@@ -20,6 +20,7 @@
   SLAKE_HOST_FRONT_LIVE_PACKAGE_ROOTS_V0, PARSE-LIVE-PACKAGE-ROOTS,
   parseLivePackageRootsSource, kernelCheckLivePackageRootsSource,
   hostFrontLivePackageRootsReady, livePackageRootsSource, livePackageRootsRel,
+  liveRel,
   UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLivePackageRoots
   Red/green: just systems-host dest rows when dests can land;
@@ -49,6 +50,9 @@ def hostId : String := "HOST-FRONT-LIVE-PACKAGE-ROOTS"
 
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-PACKAGE-ROOTS"
+
+/-- Live file basename. Not a path. -/
+def liveRel : String := "HostPackageRoots.lean"
 
 /-- Live file relative to repo root. Dual-pin path. -/
 def livePackageRootsRel : String :=
@@ -254,6 +258,7 @@ def hostFrontLivePackageRootsReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_PACKAGE_ROOTS_V0")
     && (hostId == "HOST-FRONT-LIVE-PACKAGE-ROOTS")
     && (parseId == "PARSE-LIVE-PACKAGE-ROOTS")
+    && (liveRel == "HostPackageRoots.lean")
     && (livePackageRootsRel
       == "src/systems/SystemsLean/HostPackageRoots.lean")
     && liveParseDoesNotUseMultFixture
@@ -302,6 +307,7 @@ def runLivePackageRoots (root : System.FilePath) : IO Unit := do
     IO.println s!"GREEN {stageId}: live HostPackageRoots.lean parse kernelCheck; not mill 70"
 
 def main (args : List String) : IO UInt32 := do
+  IO.println s!"liveRel={liveRel}"
   let root : System.FilePath :=
     match HostFront.filterArgs args with
     | r :: _ => System.FilePath.mk r

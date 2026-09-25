@@ -86,6 +86,9 @@ def parseId : String := "PARSE-LIVE-OFFICIAL-PATH"
 def liveOfficialPathRel : String :=
   "src/systems/SystemsLean/OfficialPath.lean"
 
+/-- Live basename. Filename only, not a path. -/
+def liveRel : String := "OfficialPath.lean"
+
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
 

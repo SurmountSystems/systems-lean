@@ -26,7 +26,7 @@
   SLAKE_HOST_FRONT_LIVE_KERNEL_TYPES_V0, PARSE-LIVE-KERNEL-TYPES,
   parseLiveKernelTypesSource, kernelCheckLiveKernelTypesSource,
   hostFrontLiveKernelTypesReady, liveKernelTypesSource,
-  liveKernelTypesRel, UNIT_SURFACE host surface, MULT-0,
+  liveKernelTypesRel, liveRel, UNIT_SURFACE host surface, MULT-0,
   liveParseDoesNotUseMultFixture.
   Module: SystemsLean.HostFrontLiveKernelTypes
   Red/green: dest-missing until barrel; lake build
@@ -56,6 +56,9 @@ def hostId : String := "HOST-FRONT-LIVE-KERNEL-TYPES"
 
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-KERNEL-TYPES"
+
+/-- Bare product basename. No slash. -/
+def liveRel : String := "KernelTypes.lean"
 
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveKernelTypesRel : String :=
@@ -295,6 +298,7 @@ def hostFrontLiveKernelTypesReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_KERNEL_TYPES_V0")
     && (hostId == "HOST-FRONT-LIVE-KERNEL-TYPES")
     && (parseId == "PARSE-LIVE-KERNEL-TYPES")
+    && (liveRel == "KernelTypes.lean")
     && (liveKernelTypesRel
       == "src/systems/SystemsLean/KernelTypes.lean")
     && liveParseDoesNotUseMultFixture
@@ -343,6 +347,7 @@ def runLiveKernelTypes (root : System.FilePath) : IO Unit := do
     IO.println s!"GREEN {stageId}: live KernelTypes.lean parse kernelCheck; not mill 70"
 
 def main (args : List String) : IO UInt32 := do
+  IO.println s!"liveRel={liveRel}"
   let root : System.FilePath :=
     match HostFront.filterArgs args with
     | r :: _ => System.FilePath.mk r

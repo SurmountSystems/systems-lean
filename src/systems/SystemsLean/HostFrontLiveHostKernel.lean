@@ -26,6 +26,7 @@
   SLAKE_HOST_FRONT_LIVE_HOSTKERNEL_V0,
   PARSE-LIVE-HOSTKERNEL, parseLiveHostKernelSource, kernelCheckLiveHostKernelSource,
   hostFrontLiveHostKernelReady, liveHostKernelSource, liveHostKernelRel,
+  liveRel,
   UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveHostKernel
   Red/green: just slake-typecheck-hostkernel; just systems-host dest rows;
@@ -56,8 +57,12 @@ def hostId : String := "HOST-FRONT-LIVE-HOSTKERNEL"
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-HOSTKERNEL"
 
-/-- Live file relative to repo root. Dual-pin path. -/
+/-- Live file relative to repo root. Dual-pin path.
+    Disk reads stay on this path. liveRel stays the bare basename. -/
 def liveHostKernelRel : String := "src/systems/SystemsLean/HostKernel.lean"
+
+/-- Live basename. Greppable: liveRel. Must be HostKernel.lean. -/
+def liveRel : String := "HostKernel.lean"
 
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
@@ -311,6 +316,7 @@ def hostFrontLiveHostKernelReady : Bool :=
     && (hostId == "HOST-FRONT-LIVE-HOSTKERNEL")
     && (parseId == "PARSE-LIVE-HOSTKERNEL")
     && (liveHostKernelRel == "src/systems/SystemsLean/HostKernel.lean")
+    && (liveRel == "HostKernel.lean")
     && liveParseDoesNotUseMultFixture
     && !hostFrontLiveHostKernelFullHost
     && !hostFrontLiveHostKernelResidualFreeClaimed
@@ -333,6 +339,10 @@ def liveParseRejectsEmpty : Bool :=
 def runLiveHostKernel (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: PARSE-LIVE-HOSTKERNEL =="
   IO.println s!"  host={hostId} file={liveHostKernelRel}"
+  IO.println s!"liveRel={liveRel}"
+  unless (liveRel == "HostKernel.lean") do
+    IO.eprintln "error: liveRel must be HostKernel.lean"
+    throw (IO.userError "liveRel must be HostKernel.lean")
   let path := root / liveHostKernelRel
   unless (<- path.pathExists) do
     IO.eprintln s!"error: missing {liveHostKernelRel}"
@@ -348,7 +358,7 @@ def runLiveHostKernel (root : System.FilePath) : IO Unit := do
     throw (IO.userError s!"PARSE-LIVE-HOSTKERNEL reject {reason}")
   | FrontResult.accept m =>
     let k := HostKernel.kernelCheck m
-    IO.println s!"PASS PARSE-LIVE-HOSTKERNEL ACCEPT cmds={m.commands.length} kernelCheck={k}"
+    IO.println s!"PASS PARSE-LIVE-HOSTKERNEL ACCEPT liveRel={liveRel} cmds={m.commands.length} kernelCheck={k}"
     unless k do
       IO.eprintln "error: kernelCheck live HostKernel parse false"
       throw (IO.userError "kernelCheck live HostKernel parse false")

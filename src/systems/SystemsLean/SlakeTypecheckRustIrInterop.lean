@@ -57,6 +57,7 @@ def slakeTypecheckRustIrInteropOwnsPackageTypecheck : Bool := false
     HostFrontLiveRustIrInterop.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckRustIrInterop} =="
+  IO.println s!"liveRel={SystemsLean.HostFrontLiveRustIrInterop.liveRel}"
   IO.println s!"  host={hostId} file={liveRustIrInteropRel}"
   unless (!slakeTypecheckRustIrInteropFullHost) do
     IO.eprintln "error: FullHost must stay false"

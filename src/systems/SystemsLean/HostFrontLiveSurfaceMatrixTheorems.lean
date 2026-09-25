@@ -81,6 +81,9 @@ def parseId : String := "PARSE-LIVE-SURFACE-MATRIX-THEOREMS"
 def liveSurfaceMatrixTheoremsRel : String :=
   "src/systems/SystemsLean/SurfaceMatrixTheorems.lean"
 
+/-- Live basename. Filename only, not a path. -/
+def liveRel : String := "SurfaceMatrixTheorems.lean"
+
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
 

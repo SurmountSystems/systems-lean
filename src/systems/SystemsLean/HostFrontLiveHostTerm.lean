@@ -16,7 +16,8 @@
 
   Greppable: SYSTEMS_LEAN_HOST, HOST-FRONT-LIVE-HOSTTERM, SLAKE_HOST_FRONT_LIVE_HOSTTERM_V0,
   PARSE-LIVE-HOSTTERM, parseLiveHostTermSource, kernelCheckLiveHostTermSource,
-  hostFrontLiveHostTermReady, liveHostTermSource, liveHostTermRel, UNIT_SURFACE host surface, MULT-0.
+  hostFrontLiveHostTermReady, liveHostTermSource, liveRel, liveHostTermRel,
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveHostTerm
   Red/green: just systems-host; lake build SystemsLean.HostFrontLiveHostTerm on
   surmount-1. Not package typecheck GREEN. Not FullHost. Not Lake-gone.
@@ -44,6 +45,9 @@ def hostId : String := "HOST-FRONT-LIVE-HOSTTERM"
 
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-HOSTTERM"
+
+/-- Bare product basename. No slash. -/
+def liveRel : String := "HostTerm.lean"
 
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveHostTermRel : String := "src/systems/SystemsLean/HostTerm.lean"
@@ -674,6 +678,7 @@ def hostFrontLiveHostTermReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_HOSTTERM_V0")
     && (hostId == "HOST-FRONT-LIVE-HOSTTERM")
     && (parseId == "PARSE-LIVE-HOSTTERM")
+    && (liveRel == "HostTerm.lean")
     && (liveHostTermRel == "src/systems/SystemsLean/HostTerm.lean")
     && liveParseDoesNotUseMultFixture
     && !hostFrontLiveHostTermFullHost
@@ -722,6 +727,7 @@ def runLiveHostTerm (root : System.FilePath) : IO Unit := do
     IO.println s!"GREEN {stageId}: live HostTerm.lean parse kernelCheck; not multFixtureModule"
 
 def main (args : List String) : IO UInt32 := do
+  IO.println s!"liveRel={liveRel}"
   let root : System.FilePath :=
     match HostFront.filterArgs args with
     | r :: _ => System.FilePath.mk r

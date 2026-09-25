@@ -26,7 +26,7 @@
   SLAKE_HOST_FRONT_LIVE_EXTRACT_THEOREMS_V0, PARSE-LIVE-EXTRACT-THEOREMS,
   parseLiveExtractTheoremsSource, kernelCheckLiveExtractTheoremsSource,
   hostFrontLiveExtractTheoremsReady, liveExtractTheoremsSource,
-  liveExtractTheoremsRel, UNIT_SURFACE host surface, MULT-0.
+  liveExtractTheoremsRel, liveRel, UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveExtractTheorems
   Red/green: just systems-host; lake build SystemsLean.HostFrontLiveExtractTheorems
   on surmount-1 (queued, not run here). Not package typecheck GREEN. Not FullHost.
@@ -54,7 +54,11 @@ def hostId : String := "HOST-FRONT-LIVE-EXTRACT-THEOREMS"
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-EXTRACT-THEOREMS"
 
-/-- Live file relative to repo root. Dual-pin path. -/
+/-- Live basename. Greppable: liveRel. Must be ExtractTheorems.lean. -/
+def liveRel : String := "ExtractTheorems.lean"
+
+/-- Live file relative to repo root. Dual-pin path.
+    Disk reads stay on this path. liveRel stays the bare basename. -/
 def liveExtractTheoremsRel : String :=
   "src/systems/SystemsLean/ExtractTheorems.lean"
 
@@ -203,6 +207,7 @@ def hostFrontLiveExtractTheoremsReady : Bool :=
     && (hostId == "HOST-FRONT-LIVE-EXTRACT-THEOREMS")
     && (parseId == "PARSE-LIVE-EXTRACT-THEOREMS")
     && (liveExtractTheoremsRel == "src/systems/SystemsLean/ExtractTheorems.lean")
+    && (liveRel == "ExtractTheorems.lean")
     && liveParseDoesNotUseMultFixture
     && !hostFrontLiveExtractTheoremsFullHost
     && !hostFrontLiveExtractTheoremsResidualFreeClaimed
@@ -227,6 +232,10 @@ def liveParseRejectsEmpty : Bool :=
 def runLiveExtractTheorems (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: PARSE-LIVE-EXTRACT-THEOREMS =="
   IO.println s!"  host={hostId} file={liveExtractTheoremsRel}"
+  IO.println s!"liveRel={liveRel}"
+  unless (liveRel == "ExtractTheorems.lean") do
+    IO.eprintln "error: liveRel must be ExtractTheorems.lean"
+    throw (IO.userError "liveRel must be ExtractTheorems.lean")
   let path := root / liveExtractTheoremsRel
   unless (<- path.pathExists) do
     IO.eprintln s!"error: missing {liveExtractTheoremsRel}"

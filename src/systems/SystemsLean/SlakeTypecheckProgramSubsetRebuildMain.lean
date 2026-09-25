@@ -1,7 +1,7 @@
 /-
   SYSTEMS_LEAN_HOST -- Slake typechecks live SystemsLean.ProgramSubsetRebuildMain.
   Short role: named driver for just slake-typecheck-programsubsetrebuildmain.
-  Ready is HostFrontLiveProgramSubsetRebuildMain parse plus HostKernel.kernelCheck
+  Ready is HostFrontLiveProgramSubsetRebuildMainSource parse plus HostKernel.kernelCheck
   of live ProgramSubsetRebuildMain.lean, not := true, not lake build
   SystemsLean.ProgramSubsetRebuildMain.
   Not mill remill (just twenty-fifth-host-tool / inventory table row 37).
@@ -9,6 +9,8 @@
   slakeOwnsPackageTypecheck stays false. Mill stays 69 of 69.
   Not Lake-gone. Not the full src/systems package walk.
   This wrap parses ProgramSubsetRebuildMain.lean only. Do not wrap ProgramSubsetRebuild.lean.
+  The thin forwarder HostFrontLiveProgramSubsetRebuildMain stays byte-for-byte.
+  This driver calls the Source checker, not that forwarder.
   This wrap is not ProgramSubsetEmitMain. This wrap is not TypesSubsetRebuildMain.
   Do not steal HostFrontLiveProgramMain. Not Linear. Not ComposeSubsetEmit. Not IrGraph.
   Unique needles (trailing newline so SlakeTypecheckProgramSubsetRebuildMain is not a prefix):
@@ -28,7 +30,7 @@
   (lean --run; no mill; no lake). Dests skipped this slice.
 -/
 
-import SystemsLean.HostFrontLiveProgramSubsetRebuildMain
+import SystemsLean.HostFrontLiveProgramSubsetRebuildMainSource
 
 /-- Greppable stage id. -/
 def stageId : String := "SLAKE_TYPECHECK_PROGRAM_SUBSET_REBUILD_MAIN_V0"
@@ -40,16 +42,15 @@ def hostId : String := "HOST-SLAKE-TYPECHECK-PROGRAM-SUBSET-REBUILD-MAIN"
 def justRecipeSlakeTypecheckProgramSubsetRebuildMain : String :=
   "slake-typecheck-programsubsetrebuildmain"
 
-/-- Live file relative to repo root. Dual-pin path. -/
+/-- Live file basename. Not a path. -/
 def liveProgramSubsetRebuildMainRel : String :=
-  SystemsLean.HostFrontLiveProgramSubsetRebuildMain.liveProgramSubsetRebuildMainRel
+  SystemsLean.HostFrontLiveProgramSubsetRebuildMainSource.liveRel
 
-/-- Ready names HostFrontLiveProgramSubsetRebuildMain parse plus kernelCheck,
-    not := true.
+/-- Ready names the Source parse plus kernelCheck, not := true.
     Greppable: slakeTypecheckProgramSubsetRebuildMainReady,
     kernelCheckLiveProgramSubsetRebuildMainSource. -/
 def slakeTypecheckProgramSubsetRebuildMainReady : Bool :=
-  SystemsLean.HostFrontLiveProgramSubsetRebuildMain.hostFrontLiveProgramSubsetRebuildMainReady
+  SystemsLean.HostFrontLiveProgramSubsetRebuildMainSource.hostFrontLiveProgramSubsetRebuildMainSourceReady
 
 /-- Honesty: this command is not lake build of ProgramSubsetRebuildMain. -/
 def slakeTypecheckProgramSubsetRebuildMainDoesNotUseLake : Bool := true
@@ -60,12 +61,10 @@ def slakeTypecheckProgramSubsetRebuildMainFullHost : Bool := false
 /-- Honesty: package typecheck pin stays false. -/
 def slakeTypecheckProgramSubsetRebuildMainOwnsPackageTypecheck : Bool := false
 
-/-- lean --run entry: parse plus kernelCheck live ProgramSubsetRebuildMain.lean.
-    Ready is HostFrontLiveProgramSubsetRebuildMain.hostFrontLiveProgramSubsetRebuildMainReady
-    (parse plus kernelCheck), not := true. Evaluated inside
-    HostFrontLiveProgramSubsetRebuildMain.main at runtime. -/
+/-- lean --run entry: parse plus kernelCheck live ProgramSubsetRebuildMain.lean. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckProgramSubsetRebuildMain} =="
+  IO.println s!"liveRel={SystemsLean.HostFrontLiveProgramSubsetRebuildMainSource.liveRel}"
   IO.println s!"  host={hostId} file={liveProgramSubsetRebuildMainRel}"
   unless (!slakeTypecheckProgramSubsetRebuildMainFullHost) do
     IO.eprintln "error: FullHost must stay false"
@@ -73,4 +72,4 @@ def main (args : List String) : IO UInt32 := do
   unless (!slakeTypecheckProgramSubsetRebuildMainOwnsPackageTypecheck) do
     IO.eprintln "error: slakeOwnsPackageTypecheck must stay false"
     return 1
-  SystemsLean.HostFrontLiveProgramSubsetRebuildMain.main args
+  SystemsLean.HostFrontLiveProgramSubsetRebuildMainSource.main args

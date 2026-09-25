@@ -74,7 +74,7 @@
   parseLiveErasureSubsetRebuildMainSource,
   kernelCheckLiveErasureSubsetRebuildMainSource,
   hostFrontLiveErasureSubsetRebuildMainReady, liveErasureSubsetRebuildMainSource,
-  liveErasureSubsetRebuildMainRel, UNIT_SURFACE host surface, MULT-0,
+  liveRel, liveErasureSubsetRebuildMainRel, UNIT_SURFACE host surface, MULT-0,
   liveParseDoesNotUseMultFixture.
   Module: SystemsLean.HostFrontLiveErasureSubsetRebuildMain
   Red/green: dests-skipped until barrel; lake build
@@ -105,9 +105,12 @@ def hostId : String := "HOST-FRONT-LIVE-ERASURE-SUBSET-REBUILD-MAIN"
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-ERASURE-SUBSET-REBUILD-MAIN"
 
-/-- Live file relative to repo root. Dual-pin path. -/
+/-- Live basename. Filename only, not a path. Greppable: liveRel. -/
+def liveRel : String := "ErasureSubsetRebuildMain.lean"
+
+/-- Live file relative to repo root. Disk reads use this path, not the bare liveRel. -/
 def liveErasureSubsetRebuildMainRel : String :=
-  "src/systems/SystemsLean/ErasureSubsetRebuildMain.lean"
+  "src/systems/SystemsLean/" ++ liveRel
 
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
@@ -474,6 +477,7 @@ def hostFrontLiveErasureSubsetRebuildMainReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_ERASURE_SUBSET_REBUILD_MAIN_V0")
     && (hostId == "HOST-FRONT-LIVE-ERASURE-SUBSET-REBUILD-MAIN")
     && (parseId == "PARSE-LIVE-ERASURE-SUBSET-REBUILD-MAIN")
+    && (liveRel == "ErasureSubsetRebuildMain.lean")
     && (liveErasureSubsetRebuildMainRel
       == "src/systems/SystemsLean/ErasureSubsetRebuildMain.lean")
     && liveParseDoesNotUseMultFixture
@@ -498,6 +502,7 @@ def liveParseRejectsEmpty : Bool :=
 def runLiveErasureSubsetRebuildMain (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: PARSE-LIVE-ERASURE-SUBSET-REBUILD-MAIN =="
   IO.println s!"  host={hostId} file={liveErasureSubsetRebuildMainRel}"
+  IO.println s!"liveRel={liveRel}"
   let path := root / liveErasureSubsetRebuildMainRel
   unless (<- path.pathExists) do
     IO.eprintln s!"error: missing {liveErasureSubsetRebuildMainRel}"

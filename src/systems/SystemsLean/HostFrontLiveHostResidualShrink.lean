@@ -49,7 +49,7 @@
   parseLiveHostResidualShrinkSource,
   kernelCheckLiveHostResidualShrinkSource,
   hostFrontLiveHostResidualShrinkReady, liveHostResidualShrinkSource,
-  liveHostResidualShrinkRel, UNIT_SURFACE host surface, MULT-0,
+  liveRel, liveHostResidualShrinkRel, UNIT_SURFACE host surface, MULT-0,
   liveParseDoesNotUseMultFixture.
   Module: SystemsLean.HostFrontLiveHostResidualShrink
   Red/green: dests-skipped until barrel; lake build
@@ -79,6 +79,9 @@ def hostId : String := "HOST-FRONT-LIVE-HOST-RESIDUAL-SHRINK"
 
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-HOST-RESIDUAL-SHRINK"
+
+/-- Bare product basename. No slash. -/
+def liveRel : String := "HostResidualShrink.lean"
 
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveHostResidualShrinkRel : String :=
@@ -459,6 +462,7 @@ def hostFrontLiveHostResidualShrinkReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_HOST_RESIDUAL_SHRINK_V0")
     && (hostId == "HOST-FRONT-LIVE-HOST-RESIDUAL-SHRINK")
     && (parseId == "PARSE-LIVE-HOST-RESIDUAL-SHRINK")
+    && (liveRel == "HostResidualShrink.lean")
     && (liveHostResidualShrinkRel
       == "src/systems/SystemsLean/HostResidualShrink.lean")
     && liveParseDoesNotUseMultFixture
@@ -509,6 +513,7 @@ def runLiveHostResidualShrink (root : System.FilePath) : IO Unit := do
     IO.println s!"GREEN {stageId}: live HostResidualShrink.lean parse kernelCheck; not mill 70"
 
 def main (args : List String) : IO UInt32 := do
+  IO.println s!"liveRel={liveRel}"
   let root : System.FilePath :=
     match HostFront.filterArgs args with
     | r :: _ => System.FilePath.mk r

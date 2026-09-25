@@ -68,7 +68,7 @@
   parseLiveGraphSubsetRebuildMainSource,
   kernelCheckLiveGraphSubsetRebuildMainSource,
   hostFrontLiveGraphSubsetRebuildMainReady, liveGraphSubsetRebuildMainSource,
-  liveGraphSubsetRebuildMainRel, UNIT_SURFACE host surface, MULT-0,
+  liveGraphSubsetRebuildMainRel, liveRel, UNIT_SURFACE host surface, MULT-0,
   liveParseDoesNotUseMultFixture.
   Module: SystemsLean.HostFrontLiveGraphSubsetRebuildMain
   Red/green: dests-skipped until barrel; lake build
@@ -99,7 +99,11 @@ def hostId : String := "HOST-FRONT-LIVE-GRAPH-SUBSET-REBUILD-MAIN"
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-GRAPH-SUBSET-REBUILD-MAIN"
 
-/-- Live file relative to repo root. Dual-pin path. -/
+/-- Live basename. Greppable: liveRel. Must be GraphSubsetRebuildMain.lean. -/
+def liveRel : String := "GraphSubsetRebuildMain.lean"
+
+/-- Live file relative to repo root. Dual-pin path.
+    Disk reads stay on this path. liveRel stays the bare basename. -/
 def liveGraphSubsetRebuildMainRel : String :=
   "src/systems/SystemsLean/GraphSubsetRebuildMain.lean"
 
@@ -470,6 +474,7 @@ def hostFrontLiveGraphSubsetRebuildMainReady : Bool :=
     && (parseId == "PARSE-LIVE-GRAPH-SUBSET-REBUILD-MAIN")
     && (liveGraphSubsetRebuildMainRel
       == "src/systems/SystemsLean/GraphSubsetRebuildMain.lean")
+    && (liveRel == "GraphSubsetRebuildMain.lean")
     && liveParseDoesNotUseMultFixture
     && !hostFrontLiveGraphSubsetRebuildMainFullHost
     && !hostFrontLiveGraphSubsetRebuildMainResidualFreeClaimed
@@ -492,6 +497,10 @@ def liveParseRejectsEmpty : Bool :=
 def runLiveGraphSubsetRebuildMain (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: PARSE-LIVE-GRAPH-SUBSET-REBUILD-MAIN =="
   IO.println s!"  host={hostId} file={liveGraphSubsetRebuildMainRel}"
+  IO.println s!"liveRel={liveRel}"
+  unless (liveRel == "GraphSubsetRebuildMain.lean") do
+    IO.eprintln "error: liveRel must be GraphSubsetRebuildMain.lean"
+    throw (IO.userError "liveRel must be GraphSubsetRebuildMain.lean")
   let path := root / liveGraphSubsetRebuildMainRel
   unless (<- path.pathExists) do
     IO.eprintln s!"error: missing {liveGraphSubsetRebuildMainRel}"

@@ -84,6 +84,9 @@ def hostId : String := "HOST-FRONT-LIVE-CAPABLE-MAIN"
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-CAPABLE-MAIN"
 
+/-- Live file basename. Not a path. -/
+def liveRel : String := "CapableMain.lean"
+
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveCapableMainRel : String :=
   "src/systems/SystemsLean/CapableMain.lean"
@@ -503,6 +506,7 @@ def runLiveCapableMain (root : System.FilePath) : IO Unit := do
     IO.println s!"GREEN {stageId}: live CapableMain.lean parse kernelCheck; not mill 5 remill"
 
 def main (args : List String) : IO UInt32 := do
+  IO.println s!"liveRel={liveRel}"
   let root : System.FilePath :=
     match HostFront.filterArgs args with
     | r :: _ => System.FilePath.mk r

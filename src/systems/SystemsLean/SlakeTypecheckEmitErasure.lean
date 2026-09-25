@@ -34,6 +34,9 @@ def justRecipeSlakeTypecheckEmitErasure : String :=
 def liveEmitErasureRel : String :=
   SystemsLean.HostFrontLiveEmitErasure.liveEmitErasureRel
 
+/-- Live basename. Exact equality. Not EmitErasureScaffold.lean. -/
+def liveRel : String := SystemsLean.HostFrontLiveEmitErasure.liveRel
+
 /-- Ready names HostFrontLiveEmitErasure parse plus kernelCheck,
     not a hardcoded true.
     Greppable: slakeTypecheckEmitErasureReady,
@@ -56,7 +59,11 @@ def slakeTypecheckEmitErasureOwnsPackageTypecheck : Bool := false
     HostFrontLiveEmitErasure.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckEmitErasure} =="
+  IO.println s!"liveRel={liveRel}"
   IO.println s!"  host={hostId} file={liveEmitErasureRel}"
+  unless (liveRel == "EmitErasure.lean") do
+    IO.eprintln "error: liveRel must be EmitErasure.lean"
+    return 1
   unless (!slakeTypecheckEmitErasureFullHost) do
     IO.eprintln "error: FullHost must stay false"
     return 1

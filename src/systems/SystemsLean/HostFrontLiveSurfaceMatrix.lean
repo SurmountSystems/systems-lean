@@ -80,6 +80,9 @@ def parseId : String := "PARSE-LIVE-SURFACE-MATRIX"
 def liveSurfaceMatrixRel : String :=
   "src/systems/SystemsLean/SurfaceMatrix.lean"
 
+/-- Live basename. Filename only, not a path. -/
+def liveRel : String := "SurfaceMatrix.lean"
+
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
 

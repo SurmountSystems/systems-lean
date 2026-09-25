@@ -62,6 +62,7 @@ def slakeTypecheckMultSubsetEmitMainOwnsPackageTypecheck : Bool := false
     HostFrontLiveMultSubsetEmitMain.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckMultSubsetEmitMain} =="
+  IO.println s!"liveRel={SystemsLean.HostFrontLiveMultSubsetEmitMain.liveRel}"
   IO.println s!"  host={hostId} file={liveMultSubsetEmitMainRel}"
   unless (!slakeTypecheckMultSubsetEmitMainFullHost) do
     IO.eprintln "error: FullHost must stay false"

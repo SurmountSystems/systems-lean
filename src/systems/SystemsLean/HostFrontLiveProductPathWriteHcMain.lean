@@ -98,6 +98,9 @@ def parseId : String := "PARSE-LIVE-PRODUCT-PATH-WRITE-HC-MAIN"
 def liveProductPathWriteHcMainRel : String :=
   "src/systems/SystemsLean/ProductPathWriteHcMain.lean"
 
+/-- Live basename. Filename only, not a path. -/
+def liveRel : String := "ProductPathWriteHcMain.lean"
+
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
 

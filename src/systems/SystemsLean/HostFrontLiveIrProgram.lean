@@ -46,6 +46,9 @@ def hostId : String := "HOST-FRONT-LIVE-IR-PROGRAM"
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-IR-PROGRAM"
 
+/-- Bare product basename. No slash. -/
+def liveRel : String := "IrProgram.lean"
+
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveIrProgramRel : String := "src/systems/SystemsLean/IrProgram.lean"
 
@@ -721,6 +724,7 @@ def hostFrontLiveIrProgramReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_IR_PROGRAM_V0")
     && (hostId == "HOST-FRONT-LIVE-IR-PROGRAM")
     && (parseId == "PARSE-LIVE-IR-PROGRAM")
+    && (liveRel == "IrProgram.lean")
     && (liveIrProgramRel == "src/systems/SystemsLean/IrProgram.lean")
     && liveParseDoesNotUseMultFixture
     && !hostFrontLiveIrProgramFullHost
@@ -770,6 +774,7 @@ def runLiveIrProgram (root : System.FilePath) : IO Unit := do
     IO.println s!"GREEN {stageId}: live IrProgram.lean parse kernelCheck; not multFixtureModule"
 
 def main (args : List String) : IO UInt32 := do
+  IO.println s!"liveRel={liveRel}"
   let root : System.FilePath :=
     match HostFront.filterArgs args with
     | r :: _ => System.FilePath.mk r

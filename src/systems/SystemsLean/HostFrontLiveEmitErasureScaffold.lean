@@ -14,7 +14,7 @@
   slakeOwnsPackageTypecheck stays false.
   The live namespace is SystemsLean.EmitErasure. Not PROVABLY.
   The provably flag stays false.
-  liveRel is defined in HostFrontLiveEmitErasureScaffoldSource.
+  liveRel is EmitErasureScaffold.lean in this module.
   Greppable: SYSTEMS_LEAN_HOST, HOST-FRONT-LIVE-EMIT-ERASURE-SCAFFOLD,
   SLAKE_HOST_FRONT_LIVE_EMIT_ERASURE_SCAFFOLD_V0,
   PARSE-LIVE-EMIT-ERASURE-SCAFFOLD, liveRel,
@@ -46,8 +46,10 @@ def hostId : String := "HOST-FRONT-LIVE-EMIT-ERASURE-SCAFFOLD"
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-EMIT-ERASURE-SCAFFOLD"
 
-/-- Live file relative to repo root. Dual-pin path.
-    liveRel is EmitErasureScaffold.lean in the Source module. -/
+/-- Live file basename. Exactly EmitErasureScaffold.lean. -/
+def liveRel : String := "EmitErasureScaffold.lean"
+
+/-- Live file relative to repo root. Dual-pin path. -/
 def liveEmitErasureScaffoldRel : String :=
   "src/systems/SystemsLean/" ++ liveRel
 

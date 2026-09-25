@@ -46,7 +46,7 @@
   parseLiveHostResidualShrinkTheoremsSource,
   kernelCheckLiveHostResidualShrinkTheoremsSource,
   hostFrontLiveHostResidualShrinkTheoremsReady,
-  liveHostResidualShrinkTheoremsSource,
+  liveRel, liveHostResidualShrinkTheoremsSource,
   liveHostResidualShrinkTheoremsRel, UNIT_SURFACE host surface, MULT-0,
   liveParseDoesNotUseMultFixture.
   Module: SystemsLean.HostFrontLiveHostResidualShrinkTheorems
@@ -77,6 +77,9 @@ def hostId : String := "HOST-FRONT-LIVE-HOST-RESIDUAL-SHRINK-THEOREMS"
 
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-HOST-RESIDUAL-SHRINK-THEOREMS"
+
+/-- Bare basename. No slash. The path string below stays repo-relative. -/
+def liveRel : String := "HostResidualShrinkTheorems.lean"
 
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveHostResidualShrinkTheoremsRel : String :=
@@ -356,6 +359,7 @@ def hostFrontLiveHostResidualShrinkTheoremsReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_HOST_RESIDUAL_SHRINK_THEOREMS_V0")
     && (hostId == "HOST-FRONT-LIVE-HOST-RESIDUAL-SHRINK-THEOREMS")
     && (parseId == "PARSE-LIVE-HOST-RESIDUAL-SHRINK-THEOREMS")
+    && (liveRel == "HostResidualShrinkTheorems.lean")
     && (liveHostResidualShrinkTheoremsRel
       == "src/systems/SystemsLean/HostResidualShrinkTheorems.lean")
     && liveParseDoesNotUseMultFixture
@@ -407,6 +411,7 @@ def runLiveHostResidualShrinkTheorems (root : System.FilePath) : IO Unit := do
     IO.println s!"GREEN {stageId}: live HostResidualShrinkTheorems.lean parse kernelCheck; not mill 70"
 
 def main (args : List String) : IO UInt32 := do
+  IO.println s!"liveRel={liveRel}"
   let root : System.FilePath :=
     match HostFront.filterArgs args with
     | r :: _ => System.FilePath.mk r

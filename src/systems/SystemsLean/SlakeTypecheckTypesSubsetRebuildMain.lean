@@ -63,6 +63,7 @@ def slakeTypecheckTypesSubsetRebuildMainOwnsPackageTypecheck : Bool := false
     HostFrontLiveTypesSubsetRebuildMain.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckTypesSubsetRebuildMain} =="
+  IO.println s!"liveRel={SystemsLean.HostFrontLiveTypesSubsetRebuildMain.liveRel}"
   IO.println s!"  host={hostId} file={liveTypesSubsetRebuildMainRel}"
   unless (!slakeTypecheckTypesSubsetRebuildMainFullHost) do
     IO.eprintln "error: FullHost must stay false"

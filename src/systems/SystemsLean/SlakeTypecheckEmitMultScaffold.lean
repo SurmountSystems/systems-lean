@@ -59,6 +59,7 @@ def slakeTypecheckEmitMultScaffoldOwnsPackageTypecheck : Bool := false
     HostFrontLiveEmitMultScaffold.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckEmitMultScaffold} =="
+  IO.println s!"liveRel={SystemsLean.HostFrontLiveEmitMultScaffold.liveRel}"
   IO.println s!"  host={hostId} file={liveEmitMultScaffoldRel}"
   unless (!slakeTypecheckEmitMultScaffoldFullHost) do
     IO.eprintln "error: FullHost must stay false"

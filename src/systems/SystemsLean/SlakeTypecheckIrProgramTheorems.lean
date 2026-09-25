@@ -30,6 +30,10 @@ def justRecipeSlakeTypecheckIrProgramTheorems : String :=
 def liveIrProgramTheoremsRel : String :=
   SystemsLean.HostFrontLiveIrProgramTheorems.liveIrProgramTheoremsRel
 
+/-- Live basename. Exact equality. No slash. -/
+def liveRel : String :=
+  SystemsLean.HostFrontLiveIrProgramTheorems.liveRel
+
 /-- Ready names HostFrontLiveIrProgramTheorems parse plus kernelCheck, not := true.
     Greppable: slakeTypecheckIrProgramTheoremsReady,
     kernelCheckLiveIrProgramTheoremsSource. -/
@@ -51,7 +55,11 @@ def slakeTypecheckIrProgramTheoremsOwnsPackageTypecheck : Bool := false
     HostFrontLiveIrProgramTheorems.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckIrProgramTheorems} =="
+  IO.println s!"liveRel={liveRel}"
   IO.println s!"  host={hostId} file={liveIrProgramTheoremsRel}"
+  unless (liveRel == "IrProgramTheorems.lean") do
+    IO.eprintln "error: liveRel must be IrProgramTheorems.lean"
+    return 1
   unless (!slakeTypecheckIrProgramTheoremsFullHost) do
     IO.eprintln "error: FullHost must stay false"
     return 1

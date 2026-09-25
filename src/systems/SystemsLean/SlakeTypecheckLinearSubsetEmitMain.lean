@@ -44,6 +44,10 @@ def justRecipeSlakeTypecheckLinearSubsetEmitMain : String :=
 def liveLinearSubsetEmitMainRel : String :=
   SystemsLean.HostFrontLiveLinearSubsetEmitMain.liveLinearSubsetEmitMainRel
 
+/-- Live basename. Exact equality. No slash. -/
+def liveRel : String :=
+  SystemsLean.HostFrontLiveLinearSubsetEmitMain.liveRel
+
 /-- Ready names HostFrontLiveLinearSubsetEmitMain parse plus kernelCheck,
     not := true.
     Greppable: slakeTypecheckLinearSubsetEmitMainReady,
@@ -66,7 +70,11 @@ def slakeTypecheckLinearSubsetEmitMainOwnsPackageTypecheck : Bool := false
     HostFrontLiveLinearSubsetEmitMain.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckLinearSubsetEmitMain} =="
+  IO.println s!"liveRel={liveRel}"
   IO.println s!"  host={hostId} file={liveLinearSubsetEmitMainRel}"
+  unless (liveRel == "LinearSubsetEmitMain.lean") do
+    IO.eprintln "error: liveRel must be LinearSubsetEmitMain.lean"
+    return 1
   unless (!slakeTypecheckLinearSubsetEmitMainFullHost) do
     IO.eprintln "error: FullHost must stay false"
     return 1

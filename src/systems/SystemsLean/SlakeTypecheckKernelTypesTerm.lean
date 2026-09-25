@@ -53,6 +53,7 @@ def slakeTypecheckKernelTypesTermOwnsPackageTypecheck : Bool := false
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckKernelTypesTerm} =="
   IO.println s!"  host={hostId} file={liveKernelTypesTermRel}"
+  IO.println s!"liveRel={SystemsLean.HostFrontLiveKernelTypesTerm.liveRel}"
   unless (!slakeTypecheckKernelTypesTermFullHost) do
     IO.eprintln "error: FullHost must stay false"
     return 1

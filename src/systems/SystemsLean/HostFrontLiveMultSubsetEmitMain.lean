@@ -104,6 +104,9 @@ def parseId : String := "PARSE-LIVE-MULT-SUBSET-EMIT-MAIN"
 def liveMultSubsetEmitMainRel : String :=
   "src/systems/SystemsLean/MultSubsetEmitMain.lean"
 
+/-- Live basename. Filename only, not a path. -/
+def liveRel : String := "MultSubsetEmitMain.lean"
+
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
 

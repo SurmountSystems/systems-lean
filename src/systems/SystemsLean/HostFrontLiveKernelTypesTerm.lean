@@ -59,6 +59,8 @@ def parseId : String := "PARSE-LIVE-KERNELTYPESTERM"
 def liveKernelTypesTermRel : String :=
   "src/systems/SystemsLean/HostModuleCheckKernelTypesTerm.lean"
 
+def liveRel : String := "HostModuleCheckKernelTypesTerm.lean"
+
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
 
@@ -318,6 +320,7 @@ def liveParseRejectsEmpty : Bool :=
 
 def runLiveKernelTypesTerm (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: PARSE-LIVE-KERNELTYPESTERM =="
+  IO.println s!"liveRel={liveRel}"
   IO.println s!"  host={hostId} file={liveKernelTypesTermRel}"
   let path := root / liveKernelTypesTermRel
   unless (<- path.pathExists) do

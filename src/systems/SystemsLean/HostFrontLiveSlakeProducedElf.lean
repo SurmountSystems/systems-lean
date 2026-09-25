@@ -85,6 +85,9 @@ def parseId : String := "PARSE-LIVE-SLAKE-PRODUCED-ELF"
 def liveSlakeProducedElfRel : String :=
   "src/systems/SystemsLean/SlakeProducedElf.lean"
 
+/-- Live basename. Filename only, not a path. -/
+def liveRel : String := "SlakeProducedElf.lean"
+
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
 

@@ -62,6 +62,7 @@ def slakeTypecheckOwnershipClaimedMainOwnsPackageTypecheck : Bool := false
     HostFrontLiveHostOwnershipClaimedMain.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckOwnershipClaimedMain} =="
+  IO.println s!"liveRel={SystemsLean.HostFrontLiveHostOwnershipClaimedMain.liveRel}"
   IO.println s!"  host={hostId} file={liveHostOwnershipClaimedMainRel}"
   unless (!slakeTypecheckOwnershipClaimedMainFullHost) do
     IO.eprintln "error: FullHost must stay false"

@@ -65,7 +65,7 @@
   parseLiveHostFrontMainSource,
   kernelCheckLiveHostFrontMainSource,
   hostFrontLiveHostFrontMainReady, liveHostFrontMainSource,
-  liveHostFrontMainRel, UNIT_SURFACE host surface, MULT-0,
+  liveRel, liveHostFrontMainRel, UNIT_SURFACE host surface, MULT-0,
   liveParseDoesNotUseMultFixture.
   Module: SystemsLean.HostFrontLiveHostFrontMain
   Red/green: dests-skipped until barrel; lake build
@@ -96,7 +96,11 @@ def hostId : String := "HOST-FRONT-LIVE-HOST-FRONT-MAIN"
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-HOST-FRONT-MAIN"
 
-/-- Live file relative to repo root. Dual-pin path. -/
+/-- Live basename. Greppable: liveRel. Must be HostFrontMain.lean. -/
+def liveRel : String := "HostFrontMain.lean"
+
+/-- Live file relative to repo root. Dual-pin path.
+    Disk reads stay on this path. liveRel stays the bare basename. -/
 def liveHostFrontMainRel : String :=
   "src/systems/SystemsLean/HostFrontMain.lean"
 
@@ -459,7 +463,7 @@ def liveParseHasCoreDefs : Bool :=
     Greppable: hostFrontLiveHostFrontMainReady,
     PARSE-LIVE-HOST-FRONT-MAIN,
     HOST-FRONT-LIVE-HOST-FRONT-MAIN.
-    Real conjunction: parse+kernel plus honesty pins. Not hardcoded true.
+    Real conjunction: parse plus kernelCheck plus liveRel. Not hardcoded true.
     This mill Main has no namespace command; do not require one. -/
 def hostFrontLiveHostFrontMainReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_HOST_FRONT_MAIN_V0")
@@ -467,6 +471,7 @@ def hostFrontLiveHostFrontMainReady : Bool :=
     && (parseId == "PARSE-LIVE-HOST-FRONT-MAIN")
     && (liveHostFrontMainRel
       == "src/systems/SystemsLean/HostFrontMain.lean")
+    && (liveRel == "HostFrontMain.lean")
     && liveParseDoesNotUseMultFixture
     && !hostFrontLiveHostFrontMainFullHost
     && !hostFrontLiveHostFrontMainResidualFreeClaimed
@@ -489,6 +494,10 @@ def liveParseRejectsEmpty : Bool :=
 def runLiveHostFrontMain (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: PARSE-LIVE-HOST-FRONT-MAIN =="
   IO.println s!"  host={hostId} file={liveHostFrontMainRel}"
+  IO.println s!"liveRel={liveRel}"
+  unless (liveRel == "HostFrontMain.lean") do
+    IO.eprintln "error: liveRel must be HostFrontMain.lean"
+    throw (IO.userError "liveRel must be HostFrontMain.lean")
   let path := root / liveHostFrontMainRel
   unless (<- path.pathExists) do
     IO.eprintln s!"error: missing {liveHostFrontMainRel}"

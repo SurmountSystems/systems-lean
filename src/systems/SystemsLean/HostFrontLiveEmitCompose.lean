@@ -325,6 +325,7 @@ def defCount (cs : List Cmd) : Nat :=
 def runLiveEmitCompose (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: PARSE-LIVE-EMIT-COMPOSE =="
   IO.println s!"  host={hostId} file={liveEmitComposeRel}"
+  IO.println s!"liveRel={liveRel}"
   let path := root / liveEmitComposeRel
   unless (<- path.pathExists) do
     IO.eprintln s!"error: missing {liveEmitComposeRel}"

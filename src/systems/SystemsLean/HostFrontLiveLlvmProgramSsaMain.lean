@@ -109,6 +109,9 @@ def parseId : String := "PARSE-LIVE-LLVM-PROGRAM-SSA-MAIN"
 def liveLlvmProgramSsaMainRel : String :=
   "src/systems/SystemsLean/LlvmProgramSsaMain.lean"
 
+/-- Live basename. Filename only, not a path. -/
+def liveRel : String := "LlvmProgramSsaMain.lean"
+
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
 

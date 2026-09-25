@@ -106,6 +106,9 @@ def parseId : String := "PARSE-LIVE-PERFORM-EVIDENCE-MAIN"
 def livePerformEvidenceMainRel : String :=
   "src/systems/SystemsLean/PerformEvidenceMain.lean"
 
+/-- Live basename. Filename only, not a path. -/
+def liveRel : String := "PerformEvidenceMain.lean"
+
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
 

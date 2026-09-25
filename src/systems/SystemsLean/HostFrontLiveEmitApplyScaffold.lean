@@ -78,9 +78,12 @@ def hostId : String := "HOST-FRONT-LIVE-EMIT-APPLY-SCAFFOLD"
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-EMIT-APPLY-SCAFFOLD"
 
+/-- Live file basename. -/
+def liveRel : String := "EmitApplyScaffold.lean"
+
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveEmitApplyScaffoldRel : String :=
-  "src/systems/SystemsLean/EmitApplyScaffold.lean"
+  "src/systems/SystemsLean/" ++ liveRel
 
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
@@ -458,6 +461,7 @@ def hostFrontLiveEmitApplyScaffoldReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_EMIT_APPLY_SCAFFOLD_V0")
     && (hostId == "HOST-FRONT-LIVE-EMIT-APPLY-SCAFFOLD")
     && (parseId == "PARSE-LIVE-EMIT-APPLY-SCAFFOLD")
+    && (liveRel == "EmitApplyScaffold.lean")
     && (liveEmitApplyScaffoldRel
       == "src/systems/SystemsLean/EmitApplyScaffold.lean")
     && liveParseDoesNotUseMultFixture
@@ -483,6 +487,7 @@ def liveParseRejectsEmpty : Bool :=
 def runLiveEmitApplyScaffold (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: PARSE-LIVE-EMIT-APPLY-SCAFFOLD =="
   IO.println s!"  host={hostId} file={liveEmitApplyScaffoldRel}"
+  IO.println s!"liveRel={liveRel}"
   let path := root / liveEmitApplyScaffoldRel
   unless (<- path.pathExists) do
     IO.eprintln s!"error: missing {liveEmitApplyScaffoldRel}"

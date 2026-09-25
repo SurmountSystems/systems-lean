@@ -62,6 +62,9 @@ def parseId : String := "PARSE-LIVE-PROGRAM-FOREIGN-LINK"
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveProgramForeignLinkRel : String := "src/systems/SystemsLean/ProgramForeignLink.lean"
 
+/-- Live basename. Filename only, not a path. -/
+def liveRel : String := "ProgramForeignLink.lean"
+
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
 

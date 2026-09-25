@@ -98,9 +98,12 @@ def hostId : String := "HOST-FRONT-LIVE-ERASURE-SUBSET-EMIT-MAIN"
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-ERASURE-SUBSET-EMIT-MAIN"
 
-/-- Live file relative to repo root. Dual-pin path. -/
+/-- Live basename. Greppable: liveRel. Must be ErasureSubsetEmitMain.lean. -/
+def liveRel : String := "ErasureSubsetEmitMain.lean"
+
+/-- Live file relative to repo root. Disk reads use this path, not the bare liveRel. -/
 def liveErasureSubsetEmitMainRel : String :=
-  "src/systems/SystemsLean/ErasureSubsetEmitMain.lean"
+  "src/systems/SystemsLean/" ++ liveRel
 
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
@@ -467,6 +470,7 @@ def hostFrontLiveErasureSubsetEmitMainReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_ERASURE_SUBSET_EMIT_MAIN_V0")
     && (hostId == "HOST-FRONT-LIVE-ERASURE-SUBSET-EMIT-MAIN")
     && (parseId == "PARSE-LIVE-ERASURE-SUBSET-EMIT-MAIN")
+    && (liveRel == "ErasureSubsetEmitMain.lean")
     && (liveErasureSubsetEmitMainRel
       == "src/systems/SystemsLean/ErasureSubsetEmitMain.lean")
     && liveParseDoesNotUseMultFixture
@@ -491,6 +495,7 @@ def liveParseRejectsEmpty : Bool :=
 def runLiveErasureSubsetEmitMain (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: PARSE-LIVE-ERASURE-SUBSET-EMIT-MAIN =="
   IO.println s!"  host={hostId} file={liveErasureSubsetEmitMainRel}"
+  IO.println s!"liveRel={liveRel}"
   let path := root / liveErasureSubsetEmitMainRel
   unless (<- path.pathExists) do
     IO.eprintln s!"error: missing {liveErasureSubsetEmitMainRel}"

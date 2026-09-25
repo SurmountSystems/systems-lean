@@ -61,6 +61,9 @@ def hostId : String := "HOST-FRONT-LIVE-IR-NODE-LAYOUT"
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-IR-NODE-LAYOUT"
 
+/-- Bare product basename. No slash. -/
+def liveRel : String := "IrNodeLayout.lean"
+
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveIrNodeLayoutRel : String := "src/systems/SystemsLean/IrNodeLayout.lean"
 
@@ -409,6 +412,7 @@ def hostFrontLiveIrNodeLayoutReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_IR_NODE_LAYOUT_V0")
     && (hostId == "HOST-FRONT-LIVE-IR-NODE-LAYOUT")
     && (parseId == "PARSE-LIVE-IR-NODE-LAYOUT")
+    && (liveRel == "IrNodeLayout.lean")
     && (liveIrNodeLayoutRel == "src/systems/SystemsLean/IrNodeLayout.lean")
     && liveParseDoesNotUseMultFixture
     && !hostFrontLiveIrNodeLayoutFullHost
@@ -457,6 +461,7 @@ def runLiveIrNodeLayout (root : System.FilePath) : IO Unit := do
     IO.println s!"GREEN {stageId}: live IrNodeLayout.lean parse kernelCheck; not mill 70"
 
 def main (args : List String) : IO UInt32 := do
+  IO.println s!"liveRel={liveRel}"
   let root : System.FilePath :=
     match HostFront.filterArgs args with
     | r :: _ => System.FilePath.mk r

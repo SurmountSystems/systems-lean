@@ -29,7 +29,7 @@
   SLAKE_HOST_FRONT_LIVE_IR_PROGRAM_THEOREMS_V0, PARSE-LIVE-IR-PROGRAM-THEOREMS,
   parseLiveIrProgramTheoremsSource, kernelCheckLiveIrProgramTheoremsSource,
   hostFrontLiveIrProgramTheoremsReady, liveIrProgramTheoremsSource,
-  liveIrProgramTheoremsRel, UNIT_SURFACE host surface, MULT-0.
+  liveIrProgramTheoremsRel, liveRel, UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveIrProgramTheorems
   Red/green: just systems-host; lake build SystemsLean.HostFrontLiveIrProgramTheorems
   on surmount-1 (queued, not run here). Not package typecheck GREEN. Not FullHost.
@@ -57,7 +57,11 @@ def hostId : String := "HOST-FRONT-LIVE-IR-PROGRAM-THEOREMS"
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-IR-PROGRAM-THEOREMS"
 
-/-- Live file relative to repo root. Dual-pin path. -/
+/-- Bare product basename. No slash. Greppable: liveRel. -/
+def liveRel : String := "IrProgramTheorems.lean"
+
+/-- Live file relative to repo root. Dual-pin path.
+    Disk reads stay on this path. liveRel stays the bare basename. -/
 def liveIrProgramTheoremsRel : String :=
   "src/systems/SystemsLean/IrProgramTheorems.lean"
 
@@ -238,6 +242,7 @@ def hostFrontLiveIrProgramTheoremsReady : Bool :=
     && (hostId == "HOST-FRONT-LIVE-IR-PROGRAM-THEOREMS")
     && (parseId == "PARSE-LIVE-IR-PROGRAM-THEOREMS")
     && (liveIrProgramTheoremsRel == "src/systems/SystemsLean/IrProgramTheorems.lean")
+    && (liveRel == "IrProgramTheorems.lean")
     && liveParseDoesNotUseMultFixture
     && !hostFrontLiveIrProgramTheoremsFullHost
     && !hostFrontLiveIrProgramTheoremsResidualFreeClaimed
@@ -288,6 +293,7 @@ def runLiveIrProgramTheorems (root : System.FilePath) : IO Unit := do
     IO.println s!"GREEN {stageId}: live IrProgramTheorems.lean parse kernelCheck; not mill 70"
 
 def main (args : List String) : IO UInt32 := do
+  IO.println s!"liveRel={liveRel}"
   let root : System.FilePath :=
     match HostFront.filterArgs args with
     | r :: _ => System.FilePath.mk r

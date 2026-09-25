@@ -16,6 +16,8 @@
   - parseLiveEmitTypesScaffoldSource turns live EmitTypesScaffold.lean
     text into HostTerm.Module.
   - Module name is SystemsLean.EmitTypesScaffold even without a module line.
+  - liveRel is the exact basename EmitTypesScaffold.lean.
+    Disk reads use src/systems/SystemsLean/ plus that basename.
   - kernelCheckLiveEmitTypesScaffoldSource is HostKernel.kernelCheck of
     that parse.
   - Un-kernelable bodies (match, let, lambdas, !, dotted names, string ++,
@@ -47,7 +49,7 @@
   parseLiveEmitTypesScaffoldSource,
   kernelCheckLiveEmitTypesScaffoldSource,
   hostFrontLiveEmitTypesScaffoldReady, liveEmitTypesScaffoldSource,
-  liveEmitTypesScaffoldRel, UNIT_SURFACE host surface, MULT-0,
+  liveRel, liveEmitTypesScaffoldRel, UNIT_SURFACE host surface, MULT-0,
   liveParseDoesNotUseMultFixture.
   Module: SystemsLean.HostFrontLiveEmitTypesScaffold
   Red/green: dests-skipped until barrel; lake build
@@ -78,9 +80,12 @@ def hostId : String := "HOST-FRONT-LIVE-EMIT-TYPES-SCAFFOLD"
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-EMIT-TYPES-SCAFFOLD"
 
+/-- Live file basename. -/
+def liveRel : String := "EmitTypesScaffold.lean"
+
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveEmitTypesScaffoldRel : String :=
-  "src/systems/SystemsLean/EmitTypesScaffold.lean"
+  "src/systems/SystemsLean/" ++ liveRel
 
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
@@ -458,6 +463,7 @@ def hostFrontLiveEmitTypesScaffoldReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_EMIT_TYPES_SCAFFOLD_V0")
     && (hostId == "HOST-FRONT-LIVE-EMIT-TYPES-SCAFFOLD")
     && (parseId == "PARSE-LIVE-EMIT-TYPES-SCAFFOLD")
+    && (liveRel == "EmitTypesScaffold.lean")
     && (liveEmitTypesScaffoldRel
       == "src/systems/SystemsLean/EmitTypesScaffold.lean")
     && liveParseDoesNotUseMultFixture
@@ -483,6 +489,7 @@ def liveParseRejectsEmpty : Bool :=
 def runLiveEmitTypesScaffold (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: PARSE-LIVE-EMIT-TYPES-SCAFFOLD =="
   IO.println s!"  host={hostId} file={liveEmitTypesScaffoldRel}"
+  IO.println s!"liveRel={liveRel}"
   let path := root / liveEmitTypesScaffoldRel
   unless (<- path.pathExists) do
     IO.eprintln s!"error: missing {liveEmitTypesScaffoldRel}"

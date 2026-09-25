@@ -38,7 +38,7 @@
   parseLiveKernelEmitTheoremsSource,
   kernelCheckLiveKernelEmitTheoremsSource,
   hostFrontLiveKernelEmitTheoremsReady, liveKernelEmitTheoremsSource,
-  liveKernelEmitTheoremsRel, UNIT_SURFACE host surface, MULT-0,
+  liveRel, liveKernelEmitTheoremsRel, UNIT_SURFACE host surface, MULT-0,
   liveParseDoesNotUseMultFixture.
   Module: SystemsLean.HostFrontLiveKernelEmitTheorems
   Red/green: dest-missing until barrel; lake build
@@ -68,6 +68,9 @@ def hostId : String := "HOST-FRONT-LIVE-KERNEL-EMIT-THEOREMS"
 
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-KERNEL-EMIT-THEOREMS"
+
+/-- Bare product basename. No slash. -/
+def liveRel : String := "KernelEmitTheorems.lean"
 
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveKernelEmitTheoremsRel : String :=
@@ -327,6 +330,7 @@ def hostFrontLiveKernelEmitTheoremsReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_KERNEL_EMIT_THEOREMS_V0")
     && (hostId == "HOST-FRONT-LIVE-KERNEL-EMIT-THEOREMS")
     && (parseId == "PARSE-LIVE-KERNEL-EMIT-THEOREMS")
+    && (liveRel == "KernelEmitTheorems.lean")
     && (liveKernelEmitTheoremsRel
       == "src/systems/SystemsLean/KernelEmitTheorems.lean")
     && liveParseDoesNotUseMultFixture
@@ -376,6 +380,7 @@ def runLiveKernelEmitTheorems (root : System.FilePath) : IO Unit := do
     IO.println s!"GREEN {stageId}: live KernelEmitTheorems.lean parse kernelCheck; not mill 70"
 
 def main (args : List String) : IO UInt32 := do
+  IO.println s!"liveRel={liveRel}"
   let root : System.FilePath :=
     match HostFront.filterArgs args with
     | r :: _ => System.FilePath.mk r

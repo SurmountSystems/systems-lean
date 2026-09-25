@@ -30,6 +30,9 @@ def hostId : String := "HOST-SLAKE-TYPECHECK-EMIT-LINEAR"
 def justRecipeSlakeTypecheckEmitLinear : String :=
   "slake-typecheck-emitlinear"
 
+/-- Live file basename. Exact. Not EmitLinearScaffold.lean. -/
+def liveRel : String := SystemsLean.HostFrontLiveEmitLinear.liveRel
+
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveEmitLinearRel : String :=
   SystemsLean.HostFrontLiveEmitLinear.liveEmitLinearRel
@@ -56,11 +59,20 @@ def slakeTypecheckEmitLinearOwnsPackageTypecheck : Bool := false
     HostFrontLiveEmitLinear.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckEmitLinear} =="
-  IO.println s!"  host={hostId} file={liveEmitLinearRel}"
+  IO.println s!"  host={hostId} file={liveEmitLinearRel} liveRel={liveRel}"
+  unless (liveRel == "EmitLinear.lean") do
+    IO.eprintln "error: liveRel must be EmitLinear.lean"
+    return 1
+  unless (liveEmitLinearRel == "src/systems/SystemsLean/EmitLinear.lean") do
+    IO.eprintln "error: live path must be src/systems/SystemsLean/EmitLinear.lean"
+    return 1
   unless (!slakeTypecheckEmitLinearFullHost) do
     IO.eprintln "error: FullHost must stay false"
     return 1
   unless (!slakeTypecheckEmitLinearOwnsPackageTypecheck) do
     IO.eprintln "error: slakeOwnsPackageTypecheck must stay false"
+    return 1
+  unless slakeTypecheckEmitLinearDoesNotUseLake do
+    IO.eprintln "error: driver must not use lake"
     return 1
   SystemsLean.HostFrontLiveEmitLinear.main args

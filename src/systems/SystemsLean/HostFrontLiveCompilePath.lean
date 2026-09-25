@@ -10,9 +10,8 @@
   Spec (readable):
   - parseLiveCompilePathSource turns live CompilePath.lean text into HostTerm.Module.
   - Module name is SystemsLean.CompilePath even without a module line.
-  - kernelCheckLiveCompilePathSource is HostKernel.kernelCheckN of that parse
-    with Mult / Types / IrProgram / IrGraph / Erasure / HostCompose / Extract
-    import seeds (HostKernel.lean is locked; seed locally).
+  - kernelCheckLiveCompilePathSource is HostKernel.kernelCheck of that parse
+    (not a constant true, and not kernelCheckN with a local import seed).
   - Skip theorems, examples, set_option, private, un-kernelable match/let/app
     bodies. Keep kernelable string/Nat/Bool defs, imports, namespace, end.
   - gradeSurfaceOk and match-based fixture helpers skip; toksHaveDefNamed still
@@ -57,6 +56,9 @@ def hostId : String := "HOST-FRONT-LIVE-COMPILEPATH"
 
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-COMPILEPATH"
+
+/-- Live file basename. Not a path. -/
+def liveRel : String := "CompilePath.lean"
 
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveCompilePathRel : String := "src/systems/SystemsLean/CompilePath.lean"
@@ -106,17 +108,6 @@ def seedHostCompose : List String :=
 /-- Seed names from SystemsLean.Extract import. -/
 def seedExtract : List String :=
   ["RuntimeClaim", "runtimeFs", "runtimeClassic", "edgeRuntime"]
-
-/-- Kernel env for Mult / Types / IrProgram / IrGraph / Erasure / HostCompose / Extract. -/
-def seedImports (env : Env) : Env :=
-  ("mult0", HostType.named (HostTerm.n "Mult"))
-    :: ("mult1", HostType.named (HostTerm.n "Mult"))
-    :: ("multOmega", HostType.named (HostTerm.n "Mult"))
-    :: ("isValidTag", HostType.arrow HostType.nat HostType.bool)
-    :: ("isValid", HostType.arrow (HostType.named (HostTerm.n "Mult")) HostType.bool)
-    :: ("programCompileReady", HostType.arrow (HostType.named (HostTerm.n "Program")) HostType.bool)
-    :: ("gradeSurfaceOk", HostType.bool)
-    :: env
 
 /-- If rest is not a command start, skip to the next command. -/
 def skipNonCmd (fuel : Nat) (rest : List String) : List String :=
@@ -251,13 +242,11 @@ def parseLiveCompilePathSource (src : String) : FrontResult :=
         if isWellFormed m then FrontResult.accept m
         else FrontResult.reject reasonNotWellFormed
 
-/-- Kernel-check live CompilePath parse with import seeds.
+/-- Kernel-check live CompilePath parse.
     Greppable: kernelCheckLiveCompilePathSource, PARSE-LIVE-COMPILEPATH. -/
 def kernelCheckLiveCompilePathSource (src : String) : Bool :=
   match parseLiveCompilePathSource src with
-  | FrontResult.accept m =>
-    isWellFormed m
-      && kernelCheckN kernelFuel (seedImports []) [] m.commands
+  | FrontResult.accept m => HostKernel.kernelCheck m
   | FrontResult.reject _ => false
 
 /-- Accepted live module when parse succeeds. -/
@@ -364,9 +353,7 @@ def runLiveCompilePath (root : System.FilePath) : IO Unit := do
     IO.eprintln s!"error: PARSE-LIVE-COMPILEPATH reject {reason}"
     throw (IO.userError s!"PARSE-LIVE-COMPILEPATH reject {reason}")
   | FrontResult.accept m =>
-    let k :=
-      isWellFormed m
-        && kernelCheckN kernelFuel (seedImports []) [] m.commands
+    let k := HostKernel.kernelCheck m
     IO.println s!"PASS PARSE-LIVE-COMPILEPATH ACCEPT cmds={m.commands.length} kernelCheck={k}"
     unless k do
       IO.eprintln "error: kernelCheck live CompilePath parse false"
@@ -377,6 +364,7 @@ def runLiveCompilePath (root : System.FilePath) : IO Unit := do
     IO.println s!"GREEN {stageId}: live CompilePath.lean parse kernelCheck; not mill 70"
 
 def main (args : List String) : IO UInt32 := do
+  IO.println s!"liveRel={liveRel}"
   let root : System.FilePath :=
     match HostFront.filterArgs args with
     | r :: _ => System.FilePath.mk r

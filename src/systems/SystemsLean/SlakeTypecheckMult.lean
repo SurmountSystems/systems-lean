@@ -46,6 +46,7 @@ def slakeTypecheckMultOwnsPackageTypecheck : Bool := false
     not := true. Evaluated inside HostFrontLiveMult.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckMult} =="
+  IO.println s!"liveRel={SystemsLean.HostFrontLiveMult.liveRel}"
   IO.println s!"  host={hostId} file={liveMultRel}"
   unless (!slakeTypecheckMultFullHost) do
     IO.eprintln "error: FullHost must stay false"

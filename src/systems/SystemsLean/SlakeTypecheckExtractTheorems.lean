@@ -30,6 +30,10 @@ def justRecipeSlakeTypecheckExtractTheorems : String :=
 def liveExtractTheoremsRel : String :=
   SystemsLean.HostFrontLiveExtractTheorems.liveExtractTheoremsRel
 
+/-- Live basename. Exact equality. Not Extract.lean. -/
+def liveRel : String :=
+  SystemsLean.HostFrontLiveExtractTheorems.liveRel
+
 /-- Ready names HostFrontLiveExtractTheorems parse plus kernelCheck, not := true.
     Greppable: slakeTypecheckExtractTheoremsReady,
     kernelCheckLiveExtractTheoremsSource. -/
@@ -51,7 +55,11 @@ def slakeTypecheckExtractTheoremsOwnsPackageTypecheck : Bool := false
     HostFrontLiveExtractTheorems.main at runtime. -/
 def main (args : List String) : IO UInt32 := do
   IO.println s!"== {stageId}: {justRecipeSlakeTypecheckExtractTheorems} =="
+  IO.println s!"liveRel={liveRel}"
   IO.println s!"  host={hostId} file={liveExtractTheoremsRel}"
+  unless (liveRel == "ExtractTheorems.lean") do
+    IO.eprintln "error: liveRel must be ExtractTheorems.lean"
+    return 1
   unless (!slakeTypecheckExtractTheoremsFullHost) do
     IO.eprintln "error: FullHost must stay false"
     return 1

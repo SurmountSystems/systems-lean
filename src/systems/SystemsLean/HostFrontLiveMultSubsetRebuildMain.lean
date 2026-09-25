@@ -104,6 +104,9 @@ def parseId : String := "PARSE-LIVE-MULT-SUBSET-REBUILD-MAIN"
 def liveMultSubsetRebuildMainRel : String :=
   "src/systems/SystemsLean/MultSubsetRebuildMain.lean"
 
+/-- Live basename. Filename only, not a path. -/
+def liveRel : String := "MultSubsetRebuildMain.lean"
+
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
 

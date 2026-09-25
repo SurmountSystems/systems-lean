@@ -56,7 +56,7 @@
   parseLiveFrontMultPackageMainSource,
   kernelCheckLiveFrontMultPackageMainSource,
   hostFrontLiveFrontMultPackageMainReady, liveFrontMultPackageMainSource,
-  liveFrontMultPackageMainRel, UNIT_SURFACE host surface, MULT-0,
+  liveRel, liveFrontMultPackageMainRel, UNIT_SURFACE host surface, MULT-0,
   liveParseDoesNotUseMultFixture.
   Module: SystemsLean.HostFrontLiveFrontMultPackageMain
   Red/green: dests-skipped until barrel; lake build
@@ -87,7 +87,11 @@ def hostId : String := "HOST-FRONT-LIVE-FRONT-MULT-PACKAGE-MAIN"
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-FRONT-MULT-PACKAGE-MAIN"
 
-/-- Live file relative to repo root. Dual-pin path. -/
+/-- Live basename. Greppable: liveRel. Must be FrontMultPackageMain.lean. -/
+def liveRel : String := "FrontMultPackageMain.lean"
+
+/-- Live file relative to repo root. Dual-pin path.
+    Disk reads stay on this path. liveRel stays the bare basename. -/
 def liveFrontMultPackageMainRel : String :=
   "src/systems/SystemsLean/FrontMultPackageMain.lean"
 
@@ -459,6 +463,7 @@ def hostFrontLiveFrontMultPackageMainReady : Bool :=
     && (parseId == "PARSE-LIVE-FRONT-MULT-PACKAGE-MAIN")
     && (liveFrontMultPackageMainRel
       == "src/systems/SystemsLean/FrontMultPackageMain.lean")
+    && (liveRel == "FrontMultPackageMain.lean")
     && liveParseDoesNotUseMultFixture
     && !hostFrontLiveFrontMultPackageMainFullHost
     && !hostFrontLiveFrontMultPackageMainResidualFreeClaimed
@@ -481,6 +486,10 @@ def liveParseRejectsEmpty : Bool :=
 def runLiveFrontMultPackageMain (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: PARSE-LIVE-FRONT-MULT-PACKAGE-MAIN =="
   IO.println s!"  host={hostId} file={liveFrontMultPackageMainRel}"
+  IO.println s!"liveRel={liveRel}"
+  unless (liveRel == "FrontMultPackageMain.lean") do
+    IO.eprintln "error: liveRel must be FrontMultPackageMain.lean"
+    throw (IO.userError "liveRel must be FrontMultPackageMain.lean")
   let path := root / liveFrontMultPackageMainRel
   unless (<- path.pathExists) do
     IO.eprintln s!"error: missing {liveFrontMultPackageMainRel}"

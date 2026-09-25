@@ -63,7 +63,7 @@
   parseLiveHostGraphMainSource,
   kernelCheckLiveHostGraphMainSource,
   hostFrontLiveHostGraphMainReady, liveHostGraphMainSource,
-  liveHostGraphMainRel, UNIT_SURFACE host surface, MULT-0,
+  liveHostGraphMainRel, liveRel, UNIT_SURFACE host surface, MULT-0,
   liveParseDoesNotUseMultFixture.
   Module: SystemsLean.HostFrontLiveHostGraphMain
   Red/green: dests skipped this slice (no barrel, no dest rows).
@@ -93,7 +93,11 @@ def hostId : String := "HOST-FRONT-LIVE-HOST-GRAPH-MAIN"
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-HOST-GRAPH-MAIN"
 
-/-- Live file relative to repo root. Dual-pin path. -/
+/-- Live basename. Greppable: liveRel. Must be HostGraphMain.lean. -/
+def liveRel : String := "HostGraphMain.lean"
+
+/-- Live file relative to repo root.
+    Disk reads stay on this path. liveRel stays the bare basename. -/
 def liveHostGraphMainRel : String :=
   "src/systems/SystemsLean/HostGraphMain.lean"
 
@@ -456,7 +460,7 @@ def liveParseHasCoreDefs : Bool :=
     Greppable: hostFrontLiveHostGraphMainReady,
     PARSE-LIVE-HOST-GRAPH-MAIN,
     HOST-FRONT-LIVE-HOST-GRAPH-MAIN.
-    Real conjunction: parse+kernel plus honesty pins. Not hardcoded true.
+    Real conjunction: parse plus kernelCheck plus liveRel. Not hardcoded true.
     This mill Main has no namespace command; do not require one. -/
 def hostFrontLiveHostGraphMainReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_HOST_GRAPH_MAIN_V0")
@@ -464,6 +468,7 @@ def hostFrontLiveHostGraphMainReady : Bool :=
     && (parseId == "PARSE-LIVE-HOST-GRAPH-MAIN")
     && (liveHostGraphMainRel
       == "src/systems/SystemsLean/HostGraphMain.lean")
+    && (liveRel == "HostGraphMain.lean")
     && liveParseDoesNotUseMultFixture
     && !hostFrontLiveHostGraphMainFullHost
     && !hostFrontLiveHostGraphMainResidualFreeClaimed
@@ -486,6 +491,10 @@ def liveParseRejectsEmpty : Bool :=
 def runLiveHostGraphMain (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: PARSE-LIVE-HOST-GRAPH-MAIN =="
   IO.println s!"  host={hostId} file={liveHostGraphMainRel}"
+  IO.println s!"liveRel={liveRel}"
+  unless (liveRel == "HostGraphMain.lean") do
+    IO.eprintln "error: liveRel must be HostGraphMain.lean"
+    throw (IO.userError "liveRel must be HostGraphMain.lean")
   let path := root / liveHostGraphMainRel
   unless (<- path.pathExists) do
     IO.eprintln s!"error: missing {liveHostGraphMainRel}"

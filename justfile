@@ -52,6 +52,7 @@ import 'just/bench-runtime-report.just'
 import 'just/bench-llvm.just'
 import 'just/first-host-tool.just'
 import 'just/later-host-tools.just'
+import 'just/slake-typecheck-closed-llvmprogramtext.just'
 
 # List recipes (default when you run bare `just`).
 default:

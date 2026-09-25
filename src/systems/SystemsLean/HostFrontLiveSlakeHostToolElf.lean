@@ -64,6 +64,9 @@ def parseId : String := "PARSE-LIVE-SLAKE-HOST-TOOL-ELF"
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveSlakeHostToolElfRel : String := "src/systems/SystemsLean/SlakeHostToolElf.lean"
 
+/-- Live basename. Filename only, not a path. -/
+def liveRel : String := "SlakeHostToolElf.lean"
+
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
 

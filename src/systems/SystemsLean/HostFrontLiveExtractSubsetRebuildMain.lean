@@ -73,7 +73,7 @@
   parseLiveExtractSubsetRebuildMainSource,
   kernelCheckLiveExtractSubsetRebuildMainSource,
   hostFrontLiveExtractSubsetRebuildMainReady, liveExtractSubsetRebuildMainSource,
-  liveExtractSubsetRebuildMainRel, UNIT_SURFACE host surface, MULT-0,
+  liveRel, liveExtractSubsetRebuildMainRel, UNIT_SURFACE host surface, MULT-0,
   liveParseDoesNotUseMultFixture.
   Module: SystemsLean.HostFrontLiveExtractSubsetRebuildMain
   Red/green: dests-skipped until barrel; lake build
@@ -103,6 +103,9 @@ def hostId : String := "HOST-FRONT-LIVE-EXTRACT-SUBSET-REBUILD-MAIN"
 
 /-- Greppable parse id. -/
 def parseId : String := "PARSE-LIVE-EXTRACT-SUBSET-REBUILD-MAIN"
+
+/-- Live file basename. Not the disk path. -/
+def liveRel : String := "ExtractSubsetRebuildMain.lean"
 
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveExtractSubsetRebuildMainRel : String :=
@@ -473,6 +476,7 @@ def hostFrontLiveExtractSubsetRebuildMainReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_EXTRACT_SUBSET_REBUILD_MAIN_V0")
     && (hostId == "HOST-FRONT-LIVE-EXTRACT-SUBSET-REBUILD-MAIN")
     && (parseId == "PARSE-LIVE-EXTRACT-SUBSET-REBUILD-MAIN")
+    && (liveRel == "ExtractSubsetRebuildMain.lean")
     && (liveExtractSubsetRebuildMainRel
       == "src/systems/SystemsLean/ExtractSubsetRebuildMain.lean")
     && liveParseDoesNotUseMultFixture
@@ -497,6 +501,7 @@ def liveParseRejectsEmpty : Bool :=
 def runLiveExtractSubsetRebuildMain (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: PARSE-LIVE-EXTRACT-SUBSET-REBUILD-MAIN =="
   IO.println s!"  host={hostId} file={liveExtractSubsetRebuildMainRel}"
+  IO.println s!"liveRel={liveRel}"
   let path := root / liveExtractSubsetRebuildMainRel
   unless (<- path.pathExists) do
     IO.eprintln s!"error: missing {liveExtractSubsetRebuildMainRel}"
