@@ -25,11 +25,20 @@
   - The embedded bytes are liveHostModuleCheckCheckersSource0 ++
     liveHostModuleCheckCheckersSource1. Two parts only.
   - Two dotted imports, namespace SystemsLean.HostModuleCheck, and
-    end are kept. One hundred twenty-two def bodies are applications,
-    not kernel literals, so they are skip-folded.
-    Kept command count is 4. kernelFuel is 64. 4 does not pass 64.
-  - Skip-head still sees def checkMultSurface and
-    def checkHostPackageRootsSurface in the live text.
+    end are kept. Fifty-six def commands are kept through parseSurfaceDef.
+    Each body is checkNamedSurface applied to the surface binder,
+    a namespace string, a decl list, and none or some string.
+    HostKernel.kernelCheck starts from an empty env, and the
+    HostModuleCheckSurface import does not seed checkNamedSurface.
+    Each def stays one command. The application is checked by binding
+    those imported names at the arrow the body uses. The def is not dropped.
+    Binders are non-empty. Bodies are applications.
+    kernelFuel is 64. A kept list over 64 does not pass.
+    2 + 1 + 56 + 1 is 60. 60 does not pass 64.
+  - The live text has def checkMultSurface.
+    def checkHostPackageRootsSurface lives in
+    HostModuleCheckRootsSurface.lean. The needle stays. It is
+    checked on that file, not deleted.
 
   Intentional non-claims:
   - Not full Lean 4. Not FullHost. Not live HostTerm.lean / HostFront.lean.
@@ -59,6 +68,7 @@
 import SystemsLean.HostFrontLiveHostTerm
 import SystemsLean.HostFrontLiveHostModuleCheckCheckersSource
 import SystemsLean.HostFrontLiveHostModuleCheckCheckersSource01
+import SystemsLean.HostFrontLiveHostModuleCheckRootsSurfaceSource
 import SystemsLean.HostKernel
 
 set_option maxRecDepth 32768
@@ -114,11 +124,10 @@ def liveParseFuel : Nat := 512
 /-- Skip fuel for un-kernelable def tails. -/
 def liveSkipFuel : Nat := 32768
 
-/-- Kept-command count: two imports, namespace, and end.
-    One hundred twenty-two defs are not kernel literals. Each has a
-    binder and an application body, so each is skip-folded.
-    kernelFuel is 64. -/
-def liveKeptCmds : Nat := 4
+/-- Kept-command count the live parse must match.
+    Two imports, namespace, 56 defs, and end. 60.
+    kernelFuel is 64. 60 does not pass 64. -/
+def liveKeptCmds : Nat := 60
 
 /-- String-safe comment fold from HostFrontLiveHostCheck.stripCommentsHc.
     Keep dash-dash and block-open inside string payloads. Not
@@ -241,7 +250,76 @@ def parseDefLiteral (fuel : Nat) (dname : String) (rest : List String) :
             | [] => none
       | _ => none
 
-/-- Parse one command. none means skip this keyword (caller skipUntilCmd). -/
+/-- Fourth argument of checkNamedSurface: none, or (some "..."). -/
+def parseSurfaceOpt (toks : List String) : Option (Prod Term (List String)) :=
+  match toks with
+  | "none" :: rest => some (Term.none_, rest)
+  | "(" :: "some" :: s :: ")" :: rest =>
+    if isStringLit s then
+      some (Term.some_ (Term.litString (stripStringLit s)), rest)
+    else none
+  | _ => none
+
+/-- One surface def. The body stays the checkNamedSurface application.
+    Imported names are bound on this command so HostKernel.kernelCheck,
+    which starts from an empty env, can type that application.
+    The command count does not grow. A shape that is not that
+    application returns none, and the caller does not skip the def. -/
+def parseSurfaceDef (fuel : Nat) (dname : String) (rest : List String) :
+    Option (Prod Cmd (List String)) :=
+  match parseBindersHt fuel rest [] with
+  | some ([(bname, bty)], ":" :: rest3) =>
+    match splitDefBody rest3 with
+    | some (DefBodyKind.assign, (tyToks, bodyToks)) =>
+      match parseHostTypeAllHt tyToks with
+      | some (HostType.named retName) =>
+        if retName.raw != "ModuleCheckResult" then none
+        else
+          match bodyToks with
+          | "checkNamedSurface" :: arg1 :: ns :: decls :: restB =>
+            if arg1 != bname || !liveIsIdent ns || !liveIsIdent decls then
+              none
+            else
+              match parseSurfaceOpt restB with
+              | none => none
+              | some (optTerm, restC) =>
+                let stopped :=
+                  match restC with
+                  | [] => true
+                  | u :: _ => isCmdKw u
+                if !stopped then none
+                else
+                  let retTy := HostType.named retName
+                  let listTy := HostType.named (HostTerm.n "List")
+                  let optStr := HostType.option HostType.string
+                  let cnsTy :=
+                    HostType.arrow bty
+                      (HostType.arrow HostType.string
+                        (HostType.arrow listTy
+                          (HostType.arrow optStr retTy)))
+                  let nbs : List (Prod Name HostType) := [
+                    (HostTerm.n bname, bty),
+                    (HostTerm.n "checkNamedSurface", cnsTy),
+                    (HostTerm.n ns, HostType.string),
+                    (HostTerm.n decls, listTy)
+                  ]
+                  let body :=
+                    Term.app
+                      (Term.app
+                        (Term.app
+                          (Term.app
+                            (Term.var (HostTerm.n "checkNamedSurface"))
+                            (Term.var (HostTerm.n bname)))
+                          (Term.var (HostTerm.n ns)))
+                        (Term.var (HostTerm.n decls)))
+                      optTerm
+                  some (Cmd.defBind (HostTerm.n dname) nbs retTy body, restC)
+          | _ => none
+      | _ => none
+    | _ => none
+  | _ => none
+
+/-- Parse one command. none on a def is a hard miss (caller must not skip). -/
 def parseOneCmd (fuel : Nat) (toks : List String) :
     Option (Prod Cmd (List String)) :=
   match toks with
@@ -257,14 +335,31 @@ def parseOneCmd (fuel : Nat) (toks : List String) :
     match parseDottedName fuel rest with
     | some (nm, rest2) => some (Cmd.endNamespace (HostTerm.n nm), rest2)
     | none => none
+  | "structure" :: name :: "where" :: rest =>
+    if !liveIsIdent name then none
+    else
+      match parseStructFieldDeclsHt fuel rest [] with
+      | none => none
+      | some (fields, rest2) =>
+        if fields.isEmpty then none
+        else
+          match rest2 with
+          | "deriving" :: rest3 =>
+            match parseDerivingHt rest3 with
+            | some (der, rest4) =>
+              some (Cmd.structure_ (HostTerm.n (lastSeg name)) fields der, rest4)
+            | none => none
+          | _ =>
+            some (Cmd.structure_ (HostTerm.n (lastSeg name)) fields [], rest2)
   | "def" :: rest =>
     match parseDefHead rest with
-    | some (dname, rest2) => parseDefLiteral fuel dname rest2
+    | some (dname, rest2) => parseSurfaceDef fuel dname rest2
     | none => none
   | _ => none
 
-/-- Fold commands. Skip theorem / example / set_option / open / private /
-    un-kernelable defs. private is not isCmdKw. -/
+/-- Fold commands. Skip theorem / example / set_option / open / private
+    when those keywords are not kept. private is not isCmdKw.
+    A def that does not parse is not skipped. -/
 def parseCmds : Nat -> List String -> List Cmd -> Option (List Cmd)
   | 0, [], acc => some acc
   | 0, _ :: _, _ => none
@@ -276,6 +371,7 @@ def parseCmds : Nat -> List String -> List Cmd -> Option (List Cmd)
       parseCmds n rest2 (acc ++ [c])
     | none =>
       match toks with
+      | "def" :: _ => none
       | "private" :: rest =>
         parseCmds n rest acc
       | t :: rest =>
@@ -297,11 +393,10 @@ def toksHaveDefNamed : Nat -> List String -> String -> Bool
     | none => toksHaveDefNamed n rest nm
   | Nat.succ n, _ :: rest, nm => toksHaveDefNamed n rest nm
 
-/-- Parse live HostModuleCheckCheckers.lean text.
-    Greppable: parseLiveHostModuleCheckCheckersSource,
-    PARSE-LIVE-HOSTMODULECHECKCHECKERS. -/
-def parseLiveHostModuleCheckCheckersSource (src : String) :
-    FrontResult :=
+/-- Parse checkers-family text. Module name is `modName` even with no
+    module line. Keeps import, namespace, end, structure, and def.
+    Greppable: parseCheckersText. -/
+def parseCheckersText (modName : String) (src : String) : FrontResult :=
   let toks := tokenizeHostTerm (stripCommentsHc src)
   if toks.isEmpty then FrontResult.reject reasonEmptyModule
   else
@@ -311,10 +406,16 @@ def parseLiveHostModuleCheckCheckersSource (src : String) :
       if cmds.isEmpty then FrontResult.reject reasonEmptyModule
       else
         let m : Module :=
-          { name := HostTerm.n "SystemsLean.HostModuleCheckCheckers"
-            commands := cmds }
+          { name := HostTerm.n modName, commands := cmds }
         if isWellFormed m then FrontResult.accept m
         else FrontResult.reject reasonNotWellFormed
+
+/-- Parse live HostModuleCheckCheckers.lean text.
+    Greppable: parseLiveHostModuleCheckCheckersSource,
+    PARSE-LIVE-HOSTMODULECHECKCHECKERS. -/
+def parseLiveHostModuleCheckCheckersSource (src : String) :
+    FrontResult :=
+  parseCheckersText "SystemsLean.HostModuleCheckCheckers" src
 
 /-- Kernel-check the live parse. Not a fixture. Not a constant true.
     Accept calls HostKernel.kernelCheck. Reject returns false.
@@ -394,15 +495,19 @@ def liveParseHasEnd : Bool :=
       | Cmd.endNamespace x => x.raw == "SystemsLean.HostModuleCheck"
       | _ => false
 
-/-- Skip-head: the two defs that name this file are in the live text. -/
+/-- checkMultSurface is in this file. checkHostPackageRootsSurface
+    is in HostModuleCheckRootsSurface.lean. The needle is not deleted. -/
 def liveParseHasCoreDefs : Bool :=
   match liveParsed? with
   | none => false
   | some _ =>
     let toks := tokenizeHostTerm
       (stripCommentsHc liveHostModuleCheckCheckersSource)
+    let rootToks := tokenizeHostTerm
+      (stripCommentsHc
+        SystemsLean.HostFrontLiveHostModuleCheckRootsSurface.liveHostModuleCheckRootsSurfaceSource)
     toksHaveDefNamed liveSkipFuel toks "checkMultSurface"
-      && toksHaveDefNamed liveSkipFuel toks
+      && toksHaveDefNamed liveSkipFuel rootToks
         "checkHostPackageRootsSurface"
 
 /-- Import SystemsLean.HostModuleCheckFixtures. -/
@@ -427,14 +532,17 @@ def needleCheckHostPackageRoots : String :=
 /-- End needle with a trailing newline. -/
 def needleEnd : String := "end SystemsLean.HostModuleCheck\n"
 
-/-- Each needle occurs in the pinned live source. -/
+/-- Parent needles stay on this file. The roots def needle is
+    checked on HostModuleCheckRootsSurface.lean. Not deleted. -/
 def liveNeedlesOk : Bool :=
   let src := liveHostModuleCheckCheckersSource
+  let roots :=
+    SystemsLean.HostFrontLiveHostModuleCheckRootsSurface.liveHostModuleCheckRootsSurfaceSource
   (src.splitOn needleImportFixtures).length == 2
     && (src.splitOn needleImportSurface).length == 2
     && (src.splitOn needleNamespace).length > 1
     && (src.splitOn needleCheckMult).length > 1
-    && (src.splitOn needleCheckHostPackageRoots).length > 1
+    && (roots.splitOn needleCheckHostPackageRoots).length > 1
     && (src.splitOn needleEnd).length > 1
 
 /-- End-to-end ready: live text parse kernel-checks.

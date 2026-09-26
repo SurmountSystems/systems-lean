@@ -22,7 +22,7 @@ Terms (plain English); full glossary in `doc/vocabulary.md`:
 | **`just` / justfile** | Thin task runner. Loops and redirects only -- not the policy algorithm. |
 | **Orchestration** | Gluing steps (write `doc/PROGRESS.md`, sleep, run `scc`). Not product logic. |
 | **ripgrep (`rg`)** | Default code search in the flake **devShell** (`pkgs.ripgrep`). Agents and humans search with `rg`, not ad-hoc `grep` mills. Pure Nix checks still must not shell out to ripgrep for policy algorithms. |
-| **elan** | Lean toolchain manager in the flake **devShell**. Install the pin from `src/systems/lean-toolchain` / `src/lean4/lean-toolchain` (`leanprover/lean4:v4.32.0`). Do not default to lagged `pkgs.lean4` as the elaborator. Workspace checks skip Lake when the pin is not installed (no surprise network download). |
+| **elan** | Lean toolchain manager in the flake **devShell**. Install the pin from `src/systems/lean-toolchain` / `src/lean4/lean-toolchain` (`leanprover/lean4:v4.34.1`). Do not default to lagged `pkgs.lean4` as the elaborator. Workspace checks skip Lake when the pin is not installed (no surprise network download). |
 | **idris2 (devShell)** | Idris 2 elaborator package in the flake **devShell** for bridge-side checks. `just idris-elaborate` skips when the binary is absent. |
 | **Novel source** | Our tree -- not `ref/`, not `skills/` (agent skill submodules), not `.git/`, not caches. |
 | **Source hygiene** | Novel text is printable ASCII (plus tab/newline) except a small allowlist; no trailing spaces/tabs. |

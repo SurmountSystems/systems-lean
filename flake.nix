@@ -273,7 +273,7 @@
               # Search: agents and humans use `rg` (ripgrep), not ad-hoc grep mills.
               pkgs.ripgrep
               # Lean/Lake: elan manages the offline pin in src/systems/lean-toolchain
-              # and src/lean4/lean-toolchain (leanprover/lean4:v4.32.0). Do not put
+              # and src/lean4/lean-toolchain (leanprover/lean4:v4.34.1). Do not put
               # pkgs.lean4 here -- nixpkgs lean4 lags the pin and would mismatch.
               # Install once: elan toolchain install "$(tr -d '[:space:]' < src/systems/lean-toolchain)"
               # Workspace checks skip Lake when the pin is not installed (no network).

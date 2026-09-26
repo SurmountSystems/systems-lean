@@ -1,0 +1,54 @@
+/-
+  SYSTEMS_LEAN_HOST partial -- package env later term imports.
+  Side: classic Lean elaborator under src/systems/ (not freestanding C).
+  Long-file split of HostModuleCheckPackageEnv. Role: the CompilePath
+  through HostCheck term imports for the later package env bands.
+  Same namespace SystemsLean.HostModuleCheck.
+  Greppable: SYSTEMS_LEAN_HOST, HOST-MODULE-CHECK,
+  HostModuleCheckPackageEnvLaterTerms, PACKAGE-ELABORATE.
+  Module: SystemsLean.HostModuleCheckPackageEnvLaterTerms
+  Not FullHost. Not freestanding residual free. Not PROVABLY.
+  Module must stay ASCII.
+-/
+
+import SystemsLean.HostModuleCheckCompilePathTerm
+import SystemsLean.HostModuleCheckJoinMapTerm
+import SystemsLean.HostModuleCheckSelfHostTerm
+import SystemsLean.HostModuleCheckSurfaceMatrixTerm
+import SystemsLean.HostModuleCheckSpecProofTerm
+import SystemsLean.HostModuleCheckDualResidualTerm
+import SystemsLean.HostModuleCheckCompilePathMultTerm
+import SystemsLean.HostModuleCheckCompilePathLinearTerm
+import SystemsLean.HostModuleCheckCompilePathTypesTerm
+import SystemsLean.HostModuleCheckCompilePathProgramTerm
+import SystemsLean.HostModuleCheckCompilePathGraphTerm
+import SystemsLean.HostModuleCheckCompilePathComposeTerm
+import SystemsLean.HostModuleCheckCompilePathErasureTerm
+import SystemsLean.HostModuleCheckCompilePathExtractTerm
+import SystemsLean.HostModuleCheckCompilePathPlanTerm
+import SystemsLean.HostModuleCheckCompilePathApplyTerm
+import SystemsLean.HostModuleCheckCompilePathBodyTerm
+import SystemsLean.HostModuleCheckFirstSurfaceTerm
+import SystemsLean.HostModuleCheckLinearSubsetEmitTerm
+import SystemsLean.HostModuleCheckTypesSubsetEmitTerm
+import SystemsLean.HostModuleCheckProgramSubsetEmitTerm
+import SystemsLean.HostModuleCheckGraphSubsetEmitTerm
+import SystemsLean.HostModuleCheckComposeSubsetEmitTerm
+import SystemsLean.HostModuleCheckErasureSubsetEmitTerm
+import SystemsLean.HostModuleCheckExtractSubsetEmitTerm
+import SystemsLean.HostModuleCheckMultSubsetEmitTerm
+import SystemsLean.HostModuleCheckMultSubsetRebuildTerm
+import SystemsLean.HostModuleCheckLinearSubsetRebuildTerm
+import SystemsLean.HostModuleCheckTypesSubsetRebuildTerm
+import SystemsLean.HostModuleCheckProgramSubsetRebuildTerm
+import SystemsLean.HostModuleCheckGraphSubsetRebuildTerm
+import SystemsLean.HostModuleCheckComposeSubsetRebuildTerm
+import SystemsLean.HostModuleCheckErasureSubsetRebuildTerm
+import SystemsLean.HostModuleCheckExtractSubsetRebuildTerm
+import SystemsLean.HostModuleCheckHostFrontTerm
+import SystemsLean.HostModuleCheckLlvmMultTextTerm
+import SystemsLean.HostModuleCheckHostCheckTerm
+
+namespace SystemsLean.HostModuleCheck
+
+end SystemsLean.HostModuleCheck

@@ -2,7 +2,8 @@
   SYSTEMS_LEAN_HOST partial -- Plan unit compile-path fixture (COMPILE-PATH-PLAN).
   Side: classic Lean elaborator under src/systems/ (not freestanding C).
   Owns Plan end-to-end compile-path fixture only: multi-node ordered IR ->
-  host mark+mint -> planFromCompose / planOk -> unitCompileReady + HOST-EMIT-PLAN.
+  host mark+mint (unitCompileReady) -> planFromCompose / planOk ->
+  HOST-EMIT-PLAN.
   Core compile bars and shared fixture helpers live in SystemsLean.CompilePath.
   Does NOT claim residual free / product self-host complete / proof complete /
   llvm unlock / full Slake compiler.
@@ -29,9 +30,10 @@ open SystemsLean.HostCompose (Host)
 /-! ### COMPILE-PATH-PLAN / PLAN-FIXTURE (Track 2 Plan unit end-to-end)
 
   Named Plan fixture: multi-node ordered IR (ERASED/LINEAR/VALUE) -> host compose
-  mark MULT-0 + mint MULT-1 (mint id 10) -> planFromCompose / planOk readiness
-  inventory (nodeCount / runtimeNodes / erasedNodes) -> unitCompileReady +
-  HOST-EMIT-PLAN product text honesty. Mint-id honesty: Plan uses 10 so Mult=4
+  mark MULT-0 + mint MULT-1 (mint id 10) -> unitCompileReady, then
+  planFromCompose / planOk readiness inventory (nodeCount / runtimeNodes /
+  erasedNodes) and HOST-EMIT-PLAN product text honesty.
+  Mint-id honesty: Plan uses 10 so Mult=4
   Types=5 Program=6 Linear=7 Graph=8 Compose=9 stay other fixtures. Same
   planFromCompose FAIL-CLOSED inventory as EmitPlan.lean host API; e2e bar lives
   here. Does NOT claim residual free / product self-host complete / proof complete /
@@ -101,7 +103,8 @@ def lowerPlanFixtureCompose : Option Host :=
     mintFixtureHost hcMarked planFixtureMintId
 
 /-- planFixtureProgramReady -- ordered IR bar for Plan fixture.
-    FAIL-CLOSED: lower succeeds, length 3, programCompileReady, gradeSurfaceOk.
+    FAIL-CLOSED: lower succeeds, length 3, programCompileReady, isWellTyped,
+    and gradeSurfaceOk.
     Greppable: planFixtureProgramReady, COMPILE-PATH-PLAN, PLAN-FIXTURE. -/
 def planFixtureProgramReady : Bool :=
   match lowerPlanFixtureProgram with
@@ -129,8 +132,9 @@ def planFixturePlanOk : Bool :=
         && p.erasedNodes == 1
 
 /-- planFixtureComposeReady -- unit compile-path bar on Plan fixture host.
-    FAIL-CLOSED: lower compose succeeds, unitCompileReady, live mint with
-    planFixtureMintId, erased marked after markErased.
+    FAIL-CLOSED: lower compose succeeds, unitCompileReady, extractOkFs,
+    live mint with planFixtureMintId, erased marked after markErased,
+    program length 3, and graph well-typed.
     Greppable: planFixtureComposeReady, COMPILE-PATH-PLAN, unitCompileReady. -/
 def planFixtureComposeReady : Bool :=
   match lowerPlanFixtureCompose with

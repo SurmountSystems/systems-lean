@@ -2,7 +2,7 @@
   SYSTEMS_LEAN_HOST partial -- Linear unit compile-path fixture (COMPILE-PATH-LINEAR).
   Side: classic Lean elaborator under src/systems/ (not freestanding C).
   Owns Linear end-to-end compile-path fixture only: MULT-1 linear -> ordered IR ->
-  host mint + ConsumeToken exact-once -> unitCompileReady + HOST-EMIT-LINEAR.
+  host mint (unitCompileReady) -> ConsumeToken exact-once -> HOST-EMIT-LINEAR.
   Core compile bars and shared fixture helpers live in SystemsLean.CompilePath.
   Does NOT claim residual free / product self-host complete / proof complete /
   llvm unlock / full Slake compiler.

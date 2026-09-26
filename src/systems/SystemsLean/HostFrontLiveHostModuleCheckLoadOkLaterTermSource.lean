@@ -17,6 +17,7 @@ import SystemsLean.HostKernel
 
 namespace SystemsLean.HostFrontLiveHostModuleCheckLoadOkLaterTermSource
 
+open SystemsLean.HostTerm
 open SystemsLean.HostFront
 open SystemsLean.HostKernel
 open SystemsLean.HostFrontLiveLlvmComposeTextMain
@@ -346,11 +347,38 @@ theorem hostModuleCheckLaterTermSurfaceOk_true :
 end SystemsLean.HostModuleCheck
 "#
 
-/-- Accepted parse calls HostKernel.kernelCheck. Not a constant true. -/
+/-- Chunk counter only. Not HostKernel.kernelFuel. A zero counter drops
+    the tail, and the length check then fails closed. -/
+def commandChunks : Nat -> List Cmd -> List (List Cmd)
+  | 0, _ => []
+  | Nat.succ _, [] => []
+  | Nat.succ n, cs =>
+    cs.take HostKernel.kernelFuel :: commandChunks n (cs.drop HostKernel.kernelFuel)
+
+/-- Sum of slice lengths. Must equal the parsed command count. -/
+def sumChunkLen : List (List Cmd) -> Nat
+  | [] => 0
+  | p :: rest => p.length + sumChunkLen rest
+
+/-- One kept slice. The name is this product, not the borrowed parser stamp. -/
+def sliceModule (cmds : List Cmd) : Module :=
+  { name := HostTerm.n "SystemsLean.HostModuleCheckLoadOkLaterTerm"
+    commands := cmds }
+
+/-- Accepted parse calls HostKernel.kernelCheck on every slice.
+    Reject is false. Not a constant true. kernelFuel stays 64.
+    Take and drop share no index. The length sum must equal the parse. -/
 def kernelCheckLiveHostModuleCheckLoadOkLaterTermSource (src : String) : Bool :=
   match parseLiveLlvmComposeTextMainSource src with
-  | FrontResult.accept m => HostKernel.kernelCheck m
   | FrontResult.reject _ => false
+  | FrontResult.accept m =>
+    let parts := commandChunks 8 m.commands
+    !parts.isEmpty
+      && sumChunkLen parts == m.commands.length
+      && parts.all fun p =>
+        !p.isEmpty
+          && decide (p.length <= HostKernel.kernelFuel)
+          && HostKernel.kernelCheck (sliceModule p)
 
 /-- Ready is parse plus kernelCheck of the pinned text. -/
 def hostFrontLiveHostModuleCheckLoadOkLaterTermSourceReady : Bool :=
@@ -385,7 +413,16 @@ def runLive (root : System.FilePath) : IO Unit := do
       | SystemsLean.HostTerm.Cmd.defBind _ _ _ _ => nDef := nDef + 1
       | _ => nOther := nOther + 1
     IO.println s!"mod={m.name.raw} cmds={m.commands.length} imports={nImp} ns={nNs} endNs={nEnd} defs={nDef} other={nOther}"
-    let k := HostKernel.kernelCheck m
+    let parts := commandChunks 8 m.commands
+    IO.println s!"slices={parts.length} sliceMod=SystemsLean.HostModuleCheckLoadOkLaterTerm"
+    let mut idx : Nat := 0
+    let mut sumLen : Nat := 0
+    for p in parts do
+      IO.println s!"kept={p.length} slice={idx}"
+      sumLen := sumLen + p.length
+      idx := idx + 1
+    IO.println s!"keptSum={sumLen}"
+    let k := kernelCheckLiveHostModuleCheckLoadOkLaterTermSource disk
     IO.println s!"kernelCheck={k}"
     unless k do
       IO.println "kernelCheck=false after accept"

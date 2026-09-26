@@ -1,24 +1,12 @@
 /-
-  SYSTEMS_LEAN_HOST partial -- freestanding-capable WRITE-HC load / assemble helpers.
-  Side: classic Lean elaborator under src/systems/ (not freestanding C runtime).
-  Owns fail-closed dual SSOT load, Dual SSOT equality helpers, template assemble,
-  HOST-EMIT-SSOT dialect load/apply, and post-write product-wire honesty tokens
-  used by SystemsLean.CapableWriteHc. Write API, honesty bools, Ok/PartialReady,
-  and main stay in CapableWriteHc. Same namespace SystemsLean.CapableWriteHc so
-  call sites stay unqualified.
-  Greppable: SYSTEMS_LEAN_HOST,
-  SLAKE_SELF_HOST_PRODUCT_PATH_FREESTANDING_CAPABLE_WRITE_HC_V0,
-  DUAL-SSOT-EQUALITY, dualSsotBlockEqual, requireDualSsotEqual,
-  dualSsotSpecs, freestandingCapableWriteLoadOneSsot,
-  assembleHeaderFromSsot, assembleSourceFromSsot, loadBodySsotDialect,
-  applyBodySsotDialect, productWireHonestyTokens, requireWrittenTokens,
-  CapableWriteHcLoad, UNIT_SURFACE host surface, RUNTIME-FS,
-  EmitBanner, EmitMult, EmitLinear, EmitErasure, EmitExtract, EmitExtractScaffold,
-  EmitTypes, EmitProgram, EmitGraph, EmitCompose, EmitPlan, EmitApply, EmitBody.
-  Module: SystemsLean.CapableWriteHcLoad
-  Red/green: just systems-emit-wire; lake build SystemsLean.CapableWriteHc.
-  Module must stay ASCII. Not freestanding emit residual free. Not residual free.
-  Not PROVABLY. Stage honesty: not residual free; not PROVABLY; no product GC.
+  SYSTEMS_LEAN_HOST. Module SystemsLean.CapableWriteHcLoad.
+  Host Lean helpers, not freestanding C. They load dual SSOT text, check
+  HEADER and BODY blocks against Emit fragment strings, fill templates,
+  load and apply HOST-EMIT-SSOT dialect keys, and test product-wire tokens.
+  Definitions are in namespace SystemsLean.CapableWriteHc. No main.
+  Does not import FreestandingEmit.
+  Stage id: SLAKE_SELF_HOST_PRODUCT_PATH_FREESTANDING_CAPABLE_WRITE_HC_V0.
+  Not PROVABLY. No garbage collector in this file.
 -/
 
 import SystemsLean.EmitBanner
@@ -44,15 +32,14 @@ import SystemsLean.EmitBodyScaffold
 
 namespace SystemsLean.CapableWriteHc
 
-/-- Greppable primary stage id (partial B18 freestanding-capable WRITE-HC). Shared
-    with CapableWriteHc public surface via same namespace. -/
+/-- WRITE-HC stage id string. -/
 def stageId : String :=
   "SLAKE_SELF_HOST_PRODUCT_PATH_FREESTANDING_CAPABLE_WRITE_HC_V0"
 
-/-- Dual-equality gate id (local; not FreestandingEmit). -/
+/-- Id recorded when a SSOT block and a Lean fragment differ. -/
 def dualEqualityGateId : String := "DUAL-SSOT-EQUALITY"
 
-/-- Dual SSOT basename + HOST-EMIT token + HEADER/BODY + Lean Emit* fragments. -/
+/-- Basename, token, block names, placeholders, and Lean fragments for one role. -/
 structure WriteSsotSpec where
   base : String
   token : String
@@ -64,19 +51,17 @@ structure WriteSsotSpec where
   leanBody : String
   deriving Repr
 
-/-- True when s contains needle as a contiguous substring (empty needle => false). -/
+/-- True when needle is a non-empty contiguous substring of s. -/
 def containsStr (s needle : String) : Bool :=
   if needle.isEmpty then false
   else (s.splitOn needle).length > 1
 
-/-- Replace every non-overlapping needle with repl (empty needle => hay unchanged).
-    Local; not FreestandingEmit.replaceAll. Greppable: replaceAll. -/
+/-- Replace each non-overlapping needle with repl. Empty needle returns hay. -/
 def replaceAll (hay needle repl : String) : String :=
   if needle.isEmpty then hay
   else String.intercalate repl (hay.splitOn needle)
 
-/-- KEY=value line lookup in dual SSOT file content (local; not FreestandingEmit).
-    Greppable: ssotGet, HOST-EMIT-SSOT. -/
+/-- First value of a line that starts with key ++ "=". None if no such line. -/
 def ssotGet (content key : String) : Option String :=
   let pref := key ++ "="
   let rec go : List String -> Option String
@@ -86,15 +71,14 @@ def ssotGet (content key : String) : Option String :=
       else go rest
   go (content.splitOn "\n")
 
-/-- Multi-line block between "# NAME_BEGIN" and "# NAME_END" (markers excluded).
-    Greppable structural dual SSOT shape (not Lean-fragment DUAL-SSOT-EQUALITY). -/
+/-- First block from a line "# NAME_BEGIN" through a line "# NAME_END".
+    Markers are excluded. None when either marker is missing.
+    Interior lines are joined with newlines, then one newline is appended. -/
 def ssotBlock (content name : String) : Option String :=
   let beginMark := "# " ++ name ++ "_BEGIN"
   let endMark := "# " ++ name ++ "_END"
   let rec go (grab : Bool) (acc : List String) : List String -> Option String
-    | [] =>
-      if grab || acc.isEmpty then none
-      else some (String.intercalate "\n" acc.reverse ++ "\n")
+    | [] => none
     | line :: rest =>
       if !grab && line == beginMark then go true acc rest
       else if grab && line == endMark then
@@ -103,12 +87,12 @@ def ssotBlock (content name : String) : Option String :=
       else go false acc rest
   go false [] (content.splitOn "\n")
 
-/-- Strip one trailing newline if present. -/
+/-- Drop one trailing newline when s ends with one. -/
 def stripTrailingNl (s : String) : String :=
   if s.endsWith "\n" then (s.dropEnd 1).copy else s
 
-/-- Local placeholder embed (line containing placeholder replaced by content lines).
-    Not FreestandingEmit.renderHeader / renderSource. Greppable: embedPlaceholderLine. -/
+/-- Replace each line that contains placeholder with the lines of content.
+    None when placeholder is empty or is not a contiguous substring of template. -/
 def embedPlaceholderLine (template placeholder content : String) : Option String :=
   if !containsStr template placeholder then none
   else
@@ -120,14 +104,13 @@ def embedPlaceholderLine (template placeholder content : String) : Option String
         else line :: go rest
     some (String.intercalate "\n" (go (template.splitOn "\n")))
 
-/-- Fail closed when path missing. -/
+/-- Throw if path does not exist. -/
 def requireFile (path : System.FilePath) (label : String) : IO Unit := do
   unless (<- path.pathExists) do
     IO.eprintln s!"error: missing {label}: {path}"
     throw (IO.userError s!"missing {label}")
 
-/-- Mult..Out dual SSOT specs with Lean Emit* fragments (B37 dual-equality Capable WRITE).
-    Greppable: dualSsotSpecs, DUAL-SSOT-EQUALITY, requireDualSsotEqual. -/
+/-- Twelve dual SSOT roles, banner through body, each paired with Lean fragments. -/
 def dualSsotSpecs : List WriteSsotSpec := [
   { base := "host_emit_banner.ssot.txt", token := "HOST-EMIT-BANNER",
     headerBlock := "BANNER_C_HEADER", bodyBlock := "BANNER_C_BODY",
@@ -203,7 +186,7 @@ def dualSsotSpecs : List WriteSsotSpec := [
     leanBody := SystemsLean.EmitBody.bodyBodyFragment }
 ]
 
-/-- Loaded dual SSOT HEADER/BODY for one role after dual-equality gate. -/
+/-- Header, body, and placeholders for one role after load. -/
 structure LoadedSsot where
   token : String
   header : String
@@ -212,25 +195,29 @@ structure LoadedSsot where
   bodyPlaceholder : String
   deriving Repr
 
-/-- Normalize both sides to exactly one trailing newline for Dual SSOT compare.
-    Uses stripTrailingNl defined above. -/
+/-- Drop every trailing newline, then add one. -/
 def ensureTrailingNl (s : String) : String :=
-  stripTrailingNl s ++ "\n"
+  let rec dropEmptyTail (xs : List String) : List String :=
+    match xs with
+    | [] => []
+    | line :: rest =>
+      match dropEmptyTail rest with
+      | [] => if line.isEmpty then [] else [line]
+      | kept => line :: kept
+  String.intercalate "\n" (dropEmptyTail (s.splitOn "\n")) ++ "\n"
 
-/-- True when SSOT file block and Lean fragment match after trailing-newline normalize.
-    Greppable: dualSsotBlockEqual (DUAL-SSOT-EQUALITY). -/
+/-- True when both strings match after ensureTrailingNl. -/
 def dualSsotBlockEqual (fileBlock leanFragment : String) : Bool :=
   ensureTrailingNl fileBlock == ensureTrailingNl leanFragment
 
-/-- Fail closed when durable SSOT HEADER/BODY diverges from Lean fragment.
-    Greppable: requireDualSsotEqual (not FreestandingEmit.requireDualSsotEqual). -/
+/-- Throw when fileBlock and leanFragment differ under dualSsotBlockEqual. -/
 def requireDualSsotEqual (label : String) (fileBlock leanFragment : String) : IO Unit := do
   unless dualSsotBlockEqual fileBlock leanFragment do
     IO.eprintln s!"RED {stageId}: {dualEqualityGateId}: {label} SSOT block diverges from Lean fragment"
     throw (IO.userError s!"{dualEqualityGateId}: diverge {label}")
 
-/-- Read one dual SSOT + requireDualSsotEqual vs Lean Emit* fragments (B37 dual-eq).
-    Greppable: freestandingCapableWriteLoadOneSsot, requireDualSsotEqual, IO.FS.readFile. -/
+/-- Read path, require spec.token, reject a HEADER or BODY with no text, and
+    require each block to match its Lean fragment. -/
 def freestandingCapableWriteLoadOneSsot (path : System.FilePath)
     (spec : WriteSsotSpec) : IO LoadedSsot := do
   requireFile path s!"dual SSOT ({spec.token})"
@@ -246,7 +233,7 @@ def freestandingCapableWriteLoadOneSsot (path : System.FilePath)
       IO.eprintln s!"error: dual SSOT missing HEADER block {spec.headerBlock}: {path}"
       throw (IO.userError s!"missing HEADER {spec.headerBlock}")
     | some h =>
-      if h.isEmpty then
+      if ensureTrailingNl h == "\n" then
         IO.eprintln s!"error: empty HEADER block {spec.headerBlock}: {path}"
         throw (IO.userError s!"empty HEADER {spec.headerBlock}")
       pure h
@@ -255,7 +242,7 @@ def freestandingCapableWriteLoadOneSsot (path : System.FilePath)
       IO.eprintln s!"error: dual SSOT missing BODY block {spec.bodyBlock}: {path}"
       throw (IO.userError s!"missing BODY {spec.bodyBlock}")
     | some b =>
-      if b.isEmpty then
+      if ensureTrailingNl b == "\n" then
         IO.eprintln s!"error: empty BODY block {spec.bodyBlock}: {path}"
         throw (IO.userError s!"empty BODY {spec.bodyBlock}")
       pure b
@@ -269,8 +256,8 @@ def freestandingCapableWriteLoadOneSsot (path : System.FilePath)
     bodyPlaceholder := spec.bodyPlaceholder
   }
 
-/-- Embed all HEADER blocks into header template. Local assemble -- not
-    FreestandingEmit.renderHeader. Greppable: assembleHeaderFromSsot. -/
+/-- Replace each loaded header placeholder. Throw if one is missing or any
+    __HOST_EMIT_ text remains. -/
 def assembleHeaderFromSsot (template : String) (loaded : List LoadedSsot) :
     IO String := do
   let mut acc := template
@@ -285,8 +272,8 @@ def assembleHeaderFromSsot (template : String) (loaded : List LoadedSsot) :
     throw (IO.userError "placeholder remain header")
   pure acc
 
-/-- Embed all BODY blocks into source template. Local assemble -- not
-    FreestandingEmit.renderSource. Greppable: assembleSourceFromSsot. -/
+/-- Replace each loaded body placeholder. Throw if one is missing or any
+    __HOST_EMIT_ text remains. -/
 def assembleSourceFromSsot (template : String) (loaded : List LoadedSsot) :
     IO String := do
   let mut acc := template
@@ -301,9 +288,7 @@ def assembleSourceFromSsot (template : String) (loaded : List LoadedSsot) :
     throw (IO.userError "placeholder remain source")
   pure acc
 
-/-- HOST-EMIT-SSOT dialect keys from body dual SSOT (EMPTY_FRAGMENT + HEADER_*/TAG_*).
-    Local load for dialect substitution after HOST_EMIT embed; not FreestandingEmit.
-    Greppable: BodySsotDialect, HOST-EMIT-SSOT. -/
+/-- EMPTY_FRAGMENT, HEADER_OPEN, HEADER_E, HEADER_CLOSE, and the TAG_* values. -/
 structure BodySsotDialect where
   emptyFragment : String
   headerOpen : String
@@ -315,13 +300,12 @@ structure BodySsotDialect where
   tagClose : String
   deriving Repr
 
-/-- Expected empty-compose fragment (matches EmitBody / FreestandingEmit pin).
-    Greppable: expectedEmptyFragment, EMPTY_FRAGMENT. -/
+/-- EMPTY_FRAGMENT string loadBodySsotDialect requires. -/
 def expectedEmptyFragment : String := "/* EMIT_BODY_V0 RUNTIME-FS r=0 e=0 */"
 
-/-- Load HOST-EMIT-SSOT dialect keys from host_emit_body_fragment.ssot.txt.
-    Fail closed on missing keys or EMPTY_FRAGMENT drift. Greppable:
-    loadBodySsotDialect, HOST-EMIT-SSOT, EMPTY_FRAGMENT, HEADER_OPEN. -/
+/-- Load dialect keys from path. Throw if HOST-EMIT-SSOT or HOST-EMIT-BODY is
+    absent, a key is absent, EMPTY_FRAGMENT is not expectedEmptyFragment, or
+    HEADER_OPEN ++ "0" ++ HEADER_E ++ "0" ++ HEADER_CLOSE is not that string. -/
 def loadBodySsotDialect (path : System.FilePath) : IO BodySsotDialect := do
   requireFile path "HOST-EMIT-SSOT / HOST-EMIT-BODY dual SSOT"
   let content <- IO.FS.readFile path
@@ -362,13 +346,16 @@ def loadBodySsotDialect (path : System.FilePath) : IO BodySsotDialect := do
     tagClose := tagClose
   }
 
-/-- Substitute HOST-EMIT-SSOT dialect keys into body scaffolding after HOST_EMIT
-    embed. Local parity with FreestandingEmit.renderSource dialect step and
-    DualEqualityWriteApi.applyBodySsotDialect; not FreestandingEmit.renderSource.
-    Required so product put_str emits greppable EMIT_BODY_V0 / RUNTIME-FS (probe
-    assert 361). Greppable: applyBodySsotDialect, __SSOT_EMPTY_FRAGMENT__,
-    __SSOT_HEADER_OPEN__. -/
+/-- Replace the nine __SSOT_ placeholders. Throw if a dialect value contains
+    __SSOT_, or if any __SSOT_ text remains. -/
 def applyBodySsotDialect (source : String) (d : BodySsotDialect) : IO String := do
+  let values := [
+    d.emptyFragment, d.headerOpen, d.headerE, d.headerClose,
+    d.tagOpen, d.tagMult, d.tagKind, d.tagClose]
+  for v in values do
+    if containsStr v "__SSOT_" then
+      IO.eprintln "error: dialect value contains __SSOT_ placeholder"
+      throw (IO.userError "dialect value contains placeholder")
   let s := replaceAll source "__SSOT_EMPTY_FRAGMENT__" d.emptyFragment
   let s := replaceAll s "__SSOT_HEADER_OPEN__" d.headerOpen
   let s := replaceAll s "__SSOT_HEADER_E__" d.headerE
@@ -382,10 +369,7 @@ def applyBodySsotDialect (source : String) (d : BodySsotDialect) : IO String := 
     throw (IO.userError "ssot placeholder remain")
   pure s
 
-/-- Greppable honesty after write: stable product-wire subset without importing
-    FreestandingEmit or claiming DUAL-SSOT-EQUALITY / full validateProduct.
-    Host-EMIT markers plus a small wire contract (UNIT_TRANSLATION, MULT grades,
-    RUNTIME-FS, residual-free honesty). Not FreestandingEmit.validateProduct. -/
+/-- Throw if content misses any token. path is only the error label. -/
 def requireWrittenTokens (path : System.FilePath) (content : String)
     (tokens : List String) : IO Unit := do
   for tok in tokens do
@@ -393,9 +377,7 @@ def requireWrittenTokens (path : System.FilePath) (content : String)
       IO.eprintln s!"error: {path} missing greppable token {tok}"
       throw (IO.userError s!"missing token {tok} in {path}")
 
-/-- Stable product-wire honesty tokens checked on both written .h and .c.
-    Subset of FreestandingEmit product-wire contract; local list only (no import).
-    Greppable: UNIT_TRANSLATION_V0, MULT-0, RUNTIME-FS, product residual free. -/
+/-- Token list for requireWrittenTokens. This file does not write the .h or .c. -/
 def productWireHonestyTokens : List String := [
   "UNIT_TRANSLATION_V0",
   "MULT-0", "MULT-1", "MULT-OMEGA",

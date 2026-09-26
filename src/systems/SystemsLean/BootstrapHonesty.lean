@@ -1,84 +1,47 @@
 /-
-  SYSTEMS_LEAN_HOST partial -- freestanding product path Lake bootstrap honesty (B4).
-  SLAKE_SELF_HOST_PRODUCT_PATH_BOOTSTRAP_V0 -- host Lake FreestandingEmit still
-  owns the product wire writer while product Out is consumer evidence (B3).
-  Side: classic Lean elaborator under src/systems/ (not freestanding C runtime).
-  Honest scope: documents that host Lake still bootstraps the product writer
-  (bootstrap remains true) without selling Lake bootstrap as the freestanding
-  product path complete bar. Distinct from B5 writer surface substrate and from
-  B3 Out-first B-bar consumer evidence alone.
-  Living tip SelfApplyFs owns claim-bool SSoT (perform/ownership/complete) and
-  the B3 chain fold into this PartialReady. Dual-pin thin batch 3: this module
-  owns historical stage/writer-path/module-cite string defs (tip no longer
-  duplicates them; tip keeps remains := true honesty for later family folds).
-  This land-time module does NOT define living-tip claim bools true (emit-wire
-  forbid). Land-time remains := true is honesty pin OK. Does not import
-  FreestandingEmit (cite path strings only).
-  Not residual free. Not PROVABLY. Not freestanding emit residual free.
-  Theorems (BOOTSTRAP-THEOREM / HOST-BOOTSTRAP-THEOREM +
-  BOOTSTRAP-SMOKE / HOST-BOOTSTRAP-SMOKE):
-  SystemsLean.BootstrapHonestyTheorems (same namespace; long-file split).
-  theorem productPathHostLakeBootstrapPartialReady_true /
-  productPathHostLakeBootstrapRemains_true.
-
-  Greppable: SYSTEMS_LEAN_HOST, SLAKE_SELF_HOST_PRODUCT_PATH_BOOTSTRAP_V0,
-  HOST-SELF-HOST-PRODUCT-PATH-BOOTSTRAP, SELF-HOST-PRODUCT-PATH-BOOTSTRAP,
-  product path Lake bootstrap, productPathHostLakeBootstrapRemains,
-  productPathHostLakeBootstrapPartialReady, productPathBootstrapSurfaceOk,
-  hostLakeEmitWriterPath, FreestandingEmit, slake-emit-freestanding-c,
-  SLAKE_EMIT_FREESTANDING_C_V0, theorem productPathHostLakeBootstrapPartialReady_true,
-  theorem productPathHostLakeBootstrapRemains_true, RUNTIME-FS,
-  BOOTSTRAP-THEOREM, HOST-BOOTSTRAP-THEOREM, BOOTSTRAP-SMOKE,
-  HOST-BOOTSTRAP-SMOKE, BootstrapHonestyTheorems,
-  UNIT_SURFACE host surface, BootstrapHonesty.
-  Module: SystemsLean.BootstrapHonesty
-  Long-file split: BOOTSTRAP-THEOREM + SMOKE in BootstrapHonestyTheorems.
-  Not freestanding emit residual free. Not residual free. Not PROVABLY.
-  Module must stay ASCII.
+  SystemsLean.BootstrapHonesty stores product-path host bootstrap
+  cite strings and three Bools. productPathHostLakeBootstrapRemains
+  is the constant true. productPathBootstrapSurfaceOk is true when
+  each string def equals the literal written in this file and remains
+  is true. productPathHostLakeBootstrapPartialReady is remains and
+  surfaceOk. This file has no theorem, no main, and no import. It
+  does not check that Lake ran.
 -/
 
 namespace SystemsLean.BootstrapHonesty
 
-/-- Greppable primary stage id (partial B4 Lake bootstrap honesty). -/
+/-- Stage id string. -/
 def stageId : String := "SLAKE_SELF_HOST_PRODUCT_PATH_BOOTSTRAP_V0"
 
-/-- Greppable host map id. -/
+/-- Host map id string. -/
 def hostId : String := "HOST-SELF-HOST-PRODUCT-PATH-BOOTSTRAP"
 
-/-- Greppable short map id. -/
+/-- Short map id string. -/
 def selfHostId : String := "SELF-HOST-PRODUCT-PATH-BOOTSTRAP"
 
-/-- Module cite. Greppable: BootstrapHonesty. -/
+/-- Module cite string. The value is the basename, not a dotted module path. -/
 def bootstrapHonestyModuleCite : String := "BootstrapHonesty"
 
-/-- Product Out path cite. Greppable: productOutPath, out/freestanding-c/. -/
+/-- Output directory path string. -/
 def productOutPath : String := "out/freestanding-c/"
 
-/-- Host Lake emit writer path cite (classic Lean FreestandingEmit; not freestanding
-    product writer). Greppable: hostLakeEmitWriterPath, FreestandingEmit. -/
+/-- Path string for FreestandingEmit.lean. This file does not import it. -/
 def hostLakeEmitWriterPath : String := "src/systems/SystemsLean/FreestandingEmit.lean"
 
-/-- Host Lake emit exe cite (lake exe slake-emit-freestanding-c).
-    Greppable: hostLakeEmitExe, slake-emit-freestanding-c. -/
+/-- Executable name string. This file does not check that the executable exists. -/
 def hostLakeEmitExe : String := "slake-emit-freestanding-c"
 
-/-- Freestanding emit stage cite still owned by host Lake writer.
-    Greppable: hostLakeEmitStageCite, SLAKE_EMIT_FREESTANDING_C_V0. -/
+/-- Emit stage id string. -/
 def hostLakeEmitStageCite : String := "SLAKE_EMIT_FREESTANDING_C_V0"
 
-/-- Acceptance path cite. Greppable: acceptancePath. -/
+/-- Path string for self-host.md. This file does not check that file. -/
 def acceptancePath : String := "src/systems/self-host.md"
 
-/-- productPathHostLakeBootstrapRemains -- honest residual: host Lake still
-    bootstraps the product wire writer. MUST stay true until a freestanding
-    product writer path exists. Greppable: productPathHostLakeBootstrapRemains,
-    product path Lake bootstrap. -/
+/-- Bool constant true. This file does not check that Lake bootstraps a writer. -/
 def productPathHostLakeBootstrapRemains : Bool := true
 
-/-- productPathBootstrapSurfaceOk -- B4 stage ids + writer path cites + bootstrap remains.
-    Land-time surface only (no living-tip perform/ownership/complete claim bools
-    on this module -- emit-wire forbids those true defs here).
-    Greppable: productPathBootstrapSurfaceOk, SELF-HOST-PRODUCT-PATH-BOOTSTRAP. -/
+/-- True when each string def equals the literal in this def and remains is true.
+    This file does not define perform, ownership, or complete. -/
 def productPathBootstrapSurfaceOk : Bool :=
   (stageId == "SLAKE_SELF_HOST_PRODUCT_PATH_BOOTSTRAP_V0")
     && (hostId == "HOST-SELF-HOST-PRODUCT-PATH-BOOTSTRAP")
@@ -91,21 +54,11 @@ def productPathBootstrapSurfaceOk : Bool :=
     && productPathHostLakeBootstrapRemains
     && (acceptancePath == "src/systems/self-host.md")
 
-/-- BOOTSTRAP PartialReady fold (closed B4 substrate: remains + surface Ok).
-    Historical readiness bulk for Lake bootstrap honesty. SelfApplyFs living tip
-    re-exports a chain fold that includes B3 Out kernel evidence PartialReady plus
-    this def for greppable dual-pin. Land-time module pins: remains + surface only
-    (living tip allows ownership / perform / stepContractFull / complete true
-    after later cliffs). Does not flip residual free / llvm / PROVABLY.
-    Greppable: productPathHostLakeBootstrapPartialReady,
-    SELF-HOST-PRODUCT-PATH-BOOTSTRAP, product path Lake bootstrap. -/
+/-- True when remains and surfaceOk are both true. -/
 def productPathHostLakeBootstrapPartialReady : Bool :=
   productPathHostLakeBootstrapRemains
     && productPathBootstrapSurfaceOk
 
 end SystemsLean.BootstrapHonesty
 
--- No Lake exe for B4 (bootstrap honesty cites + remains pin only; host Lake
--- FreestandingEmit + just build remain the live performers).
--- No top-level main so SelfApplyFs may import Ok / PartialReady bulk without
--- main clash.
+-- This file defines no main.

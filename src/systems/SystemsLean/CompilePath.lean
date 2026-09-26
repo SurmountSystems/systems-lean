@@ -29,8 +29,8 @@
   - V0 shell stamp deleted (SLAKE_COMPILE_PATH_V0 honesty only; static
     UNIT_SURFACE / marker walk is pure Nix). This module is the V1
     host deepen -- not a second content mill and not product C.
-  - compileReady hc: fail-closed HostCompose.extractOkFs (implies multPreScan +
-    hostIsWellTyped + RUNTIME-FS only). Does not re-emit product C.
+  - compileReady hc: extractFsOk hc, which calls HostCompose.extractOkFs.
+    Does not re-emit product C.
   - programCompileReady p: IrProgram.isWellTyped (EMPTY-PROGRAM-FAIL-CLOSED on
     empty ordered program; distinct from empty HostCompose which is OK).
   - gradeSurfaceOk: closed Mult grades MULT-0/1/OMEGA + raw-tag reject of 3.
@@ -118,7 +118,6 @@ namespace SystemsLean.CompilePath
 open SystemsLean.Mult (Mult)
 open SystemsLean.Types (IrNode NodeKind typeTagInit)
 open SystemsLean.IrProgram (Program)
-open SystemsLean.IrGraph (Graph)
 open SystemsLean.HostCompose (Host)
 open SystemsLean.Extract (RuntimeClaim)
 
@@ -169,8 +168,8 @@ def extractFsOk (hc : Host) : Bool :=
   HostCompose.extractOkFs hc
 
 /-- compileReady hc -- host-informed compile-path readiness (SLAKE_COMPILE_PATH_V1).
-    FAIL-CLOSED: HostCompose.extractOkFs (checkFailClosed + RUNTIME-FS).
-    Empty compose is OK (vacuous mult pre-scan; matches HOST-SMOKE).
+    Definition is extractFsOk hc, which calls HostCompose.extractOkFs.
+    Empty compose is OK (compileReady_empty_true).
     Does not emit C. Does not claim freestanding residual free. -/
 def compileReady (hc : Host) : Bool :=
   extractFsOk hc

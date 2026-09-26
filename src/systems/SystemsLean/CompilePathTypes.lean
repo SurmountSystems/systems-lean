@@ -1,8 +1,10 @@
 /-
   SYSTEMS_LEAN_HOST partial -- Types unit compile-path fixture (COMPILE-PATH-TYPES).
   Side: classic Lean elaborator under src/systems/ (not freestanding C).
-  Owns Types end-to-end compile-path fixture only: TYPED_IR kind/mult nodes ->
-  ordered IR -> host mark+mint -> unitCompileReady + HOST-EMIT-TYPES.
+  Owns Types end-to-end compile-path fixture only: TYPED_IR kind/mult nodes,
+  then ordered IR, then host mark+mint (unitCompileReady on that live host).
+  HOST-EMIT-TYPES is product-text honesty beside that path, not a result of
+  mark and mint.
   Core compile bars and shared fixture helpers live in SystemsLean.CompilePath.
   Does NOT claim residual free / product self-host complete / proof complete /
   llvm unlock / full Slake compiler.
@@ -29,8 +31,9 @@ open SystemsLean.HostCompose (Host)
 
   Named Types fixture: TYPED_IR kind/mult typed nodes (Types.mkNode? fail-closed)
   -> ordered IR program (3-node ERASED/LINEAR/VALUE) -> host compose
-  (mark MULT-0 + mint MULT-1) -> unitCompileReady + HOST-EMIT-TYPES product
-  text honesty. Same kind/mult pairing as KernelTypes IR fixture; e2e bar lives
+  (mark MULT-0 + mint MULT-1). That live host meets unitCompileReady.
+  HOST-EMIT-TYPES product text honesty is beside that path, not a result of
+  mark and mint. Same kind/mult pairing as KernelTypes IR fixture; e2e bar lives
   here (KernelTypes imports CompilePath -- no import cycle).
   Does NOT claim residual free / product self-host complete / proof complete /
   llvm unlock / full elaborator type checker / full Slake compiler.
@@ -112,7 +115,8 @@ def lowerTypesFixtureCompose : Option Host :=
     mintFixtureHost hcMarked typesFixtureMintId
 
 /-- typesFixtureKindMultOk -- TYPED_IR kind/mult pairing honesty on fixture path.
-    Known pairings succeed via mkNode?; mismatch family fails closed.
+    Known pairings succeed via mkNode?; listed mismatches are none; kind tag 3
+    is rejected.
     Greppable: typesFixtureKindMultOk, TYPED_IR_V0, COMPILE-PATH-TYPES. -/
 def typesFixtureKindMultOk : Bool :=
   (mkTypesFixtureNode typesFixtureTagErased Mult.mult0 NodeKind.erased).isSome
@@ -124,8 +128,8 @@ def typesFixtureKindMultOk : Bool :=
     && !Types.isValidKindTag 3
 
 /-- typesFixtureProgramReady -- ordered IR bar for Types fixture.
-    FAIL-CLOSED: lower succeeds, length 3, programCompileReady, gradeSurfaceOk,
-    kind/mult honesty.
+    FAIL-CLOSED: lower succeeds, length 3, programCompileReady, isWellTyped,
+    gradeSurfaceOk, kind/mult honesty.
     Greppable: typesFixtureProgramReady, COMPILE-PATH-TYPES, TYPES-FIXTURE. -/
 def typesFixtureProgramReady : Bool :=
   match lowerTypesFixtureProgram with
@@ -138,14 +142,16 @@ def typesFixtureProgramReady : Bool :=
         && typesFixtureKindMultOk
 
 /-- typesFixtureComposeReady -- unit compile-path bar on Types fixture host.
-    FAIL-CLOSED: lower compose succeeds and unitCompileReady (extractOkFs + grades).
+    FAIL-CLOSED: lower compose succeeds, then unitCompileReady, extractOkFs,
+    and a live linear slot.
     Greppable: typesFixtureComposeReady, COMPILE-PATH-TYPES, unitCompileReady. -/
 def typesFixtureComposeReady : Bool :=
   match lowerTypesFixtureCompose with
   | none => false
   | some hc => unitCompileReady hc && HostCompose.extractOkFs hc && hc.linear.live
 
-/-- typesFixtureComposeRawUnready -- unminted/unmarked Types compose fails unit bar.
+/-- typesFixtureComposeRawUnready -- unminted/unmarked Types compose is not
+    unitCompileReady, and HostCompose.checkFailClosed is false on that host.
     Greppable: typesFixtureComposeRawUnready, FAIL-CLOSED, TYPES-FIXTURE. -/
 def typesFixtureComposeRawUnready : Bool :=
   match lowerTypesFixtureComposeRaw with
@@ -170,8 +176,13 @@ def typesFixtureProofCompleteClaimed : Bool := false
 def typesFixtureLlvmUnlocked : Bool := false
 
 /-- typesFixtureCompilePathReady -- end-to-end Types unit compile path (Track 2).
-    TYPED_IR kind/mult + ordered IR + ready compose unit bar + HOST-EMIT-TYPES
-    emit path + free/complete/proof/llvm stay false.
+    TYPED_IR kind/mult + ordered IR + ready compose unit bar +
+    raw compose not unit-ready + HOST-EMIT-TYPES emit path +
+    free/complete/proof/llvm stay false.
+    The top-level gradeSurfaceOk conjunct repeats the gradeSurfaceOk check
+    inside typesFixtureProgramReady. The top-level typesFixtureKindMultOk
+    conjunct repeats the kind/mult check inside typesFixtureProgramReady.
+    typesFixtureComposeRawUnready is a separate conjunct (raw host unready).
     Greppable: typesFixtureCompilePathReady, COMPILE-PATH-TYPES, TYPES-FIXTURE,
     HOST-COMPILE-PATH, HOST-EMIT-TYPES, TYPED_IR_V0. -/
 def typesFixtureCompilePathReady : Bool :=
@@ -257,14 +268,17 @@ theorem lowerTypesFixtureCompose_isSome :
 /-! ### COMPILE-PATH-TYPES-SMOKE (Types fixture end-to-end; lake fails if examples fail)
     Greppable: COMPILE-PATH-TYPES-SMOKE, TYPES-FIXTURE, COMPILE-PATH-TYPES. -/
 
-/-- COMPILE-PATH-TYPES-SMOKE: TYPED_IR kind/mult as ordered IR (length 3, well-typed). -/
+/-! COMPILE-PATH-TYPES-SMOKE: ordered IR lower is some.
+    Later examples in this block check length 3, programCompileReady,
+    kind/mult honesty, and typesFixtureProgramReady. -/
 example : (lowerTypesFixtureProgram.isSome) = true := by decide
 example : typesFixtureProgram.nodes.length = 3 := by decide
 example : programCompileReady typesFixtureProgram = true := by decide
 example : typesFixtureKindMultOk = true := by decide
 example : typesFixtureProgramReady = true := by decide
 
-/-- COMPILE-PATH-TYPES-SMOKE: raw Types compose fails; mark+mint unit-ready. -/
+/-! COMPILE-PATH-TYPES-SMOKE: raw Types compose fails the unit bar.
+    Later examples in this block check the marked and minted host. -/
 example : typesFixtureComposeRawUnready = true := by decide
 example : typesFixtureComposeReady = true := by decide
 example :

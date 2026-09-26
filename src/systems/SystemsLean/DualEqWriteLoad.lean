@@ -58,7 +58,8 @@ def containsStr (s needle : String) : Bool :=
   if needle.isEmpty then false
   else (s.splitOn needle).length > 1
 
-/-- Replace every occurrence of needle with repl (local; not FreestandingEmit). -/
+/-- Replace each non-overlapping occurrence of needle with repl.
+    An empty needle returns hay unchanged. Local; not FreestandingEmit. -/
 def replaceAll (hay needle repl : String) : String :=
   if needle.isEmpty then hay
   else String.intercalate repl (hay.splitOn needle)
@@ -92,12 +93,14 @@ def ssotBlock (content name : String) : Option String :=
 /-- Strip one trailing newline if present. -/
 def stripTrailingNl (s : String) : String :=
   if s.endsWith "\n" then (s.dropEnd 1).copy else s
-/-- Normalize both sides to exactly one trailing newline for Dual SSOT compare. -/
+/-- Drop at most one trailing newline, then append one.
+    Two or more trailing newlines are not collapsed to one. -/
 def ensureTrailingNl (s : String) : String :=
   stripTrailingNl s ++ "\n"
 
-/-- True when SSOT file block and Lean fragment match after trailing-newline normalize.
-    Greppable: dualSsotBlockEqual (DUAL-SSOT-EQUALITY). -/
+/-- True when ensureTrailingNl of the SSOT block equals ensureTrailingNl of the Lean fragment.
+    Extra trailing newlines beyond one still differ. Greppable: dualSsotBlockEqual
+    (DUAL-SSOT-EQUALITY). -/
 def dualSsotBlockEqual (fileBlock leanFragment : String) : Bool :=
   ensureTrailingNl fileBlock == ensureTrailingNl leanFragment
 
@@ -311,12 +314,15 @@ structure BodySsotDialect where
   tagClose : String
   deriving Repr
 
-/-- Expected empty-compose fragment (matches EmitBody / FreestandingEmit pin). -/
+/-- Empty-compose text with no trailing newline (the EMPTY_FRAGMENT value).
+    EmitBody.emptyComposeFragmentSsot is this text plus one newline. -/
 def expectedEmptyFragment : String := "/* EMIT_BODY_V0 RUNTIME-FS r=0 e=0 */"
 
-/-- Load HOST-EMIT-SSOT dialect keys from host_emit_body_fragment.ssot.txt.
-    Fail closed on missing keys or EMPTY_FRAGMENT drift. Greppable:
-    loadBodySsotDialect, HOST-EMIT-SSOT, EMPTY_FRAGMENT, HEADER_OPEN. -/
+/-- Load HOST-EMIT-SSOT dialect keys from path.
+    Fail closed when the file is missing, HOST-EMIT-SSOT or HOST-EMIT-BODY is absent,
+    a key is absent, EMPTY_FRAGMENT is not expectedEmptyFragment, or
+    HEADER_OPEN ++ "0" ++ HEADER_E ++ "0" ++ HEADER_CLOSE is not that string.
+    Greppable: loadBodySsotDialect, HOST-EMIT-SSOT, EMPTY_FRAGMENT, HEADER_OPEN. -/
 def loadBodySsotDialect (path : System.FilePath) : IO BodySsotDialect := do
   requireFile path "HOST-EMIT-SSOT / HOST-EMIT-BODY dual SSOT"
   let content <- IO.FS.readFile path
@@ -375,12 +381,9 @@ def applyBodySsotDialect (source : String) (d : BodySsotDialect) : IO String := 
     throw (IO.userError "ssot placeholder remain")
   pure s
 
-/-- Greppable honesty after write. Local mirror of FreestandingEmit.validateProduct
-    token + ban surface (no FreestandingEmit import). Toward validateProduct parity
-    for B36 dual-eq WRITE; still NOT retirement evidence: gap open / perform claimed
-    stay false until CAPABLE-GAP + official path dual-eq retirement (B37+).
-    Greppable: requireWrittenTokens, validateDualEqualityWriteProduct,
-    productWireHonestyTokens. -/
+/-- Fail closed when content misses any token in the list.
+    path is the error label only. This does not check banned tokens.
+    Greppable: requireWrittenTokens. -/
 def requireWrittenTokens (path : System.FilePath) (content : String)
     (tokens : List String) : IO Unit := do
   for tok in tokens do
@@ -388,9 +391,10 @@ def requireWrittenTokens (path : System.FilePath) (content : String)
       IO.eprintln s!"error: {path} missing greppable token {tok}"
       throw (IO.userError s!"missing token {tok} in {path}")
 
-/-- Product-wire honesty tokens: validateProduct token list parity (local copy).
-    HOST-EMIT role markers are appended by callers. Not byte-identical emit proof;
-    not gap-closed / perform-claimed evidence. Greppable: productWireHonestyTokens,
+/-- Local copy of the FreestandingEmit.validateProduct required-token list.
+    The HOST-EMIT role markers are already in this list. The checker passes the
+    list through unchanged. Not byte-identical emit proof; not gap-closed or
+    perform-claimed evidence. Greppable: productWireHonestyTokens,
     UNIT_DEEPEN_V1, HOST-EMIT-SSOT, validateProduct-parity. -/
 def productWireHonestyTokens : List String := [
   "SLAKE_EMIT_FREESTANDING_C_V0", "UNIT_TRANSLATION_V0", "UNIT_DEEPEN_V1",

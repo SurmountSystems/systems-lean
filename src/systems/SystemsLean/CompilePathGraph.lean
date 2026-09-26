@@ -1,9 +1,10 @@
 /-
   SYSTEMS_LEAN_HOST partial -- Graph unit compile-path fixture (COMPILE-PATH-GRAPH).
   Side: classic Lean elaborator under src/systems/ (not freestanding C).
-  Owns Graph end-to-end compile-path fixture only: multi-node ordered IR +
-  chain edges 0->1, 1->2 -> IrGraph well-typed -> host mark+mint ->
-  unitCompileReady + HOST-EMIT-GRAPH.
+  Owns Graph end-to-end compile-path fixture only: multi-node ordered IR,
+  chain edges 0->1, 1->2, IrGraph well-typed, then host mark+mint
+  (unitCompileReady on that live host). HOST-EMIT-GRAPH is product-text
+  honesty beside that path, not a result of mark and mint.
   Core compile bars and shared fixture helpers live in SystemsLean.CompilePath.
   Does NOT claim residual free / product self-host complete / proof complete /
   llvm unlock / full Slake compiler.
@@ -28,10 +29,11 @@ open SystemsLean.HostCompose (Host)
 
 /-! ### COMPILE-PATH-GRAPH / GRAPH-FIXTURE (Track 2 Graph unit end-to-end)
 
-  Named Graph fixture: multi-node ordered IR (3-node ERASED/LINEAR/VALUE) +
-  chain edges 0->1, 1->2 (IR-GRAPH-EDGES) -> IrGraph well-typed -> host compose
-  (mark MULT-0 + mint MULT-1) with edges -> unitCompileReady + HOST-EMIT-GRAPH
-  product text honesty. Same kind/mult pairing as KernelProgram graph path; e2e
+  Named Graph fixture: multi-node ordered IR (3-node ERASED/LINEAR/VALUE),
+  chain edges 0->1, 1->2 (IR-GRAPH-EDGES), IrGraph well-typed, then host compose
+  (mark MULT-0 + mint MULT-1) with edges. That live host meets unitCompileReady.
+  HOST-EMIT-GRAPH product text honesty is beside that path, not a result of
+  mark and mint. Same kind/mult pairing as KernelProgram graph path; e2e
   bar lives here (KernelProgram imports CompilePath -- no import cycle).
   Differs from PROGRAM-FIXTURE by requiring live edges + graph well-typed bar
   (Program fixture is ordered-IR + fold only; Graph adds edges).
@@ -232,9 +234,13 @@ def graphFixtureLlvmUnlocked : Bool := false
 
 /-- graphFixtureCompilePathReady -- end-to-end Graph unit compile path (Track 2).
     Multi-node ordered IR + edges + graph well-typed + ready compose unit bar +
-    HOST-EMIT-GRAPH emit path + free/complete/proof/llvm stay false.
-    Minimal independent conjuncts: graphFixtureGraphReady already folds
-    graphFixtureEdgesOk + graphFixtureProgramReady (do not re-list those here).
+    raw compose not unit-ready + HOST-EMIT-GRAPH emit path +
+    free/complete/proof/llvm stay false.
+    graphFixtureGraphReady already folds graphFixtureEdgesOk and
+    graphFixtureProgramReady (those are not re-listed here).
+    The top-level gradeSurfaceOk conjunct repeats the gradeSurfaceOk check
+    inside graphFixtureProgramReady. graphFixtureComposeRawUnready is a
+    separate conjunct (raw host unready).
     Greppable: graphFixtureCompilePathReady, COMPILE-PATH-GRAPH, GRAPH-FIXTURE,
     HOST-COMPILE-PATH, HOST-EMIT-GRAPH. -/
 def graphFixtureCompilePathReady : Bool :=
@@ -335,7 +341,9 @@ theorem lowerGraphFixtureCompose_isSome :
 /-! ### COMPILE-PATH-GRAPH-SMOKE (Graph fixture end-to-end; lake fails if examples fail)
     Greppable: COMPILE-PATH-GRAPH-SMOKE, GRAPH-FIXTURE, COMPILE-PATH-GRAPH. -/
 
-/-- COMPILE-PATH-GRAPH-SMOKE: multi-node ordered IR + chain edges 0->1, 1->2. -/
+/-! COMPILE-PATH-GRAPH-SMOKE: ordered IR lower is some, length 3, and program-ready.
+    Chain edges 0->1, 1->2 are checked on the graph lower, not on the program lower.
+    Mint id is 8. -/
 example : (lowerGraphFixtureProgram.isSome) = true := by decide
 example : graphFixtureProgram.nodes.length = 3 := by decide
 example : programCompileReady graphFixtureProgram = true := by decide
@@ -352,7 +360,8 @@ example :
            && graphFixtureChainEdgesOk g.edges
      | none => false) = true := by decide
 
-/-- COMPILE-PATH-GRAPH-SMOKE: raw Graph compose fails; mark+mint unit-ready with edges. -/
+/-! COMPILE-PATH-GRAPH-SMOKE: raw Graph compose fails the unit bar.
+    Later examples in this block check mark+mint unit-ready with chain edges. -/
 example : graphFixtureComposeRawUnready = true := by decide
 example : graphFixtureComposeReady = true := by decide
 example :

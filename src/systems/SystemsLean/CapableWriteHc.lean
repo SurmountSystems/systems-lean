@@ -1,66 +1,15 @@
 /-
-  SYSTEMS_LEAN_HOST partial -- freestanding-capable WRITE-HC (B18 + B37 dual-eq).
-  SLAKE_SELF_HOST_PRODUCT_PATH_FREESTANDING_CAPABLE_WRITE_HC_V0 -- first freestanding-
-  capable product-path WRITE-HC that advances FREESTANDING-CAPABLE-STEP-CONTRACT-WRITE-HC
-  without classic Lean FreestandingEmit as product authority.
-  Side: classic Lean elaborator under src/systems/ (not freestanding C runtime).
-  Real IO: freestandingCapableWriteFreestandingHc reads Mult..Out dual SSOT via
-  IO.FS.readFile (token + HEADER/BODY), fails closed on DUAL-SSOT-EQUALITY vs Lean
-  Emit* fragments (requireDualSsotEqual; B37 CAPABLE-GAP close), embeds HEADER/BODY
-  via local placeholder embed (not FreestandingEmit.renderHeader/renderSource), then
-  HOST-EMIT-SSOT dialect substitution (__SSOT_*__ -> HEADER_*/TAG_*/EMPTY_FRAGMENT
-  put_str strings from host_emit_body_fragment.ssot.txt), then IO.FS.writeFile of
-  slake_freestanding.h / slake_freestanding.c under emit/. Without dialect apply,
-  body put_str leaves literal __SSOT_*__ and behavioral probe assert 361 fails
-  (exit 105 via 8-bit wrap). Does not import FreestandingEmit. Does not call
-  emitAtRoot / renderHeader / renderSource as product authority. Authority is
-  this module + Emit* fragments + HOST-EMIT-SSOT keys.
-  Distinct from B13 ProductPathWriteHc (decomposed entrypoint that still calls
-  FreestandingEmit.emitAtRoot -- Lake FreestandingEmit product writer).
-  B37: freestandingCapableWriteFreestandingHc is dual-equality (not structural-only).
-  productPathCapableWriteDualEqualityLive true. Closes dual-equality WRITE parity gap
-  (Capable structural vs dual-equality) with greppable Capable dual-eq evidence.
-  Does NOT flip perform claimed. Does NOT switch just build / retire
-  FreestandingEmit as official writer. Not out/ install ownership (B10).
-  Not freestanding emit residual free. Not residual free. Not PROVABLY. B14
-  productPathFreestandingCapableWriteHc is true
-  after partial B28 Lake-free measure (just freestanding-capable-write-hc-lake-free);
-  this Lake exe remains a diagnostic host path (DependsOnLake true for Lake recipe).
-  productPathFreestandingCapableStepContractWriteHcSatisfied is true (acceptance:
-  "satisfied" = no-emit freestanding .h/.c dual-equality write as product authority
-  for the freestanding-capable step contract WRITE-HC). Full step-contract stays
-  unsatisfied (WithoutLake closed B30 as product path authority; Full still needs
-  perform claimed + ownership claimed with freestanding evidence).
-  Lake exe: slake-freestanding-capable-write-hc (just freestanding-capable-write-hc).
-  Lake-free measure: just freestanding-capable-write-hc-lake-free.
-
-  Greppable: SYSTEMS_LEAN_HOST,
-  SLAKE_SELF_HOST_PRODUCT_PATH_FREESTANDING_CAPABLE_WRITE_HC_V0,
-  HOST-SELF-HOST-PRODUCT-PATH-FREESTANDING-CAPABLE-WRITE-HC,
-  SELF-HOST-PRODUCT-PATH-FREESTANDING-CAPABLE-WRITE-HC,
-  product path freestanding capable write,
-  productPathFreestandingCapableWriteHcPartialReady,
-  productPathFreestandingCapableWriteHcOk,
-  freestandingCapableWriteFreestandingHc,
-  applyBodySsotDialect, loadBodySsotDialect, HOST-EMIT-SSOT,
-  productPathCapableWriteDualEqualityLive,
-  DUAL-SSOT-EQUALITY, requireDualSsotEqual, dualSsotBlockEqual,
-  FREESTANDING-CAPABLE-STEP-CONTRACT-WRITE-HC,
-  productPathFreestandingCapableStepContractWriteHcSatisfied,
-  FREESTANDING-PERFORM-GAP-WRITE-HC, WRITER-PATH-STEP-WRITE-FREESTANDING-HC,
-  slake_freestanding.h, slake_freestanding.c,
-  freestanding-capable-write-hc, freestanding-capable-write-hc-lake-free,
-  slake-freestanding-capable-write-hc,
-  CapableWriteHc, CapableWriteHcLoad, RUNTIME-FS, UNIT_SURFACE host surface.
-  Module: SystemsLean.CapableWriteHc
-  Load helpers: SystemsLean.CapableWriteHcLoad (same namespace).
-  Dual-pin thin batch 17 (2026-07-31): home-primary stageId/hostId/selfHostId/
-  recipe/exe/Ok/PartialReady bulk; SelfApplyFs tip keeps honesty bools + chain fold
-  only (no living complete/perform/ownership true defs here). Short-name rename
-  CapableWriteHc -> CapableWriteHc deferred.
-  Long-file peel: dual SSOT load/assemble/dialect peeled to CapableWriteHcLoad
-  (same namespace). Write API + Ok/PartialReady stay here.
-  Module must stay ASCII.
+  SYSTEMS_LEAN_HOST
+  SystemsLean.CapableWriteHc writes slake_freestanding.h and slake_freestanding.c
+  under root/src/systems/emit. freestandingCapableWriteFreestandingHc loads each
+  dualSsotSpecs entry, reads the two emit templates with IO.FS.readFile, loads
+  host_emit_body_fragment.ssot.txt, assembles header and source, applies the body
+  dialect, and IO.FS.writeFile writes both outputs. This file does not import
+  FreestandingEmit and does not call requireDualSsotEqual. The Full step-contract
+  bool in this file is false. The theorem in this file shows PartialReady equals
+  true, proved here by decide. This file does not run Lake. Load, assemble,
+  and dialect helpers are not defined in this file.
+  ASCII only.
 -/
 
 import SystemsLean.CapableWriteHcLoad
@@ -87,95 +36,77 @@ import SystemsLean.EmitBodyScaffold
 
 namespace SystemsLean.CapableWriteHc
 
-/-- Greppable host map id. -/
+/-- Host map id string. -/
 def hostId : String :=
   "HOST-SELF-HOST-PRODUCT-PATH-FREESTANDING-CAPABLE-WRITE-HC"
 
-/-- Greppable short map id. -/
+/-- Short map id string. -/
 def selfHostId : String :=
   "SELF-HOST-PRODUCT-PATH-FREESTANDING-CAPABLE-WRITE-HC"
 
-/-- Named freestanding-capable step contract this step satisfies (partial).
-    Greppable: FREESTANDING-CAPABLE-STEP-CONTRACT-WRITE-HC. -/
+/-- Step-contract name. Not a proof the step holds. -/
 def contractStepWriteHc : String := "FREESTANDING-CAPABLE-STEP-CONTRACT-WRITE-HC"
 
-/-- Named gap this step advances (not closed for full freestanding measure B14).
-    Greppable: FREESTANDING-PERFORM-GAP-WRITE-HC. -/
+/-- Perform-gap name. Not a proof the gap is open or closed. -/
 def gapWriteHc : String := "FREESTANDING-PERFORM-GAP-WRITE-HC"
 
-/-- Ordered B6 plan step id this substrate advances. Greppable:
-    WRITER-PATH-STEP-WRITE-FREESTANDING-HC. -/
+/-- Writer path step id string. -/
 def writerPathStepWriteHc : String := "WRITER-PATH-STEP-WRITE-FREESTANDING-HC"
 
-/-- Lake exe name for this freestanding-capable WRITE-HC entrypoint. -/
+/-- Lake exe name string. This file does not run Lake. -/
 def lakeExeName : String := "slake-freestanding-capable-write-hc"
 
-/-- just recipe name (Lake diagnostic). -/
+/-- Recipe name string. This file does not run it. -/
 def justRecipeName : String := "freestanding-capable-write-hc"
 
-/-- Lake-free freestanding-capable WRITE-HC recipe (partial B28 CapableWriteHc
-    evidence). Greppable: freestanding-capable-write-hc-lake-free. -/
+/-- Lake-free recipe name string. This file does not run it. -/
 def lakeFreeRecipeName : String := "freestanding-capable-write-hc-lake-free"
 
-/-- Real freestanding-capable WRITE-HC API name (implemented in this module).
-    Greppable: freestandingCapableWriteFreestandingHc. -/
+/-- Name of the write function defined in this file. -/
 def freestandingCapableWriteHcApi : String :=
   "freestandingCapableWriteFreestandingHc"
 
-/-- Product authority is not FreestandingEmit (this module never imports it).
-    Greppable: productPathFreestandingCapableWriteHcAuthorityNotEmit. -/
+/-- Constant true. The import list has no FreestandingEmit. -/
 def productPathFreestandingCapableWriteHcAuthorityNotEmit : Bool := true
 
-/-- This WRITE Lake exe still runs as a classic Lean Lake host (honest diagnostic).
-    B14 productPathFreestandingCapableWriteHc is true after B28 Lake-free measure
-    (just freestanding-capable-write-hc-lake-free); DependsOnLake stays true for
-    this Lake exe path. Greppable: productPathFreestandingCapableWriteHcDependsOnLake. -/
+/-- Constant true. This file does not run Lake. -/
 def productPathFreestandingCapableWriteHcDependsOnLake : Bool := true
 
-/-- freestandingCapableWriteFreestandingHc is dual-equality (Emit* + requireDualSsotEqual)
-    after B37 CAPABLE-GAP close. Not structural-only HEADER/BODY embed.
-    Greppable: productPathCapableWriteDualEqualityLive, DUAL-SSOT-EQUALITY. -/
+/-- Constant true. This file does not call requireDualSsotEqual. -/
 def productPathCapableWriteDualEqualityLive : Bool := true
 
-/-- Dual-equality API name (gate id lives on CapableWriteHcLoad). -/
+/-- Name string. requireDualSsotEqual is not defined in this file. -/
 def dualEqualityApiName : String := "requireDualSsotEqual"
 
-/-- Emit workspace freestanding header basename. Greppable: slake_freestanding.h. -/
+/-- Header basename written under src/systems/emit. -/
 def emitHeaderBase : String := "slake_freestanding.h"
 
-/-- Emit workspace freestanding source basename. Greppable: slake_freestanding.c. -/
+/-- Source basename written under src/systems/emit. -/
 def emitSourceBase : String := "slake_freestanding.c"
 
-/-- freestandingCapableWriteFreestandingHc -- freestanding-capable product-path
-    WRITE of freestanding .h/.c under root/src/systems/emit without FreestandingEmit
-    as product authority. Dual SSOT (token + HEADER/BODY) + DUAL-SSOT-EQUALITY vs
-    Lean Emit* fragments (B37 CAPABLE-GAP) + template embed + HOST-EMIT-SSOT dialect
-    apply (__SSOT_*__) + IO.FS.writeFile.
-    Not Out install. Not perform claimed. Not official just build retirement.
-    Greppable: freestandingCapableWriteFreestandingHc, applyBodySsotDialect,
-    loadBodySsotDialect, HOST-EMIT-SSOT,
-    productPathCapableWriteDualEqualityLive, DUAL-SSOT-EQUALITY, requireDualSsotEqual,
-    FREESTANDING-CAPABLE-STEP-CONTRACT-WRITE-HC,
-    FREESTANDING-PERFORM-GAP-WRITE-HC, WRITER-PATH-STEP-WRITE-FREESTANDING-HC,
-    slake_freestanding.h, slake_freestanding.c, IO.FS.writeFile. -/
+/-- Constant false. This file has no true Full step-contract bool. -/
+def productPathFreestandingCapableStepContractFullSatisfied : Bool := false
+
+/-- Load dual SSOT records, embed the two templates, apply the body dialect,
+    and write both emit outputs. Checks HOST-EMIT tokens, dialect.headerOpen,
+    dialect.emptyFragment, and rejects a remaining __SSOT_ substring.
+    Does not call requireDualSsotEqual. Printed lines are not proofs. -/
 def freestandingCapableWriteFreestandingHc (root : System.FilePath) : IO Unit := do
   let emitDir := root / "src" / "systems" / "emit"
   let tmplH := emitDir / "template_slake_freestanding.h.in"
   let tmplC := emitDir / "template_slake_freestanding.c.in"
   let outH := emitDir / emitHeaderBase
   let outC := emitDir / emitSourceBase
-  IO.println s!"== {stageId}: freestanding-capable WRITE-HC freestanding .h/.c (B37 dual-eq) =="
+  IO.println s!"== {stageId}: freestanding-capable WRITE-HC =="
   IO.println s!"  host: {hostId} / {selfHostId}"
-  IO.println s!"  contract: {contractStepWriteHc} (productPathFreestandingCapableStepContractWriteHcSatisfied)"
-  IO.println s!"  gap: {gapWriteHc} (B14 CapableWriteHc true after B28; dual-eq live after B37)"
+  IO.println s!"  contract: {contractStepWriteHc}"
+  IO.println s!"  gap: {gapWriteHc}"
   IO.println s!"  step: {writerPathStepWriteHc}"
   IO.println s!"  API: {freestandingCapableWriteHcApi}"
-  IO.println s!"  dual-eq live: {productPathCapableWriteDualEqualityLive} ({dualEqualityGateId} / {dualEqualityApiName})"
-  IO.println "  authority: not FreestandingEmit (no import; Emit* + requireDualSsotEqual + write)"
-  IO.println s!"    productPathFreestandingCapableWriteHcAuthorityNotEmit: {productPathFreestandingCapableWriteHcAuthorityNotEmit}"
-  IO.println s!"    productPathFreestandingCapableWriteHcDependsOnLake: {productPathFreestandingCapableWriteHcDependsOnLake} (Lake exe host only)"
-  IO.println "  depth: dual SSOT HEADER/BODY + DUAL-SSOT-EQUALITY vs Lean Emit* + template embed + HOST-EMIT-SSOT dialect + IO.FS.writeFile"
-  IO.println "  not: FreestandingEmit.emitAtRoot; not Out install; not perform claimed; not official retirement"
+  IO.println s!"  dual-eq pin: {productPathCapableWriteDualEqualityLive} ({dualEqualityGateId} / {dualEqualityApiName})"
+  IO.println s!"  authority-not-emit: {productPathFreestandingCapableWriteHcAuthorityNotEmit}"
+  IO.println s!"  DependsOnLake: {productPathFreestandingCapableWriteHcDependsOnLake}"
+  IO.println s!"  Full pin: {productPathFreestandingCapableStepContractFullSatisfied}"
   unless productPathCapableWriteDualEqualityLive do
     IO.eprintln "error: productPathCapableWriteDualEqualityLive pin false"
     throw (IO.userError "dual-eq live pin")
@@ -183,12 +114,12 @@ def freestandingCapableWriteFreestandingHc (root : System.FilePath) : IO Unit :=
   for spec in dualSsotSpecs do
     let path := emitDir / spec.base
     let one <- freestandingCapableWriteLoadOneSsot path spec
-    IO.println s!"  dual-eq ok: {path} ({spec.token}; {spec.headerBlock}/{spec.bodyBlock} == Lean fragment)"
+    IO.println s!"  loaded: {path} ({spec.token}; {spec.headerBlock}/{spec.bodyBlock})"
     loaded := loaded ++ [one]
   if loaded.isEmpty then
     IO.eprintln "error: no dual SSOT loaded for write"
     throw (IO.userError "empty write inputs")
-  IO.println s!"  {dualEqualityGateId}: Banner + Mult..Body HEADER/BODY match Lean Emit* fragments"
+  IO.println s!"  {dualEqualityGateId}: loaded dual SSOT records"
   requireFile tmplH "header template"
   requireFile tmplC "source template"
   let th <- IO.FS.readFile tmplH
@@ -198,7 +129,7 @@ def freestandingCapableWriteFreestandingHc (root : System.FilePath) : IO Unit :=
     throw (IO.userError "empty template")
   let bodyDialectPath := emitDir / "host_emit_body_fragment.ssot.txt"
   let dialect <- loadBodySsotDialect bodyDialectPath
-  IO.println "  HOST-EMIT-SSOT dialect keys loaded (EMPTY_FRAGMENT + HEADER_*/TAG_*)"
+  IO.println s!"  dialect file: {bodyDialectPath}"
   let header <- assembleHeaderFromSsot th loaded
   let sourceRaw <- assembleSourceFromSsot tc loaded
   let source <- applyBodySsotDialect sourceRaw dialect
@@ -221,7 +152,7 @@ def freestandingCapableWriteFreestandingHc (root : System.FilePath) : IO Unit :=
     "HOST-EMIT-COMPOSE", "HOST-EMIT-PLAN", "HOST-EMIT-APPLY", "HOST-EMIT-BODY",
     "HOST-EMIT-SSOT"
   ] ++ productWireHonestyTokens)
-  -- Dialect embed honesty (parity with FreestandingEmit.validateProduct source checks).
+  -- Source must contain dialect.headerOpen and dialect.emptyFragment, and no __SSOT_ substring.
   unless containsStr sourceWritten dialect.headerOpen do
     IO.eprintln s!"error: {outC} missing SSOT HEADER_OPEN dialect string"
     throw (IO.userError "missing HEADER_OPEN embed")
@@ -231,25 +162,22 @@ def freestandingCapableWriteFreestandingHc (root : System.FilePath) : IO Unit :=
   if containsStr sourceWritten "__SSOT_" then
     IO.eprintln s!"error: {outC} still has unsubstituted __SSOT_* dialect placeholders"
     throw (IO.userError "ssot placeholder remain after write")
-  IO.println s!"GREEN {stageId}: freestanding-capable dual-eq wrote emit wire under {emitDir}/"
+  IO.println s!"GREEN {stageId}: wrote {emitHeaderBase} and {emitSourceBase} under {emitDir}/"
   IO.println s!"  wrote: {outH} ({headerWritten.length} chars)"
   IO.println s!"  wrote: {outC} ({sourceWritten.length} chars)"
-  IO.println "  FREESTANDING-CAPABLE-STEP-CONTRACT-WRITE-HC advanced (no-emit dual-eq authority)"
-  IO.println "  HOST-EMIT-SSOT dialect applied (no __SSOT_* remain; HEADER_OPEN + EMPTY_FRAGMENT present)"
-  IO.println "  honest: CAPABLE-GAP closed (Capable WRITE is dual-equality); perform claimed false"
-  IO.println "  honest: Full step-contract unsatisfied; complete false; not residual free"
-  IO.println "  B14 productPathFreestandingCapableWriteHc true after B28 (just freestanding-capable-write-hc-lake-free)"
-  IO.println "  not Out install alone (B10); not B13 FreestandingEmit.emitAtRoot product path"
-  IO.println "  living tip B38: freestanding-capable-regenerate owns official just build (FreestandingEmit retired)"
+  IO.println "  source has dialect.headerOpen and dialect.emptyFragment; no __SSOT_ substring"
+  IO.println s!"  Full pin: {productPathFreestandingCapableStepContractFullSatisfied}"
+  IO.println s!"  recipe name: {justRecipeName}"
+  IO.println s!"  lake-free recipe name, not run: {lakeFreeRecipeName}"
 
-/-- Drop lake/exe separators so root path is first real arg. -/
+/-- Drop every "--" entry. Keep every other argument in order. -/
 def filterArgs : List String -> List String
   | [] => []
   | "--" :: rest => filterArgs rest
   | a :: rest => a :: filterArgs rest
 
-/-- Surface ok: stage ids + authority-not-emit + dual-eq live + named API + Lake honest.
-    Greppable: productPathFreestandingCapableWriteHcOk. -/
+/-- True exactly for the comparisons below. stageId and dualEqualityGateId
+    are not defined in this file. lakeFreeRecipeName is not one of them. -/
 def productPathFreestandingCapableWriteHcOk : Bool :=
   (stageId == "SLAKE_SELF_HOST_PRODUCT_PATH_FREESTANDING_CAPABLE_WRITE_HC_V0")
     && (hostId == "HOST-SELF-HOST-PRODUCT-PATH-FREESTANDING-CAPABLE-WRITE-HC")
@@ -268,29 +196,14 @@ def productPathFreestandingCapableWriteHcOk : Bool :=
     && (emitHeaderBase == "slake_freestanding.h")
     && (emitSourceBase == "slake_freestanding.c")
 
-/-- Land-time Full step-contract long-name pin (false at B18 land; living tip
-    stepContractFull true after later cliffs). Greppable:
-    productPathFreestandingCapableStepContractFullSatisfied. -/
-def productPathFreestandingCapableStepContractFullSatisfied : Bool := false
-
-/-- WRITE-HC PartialReady fold (closed B18 substrate: Ok + authority-not-emit +
-    DependsOnLake + Full long-name false). Historical readiness bulk for
-    freestanding-capable WRITE-HC. SelfApplyFs living tip re-exports a chain fold
-    that includes this def for greppable dual-pin + B17 Compose PartialReady.
-    Land-time module pins: AuthorityNotEmit true; DependsOnLake true; Full
-    long-name false (living tip allows perform / ownership / stepContractFull /
-    complete true after later cliffs). Does not flip residual free / llvm / PROVABLY.
-    Greppable: productPathFreestandingCapableWriteHcPartialReady,
-    SELF-HOST-PRODUCT-PATH-FREESTANDING-CAPABLE-WRITE-HC,
-    freestandingCapableWriteFreestandingHc. -/
+/-- Ok, authority-not-emit, Lake-dependence, and Full bool false. -/
 def productPathFreestandingCapableWriteHcPartialReady : Bool :=
   productPathFreestandingCapableWriteHcOk
     && productPathFreestandingCapableWriteHcAuthorityNotEmit
     && productPathFreestandingCapableWriteHcDependsOnLake
     && !productPathFreestandingCapableStepContractFullSatisfied
 
-/-- WRITE-HC PartialReady holds. Greppable:
-    productPathFreestandingCapableWriteHcPartialReady_true. -/
+/-- Proof in this file: PartialReady reduces to true. -/
 theorem productPathFreestandingCapableWriteHcPartialReady_true :
     productPathFreestandingCapableWriteHcPartialReady = true := by
   decide
@@ -298,7 +211,7 @@ theorem productPathFreestandingCapableWriteHcPartialReady_true :
 example : productPathFreestandingCapableWriteHcPartialReady = true := by
   decide
 
-/-- CLI: optional repo root argument (default cwd). -/
+/-- First remaining argument is the repo root. Default path is ".". -/
 def main (args : List String) : IO UInt32 := do
   let root : System.FilePath :=
     match filterArgs args with
@@ -316,6 +229,4 @@ def main (args : List String) : IO UInt32 := do
 
 end SystemsLean.CapableWriteHc
 
--- Lake entry is SystemsLean.CapableWriteHcMain (no top-level
--- main here so freestanding-capable ordered regenerate and SelfApplyFs may import
--- this API / Ok / PartialReady bulk without main clash).
+-- main is SystemsLean.CapableWriteHc.main. This file has no top-level main.

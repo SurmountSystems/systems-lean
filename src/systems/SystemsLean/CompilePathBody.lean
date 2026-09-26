@@ -2,7 +2,7 @@
   SYSTEMS_LEAN_HOST partial -- Body unit compile-path fixture (COMPILE-PATH-BODY).
   Side: classic Lean elaborator under src/systems/ (not freestanding C).
   Owns Body end-to-end compile-path fixture only: multi-node ordered IR ->
-  host mark+mint -> bodyFromCompose / bodyOk -> unitCompileReady + HOST-EMIT-BODY.
+  host mark+mint (unitCompileReady) -> bodyFromCompose / bodyOk -> HOST-EMIT-BODY.
   Core compile bars and shared fixture helpers live in SystemsLean.CompilePath.
   Does NOT claim residual free / product self-host complete / proof complete /
   llvm unlock / full Slake compiler.
@@ -29,10 +29,11 @@ open SystemsLean.HostCompose (Host)
 /-! ### COMPILE-PATH-BODY / BODY-FIXTURE (Track 2 Body unit end-to-end)
 
   Named Body fixture: multi-node ordered IR (ERASED/LINEAR/VALUE so plan ready
-  and apply valid) -> host compose mark MULT-0 + mint MULT-1 (mint id 12) ->
-  bodyFromCompose / bodyOk buffer readiness (markers / r/e / tagCount /
-  HOST-EMIT-SSOT fragment) -> unitCompileReady + HOST-EMIT-BODY product text
-  honesty. Mint-id honesty: Body uses 12 so Mult=4 Types=5 Program=6 Linear=7
+  and apply valid) -> host compose mark MULT-0 + mint MULT-1 (mint id 12)
+  with unitCompileReady -> bodyFromCompose / bodyOk buffer readiness
+  (markers / r/e / tagCount / HOST-EMIT-SSOT fragment) -> HOST-EMIT-BODY
+  product text honesty.
+  Mint-id honesty: Body uses 12 so Mult=4 Types=5 Program=6 Linear=7
   Graph=8 Compose=9 Plan=10 Apply=11 stay other fixtures. Same bodyFromCompose
   FAIL-CLOSED plan+apply path as EmitBody.lean host API; e2e bar lives here.
   Does NOT claim residual free / product self-host complete / proof complete /

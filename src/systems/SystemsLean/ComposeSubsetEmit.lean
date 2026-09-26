@@ -22,8 +22,9 @@
   Short role name (not ProductPathFreestandingComposeSubset kitchen-sink).
   Honesty dual evidence: composeSubsetEmitWroteExpected is a structural package
   identity pin only (banner + Compose fragments equal expected assembly). Actual
-  on-disk file write is proven by lake exe composeSubsetEmitWrite (IO.FS.writeFile)
-  plus just compose-subset-emit greps on emit/slake_compose_subset.{h,c}. Do not
+  on-disk file write is proven by composeSubsetEmitWrite (IO.FS.writeFile),
+  run via lake exe slake-compose-subset-emit, plus just compose-subset-emit
+  greps on emit/slake_compose_subset.{h,c}. Do not
   read the Lean Bool alone as filesystem write proof.
   Red/green: lake build SystemsLean.ComposeSubsetEmit; lake exe slake-compose-subset-emit;
   just compose-subset-emit. Module must stay ASCII.
@@ -134,7 +135,8 @@ def composeSubsetHeaderPackage : String :=
 def composeSubsetSourcePackage : String :=
   composeSubsetSourceBanner ++ composeBodyFragment
 
-/-- Package text honesty: banners + Compose dialect pieces present.
+/-- Dialect readiness, emit basenames, and banner literals.
+    Not assembled package text and not Compose fragment text.
     Greppable: composeSubsetEmitPackageOk. -/
 def composeSubsetEmitPackageOk : Bool :=
   composeSubsetEmitComposeDialectOk
@@ -308,13 +310,13 @@ example : lakeExeName = "slake-compose-subset-emit" := rfl
 example : emitHeaderBase = "slake_compose_subset.h" := rfl
 example : emitSourceBase = "slake_compose_subset.c" := rfl
 
-/-- Require path exists as a file. -/
+/-- Require the path exists (`pathExists`, not a regular-file check). -/
 def requireFile (p : System.FilePath) (label : String) : IO Unit := do
   unless (<- p.pathExists) do
     IO.eprintln s!"error: missing {label}: {p}"
     throw (IO.userError s!"missing {label}")
 
-/-- True if `hay` contains substring `needle` (ASCII scan). -/
+/-- True if `hay` contains substring `needle` (`splitOn` length greater than 1). -/
 def containsSub (hay needle : String) : Bool :=
   (hay.splitOn needle).length > 1
 

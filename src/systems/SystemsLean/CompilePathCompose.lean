@@ -2,8 +2,9 @@
   SYSTEMS_LEAN_HOST partial -- Compose unit compile-path fixture (COMPILE-PATH-COMPOSE).
   Side: classic Lean elaborator under src/systems/ (not freestanding C).
   Owns Compose end-to-end compile-path fixture only: multi-node ordered IR +
-  chain edges -> host mark+mint + ConsumeToken exact-once ->
-  unitCompileReady + HOST-EMIT-COMPOSE.
+  chain edges, then host mark+mint (unitCompileReady while the mint is live).
+  ConsumeToken exact-once clears that live mint, so the spent host is not
+  unitCompileReady. HOST-EMIT-COMPOSE is product-text honesty beside that path.
   Core compile bars and shared fixture helpers live in SystemsLean.CompilePath.
   Does NOT claim residual free / product self-host complete / proof complete /
   llvm unlock / full Slake compiler.
@@ -29,9 +30,11 @@ open SystemsLean.HostCompose (Host)
 /-! ### COMPILE-PATH-COMPOSE / COMPOSE-FIXTURE (Track 2 Compose unit end-to-end)
 
   Named Compose fixture: multi-node ordered IR (3-node ERASED/LINEAR/VALUE) +
-  chain edges 0->1, 1->2 -> host compose mark MULT-0 + mint MULT-1 +
-  ConsumeToken mint/consume exact-once -> unitCompileReady + HOST-EMIT-COMPOSE
-  product text honesty. Same kind/mult + edge pairing as GRAPH-FIXTURE; e2e bar
+  chain edges 0->1, 1->2, then host compose mark MULT-0 + mint MULT-1.
+  That live host meets unitCompileReady. ConsumeToken mint/consume exact-once
+  is a separate conjunct: the spent host is not unitCompileReady.
+  HOST-EMIT-COMPOSE is product text honesty, not a result of consume.
+  Same kind/mult + edge pairing as GRAPH-FIXTURE; e2e bar
   targets host compose product text (EmitCompose) and mint/consume/mark path
   (Graph e2e stops at HOST-EMIT-GRAPH without consume conjunct).
   Does NOT claim residual free / product self-host complete / proof complete /
@@ -211,9 +214,11 @@ def composeFixtureLlvmUnlocked : Bool := false
 /-- composeFixtureCompilePathReady -- end-to-end Compose unit compile path (Track 2).
     Multi-node ordered IR + edges + mark+mint unit bar + mint/consume exact-once +
     HOST-EMIT-COMPOSE emit path + free/complete/proof/llvm stay false.
-    Minimal independent conjuncts: composeFixtureComposeReady already folds
-    edges + mint id + mark; composeFixtureEdgesOk and programReady are explicit
-    lower-path bars (not dual folds of ready).
+    composeFixtureComposeReady already folds edges + mint id + mark.
+    composeFixtureEdgesOk and programReady are separate lower-path bars, not
+    calls of composeFixtureComposeReady. The top-level gradeSurfaceOk conjunct
+    repeats the gradeSurfaceOk check inside composeFixtureProgramReady.
+    composeFixtureComposeRawUnready is a separate conjunct (raw host unready).
     Greppable: composeFixtureCompilePathReady, COMPILE-PATH-COMPOSE, COMPOSE-FIXTURE,
     HOST-COMPILE-PATH, HOST-EMIT-COMPOSE. -/
 def composeFixtureCompilePathReady : Bool :=
@@ -310,7 +315,9 @@ theorem lowerComposeFixtureCompose_isSome :
 /-! ### COMPILE-PATH-COMPOSE-SMOKE (Compose fixture end-to-end; lake fails if examples fail)
     Greppable: COMPILE-PATH-COMPOSE-SMOKE, COMPOSE-FIXTURE, COMPILE-PATH-COMPOSE. -/
 
-/-- COMPILE-PATH-COMPOSE-SMOKE: multi-node ordered IR + chain edges 0->1, 1->2. -/
+/-! COMPILE-PATH-COMPOSE-SMOKE: ordered IR lower is some, length 3, and program-ready.
+    Chain edges 0->1, 1->2 are checked on the raw host, not on the program lower.
+    Mint id is 9. -/
 example : (lowerComposeFixtureProgram.isSome) = true := by decide
 example : composeFixtureProgram.nodes.length = 3 := by decide
 example : programCompileReady composeFixtureProgram = true := by decide
@@ -325,7 +332,8 @@ example :
            && composeFixtureChainEdgesOk hc.graph.edges
      | none => false) = true := by decide
 
-/-- COMPILE-PATH-COMPOSE-SMOKE: raw Compose fails; mark+mint unit-ready with edges. -/
+/-! COMPILE-PATH-COMPOSE-SMOKE: raw compose fails the unit bar.
+    Later examples in this block check mark+mint unit-ready with chain edges. -/
 example : composeFixtureComposeRawUnready = true := by decide
 example : composeFixtureComposeReady = true := by decide
 example :

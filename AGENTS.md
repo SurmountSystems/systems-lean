@@ -114,6 +114,10 @@ Operator 2026-09-22 says keep five implementor L2 coordinators until /home/hunte
 
 Stop using Grok 4.6 to do the wrap work. New wrap coordinators and the specialists they spawn use grok-4.7. Say xhigh in the specialist prompt.
 
+### Never use Grok 4.6 (operator 2026-09-26)
+
+Never use Grok 4.6 for any subagent. Not a coordinator, not a specialist, not a resume. The operator will end a subagent that is Grok 4.6. Every spawn passes model `grok-4.7`. Say xhigh in the specialist prompt. If the main session is Grok 4.6, omitting the model inherits Grok 4.6, so an omitted model is forbidden. The older sentence above is only the wrap-work case. This subsection is the ban. Dual-pin: `~/.grok/AGENTS.md` same heading.
+
 Five implementors must stay in play. A coordinator that exits in under a minute with zero tool calls is not an implementor in play. Keep more than five L2 coordinators on disjoint files so that when one exits immediately, five are still working. Do not put two coordinators on one file. Do not start a second writer on a file that already has a writer. The working target stays five files being wrapped. The extra coordinators are the buffer. They are not a new occupancy count and not a new host-tool count.
 
 ### Five L2 coordinators, not only nested specialists (operator 2026-09-25)
@@ -1502,13 +1506,34 @@ compile still runs on **surmount-1** (`ssh nixbuilder@surmount-1`, tree
 this mill compile. A mill that only runs on the laptop is a process miss: the
 operator cannot see it on remotebuilder btop, and the builder sits idle.
 
-**Closed-subset `lean --run` on horizon, Lake on surmount-1 (operator
-2026-09-20):** live `lean --run` of `SlakeTypecheck*` drivers runs on
-**horizon**, niced, `LEAN_NUM_THREADS=1`. That is allowed. It is mill-class
-RSS, not OccupancyProbe. **Lake** still runs only on **surmount-1** through
-the standing `[lake-coord]` L2. Host-tools mill `just N-host-tool` (lean then
-leanc) still runs on surmount-1. Dual-pin: this subsection. Mill
-L2 rsyncs or copies as needed, then runs the just recipe on the builder. Shared
+**No local Lean or Lake compile (operator 2026-09-26):** Never allow a
+Lean compile or a Lake compile on horizon. A local Lean compile reached
+about 27 GiB resident on this laptop. That is not allowed. No `lean`,
+`lean --run`, `lean -o`, `lake`, `lake build`, compile-one, or
+list-check runs on this laptop. There is no exception for one module,
+a closed subset, or a short run. All of those run on **surmount-1**
+(`ssh nixbuilder@surmount-1`), niced 19. One Lake coordinator runs Lake
+on surmount-1. Do not start a second Lake. Do not restart the one-shot
+package walk. Dual-pin: `~/.grok/AGENTS.md` same heading.
+
+**L1 owns the inventory file (operator 2026-09-26):** L1 is the only
+agent that reads, edits, or manages `INVENTORY.md`. L1 dispenses one
+module name at a time to the named coordinators Adastria, Bellerophon,
+Callisto, Diaphenes, and Edmonton. Do not inform those coordinators
+about that file except to forbid reading it, modifying it, changing
+it, or discovering it. Do not tell them its contents, its count, or
+that it is their queue. They report the module result to L1. L1
+deletes the finished row and updates the count. An L2 does not edit
+that file. Dual-pin: `~/.grok/AGENTS.md` same heading.
+
+**Never use Grok 4.6 (operator 2026-09-26):** Never use Grok 4.6 for
+any subagent. Not a coordinator, not a specialist, not a resume. The
+operator will end a subagent that is Grok 4.6. Every spawn passes
+model `grok-4.7`. Say xhigh in the specialist prompt. If the main
+session is Grok 4.6, omitting the model inherits Grok 4.6, so an
+omitted model is forbidden. Dual-pin: `~/.grok/AGENTS.md` same heading.
+
+Mill L2 rsyncs or copies as needed, then runs the just recipe on the builder. Shared
 mill directory `build/first-host-tool/` lives on that tree. Do not start mill
 lean/leanc on horizon. Lake still goes only through the standing `[lake-coord]`
 L2. Mill is not Lake. Parent does not wait on the mill. Completion is a host

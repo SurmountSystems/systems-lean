@@ -1,0 +1,49 @@
+/-
+  SYSTEMS_LEAN_HOST partial -- package env core term imports.
+  Side: classic Lean elaborator under src/systems/ (not freestanding C).
+  Long-file split of HostModuleCheckPackageEnv. Role: the Mult through
+  ProductOutKernel term imports for the package elaborate env band.
+  Same namespace SystemsLean.HostModuleCheck.
+  Greppable: SYSTEMS_LEAN_HOST, HOST-MODULE-CHECK,
+  HostModuleCheckPackageEnvCoreTerms, PACKAGE-ELABORATE.
+  Module: SystemsLean.HostModuleCheckPackageEnvCoreTerms
+  Not FullHost. Not freestanding residual free. Not PROVABLY.
+  Module must stay ASCII.
+-/
+
+import SystemsLean.HostModuleCheckMultTerm
+import SystemsLean.HostModuleCheckLinearTerm
+import SystemsLean.HostModuleCheckTypesTerm
+import SystemsLean.HostModuleCheckIrProgramTerm
+import SystemsLean.HostModuleCheckIrGraphTerm
+import SystemsLean.HostModuleCheckHostComposeTerm
+import SystemsLean.HostModuleCheckErasureTerm
+import SystemsLean.HostModuleCheckExtractTerm
+import SystemsLean.HostModuleCheckEmitPlanTerm
+import SystemsLean.HostModuleCheckEmitApplyTerm
+import SystemsLean.HostModuleCheckEmitBodyTerm
+import SystemsLean.HostModuleCheckKernelMultTerm
+import SystemsLean.HostModuleCheckKernelLinearTerm
+import SystemsLean.HostModuleCheckKernelTypesTerm
+import SystemsLean.HostModuleCheckKernelProgramTerm
+import SystemsLean.HostModuleCheckKernelEmitTerm
+import SystemsLean.HostModuleCheckParityMultTerm
+import SystemsLean.HostModuleCheckParityLinearTerm
+import SystemsLean.HostModuleCheckParityTypesTerm
+import SystemsLean.HostModuleCheckParityProgramTerm
+import SystemsLean.HostModuleCheckParityEmitTerm
+import SystemsLean.HostModuleCheckEmitMultScaffoldTerm
+import SystemsLean.HostModuleCheckEmitLinearScaffoldTerm
+import SystemsLean.HostModuleCheckEmitTypesScaffoldTerm
+import SystemsLean.HostModuleCheckEmitProgramScaffoldTerm
+import SystemsLean.HostModuleCheckEmitGraphScaffoldTerm
+import SystemsLean.HostModuleCheckEmitComposeScaffoldTerm
+import SystemsLean.HostModuleCheckEmitErasureScaffoldTerm
+import SystemsLean.HostModuleCheckEmitExtractScaffoldTerm
+import SystemsLean.HostModuleCheckEmitBannerScaffoldTerm
+import SystemsLean.HostModuleCheckKernelSelfApplyTerm
+import SystemsLean.HostModuleCheckProductOutKernelTerm
+
+namespace SystemsLean.HostModuleCheck
+
+end SystemsLean.HostModuleCheck

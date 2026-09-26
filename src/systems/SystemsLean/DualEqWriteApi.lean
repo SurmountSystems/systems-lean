@@ -7,36 +7,47 @@
   requireDualSsotEqual against Lean Emit* fragments (Banner + Mult..Body),
   embed into freestanding templates, IO.FS.writeFile slake_freestanding.{h,c}.
   Does NOT import FreestandingEmit. Does NOT call emitAtRoot / renderHeader /
-  renderSource as product authority. Authority is this module + Emit* fragments.
+  renderSource as product authority. Write entry is this module. Load, compare,
+  assemble, dialect, and validate live in DualEqWriteLoad. Fragments are Emit*.
   B36: dual-equality WRITE API measured via just freestanding-perform-dual-
-  equality-write-api (Lake-free dual-pin + B35 close-path re-green). Does NOT
-  flip perform claimed. Does NOT switch just build. Does NOT close
-  dual-equality parity gap yet (CAPABLE-GAP remains next close-path step).
+  equality-write-api (Lake-free dual-pin + B35 close-path re-green). This
+  module does not flip its local perform-claimed pin. It does not switch
+  just build. Its local parity-gap pin stays open. CAPABLE-GAP is the next
+  close-path step named here. This module does not close that step.
   Dual-pin thin batch 27: home-primary Ok / stageId / hostId / recipe / exe /
   FREESTANDING-PERFORM-DUAL-EQUALITY-WRITE-API-* step ids; SelfApplyFs tip keeps
   five API honesty bools + freestandingDualEqualityWriteFreestandingHc cite +
-  PartialReady chain fold only. Short-name deferred (long ProductPath* basename).
+  PartialReady chain fold only. Module basename is DualEqWriteApi. Long
+  productPath* definition names remain.
   productPathFreestandingPerformDualEqualityWriteApiMeasured true (this partial).
   productPathDualEqualityWriteApiPresent true (API + dual-equality + write live).
   productPathDualEqualityWriteApiAuthorityNotEmit true (no FreestandingEmit).
-  productPathDualEqualityWriteApiNotOfficial true (not just build).
+  productPathDualEqualityWriteApiNotOfficial true (not just build; tip agrees).
   productPathDualEqualityWriteApiStepAdvanced true (DUAL-EQUALITY-API step).
-  productPathDualEqualityWriteParityGapOpen true (stays open; Capable WRITE still
-  structural; CAPABLE-GAP not closed this slice).
-  productPathCapableWriteStructuralNotDualEquality true (Capable WRITE remains
-  structural; dual-eq freestanding WRITE is this new API, not Capable rebrand).
-  productPathFreestandingPerformClaimed stays false (proved): official path still
-  FreestandingEmit / Lake (just build; productPathPerformDependsOnLake true).
-  productPathOfficialPathStillUsesFreestandingEmit stays true.
-  productPathOfficialPathRetireFreestandingEmitRequired stays true.
-  productPathOfficialPathDualEqualityBlocksRetirement stays true (official path
-  still FreestandingEmit; freestanding dual-eq API is alternate not retirement).
-  FULL-BAR-REQ-PERFORM-CLAIMED-WITH-EVIDENCE stays open until official path
-  retires FreestandingEmit with dual-equality freestanding evidence.
-  Full / ownership claimed / complete stay false. free / llvm / PROVABLY stay false.
+  productPathDualEqualityWriteParityGapOpen true is this module's land-time pin.
+  This slice does not close the gap. The living tip's same-named pin is false.
+  productPathCapableWriteStructuralNotDualEquality true here. This API is not
+  CapableWriteHc. That file does not call requireDualSsotEqual.
+  productPathFreestandingPerformClaimed is false here (PartialReady needs that).
+  That local pin is not the SelfApplyFs claim SSoT. The tip's perform claimed
+  is true. Do not flip this local false.
+  productPathPerformDependsOnLake is true here. The tip's same-named pin is false.
+  productPathOfficialPathStillUsesFreestandingEmit is true here. The tip's
+  same-named pin is false (FreestandingEmit retired on the tip).
+  productPathOfficialPathStillUsesLake is true here. The tip's same-named pin
+  is false.
+  productPathOfficialPathRetireFreestandingEmitRequired is true here. The tip's
+  same-named pin is false.
+  productPathOfficialPathDualEqualityBlocksRetirement is true here. The tip's
+  same-named pin is false. This API is still not official retirement.
+  FULL-BAR-REQ-PERFORM-CLAIMED-WITH-EVIDENCE is a token in this module. The
+  living tip records that requirement closed with evidence.
+  This module's long-name Full step-contract pin stays false. On the living tip,
+  ownership claimed, stepContractFull, and freestandingProductSelfHostComplete
+  are true. free / llvm / PROVABLY stay false.
   Lake exe: slake-freestanding-perform-dual-equality-write-api
   (just freestanding-perform-dual-equality-write-api-measure).
-  Lake-free API measure: just freestanding-perform-dual-equality-write-api.
+  Lake-free API recipe: just freestanding-perform-dual-equality-write-api.
 
   Greppable: SYSTEMS_LEAN_HOST,
   SLAKE_SELF_HOST_PRODUCT_PATH_PERFORM_DUAL_EQUALITY_WRITE_API_V0,
@@ -85,7 +96,8 @@
   Not freestanding emit residual free. Not residual free. Not PROVABLY.
   Module: SystemsLean.DualEqWriteApi
   Load helpers: SystemsLean.DualEqWriteLoad (same namespace).
-  Batch-7 split: PartialReady bulk authority lives here; SelfApplyFs re-exports chain fold.
+  Batch-7 split: PartialReady bulk authority lives here. SelfApplyFsClose
+  (namespace SelfApplyFs) chain-folds that PartialReady. It does not Lean-export it.
   Long-file peel: dual SSOT load/assemble/dialect/validate peeled to DualEqWriteLoad.
   Module must stay ASCII.
 -/
@@ -123,10 +135,10 @@ def hostId : String :=
 def selfHostId : String :=
   "SELF-HOST-PRODUCT-PATH-PERFORM-DUAL-EQUALITY-WRITE-API"
 
-/-- B36 dual-equality WRITE API measured (substrate; not gap closed; not perform
-    claimed). just freestanding-perform-dual-equality-write-api dual-pins real
-    freestanding dual-equality WRITE API present while gap stays open and official
-    path still FreestandingEmit. Greppable:
+/-- B36 dual-equality WRITE API measured (this module's substrate pin).
+    just freestanding-perform-dual-equality-write-api dual-pins the API present.
+    This module's gap-open pin and StillUsesFreestandingEmit pin stay true.
+    Those are land-time pins, not the living tip. Greppable:
     productPathFreestandingPerformDualEqualityWriteApiMeasured,
     FREESTANDING-PERFORM-DUAL-EQUALITY-WRITE-API. -/
 def productPathFreestandingPerformDualEqualityWriteApiMeasured : Bool := true
@@ -146,52 +158,51 @@ def productPathDualEqualityWriteApiAuthorityNotEmit : Bool := true
     FREESTANDING-PERFORM-DUAL-EQUALITY-WRITE-API-NOT-OFFICIAL. -/
 def productPathDualEqualityWriteApiNotOfficial : Bool := true
 
-/-- Close-path step DUAL-EQUALITY-API advanced (API live; not CAPABLE-GAP closed).
+/-- Close-path step DUAL-EQUALITY-API advanced (API live). This step does not
+    close CAPABLE-GAP. A later living-tip module records that step closed.
     Greppable: productPathDualEqualityWriteApiStepAdvanced,
     FREESTANDING-PERFORM-DUAL-EQUALITY-WRITE-API-STEP-ADVANCED,
     FREESTANDING-DUAL-EQUALITY-WRITE-CLOSE-STEP-DUAL-EQUALITY-API. -/
 def productPathDualEqualityWriteApiStepAdvanced : Bool := true
 
-/-- productPathFreestandingPerformClaimed stays false until official product path
-    performs ordered regenerate without Lake elaborating FreestandingEmit and
-    with dual-equality freestanding evidence. Dual-equality WRITE API is not
-    perform claimed. Greppable: productPathFreestandingPerformClaimed.
-    Dual-pin note: SelfApplyFs is the claim-bool SSoT; this module repeats false for
-    module-local Ok / pure Nix scan. Both must stay false until official path
-    retires FreestandingEmit (do not flip only one). -/
+/-- Land-time pin. This module's productPathFreestandingPerformClaimed is false.
+    PartialReady in this file requires the negation, so the false pin is proved
+    with that fold. SelfApplyFs is the claim-bool SSoT and its
+    productPathFreestandingPerformClaimed is true. Do not flip this local false
+    to match the tip. Ok in this file also requires false.
+    Greppable: productPathFreestandingPerformClaimed. -/
 def productPathFreestandingPerformClaimed : Bool := false
 
-/-- Official product path regenerate still DependsOnLake (FreestandingEmit via
-    just build). Greppable: productPathPerformDependsOnLake. -/
+/-- Land-time pin true in this module. SelfApplyFs.productPathPerformDependsOnLake
+    is false. Greppable: productPathPerformDependsOnLake. -/
 def productPathPerformDependsOnLake : Bool := true
 
 /-- B35 dual-equality WRITE close path remains measured (prerequisite substrate). -/
 def productPathFreestandingPerformDualEqualityWriteClosePathMeasured : Bool := true
 
-/-- Dual-equality WRITE parity gap stays open (API present != gap closed;
-    CAPABLE-GAP close-path step still open). Greppable:
-    productPathDualEqualityWriteParityGapOpen,
+/-- Land-time pin true (open) in this module. API present here is not this
+    file closing the gap. The living tip's same-named pin is false.
+    Greppable: productPathDualEqualityWriteParityGapOpen,
     FREESTANDING-PERFORM-DUAL-EQUALITY-WRITE-PARITY-GAP-OPEN. -/
 def productPathDualEqualityWriteParityGapOpen : Bool := true
 
-/-- freestandingCapableWriteFreestandingHc is still structural HEADER/BODY embed
-    only (not this dual-equality API). Greppable:
+/-- This module's pin stays true: Capable WRITE is not this dual-equality API.
+    CapableWriteHc does not call requireDualSsotEqual. Greppable:
     productPathCapableWriteStructuralNotDualEquality. -/
 def productPathCapableWriteStructuralNotDualEquality : Bool := true
 
-/-- Official path still uses FreestandingEmit as product writer. -/
+/-- Land-time pin true in this module. The living tip's same-named pin is false. -/
 def productPathOfficialPathStillUsesFreestandingEmit : Bool := true
 
-/-- Official path still uses classic Lean Lake host elaborator. -/
+/-- Land-time pin true in this module. The living tip's same-named pin is false. -/
 def productPathOfficialPathStillUsesLake : Bool := true
 
-/-- Retiring FreestandingEmit as official product authority is still required
-    before perform claimed may flip true. -/
+/-- Land-time pin true in this module. The living tip's same-named pin is false,
+    and the tip's perform claimed is already true. Do not flip this local pin. -/
 def productPathOfficialPathRetireFreestandingEmitRequired : Bool := true
 
-/-- Dual-equality still blocks retiring FreestandingEmit as official writer until
-    official path uses freestanding dual-equality WRITE evidence. API present is
-    not official retirement. Greppable:
+/-- Land-time pin true in this module. The living tip's same-named pin is false.
+    API present here is still not official retirement. Greppable:
     productPathOfficialPathDualEqualityBlocksRetirement. -/
 def productPathOfficialPathDualEqualityBlocksRetirement : Bool := true
 
@@ -216,7 +227,9 @@ def closeStepDualEqualityApi : String :=
 def closeStepCapableGap : String :=
   "FREESTANDING-DUAL-EQUALITY-WRITE-CLOSE-STEP-CAPABLE-GAP"
 
-/-- Full-bar perform claimed requirement (still open; API != claimed). -/
+/-- Token for the full-bar perform-claimed requirement. This module does not
+    record that requirement as still open. The living tip records it closed.
+    This module's local perform-claimed pin stays false. -/
 def fullBarReqPerformClaimedWithEvidence : String :=
   "FULL-BAR-REQ-PERFORM-CLAIMED-WITH-EVIDENCE"
 
@@ -445,14 +458,15 @@ def printDualEqualityWriteApiMeasure (root : System.FilePath) : IO Unit := do
   IO.println s!"GREEN {stageId}: dual-equality WRITE API surface ok (measured true; present true; authority not emit; not official; step advanced; gap open true; perform claimed false; DependsOnLake true; dual-equality blocks; Full false)"
 
 /-- Dual-equality WRITE API PartialReady fold (closed B36). Historical readiness
-    bulk for freestanding perform dual-equality WRITE API. SelfApplyFs living tip
-    re-exports a chain fold that includes this def for greppable dual-pin + B35
-    close-path PartialReady. Land-time module pins: gap open true; Capable
-    structural not dual-equality true; perform claimed false; StillUses
-    FreestandingEmit true; dual-equality blocks true; Full long-name false
-    (living tip allows perform / ownership / stepContractFull / complete true
-    and StillUses false / gap closed after later cliffs). Does not flip residual
-    free / llvm / PROVABLY.
+    bulk for freestanding perform dual-equality WRITE API. SelfApplyFsClose
+    (namespace SelfApplyFs) chain-folds this def for greppable dual-pin + B35
+    close-path PartialReady. It does not Lean-export this def. Land-time module
+    pins: gap open true; Capable structural not dual-equality true; perform
+    claimed false; StillUses FreestandingEmit true; dual-equality blocks true;
+    Full long-name false. The living tip has perform, ownership,
+    stepContractFull, and freestandingProductSelfHostComplete true, and
+    StillUses false, with the parity gap closed after later cliffs. Does not
+    flip residual free / llvm / PROVABLY.
     Greppable: productPathFreestandingPerformDualEqualityWriteApiPartialReady,
     SELF-HOST-PRODUCT-PATH-PERFORM-DUAL-EQUALITY-WRITE-API,
     FREESTANDING-PERFORM-DUAL-EQUALITY-WRITE-API. -/

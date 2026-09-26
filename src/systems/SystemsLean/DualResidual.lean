@@ -36,8 +36,10 @@
     HOST-RESIDUAL / PRODUCT-WIRE-RESIDUAL / EMIT-BOUNDARY cites.
   - dualResidualReady: ProductPath.productPathCloseReady && surface &&
     surfacesDistinct && !host remains && host free claimed && product residual
-    gone && residual free claimed && complete true; llvm unlock orthogonal
-    (living pin may be true); PROVABLY may be true.
+    gone && measure cited && measure agrees && residual free claimed &&
+    productSelfHostCompleteClaimed &&
+    SelfApplyFs.freestandingProductSelfHostComplete; llvm unlock stays
+    orthogonal (living pin may be true); PROVABLY may be true.
   - residualFreeMeasureAgreesFree: measure cited + free claimed + product
     residual gone (measure alone never forged free; free is deliberate).
   - dualResidualDoesNotForgeHostFree: ready && host free true && !host remains
@@ -267,7 +269,9 @@ def dualResidualSurfacesDistinct : Bool :=
 /-- dualResidualReady -- dual residual honesty bar after host + product free.
     FAIL-CLOSED: productPathCloseReady && surface && surfacesDistinct &&
     !host remains && host free claimed && product residual gone && free claimed &&
-    complete true && measure agrees free. llvm unlock orthogonal (living pin
+    productSelfHostCompleteClaimed &&
+    SelfApplyFs.freestandingProductSelfHostComplete &&
+    measure agrees free. llvm unlock orthogonal (living pin
     may be true after unlock residual); PROVABLY may be true.
     Honest scope: product residual free claimed; host elaborator residual free
     claimed; does not re-open product residual; NOT full LLVM backend;
@@ -312,6 +316,9 @@ def dualResidualOk : Bool := dualResidualReady
     dualResidualOk_eq_ready, DualResidualTheorems.
     Import SystemsLean.DualResidualTheorems from the package root. Core claim
     Bools + ready surface stay here -- host residual free claimed; product free
-    claimed; complete true via SelfApplyFs alias; not llvm / PROVABLY unlock. -/
+    claimed; productSelfHostCompleteClaimed is literal true, and
+    dualResidualReady also requires
+    SelfApplyFs.freestandingProductSelfHostComplete; not an alias;
+    not llvm / PROVABLY unlock. -/
 
 end SystemsLean.DualResidual

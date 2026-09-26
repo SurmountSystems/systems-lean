@@ -54,7 +54,7 @@ Take the release tree [out/freestanding-c/](out/freestanding-c/) (or a subtree /
 git clone <this-repo> && cd <checkout>   # directory may be named iso; project is Systems Lean
 git submodule update --init --recursive  # ref/* and skills/* as needed
 nix develop                              # elan, idris2, just, and friends when using the flake shell
-elan toolchain install "$(tr -d '[:space:]' < src/systems/lean-toolchain)"   # once; pin leanprover/lean4:v4.32.0
+elan toolchain install "$(tr -d '[:space:]' < src/systems/lean-toolchain)"   # once; pin leanprover/lean4:v4.34.1
 just build                               # regenerate freestanding emit + install out/freestanding-c
 just check                               # full suite (hygiene, host/emit gates, CompCert matrix when ccomp is on PATH)
 ```
@@ -147,7 +147,7 @@ just build        # product freestanding wire (emit + out/freestanding-c)
 
 LLVM unit text recipes live in [just/README.md](just/README.md) (unlocked, not a full backend).
 
-Lean elaborator pin is `leanprover/lean4:v4.32.0` (`src/systems/lean-toolchain`, `src/lean4/lean-toolchain`).
+Lean elaborator pin is `leanprover/lean4:v4.34.1` (`src/systems/lean-toolchain`, `src/lean4/lean-toolchain`).
 In the dev shell: `elan toolchain install "$(tr -d '[:space:]' < src/systems/lean-toolchain)"` once.
 Workspace checks skip Lake when the pin is not installed (no surprise network download).
 

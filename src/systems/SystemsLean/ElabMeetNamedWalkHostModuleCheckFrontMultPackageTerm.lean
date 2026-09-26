@@ -108,7 +108,7 @@
     named members of the closed set, not extra plus-ones.
     Do not plant live HostModuleCheckFrontMultPackageTerm.lean.
   - slakeOwnsPackageTypecheck stays false. FullHost stays false.
-    Do not claim 48. Living tip stays 47 of about 206.
+    This file does not set an occupancy count. Occupancy stays 49 names. Do not claim 50.
 
   Greppable: SYSTEMS_LEAN_HOST, HOST-ELAB-MEET, SLAKE_ELAB_MEET,
   tryCompileOnDiskModule, tryCompileOnDiskModuleIO,

@@ -1,0 +1,86 @@
+/-
+  SYSTEMS_LEAN_HOST -- Slake typechecks live
+  SystemsLean.HostModuleCheckExtractSubsetRebuildTerm.
+  Short role: named driver for lean --run of
+  HostModuleCheckExtractSubsetRebuildTerm.lean.
+  Ready is HostFrontLiveHostModuleCheckExtractSubsetRebuildTerm parse plus
+  HostKernel.kernelCheck of live HostModuleCheckExtractSubsetRebuildTerm.lean,
+  not := true, not lake build
+  SystemsLean.HostModuleCheckExtractSubsetRebuildTerm.
+  Not mill. Not occupancy name 50. Not FullHost.
+  slakeOwnsPackageTypecheck stays false. Mill stays 69 of 69.
+  Not Lake-gone. Not the full src/systems package walk.
+  Not a speed claim.
+  Unique needles (trailing newline so other HostModuleCheck drivers are not prefix hits):
+  SlakeTypecheckHostModuleCheckExtractSubsetRebuildTerm
+  HOST-SLAKE-TYPECHECK-HOSTMODULECHECKEXTRACTSUBSETREBUILDTERM
+  SLAKE_TYPECHECK_HOSTMODULECHECKEXTRACTSUBSETREBUILDTERM_V0
+  PARSE-LIVE-HOSTMODULECHECKEXTRACTSUBSETREBUILDTERM
+  Greppable: SYSTEMS_LEAN_HOST,
+  slake-typecheck-hostmodulecheckextractsubsetrebuildterm,
+  slakeTypecheckHostModuleCheckExtractSubsetRebuildTermReady,
+  kernelCheckLiveHostModuleCheckExtractSubsetRebuildTermSource,
+  SKELETON.
+  Module: SystemsLean.SlakeTypecheckHostModuleCheckExtractSubsetRebuildTerm
+  Checkable writer: lean --run
+  (no mill; no lake).
+-/
+
+import SystemsLean.HostFrontLiveHostModuleCheckExtractSubsetRebuildTerm
+
+set_option maxRecDepth 32768
+set_option maxHeartbeats 100000000
+
+/-- Greppable stage id. -/
+def stageId : String :=
+  "SLAKE_TYPECHECK_HOSTMODULECHECKEXTRACTSUBSETREBUILDTERM_V0"
+
+/-- Greppable host map id. -/
+def hostId : String :=
+  "HOST-SLAKE-TYPECHECK-HOSTMODULECHECKEXTRACTSUBSETREBUILDTERM"
+
+/-- Named recipe string. Not lake build
+    SystemsLean.HostModuleCheckExtractSubsetRebuildTerm.
+    No just recipe is added for this driver. -/
+def justRecipeSlakeTypecheckHostModuleCheckExtractSubsetRebuildTerm : String :=
+  "slake-typecheck-hostmodulecheckextractsubsetrebuildterm"
+
+/-- Live file relative to repo root. Dual-pin path. -/
+def liveHostModuleCheckExtractSubsetRebuildTermRel : String :=
+  SystemsLean.HostFrontLiveHostModuleCheckExtractSubsetRebuildTerm.liveHostModuleCheckExtractSubsetRebuildTermRel
+
+/-- Ready names HostFrontLiveHostModuleCheckExtractSubsetRebuildTerm parse plus
+    kernelCheck, not := true.
+    Greppable: slakeTypecheckHostModuleCheckExtractSubsetRebuildTermReady,
+    kernelCheckLiveHostModuleCheckExtractSubsetRebuildTermSource. -/
+def slakeTypecheckHostModuleCheckExtractSubsetRebuildTermReady : Bool :=
+  SystemsLean.HostFrontLiveHostModuleCheckExtractSubsetRebuildTerm.hostFrontLiveHostModuleCheckExtractSubsetRebuildTermReady
+
+/-- Honesty: this command is not lake build of the product module. -/
+def slakeTypecheckHostModuleCheckExtractSubsetRebuildTermDoesNotUseLake : Bool := true
+
+/-- Honesty: FullHost stays false. -/
+def slakeTypecheckHostModuleCheckExtractSubsetRebuildTermFullHost : Bool := false
+
+/-- Honesty: package typecheck pin stays false. -/
+def slakeTypecheckHostModuleCheckExtractSubsetRebuildTermOwnsPackageTypecheck : Bool := false
+
+/-- lean --run entry: parse plus kernelCheck live
+    HostModuleCheckExtractSubsetRebuildTerm.lean.
+    Ready is hostFrontLiveHostModuleCheckExtractSubsetRebuildTermReady
+    (parse plus kernelCheck), not := true. Evaluated inside
+    HostFrontLiveHostModuleCheckExtractSubsetRebuildTerm.main at runtime. -/
+def main (args : List String) : IO UInt32 := do
+  IO.println s!"== {stageId}: {justRecipeSlakeTypecheckHostModuleCheckExtractSubsetRebuildTerm} =="
+  IO.println s!"liveRel={SystemsLean.HostFrontLiveHostModuleCheckExtractSubsetRebuildTerm.liveRel}"
+  IO.println s!"  host={hostId} file={liveHostModuleCheckExtractSubsetRebuildTermRel}"
+  unless (!slakeTypecheckHostModuleCheckExtractSubsetRebuildTermFullHost) do
+    IO.eprintln "error: FullHost must stay false"
+    return 1
+  unless (!slakeTypecheckHostModuleCheckExtractSubsetRebuildTermOwnsPackageTypecheck) do
+    IO.eprintln "error: slakeOwnsPackageTypecheck must stay false"
+    return 1
+  unless slakeTypecheckHostModuleCheckExtractSubsetRebuildTermDoesNotUseLake do
+    IO.eprintln "error: driver must not use lake"
+    return 1
+  SystemsLean.HostFrontLiveHostModuleCheckExtractSubsetRebuildTerm.main args

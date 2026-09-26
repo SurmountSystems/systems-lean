@@ -381,41 +381,6 @@ def checkProductOutKernelTheoremsSurface (surf : RealModuleSurface) :
     ModuleCheckResult :=
   checkNamedSurface surf productOutKernelExpectedNamespace
     productOutKernelTheoremsRequiredDecls (some "SystemsLean.ProductOutKernel")
-
-/-- Check BootstrapHonesty leaf (SelfApplyFs dep; no package import).
-    Greppable: checkBootstrapHonestySurface. -/
-def checkBootstrapHonestySurface (surf : RealModuleSurface) : ModuleCheckResult :=
-  checkNamedSurface surf bootstrapHonestyExpectedNamespace
-    bootstrapHonestyRequiredDecls none
-
-/-- Check BootstrapHonestyTheorems (parent ns BootstrapHonesty).
-    Greppable: checkBootstrapHonestyTheoremsSurface. -/
-def checkBootstrapHonestyTheoremsSurface (surf : RealModuleSurface) :
-    ModuleCheckResult :=
-  checkNamedSurface surf bootstrapHonestyExpectedNamespace
-    bootstrapHonestyTheoremsRequiredDecls (some "SystemsLean.BootstrapHonesty")
-
-/-- Check ProductPathWriterSurface leaf (SelfApplyFs ProductPath writer pure leaf).
-    Greppable: checkProductPathWriterSurfaceSurface. -/
-def checkProductPathWriterSurfaceSurface (surf : RealModuleSurface) : ModuleCheckResult :=
-  checkNamedSurface surf productPathWriterSurfaceExpectedNamespace
-    productPathWriterSurfaceRequiredDecls none
-
-/-- Check ProductPathWriterSurfaceTheorems (parent ns ProductPathWriterSurface).
-    Greppable: checkProductPathWriterSurfaceTheoremsSurface. -/
-def checkProductPathWriterSurfaceTheoremsSurface (surf : RealModuleSurface) :
-    ModuleCheckResult :=
-  checkNamedSurface surf productPathWriterSurfaceExpectedNamespace
-    productPathWriterSurfaceTheoremsRequiredDecls (some "SystemsLean.ProductPathWriterSurface")
-
-/-- Check ProductPathWriterPathPlan leaf (SelfApplyFs ProductPath writer pure leaf).
-    Greppable: checkProductPathWriterPathPlanSurface. -/
-def checkProductPathWriterPathPlanSurface (surf : RealModuleSurface) : ModuleCheckResult :=
-  checkNamedSurface surf productPathWriterPathPlanExpectedNamespace
-    productPathWriterPathPlanRequiredDecls none
-
-/-- Check ProductPathWriterPathPlanTheorems (parent ns ProductPathWriterPathPlan).
-    Greppable: checkProductPathWriterPathPlanTheoremsSurface. -/
 "#
 
 end SystemsLean.HostFrontLiveHostModuleCheckCheckers

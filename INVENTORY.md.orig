@@ -1,0 +1,245 @@
+# Work list
+
+This file is the only work list. It is ASCII. Estimates live here.
+
+Written 2026-09-26 from three read-only reports. This pass did not edit product Lean, did not edit `HostKernel.lean`, and did not raise `kernelFuel`. It stays 64. This pass did not run Lake, did not run `lean --run`, and did not restart a package walk.
+
+Counted in this file at write time: 11 open rows and 2 unknown rows. The 11 are not a count of product files. A naming scan is not this count.
+
+Coordinator 3 on 2026-09-26 marked rows 9, 10, and 11 closed. Those fuel closes had already landed. Do not redo them. HostModuleCheckSurface and HostModuleCheckCheckers were already under Not open. Open rows after this mark: 8. Unknown rows stay 2. This is not a product-file count.
+
+The living plan states that a scan on 2026-09-26 found 520 product files under `src/systems/SystemsLean` and 0 without a checker name. This inventory did not re-count those files. That scan closed the naming pass. It is not the package check. Those 520 names are not open rows.
+
+Billed tokens for this inventory: not_fetched. The estimate for writing this list was 15 minutes and 800.0k nested tokens. 800.0k is a guess.
+
+## Rates
+
+A new check is 24.0 minutes and 1.64m nested tokens.
+
+A repair is 15 minutes and 800.0k nested tokens. 800.0k is a guess.
+
+Those two rates are not totals for a north-star row. A north-star row is larger than one new check and larger than one repair. Where the number of slices is not known, the row total is unknown. Do not multiply 520 by 24.0 minutes. 520 is a naming-pass file count, not a failure count.
+
+## Not open
+
+These facts are constraints. They are not file assignments.
+
+- Occupancy stays 49 names. Do not claim 50. Recorded in `doc/SESSION-HANDOFF.md` and `doc/compiler-map.md`. The closed subset is 49 of about 206, with 164 compile-order rows in the compiler map. Last occupancy GREEN cited there is `/tmp/parityprogram-occupancy-accepts-20260908.log` (exit 0). This pass did not re-run it.
+- Host tools stay 69 of 69. The inventory is `src/systems/host-tools-inventory.md`. They are built by lean then leanc. That is not Slake producing Slake. Do not remill that fence as package-check work.
+- Full host elaboration stays false. `hostResidualShrinkFullHostElaborateRemains` is `false` in `src/systems/SystemsLean/HostResidualShrink.lean`. `elabMeetFullHostElaborateRemains` is `false` in `src/systems/SystemsLean/ElabMeet.lean`. `doc/goals.md` records the same. This list does not assign a flip of that Bool.
+- Slake does not own package typecheck. `slakeOwnsPackageTypecheck` is `false` in `src/systems/SystemsLean/ElabMeet.lean`. A green chunked walk is not that Bool. A checker file for `PackageTypecheck.lean` does not make Slake own package typechecking.
+- Do not restart the one-shot that loads the whole package. The copied log `/home/hunter/.agents/reports/impl-39cfc680-pkgtypecheck.log` last line is `compile 46/747` and does not print an exit code. The builder report `/home/hunter/.agents/reports/impl-39cfc680-builder.md` records exit 143, a memory kill, peak 191.9 GiB, under the 192 GiB user slice. A different walk, `/home/hunter/.agents/reports/impl-0c28d012-builder.md`, is exit 143 at compile 120/749 under a 96 GiB cap. Do not mix those two walks. Do not restart either one.
+- Do not raise `kernelFuel`. `src/systems/SystemsLean/HostKernel.lean` sets it to 64. A command count over 64 is a fuel stop. Split the check. Do not set `kernelCheck` to true.
+- `HostModuleCheckSurface.lean` is not an open row. `RESIDUAL.md` says it was closed after a sliced fuel log ended exit 0, with real 150 and slices 63, 63, and 24. This pass did not open that log. Re-open it only if that log is missing, does not end exit 0, or a slice has more than 64 commands.
+- `HostModuleCheckCheckers.lean` is not an open fuel row. `RESIDUAL.md` says the old 126-command failure was later three logs under 64 (60, 47, and 27).
+- The 2026-09-21 wrap queues in `doc/SESSION-HANDOFF.md`, `WATCHER.md`, and the top of `RESIDUAL-systems.md` are not rows here. `RESIDUAL.md` says not to quote 117, 299, or 301 as the living remainder. The living plan does not mention that queue. This pass did not open those queue files. What would settle one old queue is a later exit-0 report for that queue.
+- A walker printed GREEN for 563 of 563. `RESIDUAL-systems.md` says the operator did not accept 563 as the package-typecheck Bool. Do not treat that walk as Slake owning the package check. Do not restart it.
+
+## Open rows
+
+### 1. Slake checks the package
+
+Work: Slake typechecks the Systems Lean package as the compiler. The one-shot whole-package process is not the method. The next evidence is a chunked import-loading check that does not load the whole package in one process.
+
+Status: open
+
+Evidence: The living plan at `/home/hunter/.grok/sessions/%2Fhome%2Fhunter%2FProjects%2Fai%2Fiso/019f85d1-f826-79d1-b4e0-a97bf934be14/plan.md` says the package check does not exist yet and says "Slake does not own package typecheck." `RESIDUAL.md` says Slake still does not typecheck the Systems Lean sources as a compiler, and that this is not another entry-file checker. `doc/SESSION-HANDOFF.md` says the same Bool stays false. The whole-package log died by memory at compile 46/747 (builder report exit 143). That last compile line is not an import error.
+
+Estimate wall: unknown. One new check is 24.0 minutes. That number is not this row's total. The number of chunks is unknown.
+
+Estimate nested tokens: unknown. One new check is 1.64m nested tokens. That number is not this row's total. Billed tokens: not_fetched.
+
+Claim: coordinator 4 on 2026-09-26. The module is SystemsLean.CapableCompose (src/systems/SystemsLean/CapableCompose.lean). It is the 4th module in the order the package walker already uses (dependencies first; the first ready name in the alphabetical remaining list). The three before it are SystemsLean.BootstrapHonesty, SystemsLean.BootstrapHonestyTheorems, and SystemsLean.Capable. CapableCompose.lean has no column-0 import. An older HostFrontLiveCapableCompose or SlakeTypecheckCapableCompose name does not count. The 563-module walker does not count. This check is in progress. One new check is 24.0 minutes and 1.64m nested tokens. Billed tokens: not_fetched.
+
+Claim: coordinator 1, 2026-09-26T01:48:50Z. Module `SystemsLean.BootstrapHonesty` (`src/systems/SystemsLean/BootstrapHonesty.lean`). It is first in the package walk. `PackageTypecheck.compileOrderAmong` takes dependencies first, and this file has no import line, so it is the first ready module. The recorded walk `/home/hunter/.agents/reports/impl-39cfc680-pkgtypecheck.log` prints `compile 1/747 SystemsLean.BootstrapHonesty`. The older checker names `HostFrontLiveBootstrapHonesty` and `SlakeTypecheckBootstrapHonesty` do not count. No import-loading check for this module ends EXIT:0 on this machine. This claim is one new check: 24.0 minutes and 1.64m nested tokens. Billed tokens: not_fetched. FullHost stays false. Occupancy stays 49. Host tools stay 69 of 69. `slakeOwnsPackageTypecheck` stays false.
+
+Claim: coordinator 2, 2026-09-26. Module SystemsLean.BootstrapHonestyTheorems (src/systems/SystemsLean/BootstrapHonestyTheorems.lean). It is the 2nd module in the package walk. The recorded walk prints compile 1 SystemsLean.BootstrapHonesty, then compile 2 SystemsLean.BootstrapHonestyTheorems. Coordinator 4 records the same prefix. BootstrapHonestyTheorems imports only SystemsLean.BootstrapHonesty. The older checker SlakeTypecheckBootstrapHonestyTheorems imports HostFrontLiveBootstrapHonestyTheorems, not the module. The log /home/hunter/.agents/reports/lean-run-fifth1-BootstrapHonestyTheorems.lean.log ends EXIT:0 with cmds=3. That older checker name does not count. No import-loading check for this module ends EXIT:0. This claim is one new check: 24.0 minutes and 1.64m nested tokens. Billed tokens: not_fetched. Status: claimed, not done. Other coordinators do not take this module. FullHost stays false. Occupancy stays 49. Host tools stay 69 of 69. slakeOwnsPackageTypecheck stays false.
+
+### 2. Slake produces Slake, and Slake typechecks that work
+
+Work: Slake builds Slake and typechecks that build. Lake, or bare lean and leanc, still building Slake is not that bar. Host tools 69 of 69 do not meet it. The living plan places this on surmount-1 after the package check exists.
+
+Status: open
+
+Evidence: Living plan, north star: "Slake produces Slake, and Slake typechecks that work. Lake, or bare lean and leanc, still building Slake is not that bar." The plan's "Already true" list does not mark this done. `RESIDUAL.md` (2026-09-24 tip): "Slake still does not typecheck the Systems Lean sources as a compiler. Slake still does not produce Slake." `doc/BENCH-SAME-JOB-latest.md` says `out/slake-produced-elf/slake-hello` is clang-linked generator output, not Slake compiling Slake. `src/systems/self-host.md` says the defined freestanding compile step is not full product compiler self-application.
+
+Estimate wall: unknown. This row is larger than one new check of 24.0 minutes. It also waits on row 1.
+
+Estimate nested tokens: unknown. This row is larger than 1.64m nested tokens for one new check. Billed tokens: not_fetched.
+
+### 3. Slake compiles upstream Lean 4 read-only
+
+Work: After the package check exists, and after Slake builds and typechecks Slake, Slake compiles upstream Lean 4 read-only. `ref/lean4` stays a read-only upstream tree. That policy is not this later compile.
+
+Status: open
+
+Evidence: Living plan: "On surmount-1, after the package check exists: Slake builds and typechecks Slake, then compiles upstream Lean 4 read-only." `doc/goals.md` says full Lean 4 and mathlib elaborator parity stay unclaimed, and `ref/` is read-only. `doc/lean-entry.md` says do not edit `ref/lean4` as product. No timed read of upstream Lean 4 was found in the goals or entry docs.
+
+Estimate wall: unknown. This row is larger than one new check of 24.0 minutes. It waits on rows 1 and 2.
+
+Estimate nested tokens: unknown. This row is larger than 1.64m nested tokens for one new check. Billed tokens: not_fetched.
+
+### 4. Slake checks mathlib, and the run is measured
+
+Work: After upstream Lean 4 read-only, Slake checks mathlib and the run is measured. Do not invent a mathlib time. Older text that calls mathlib a day-one non-goal does not close this row. The living plan wins.
+
+Status: open
+
+Evidence: Living plan: "then checks mathlib with the run measured." `doc/goals.md` still lists mathlib as a day-one non-goal and points at `doc/dev/research/full-elaborator-parity-inventory-r4-2026-08-11.md`. That note is a gap inventory. It has no mathlib wall-clock, no mathlib rate, and no mathlib pass count. It says the seed figure there is not mathlib.
+
+Estimate wall: unknown. This row is larger than one new check of 24.0 minutes. It waits on row 3. No measured mathlib wall exists to copy.
+
+Estimate nested tokens: unknown. This row is larger than 1.64m nested tokens for one new check. Billed tokens: not_fetched.
+
+### 5. Bench those jobs against Lake, with no invented times
+
+Work: After the package check, Slake producing Slake, upstream Lean 4 read-only, and the measured mathlib check exist, bench those jobs against Lake. Do not invent a Slake time. Older compile-path benches and the runtime bench are not this comparison.
+
+Status: open
+
+Evidence: Living plan: "then those jobs are benched against Lake. Do not invent a Slake time." `doc/BENCH-SAME-JOB-latest.md` (generated 2026-08-13, host horizon) prints Lake idle-hot 0.459 s for host package elaborate. The same file says Slake cannot do that job. The 2026-09-20 addendum says closed-set Slake has no wall-clock and "How much faster: not comparable." `doc/BENCH-RUNTIME-latest.md` (stamp 20260812T192951Z) is a freestanding runtime bench, not Slake versus Lake on package elaborate. `RESIDUAL-systems.md` says a compile-path two-arm bench is done. That done line is not a bench of these later jobs.
+
+Estimate wall: unknown. This row is larger than one new check of 24.0 minutes. It waits on rows 1 through 4. 0.459 s is a Lake figure, not a Slake estimate.
+
+Estimate nested tokens: unknown. This row is larger than 1.64m nested tokens for one new check. Billed tokens: not_fetched.
+
+### 6. Linear and affine checks with monadic proofs of CompCert class
+
+Work: Slake checks linear and affine ownership, with Quantitative Type Theory grades 0, 1, and omega, and monadic proofs of CompCert class, not a two-function fixture. A Track 4c flag does not close this. The freestanding product affine ABI stays inside this row. It is not a separate module name.
+
+Status: open
+
+Evidence: Living plan: "Slake also checks types with linear and affine ownership, Quantitative Type Theory grades 0, 1, and omega, and monadic proofs of CompCert class, not a two-function fixture." `doc/goals.md` still holds the freestanding product affine ABI. `src/systems/linear.md` says the named use-check surfaces are not a full checker and not all-types use-check. `RESIDUAL-systems.md` records landed use-check pieces (inventory, ConsumeToken, UnrestrictedShare, and a partial illegal-use result on indexed OnceRes) and says kernel linearity is still unclaimed, the Kleisli story is not a full monad, and all-types use-check is not started. The same residual says `proofCompleteClaimed` true is the Track 4c bar only, not full elaborator parity. This pass found no document that claims a monadic proof of CompCert class. `doc/compcert-entry.md` records a resolved CompCert product matrix. That seal is product-wire correctness, not this proof. `src/systems/linear.md` still says the linear unit is not that seal.
+
+Estimate wall: unknown. This row is larger than one new check of 24.0 minutes. The plan does not split it into one repair of 15 minutes.
+
+Estimate nested tokens: unknown. This row is larger than 1.64m nested tokens for one new check, and larger than one repair guess of 800.0k. Billed tokens: not_fetched.
+
+### 7. LLVM IR next to Rust, one binary, no foreign-function call on the happy path
+
+Work: Slake emits LLVM IR beside Rust LLVM IR so one binary can be built from Lean and Rust with no foreign-function call as the happy path. The living plan runs this track in parallel with self-host. Partial LLVM and a measured Mult-through-Graph path do not close the one binary.
+
+Status: open
+
+Evidence: Living plan: "It emits LLVM IR next to Rust LLVM IR so one binary can be built from Lean and Rust with no foreign-function call as the happy path." The plan's "Already true" list says LLVM is unlocked and partial, and is not a full backend, not the Rust-side link, and not one Lean-plus-Rust binary. `doc/goals.md` says band FullBackend is false and the measured happy path is not "no foreign-function call ever." `doc/rust-entry.md` says the link smoke is not a full backend. `doc/compcert-entry.md` and the repository map in `AGENTS.md` still say `out/llvm-ir` is deferred. Those sentences disagree about deferral. None of them claims the one binary. `RESIDUAL-systems.md` says not to auto-open heavier LLVM depth unless the operator promotes it. DominanceClaimed stays false in `doc/goals.md`. This row does not assign that heavier depth as a separate job.
+
+Estimate wall: unknown. This row is larger than one new check of 24.0 minutes. The plan calls it a parallel track, not one repair of 15 minutes.
+
+Estimate nested tokens: unknown. This row is larger than 1.64m nested tokens for one new check. Billed tokens: not_fetched.
+
+### 8. Freestanding C with no garbage collection stays honest
+
+Work: Keep the freestanding C claim honest. Slake's emit of runtimeless freestanding C with no garbage collection is claimed, and CompCert can validate that product wire. This row is not a missing emit. It is also not Slake emitting the C that built Slake. That bar is row 2.
+
+Status: open
+
+Evidence: Living plan: "It emits freestanding C with no garbage collection, which CompCert can validate. That emit is claimed. Keep it honest." `doc/goals.md` says the primary emit has no garbage collection on the product wire, product residual free is true, and freestanding self-host complete is true. `src/systems/emit/host-owned-emit.md` says no product garbage collection. `doc/BENCH-RUNTIME-latest.md` records a link check with no leanshared or libgc on the freestanding mint and compose links. That check is not row 2.
+
+Estimate wall: unknown. The emit is already claimed, so this row is not one new check of 24.0 minutes and not one repair of 15 minutes.
+
+Estimate nested tokens: unknown. Do not apply 1.64m or 800.0k as this row's total. Billed tokens: not_fetched.
+
+### 9. Fuel stop on HostModuleCheckLoadOkLaterTerm
+
+Work: Split this check so a kernel check can finish with at most 64 commands. Do not raise `kernelFuel`. Do not set `kernelCheck` to true. Do not edit `HostKernel.lean`. This repair is not the package check.
+
+Status: closed
+
+Closed: coordinator 3 on 2026-09-26. The close had already landed. Do not redo this fuel slice.
+
+Evidence: `/home/hunter/.agents/reports/grok-impl-fuel-HostModuleCheckLoadOkLaterTerm-review.md` says the close bar holds. The log `/tmp/slake-typecheck-HostModuleCheckLoadOkLaterTerm-fuel.log` last line is EXIT:0. It prints `liveRel=HostModuleCheckLoadOkLaterTerm.lean`, `cmds=71`, `kept=64 slice=0`, `kept=7 slice=1`, `keptSum=71`, and `kernelCheck=true`. 64 plus 7 is 71. Each slice is at most 64. `kernelFuel` stays 64. The review ends `MUST-FIX: empty`. The earlier EXIT:1 log is not this close. `HostKernel.lean` was not edited.
+
+Estimate wall: 15 minutes was the repair estimate. This mark is not a new repair.
+
+Estimate nested tokens: 800.0k was a guess for that repair. Billed tokens for this mark: not_fetched.
+
+### 10. Fuel stop on HostModuleCheckPackageEnv
+
+Work: Split this check so a kernel check can finish with at most 64 commands. Do not raise `kernelFuel`. Do not set `kernelCheck` to true. Do not edit `HostKernel.lean`. This repair is not the package check.
+
+Status: closed
+
+Closed: coordinator 3 on 2026-09-26. The close had already landed. Do not redo this fuel slice.
+
+Evidence: `/home/hunter/.agents/reports/fuel-stop-HostModuleCheckPackageEnv-2026-09-25.md` says `HostModuleCheckPackageEnv.lean` is honestly closed. The parent log `/tmp/slake-typecheck-HostModuleCheckPackageEnv-fifth4.log` prints `liveRel=HostModuleCheckPackageEnv.lean` and `kernelCheck=true`, and the last line is EXIT:0. The core log `/tmp/slake-typecheck-HostModuleCheckPackageEnvCoreTerms-fifth4.log` prints `liveRel=HostModuleCheckPackageEnvCoreTerms.lean`, kept count 34, `kernelCheck=true`, and the last line is EXIT:0. The later log `/tmp/slake-typecheck-HostModuleCheckPackageEnvLaterTerms-fifth4.log` prints `liveRel=HostModuleCheckPackageEnvLaterTerms.lean`, kept count 39, `kernelCheck=true`, and the last line is EXIT:0. 34 is under 64. 39 is under 64. `kernelFuel` stays 64. `HostKernel.lean` was not edited. Commands were not skipped to get under the cap.
+
+Estimate wall: 15 minutes was the next-slice estimate. This mark is not a new repair.
+
+Estimate nested tokens: 800.0k was a guess for that next slice. Billed tokens for this mark: not_fetched.
+
+### 11. Fuel stop on HostModuleCheckRealModule
+
+Work: Split this check so a kernel check can finish with at most 64 commands. Do not raise `kernelFuel`. Do not set `kernelCheck` to true. Do not edit `HostKernel.lean`. This repair is not the package check.
+
+Status: closed
+
+Closed: coordinator 3 on 2026-09-26. The close had already landed. Do not redo this fuel slice.
+
+Evidence: `/home/hunter/.agents/reports/fuel-stop-HostModuleCheckRealModule-2026-09-25.md` says `HostModuleCheckRealModule.lean` is honestly closed, with `HostModuleCheckRealModuleImportEarly.lean`. The log `/tmp/slake-typecheck-HostModuleCheckRealModule.log` prints `liveRel=HostModuleCheckRealModule.lean` and `cmds=52 kernelCheck=true`. The last line is EXIT:0. The log `/tmp/slake-typecheck-HostModuleCheckRealModuleImportEarly.log` prints `liveRel=HostModuleCheckRealModuleImportEarly.lean` and `cmds=50 kernelCheck=true`. The last line is EXIT:0. 52 is under 64. 50 is under 64. `kernelFuel` stays 64. The earlier kept count of 101 is not this close.
+
+Estimate wall: 15 minutes was the next-slice estimate. This mark is not a new repair.
+
+Estimate nested tokens: 800.0k was a guess for that next slice. Billed tokens for this mark: not_fetched.
+
+## Unknown rows
+
+### U1. Which modules fail a check that loads their imports
+
+Work: Name the modules that still fail a check that loads their imports.
+
+Status: unknown
+
+Evidence: No log opened for this inventory names a module and an import error. The 46/747 line names `SystemsLean.ElabMeetNamedHostImportGraphModsLaterProbe` as the last compile line before the file ends. The builder report attributes that stop to a memory kill, not to a type error in that module. Do not treat that name as an import failure. The 120/749 report says there was no compile error text.
+
+What would settle it: a chunked import-loading check log that names the module and the error, and that does not load the whole package in one process.
+
+Estimate wall: unknown. There is no failure count to multiply by 24.0 minutes.
+
+Estimate nested tokens: unknown. There is no failure count to multiply by 1.64m. If a later log names failures, each new check is 24.0 minutes and 1.64m nested tokens, and each repair is 15 minutes and 800.0k nested tokens. 800.0k is a guess. Billed tokens: not_fetched.
+
+### U2. Kernel linear deeper proof-layer checker
+
+Work: Decide whether "KernelLinear deeper proof-layer checker" is still unmet work.
+
+Status: unknown
+
+Evidence: `RESIDUAL-systems.md` has one sentence that this is the checkable product residual, and a later sentence that KernelLinear term work is done and the open queue is empty while full host elaboration stays false. This pass did not find a current unmet Done-when for that name.
+
+What would settle it: the unmet Done-when text, or a later sentence that retracts the checker as done without leaving a Done-when open.
+
+Estimate wall: unknown. The plan does not size this name as one repair of 15 minutes.
+
+Estimate nested tokens: unknown. Billed tokens: not_fetched.
+
+## Repair arithmetic
+
+Rows 9, 10, and 11 are closed. Do not treat them as next slices. Do not redo them.
+
+The earlier arithmetic was 3 times 15 minutes, which is 45 minutes, and 3 times 800.0k, which is 2.40m nested tokens. Each 800.0k was a guess, so 2.40m was a guess. That arithmetic is not remaining work.
+
+Rows 1 through 8 stay open. Their totals stay unknown. Unknown rows U1 and U2 stay unknown.
+
+## Reports this list used
+
+- `/home/hunter/.agents/reports/inventory-2026-09-26-plan-residual.md`
+- `/home/hunter/.agents/reports/inventory-2026-09-26-package-check.md`
+- `/home/hunter/.agents/reports/inventory-2026-09-26-north-star-surfaces.md`
+
+The living plan was read by the first report, not rewritten: `/home/hunter/.grok/sessions/%2Fhome%2Fhunter%2FProjects%2Fai%2Fiso/019f85d1-f826-79d1-b4e0-a97bf934be14/plan.md`.
+
+## Package-check claims
+
+Coordinator 5 claims the 5th module in the package walk that does not yet have an import-loading check ending EXIT:0.
+
+Walk order is the order SystemsLean.PackageTypecheck already uses: dependencies first, and the first ready name in the sorted module list. The recorded walk in `/home/hunter/.agents/reports/slake-typecheck-src-systems-03f03ed9.log` prints packageModules=747 and this prefix: SystemsLean.BootstrapHonesty, SystemsLean.BootstrapHonestyTheorems, SystemsLean.Capable, SystemsLean.CapableCompose, SystemsLean.CapableComposeMain. Current sources still have that prefix. Nothing sorts before SystemsLean.BootstrapHonesty except the omitted barrel SystemsLean. Column-0 imports: BootstrapHonesty has none, BootstrapHonestyTheorems imports BootstrapHonesty, Capable has none, CapableCompose has none, CapableComposeMain imports CapableCompose. None of those five is occupancy, an ElabMeetNamed probe, or the barrel, and none imports an omitted name. The 5th module is SystemsLean.CapableComposeMain.
+
+No import-loading check ends EXIT:0 for it. `/home/hunter/.agents/reports/lean-run-fifth1-CapableComposeMain.lean.log` ends EXIT:0 and prints liveRel=CapableComposeMain.lean. That is an older checker name. It does not load the module and the import it needs. It does not count.
+
+Claimed module: SystemsLean.CapableComposeMain
+Source: src/systems/SystemsLean/CapableComposeMain.lean
+Import it needs: SystemsLean.CapableCompose
+Status: claimed by coordinator 5 on 2026-09-26. Not done. Specialist 01a0db69-70da-722b-a7a4-885d891f968b is writing the import-loading check.
+Estimate: a new check is 24.0 minutes and 1.64m nested tokens.
+Billed tokens: not_fetched.
+
+Do not take SystemsLean.CapableComposeMain. Coordinator 5 has it.
