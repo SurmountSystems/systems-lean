@@ -124,6 +124,10 @@ Five implementors must stay in play. A coordinator that exits in under a minute 
 
 Always remember. The five parallel implementors are five L2 coordinators. Each coordinator owns a disjoint set of the remaining product files and spawns specialists for the file work. A nested specialist does not count as one of the five. Spawning only leaf writers from the main session does not meet this. Keep five L2 coordinators working at once until every product file has been through the close test. When one finishes its range and files remain, that coordinator takes the next unchecked file from the longest remaining range. Do not put two coordinators on one file. Do not start a second writer on a file that already has a writer. Do not spawn a sixth coordinator to look busy. The lake coordinator and a recount stay extra and do not fill one of the five. Dual-pin: `~/.grok/AGENTS.md` same heading.
 
+### Council of five stays online when more work is planned (operator 2026-09-26)
+
+Always remember. Keep the council of five online when there is more work planned. The seats are Adastria, Bellerophon, Callisto, Diaphenes, and Edmonton. While package modules remain, all five stay online. A seat that dies is filled in that same turn. Resume that conversation if it can still work. Start a new grok-4.7 coordinator only when that conversation died before the work started. Do not go to six. Do not put two coordinators on one file. Do not start a second compile or a second review while the first is still running. Dual-pin: `~/.grok/AGENTS.md` same heading.
+
 ### Wrap targets come from the inventory on disk (operator 2026-09-21)
 
 Parent picks the next wrap from the unwrapped-product inventory of files that exist (`/home/hunter/.agents/reports/grok-impl-summary-inventory-verify.md`, which replaced `/home/hunter/.agents/reports/grok-impl-summary-unwrapped-modules.md`). Confirm the path with `test -f` before spawn.
@@ -574,6 +578,13 @@ Dual-pin: `~/.grok/AGENTS.md` section *Low time preference and completeness*.
   longest remaining range. Do not put two coordinators on one file. Do
   not spawn a sixth coordinator to look busy. Dual-pin: `~/.grok/AGENTS.md`
   same heading.
+- **Council of five stays online when more work is planned (operator 2026-09-26):**
+  always remember. Keep Adastria, Bellerophon, Callisto, Diaphenes, and
+  Edmonton online when there is more work planned. While package modules
+  remain, fill a dead seat in that same turn. Do not go to six. Do not
+  put two coordinators on one file. Do not start a second compile or a
+  second review while the first is still running. Dual-pin:
+  `~/.grok/AGENTS.md` same heading.
 - **Progress every turn (operator 2026-08-14):** every parent turn and
   every implement slice starts with that natural-language progress
   report: what compiled, what still does not, and what is next. Keep a
@@ -1144,6 +1155,14 @@ session is mid-slice.
 
 **Honesty:** free claimed under free bar (a) is a measured host residual-free claim for day-to-day develop tools. It is **not** product free re-open, **not** Lake gone, **not** FullHostElaborateRemains true, and **not** full Lean 4 / mathlib parity. Do **not** empty residual Open with done-for-now while a durable plan still names checkable next work. Do **not** forge free / complete / PROVABLY / FullHost claim bools.
 
+### One Slake
+
+There is one Slake. Upstream Lean is the bootstrap compiler that builds that Slake once, and that is not "Slake compiles Slake." The same Slake then compiles the Slake sources, then compiles read-only ref/lean4, then checks mathlib. Do not name a second Slake, and do not say Slake 1 or Slake 2. L1 assigns lanes, and an L2 coordinates one lane and spawns L3 implementors and one L3 reviewer per landed slice. An L3 does not spawn, and there is no reviewer-only L2. One fat job runs on surmount-1 (ssh nixbuilder@surmount-1); do not run lean or lake on the laptop (horizon), and do not raise the 192 GiB ceiling. One root justfile is a thin wrapper over Nix flakes, with no bash inside Nix and no new makefile.
+
+### Bootstrap walk log
+
+A module walk on surmount-1 writes an append-only log at `/home/nixbuilder/iso/out/bootstrap-walk/walk.log` and a one-line checkpoint per module at `/home/nixbuilder/iso/out/bootstrap-walk/checkpoint.txt`. The walk starts detached (`setsid`), with line-buffered output, so a dropped SSH connection does not delete the log. `/tmp` is not the only copy. The local report is a copy of the checkpoint. If the agent dies, the builder files remain the record. Do not start a second compile while one `--compile-one` of the bootstrap ELF is running. `pgrep slake-bootstrap` misses that ELF. Match the store path.
+
 ### Multi-language print policy (three stories -- keep separate)
 
 Novel code may touch more than one language surface. Treat these three stories differently. Inventory: `doc/dev/research/multi-language-print-inventory-2026-08-03.md`.
@@ -1532,6 +1551,14 @@ operator will end a subagent that is Grok 4.6. Every spawn passes
 model `grok-4.7`. Say xhigh in the specialist prompt. If the main
 session is Grok 4.6, omitting the model inherits Grok 4.6, so an
 omitted model is forbidden. Dual-pin: `~/.grok/AGENTS.md` same heading.
+
+**Council of five stays online (operator 2026-09-26):** While package
+modules remain, Adastria, Bellerophon, Callisto, Diaphenes, and
+Edmonton all stay online. A seat that dies is filled in that same
+turn. Resume that conversation if it can still work, or start a new
+one on an open module nobody else has. Do not leave a seat empty
+because earlier starts died. Do not go to six. Do not put two
+coordinators on one file. Dual-pin: `~/.grok/AGENTS.md` same heading.
 
 Mill L2 rsyncs or copies as needed, then runs the just recipe on the builder. Shared
 mill directory `build/first-host-tool/` lives on that tree. Do not start mill

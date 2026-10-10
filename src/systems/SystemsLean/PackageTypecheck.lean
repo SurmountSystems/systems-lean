@@ -22,6 +22,9 @@
   tryCompileOnDiskModuleIO, PackageTypecheck, printMessageLog,
   SLAKE_PACKAGE_TYPECHECK, SystemsLean.PackageTypecheck,
   HOST-ELAB-MEET, SLAKE_OLEAN_DIR, SLAKE_TYPECHECK_JOBS, SKELETON.
+  --slake-check is HostKernel.slakeChecker and does not call processCommands.
+  The --compile-one path still does. slakeOwnsPackageTypecheck stays false.
+  --slake-check NAME reads that on-disk module and calls SlakeCheckSource.checkSource. It does not call processCommands. It does not claim the sources were accepted. The --compile-one path still calls processCommands. slakeOwnsPackageTypecheck stays false.
   Module: SystemsLean.PackageTypecheck
   Short role name (not ProductPathFreestanding*).
   Red/green: just slake-typecheck-src-systems (chunked product walk;
@@ -31,6 +34,8 @@
 -/
 
 import Lean
+import SystemsLean.HostKernel
+import SystemsLean.SlakeCheckSource
 
 namespace SystemsLean.PackageTypecheck
 
@@ -167,6 +172,18 @@ def wantListCheck (args : List String) : IO Bool := do
 def compileOneName (args : List String) : Option String :=
   match args.dropWhile (fun a => a != "--compile-one") with
   | "--compile-one" :: n :: _ =>
+    if n.isEmpty || n.startsWith "--" then none else some n
+  | _ => none
+
+/-- `--slake-check` from remaining lean --run args. Not `--compile-one`. -/
+def wantSlakeCheck (args : List String) : Bool :=
+  args.any (fun a => a == "--slake-check")
+
+/-- Module name after `--slake-check`, if one was given.
+    `--slake-check` alone is the fixture path. -/
+def slakeCheckModuleName (args : List String) : Option String :=
+  match args.dropWhile (fun a => a != "--slake-check") with
+  | "--slake-check" :: n :: _ =>
     if n.isEmpty || n.startsWith "--" then none else some n
   | _ => none
 
@@ -389,6 +406,93 @@ def runListCheckIO : IO UInt32 := do
     flushOut
     return 0
 
+/-- One on-disk module through SlakeCheckSource.checkSource.
+    Resolves the .lean path the same way compile-one finds a source.
+    Does not call Lean.Elab.processCommands.
+    Does not read or stat an object file.
+    A missing object file is not a rejection.
+    A false result is a front or kernel reject, not package ownership. -/
+def runSlakeCheckOnDiskIO (n : String) : IO UInt32 := do
+  IO.println s!"slake-check on-disk {n}"
+  IO.println "path is HostFront.parseSource then HostKernel.slakeChecker"
+  IO.println "does not call Lean.Elab.processCommands"
+  IO.println "a missing object file is not a rejection"
+  IO.println "this invocation does not by itself claim the source was accepted"
+  IO.println "HostFront.parseSource is a line-oriented Mult-first dialect, not full Lean 4"
+  IO.println "a real SystemsLean/*.lean file may reject; that is a front or kernel result, not package ownership"
+  IO.println "slakeOwnsPackageTypecheck false"
+  IO.println "FullHost false"
+  let srcRoot? <- findLiveSrcRoot
+  match srcRoot? with
+  | none =>
+    printMiss "cannot resolve src/systems (need SystemsLean/Mult.lean)"
+    return 1
+  | some srcRoot =>
+    let packed <- collectPackageModules srcRoot
+    let srcPath :=
+      match packed.find? (fun p => p.fst == n) with
+      | some p => p.snd
+      | none => srcRoot / "missing.lean"
+    if !(<- srcPath.pathExists) then
+      printMiss s!"{n} missing source"
+      return 1
+    let read <-
+      try
+        let text <- IO.FS.readFile srcPath
+        pure (some text)
+      catch e =>
+        printMiss s!"{n} unreadable source {e.toString}"
+        pure none
+    match read with
+    | none => return 1
+    | some text =>
+      match SystemsLean.SlakeCheckSource.rejectLayer text with
+      | none =>
+        IO.println s!"slake-check checker returned true for {n}"
+        IO.println "slakeOwnsPackageTypecheck false"
+        flushOut
+        return 0
+      | some layer =>
+        IO.eprintln s!"slake-check checker returned false for {n}"
+        IO.eprintln layer
+        IO.eprintln "that is not package ownership"
+        IO.eprintln "slakeOwnsPackageTypecheck false"
+        flushOut
+        return 1
+
+/-- Slake's checker path. Not the Lean elaborator.
+    A module name checks that one on-disk file through checkSource.
+    No name checks the fixture.
+    Neither claims package ownership. -/
+def runSlakeCheckIO (args : List String) : IO UInt32 := do
+  match slakeCheckModuleName args with
+  | some n =>
+    return (<- runSlakeCheckOnDiskIO n)
+  | none =>
+    IO.println "slake-check: Slake checker (HostKernel.slakeChecker)"
+    IO.println "accepts a HostTerm.Module when slakeCheckerAccepts"
+    IO.println "does not call Lean.Elab.processCommands"
+    IO.println "a missing object file is not a rejection"
+    IO.println "no module name was given, so this invocation checks the Mult fixture only, and it does not claim on-disk sources were accepted"
+    IO.println "slakeOwnsPackageTypecheck false"
+    IO.println "FullHost false"
+    let accepted :=
+      SystemsLean.HostKernel.slakeChecker SystemsLean.HostTerm.multFixtureModule
+    let rejects :=
+      SystemsLean.HostKernel.kernelRejectIllTypedName
+        && SystemsLean.HostKernel.kernelRejectIllTypedIsValid
+        && SystemsLean.HostKernel.kernelRejectIllTypedApp
+    if accepted && rejects then
+      IO.println "slake-check fixture SystemsLean.Mult accepted"
+      IO.println "slake-check ill-typed Mult fixtures rejected"
+      flushOut
+      return 0
+    else
+      IO.eprintln "slake-check RED: fixture acceptance failed"
+      IO.eprintln "slakeOwnsPackageTypecheck false"
+      flushOut
+      return 1
+
 /-- Child: one module into the durable olean dir. Must not spawn. -/
 unsafe def runCompileOneIO (n : String) : IO UInt32 := do
   IO.println s!"slake-typecheck-src-systems: compile-one {n}"
@@ -596,6 +700,8 @@ unsafe def runPackageTypecheckIO (args : List String) : IO UInt32 := do
   let listCheck <- wantListCheck args
   if listCheck then
     return (<- runListCheckIO)
+  if wantSlakeCheck args then
+    return (<- runSlakeCheckIO args)
   match compileOneName args with
   | some n => runCompileOneIO n
   | none => runParentWalkIO

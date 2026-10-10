@@ -254,8 +254,8 @@ def barrelListsNamedHostModuleCheckHostPackageWriteTermSubset (text : String) : 
 
 /-- Compile the named HostModuleCheckHostPackageWriteTerm subset after reading
     the live lakefile. Wrapper over tryCompileNamedMemberListIO.
-    Compile order honors imports: Mult first, then the MultFsDeepenTerm
-    compile order, then HostModuleCheckHostPackageWriteTerm last.
+    Compile order honors imports: the MultFsDeepenTerm compile order,
+    then HostModuleCheckHostPackageWriteTerm last.
     Greppable: tryCompileNamedHostModuleCheckHostPackageWriteTermSubset.
     tryCompileOnDiskModule. SystemsLean.HostModuleCheckHostPackageWriteTerm. -/
 unsafe def tryCompileNamedHostModuleCheckHostPackageWriteTermSubsetIO
@@ -278,7 +278,7 @@ def tryCompileNamedHostModuleCheckHostPackageWriteTermSubset
   catch _ =>
     pure false
 
-/-- Compile live Mult first, then the MultFsDeepenTerm compile order
+/-- Compile the MultFsDeepenTerm compile order
     (including EmitPlanTerm and MultTerm compile deps),
     put those .olean files on the search path, then compile srcPath
     as thmMod.

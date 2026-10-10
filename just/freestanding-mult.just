@@ -1,137 +1,15 @@
 # Modular just: just/freestanding-mult.just -- role recipes (import into root justfile).
+# mult-subset-freestanding-deepen is file and token checks. Live impure worktree eval. Does not run lake.
+_mult_subset_freestanding_deepen := '''
+let
+  lib = (import (builtins.getFlake "nixpkgs") {}).lib;
+  novel = import ./nix/novel-source.nix { inherit lib; src = ./.; };
+  h = import ./nix/mult-subset-freestanding-deepen.nix { inherit lib; root = novel; };
+in if h.ok then h.summary + "\n" else throw h.summary
+'''
+
 mult-subset-freestanding-deepen:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    root="$(pwd)"
-    systems_dir="$root/src/systems"
-    lean_dir="$systems_dir/SystemsLean"
-    emit_dir="$systems_dir/emit"
-    out_h="$emit_dir/slake_mult_subset.h"
-    out_c="$emit_dir/slake_mult_subset.c"
-    fs_h="$emit_dir/slake_freestanding.h"
-    fs_c="$emit_dir/slake_freestanding.c"
-    mult_ssot="$emit_dir/host_emit_mult.ssot.txt"
-    mod="$lean_dir/MultFsDeepen.lean"
-    echo "== mult-subset-freestanding-deepen (M2 Name B greps; freestanding Mult surface; no lake / no Mult rebuild prebuilt) =="
-    echo "  dual: freestanding Mult product wire + Mult subset package + Lean MultFsDeepen pins"
-    echo "  freestandingDeepenPartial: true"
-    if [[ ! -f "$mod" ]]; then
-      echo "error: missing $mod" >&2
-      exit 1
-    fi
-    if ! grep -qF 'freestandingDeepenPartial' "$mod"; then
-      echo "error: missing freestandingDeepenPartial in $mod" >&2
-      exit 1
-    fi
-    if ! grep -qF 'freestandingDriverComplete' "$mod"; then
-      echo "error: missing freestandingDriverComplete pin in $mod" >&2
-      exit 1
-    fi
-    if ! grep -qE 'def freestandingDeepenPartial[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
-      echo "error: freestandingDeepenPartial must be true for Name B greps partial" >&2
-      exit 1
-    fi
-    # Partial greps measure does not assert freestandingDriverComplete true/false.
-    if ! grep -qF 'multFsDeepenReady' "$mod"; then
-      echo "error: missing multFsDeepenReady in $mod" >&2
-      exit 1
-    fi
-    if ! grep -qF 'mult-subset-freestanding-deepen' "$mod"; then
-      echo "error: missing mult-subset-freestanding-deepen cite in $mod" >&2
-      exit 1
-    fi
-    if ! grep -qF 'multFsDeepenKeepsHostLake' "$mod"; then
-      echo "error: missing multFsDeepenKeepsHostLake honesty in $mod" >&2
-      exit 1
-    fi
-    if ! grep -qF 'multFsDeepenNotPrebuiltOnly' "$mod"; then
-      echo "error: missing multFsDeepenNotPrebuiltOnly honesty in $mod" >&2
-      exit 1
-    fi
-    if ! grep -qE 'def stillUsesLake[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
-      echo "error: stillUsesLake must stay true (product host residual remains)" >&2
-      exit 1
-    fi
-    if ! grep -qE 'def dependsOnLake[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
-      echo "error: dependsOnLake must stay true (product host residual remains)" >&2
-      exit 1
-    fi
-    if ! grep -qF 'SLAKE_MULT_FS_DEEPEN_V0' "$mod"; then
-      echo "error: missing SLAKE_MULT_FS_DEEPEN_V0 stage id in $mod" >&2
-      exit 1
-    fi
-    # Hot path: freestanding Mult surface + Mult subset package greps only.
-    # Do not call lake build / lake exe / lake env. Do not require Mult rebuild prebuilt.
-    echo "  hot path: freestanding Mult dual greps (no lake; no Mult rebuild prebuilt)"
-    if [[ ! -f "$out_h" ]]; then
-      echo "error: missing Mult subset header: $out_h" >&2
-      exit 1
-    fi
-    if [[ ! -f "$out_c" ]]; then
-      echo "error: missing Mult subset source: $out_c" >&2
-      exit 1
-    fi
-    if [[ ! -f "$fs_h" ]]; then
-      echo "error: missing freestanding product header: $fs_h" >&2
-      exit 1
-    fi
-    if [[ ! -f "$fs_c" ]]; then
-      echo "error: missing freestanding product source: $fs_c" >&2
-      exit 1
-    fi
-    if [[ ! -f "$mult_ssot" ]]; then
-      echo "error: missing Mult host emit SSOT: $mult_ssot" >&2
-      exit 1
-    fi
-    for tok in MULT-0 HOST-EMIT-MULT enum\ slake_mult; do
-      if ! grep -qF "$tok" "$out_h"; then
-        echo "error: Mult subset header missing $tok" >&2
-        exit 1
-      fi
-      if ! grep -qF "$tok" "$fs_h"; then
-        echo "error: freestanding product header missing $tok" >&2
-        exit 1
-      fi
-    done
-    for tok in MULT-0 HOST-EMIT-MULT slake_mult_is_valid; do
-      if ! grep -qF "$tok" "$out_c"; then
-        echo "error: Mult subset source missing $tok" >&2
-        exit 1
-      fi
-      if ! grep -qF "$tok" "$fs_c"; then
-        echo "error: freestanding product source missing $tok" >&2
-        exit 1
-      fi
-    done
-    for tok in MULT-SUBSET-EMIT SLAKE_MULT_SUBSET_EMIT_V0 SLAKE_FIRST_SURFACE_MULT; do
-      if ! grep -qF "$tok" "$out_h"; then
-        echo "error: Mult subset header missing package token $tok" >&2
-        exit 1
-      fi
-      if ! grep -qF "$tok" "$out_c"; then
-        echo "error: Mult subset source missing package token $tok" >&2
-        exit 1
-      fi
-    done
-    if ! grep -qF 'MULT-0' "$mult_ssot"; then
-      echo "error: host_emit_mult.ssot.txt missing MULT-0" >&2
-      exit 1
-    fi
-    if ! grep -qF 'slake_mult_is_valid' "$mult_ssot"; then
-      echo "error: host_emit_mult.ssot.txt missing slake_mult_is_valid" >&2
-      exit 1
-    fi
-    # Name A without-Lake finished remains (additive; prebuilt path still valid).
-    rebuild_mod="$lean_dir/MultSubsetRebuild.lean"
-    if [[ ! -f "$rebuild_mod" ]]; then
-      echo "error: missing $rebuild_mod (Name A input)" >&2
-      exit 1
-    fi
-    if ! grep -qE 'def multSubsetRebuildWithoutLakeFinishedClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$rebuild_mod"; then
-      echo "error: Name A multSubsetRebuildWithoutLakeFinishedClaimed must stay true" >&2
-      exit 1
-    fi
-    echo "mult-subset-freestanding-deepen: GREEN"
+    @nix eval --impure --raw --expr {{quote(_mult_subset_freestanding_deepen)}}
 
 # Name B full Mult package write (P1 Lean-native MultSubsetEmit IO).
 # Living writer: MultFsWriteTool / MultFsDeepen MultSubsetEmit IO.FS.writeFile.

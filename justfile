@@ -102,3 +102,8 @@ check: build hygiene systems-host systems-emit-wire systems-llvm-ir idris-side l
       exit "$flake_rc"
     fi
     echo "check OK"
+
+# Bootstrap: upstream Lean builds one Slake executable (nix package slake-bootstrap).
+# Not Slake compiling Slake. Does not run the package walk.
+slake-bootstrap:
+    nix build ".#slake-bootstrap"

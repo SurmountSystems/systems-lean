@@ -285,146 +285,16 @@ subset-packages-rebuild-join-without-lake:
 # LAKE-RETIRE-INVENTORY, lakeRetireInventoryReady,
 # productPathMeasuredStepsLakeFreeEvidence, lakeRetireProductPathLakeRetired,
 # lakeRetireKeepsProductStillUsesLake, justRecipeLakeRetireInventory.
+_lake_retire_inventory := '''
+let
+  lib = (import (builtins.getFlake "nixpkgs") {}).lib;
+  novel = import ./nix/novel-source.nix { inherit lib; src = ./.; };
+  h = import ./nix/lake-retire-inventory.nix { inherit lib; root = novel; };
+in if h.ok then h.summary + "\n" else throw h.summary
+'''
+
 lake-retire-inventory:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    root="$(pwd)"
-    systems_dir="$root/src/systems"
-    lean_dir="$systems_dir/SystemsLean"
-    just_sources=("$root/justfile" "$root"/just/*.just)
-    product_wire_just="$root/just/product-wire.just"
-    mod="$lean_dir/LakeRetireInventory.lean"
-    self_host_complete="$lean_dir/SelfHostComplete.lean"
-    dual_residual="$lean_dir/DualResidual.lean"
-    echo "== lake-retire-inventory (M6 inventory + product path Lake retired) =="
-    echo "  dual: Lean inventory pins + justfile Lake-free recipes + product StillUsesLake false"
-    if [[ ! -f "$mod" ]]; then
-      echo "error: missing $mod" >&2
-      exit 1
-    fi
-    if [[ ! -f "$self_host_complete" ]]; then
-      echo "error: missing $self_host_complete" >&2
-      exit 1
-    fi
-    if [[ ! -f "$dual_residual" ]]; then
-      echo "error: missing $dual_residual" >&2
-      exit 1
-    fi
-    # Inventory module structural pins present.
-    for tok in \
-      lakeRetireInventoryReady \
-      lakeRetireInventoryFinishedClaimed \
-      productPathMeasuredStepsLakeFreeEvidence \
-      lakeRetireProductPathLakeRetired \
-      lakeRetireKeepsProductStillUsesLake \
-      justRecipeLakeRetireInventory \
-      lake-retire-inventory \
-      lakeRetireHostElaborateRemains \
-      lakeRetireBootstrapPrebuildRemains \
-      lakeRetireDiagnosticLakeRecipesRemain \
-      measuredLakeFreeJustBuild \
-      measuredLakeFreeProductWireWrite \
-      measuredLakeFreeCapableRegenerate \
-      measuredLakeFreeMultRebuild \
-      measuredLakeFreeMultWrite \
-      measuredLakeFreeMultDeepen \
-      measuredLakeFreeSubsetPackageJoin \
-      stillUsesLake \
-      dependsOnLake \
-      LAKE-RETIRE-INVENTORY \
-      SLAKE_LAKE_RETIRE_INVENTORY_V0 \
-      HOST-LAKE-RETIRE-INVENTORY
-    do
-      if ! grep -qF "$tok" "$mod"; then
-        echo "error: missing $tok in $mod" >&2
-        exit 1
-      fi
-    done
-    # Finished + product path Lake retired + host residual remains.
-    if ! grep -qE 'def lakeRetireInventoryFinishedClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
-      echo "error: lakeRetireInventoryFinishedClaimed must be true" >&2
-      exit 1
-    fi
-    if ! grep -qE 'def stillUsesLake[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*false' "$mod"; then
-      echo "error: stillUsesLake must be false (M6 product path Lake retired)" >&2
-      exit 1
-    fi
-    if ! grep -qE 'def dependsOnLake[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*false' "$mod"; then
-      echo "error: dependsOnLake must be false (M6 product path Lake retired)" >&2
-      exit 1
-    fi
-    if ! grep -qE 'def lakeRetireHostElaborateRemains[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
-      echo "error: lakeRetireHostElaborateRemains must stay true" >&2
-      exit 1
-    fi
-    # Product official path StillUsesLake false (SelfHostComplete living tip).
-    if ! grep -qE 'def productPathOfficialPathStillUsesLake[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*false' "$self_host_complete"; then
-      echo "error: productPathOfficialPathStillUsesLake must be false in SelfHostComplete (M6)" >&2
-      exit 1
-    fi
-    if ! grep -qE 'def productPathPerformDependsOnLake[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*false' "$self_host_complete"; then
-      echo "error: productPathPerformDependsOnLake must be false in SelfHostComplete (M6)" >&2
-      exit 1
-    fi
-    # Dual residual host elaborator residual free tip (F1): remains false.
-    if ! grep -qE 'def hostElaboratorResidualRemains[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*false' "$dual_residual"; then
-      echo "error: hostElaboratorResidualRemains must be false in DualResidual (F1 free tip)" >&2
-      exit 1
-    fi
-    if ! grep -qE 'def hostElaboratorResidualFreeClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$dual_residual"; then
-      echo "error: hostElaboratorResidualFreeClaimed must be true in DualResidual (F1)" >&2
-      exit 1
-    fi
-    # Product free claimed true is orthogonal (not Lake gone).
-    if ! grep -qE 'def residualFreeClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$dual_residual"; then
-      echo "error: residualFreeClaimed must stay true in DualResidual (free != Lake gone)" >&2
-      exit 1
-    fi
-    # justfile documents measured Lake-free product recipes (dual evidence).
-    for recipe in \
-      product-wire-freestanding-write \
-      freestanding-capable-regenerate-without-lake \
-      mult-subset-rebuild-without-lake \
-      mult-subset-freestanding-write \
-      mult-subset-freestanding-deepen \
-      subset-packages-rebuild-join-without-lake \
-      lake-retire-inventory
-    do
-      if ! grep -qE "^${recipe}:" "${just_sources[@]}"; then
-        echo "error: missing just recipe '${recipe}:' in modular just tree (Lake-free inventory dual)" >&2
-        exit 1
-      fi
-    done
-    # Official build exists as product hot path (M4 Name C).
-    if ! grep -qE '^build:' "${just_sources[@]}"; then
-      echo "error: missing just build recipe (measured Lake-free product path)" >&2
-      exit 1
-    fi
-    # Ban forge: product pins true after M6 is wrong; host residual free is wrong.
-    if grep -qE 'def stillUsesLake[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
-      echo "error: forge ban: stillUsesLake true on inventory after M6 product retire" >&2
-      exit 1
-    fi
-    if grep -qE 'def dependsOnLake[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
-      echo "error: forge ban: dependsOnLake true on inventory after M6 product retire" >&2
-      exit 1
-    fi
-    if grep -qE 'def productPathOfficialPathStillUsesLake[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$self_host_complete"; then
-      echo "error: forge ban: productPathOfficialPathStillUsesLake true after M6" >&2
-      exit 1
-    fi
-    if grep -qE 'def hostElaboratorResidualRemains[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$dual_residual"; then
-      echo "error: forge ban: hostElaboratorResidualRemains true after free claim (F1)" >&2
-      exit 1
-    fi
-    if grep -qE 'def hostElaboratorResidualFreeClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*false' "$dual_residual"; then
-      echo "error: forge ban: hostElaboratorResidualFreeClaimed false after free claim (F1)" >&2
-      exit 1
-    fi
-    echo "  inventory: product measured Lake-free recipes dual-pinned"
-    echo "  honesty: product StillUsesLake false; DependsOnLake false; host residual free claimed (F1)"
-    echo "  non-claims: product free/complete/driver unchanged; not PROVABLY/llvm rebrand; free != Lake gone"
-    echo "lake-retire-inventory: GREEN"
+    @nix eval --impure --raw --expr {{quote(_lake_retire_inventory)}}
 
 # Peer elaborator step 10: host residual shrink inventory (partial only).
 # Named Mult-first host develop paths Lake-free on hot path; full host residual remains.

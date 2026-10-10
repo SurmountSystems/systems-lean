@@ -103,6 +103,56 @@
         root = novelSource;
       };
 
+      freestandingCapableReadLakeFree = import ./nix/freestanding-capable-read-lake-free.nix {
+        inherit lib;
+        root = novelSource;
+      };
+
+      freestandingCapableComposeLakeFree = import ./nix/freestanding-capable-compose-lake-free.nix {
+        inherit lib;
+        root = novelSource;
+      };
+
+      freestandingCapableWriteHcLakeFree = import ./nix/freestanding-capable-write-hc-lake-free.nix {
+        inherit lib;
+        root = novelSource;
+      };
+
+      freestandingCapableRegenerateWithoutLake = import ./nix/freestanding-capable-regenerate-without-lake.nix {
+        inherit lib;
+        root = novelSource;
+      };
+
+      ownershipRegenerateReadOnly = import ./nix/ownership-regenerate-read-only.nix {
+        inherit lib;
+        root = novelSource;
+      };
+
+      ownershipRegenerateComposeOnly = import ./nix/ownership-regenerate-compose-only.nix {
+        inherit lib;
+        root = novelSource;
+      };
+
+      ownershipRegenerateWriteHcOnly = import ./nix/ownership-regenerate-write-hc-only.nix {
+        inherit lib;
+        root = novelSource;
+      };
+
+      lakeRetireInventory = import ./nix/lake-retire-inventory.nix {
+        inherit lib;
+        root = novelSource;
+      };
+
+      multSubsetFreestandingDeepen = import ./nix/mult-subset-freestanding-deepen.nix {
+        inherit lib;
+        root = novelSource;
+      };
+
+      hostResidualShrink = import ./nix/host-residual-shrink.nix {
+        inherit lib;
+        root = novelSource;
+      };
+
       # Pure check: throw at eval time with violation list, or a tiny text drv.
       mkSourceHygieneCheck =
         pkgs:
@@ -202,6 +252,76 @@
         else
           throw systemsMillRecipeCount.summary;
 
+      mkFreestandingCapableReadLakeFreeCheck =
+        pkgs:
+        if freestandingCapableReadLakeFree.ok then
+          pkgs.writeText "freestanding-capable-read-lake-free-ok" freestandingCapableReadLakeFree.summary
+        else
+          throw freestandingCapableReadLakeFree.summary;
+
+      mkFreestandingCapableComposeLakeFreeCheck =
+        pkgs:
+        if freestandingCapableComposeLakeFree.ok then
+          pkgs.writeText "freestanding-capable-compose-lake-free-ok" freestandingCapableComposeLakeFree.summary
+        else
+          throw freestandingCapableComposeLakeFree.summary;
+
+      mkFreestandingCapableWriteHcLakeFreeCheck =
+        pkgs:
+        if freestandingCapableWriteHcLakeFree.ok then
+          pkgs.writeText "freestanding-capable-write-hc-lake-free-ok" freestandingCapableWriteHcLakeFree.summary
+        else
+          throw freestandingCapableWriteHcLakeFree.summary;
+
+      mkFreestandingCapableRegenerateWithoutLakeCheck =
+        pkgs:
+        if freestandingCapableRegenerateWithoutLake.ok then
+          pkgs.writeText "freestanding-capable-regenerate-without-lake-ok" freestandingCapableRegenerateWithoutLake.summary
+        else
+          throw freestandingCapableRegenerateWithoutLake.summary;
+
+      mkOwnershipRegenerateReadOnlyCheck =
+        pkgs:
+        if ownershipRegenerateReadOnly.ok then
+          pkgs.writeText "ownership-regenerate-read-only-ok" ownershipRegenerateReadOnly.summary
+        else
+          throw ownershipRegenerateReadOnly.summary;
+
+      mkOwnershipRegenerateComposeOnlyCheck =
+        pkgs:
+        if ownershipRegenerateComposeOnly.ok then
+          pkgs.writeText "ownership-regenerate-compose-only-ok" ownershipRegenerateComposeOnly.summary
+        else
+          throw ownershipRegenerateComposeOnly.summary;
+
+      mkOwnershipRegenerateWriteHcOnlyCheck =
+        pkgs:
+        if ownershipRegenerateWriteHcOnly.ok then
+          pkgs.writeText "ownership-regenerate-write-hc-only-ok" ownershipRegenerateWriteHcOnly.summary
+        else
+          throw ownershipRegenerateWriteHcOnly.summary;
+
+      mkLakeRetireInventoryCheck =
+        pkgs:
+        if lakeRetireInventory.ok then
+          pkgs.writeText "lake-retire-inventory-ok" lakeRetireInventory.summary
+        else
+          throw lakeRetireInventory.summary;
+
+      mkMultSubsetFreestandingDeepenCheck =
+        pkgs:
+        if multSubsetFreestandingDeepen.ok then
+          pkgs.writeText "mult-subset-freestanding-deepen-ok" multSubsetFreestandingDeepen.summary
+        else
+          throw multSubsetFreestandingDeepen.summary;
+
+      mkHostResidualShrinkCheck =
+        pkgs:
+        if hostResidualShrink.ok then
+          pkgs.writeText "host-residual-shrink-ok" hostResidualShrink.summary
+        else
+          throw hostResidualShrink.summary;
+
       mkProgressReport =
         pkgs:
         pkgs.writeText "PROGRESS.md" progressAt.report;
@@ -225,6 +345,16 @@
         systemsMillPackedExtras = import ./nix/systems-mill-packed-extras.nix;
         systemsMillFilePath = import ./nix/systems-mill-file-path.nix;
         systemsMillRecipeCount = import ./nix/systems-mill-recipe-count.nix;
+        freestandingCapableReadLakeFree = import ./nix/freestanding-capable-read-lake-free.nix;
+        freestandingCapableComposeLakeFree = import ./nix/freestanding-capable-compose-lake-free.nix;
+        freestandingCapableWriteHcLakeFree = import ./nix/freestanding-capable-write-hc-lake-free.nix;
+        freestandingCapableRegenerateWithoutLake = import ./nix/freestanding-capable-regenerate-without-lake.nix;
+        ownershipRegenerateReadOnly = import ./nix/ownership-regenerate-read-only.nix;
+        ownershipRegenerateComposeOnly = import ./nix/ownership-regenerate-compose-only.nix;
+        ownershipRegenerateWriteHcOnly = import ./nix/ownership-regenerate-write-hc-only.nix;
+        lakeRetireInventory = import ./nix/lake-retire-inventory.nix;
+        multSubsetFreestandingDeepen = import ./nix/mult-subset-freestanding-deepen.nix;
+        hostResidualShrink = import ./nix/host-residual-shrink.nix;
       };
 
       # Live pure-Nix meter text (system-independent). `just progress` redirects these.
@@ -248,15 +378,31 @@
           systems-mill-packed-extras = mkSystemsMillPackedExtrasCheck pkgs;
           systems-mill-file-path = mkSystemsMillFilePathCheck pkgs;
           systems-mill-recipe-count = mkSystemsMillRecipeCountCheck pkgs;
+          freestanding-capable-read-lake-free = mkFreestandingCapableReadLakeFreeCheck pkgs;
+          freestanding-capable-compose-lake-free = mkFreestandingCapableComposeLakeFreeCheck pkgs;
+          freestanding-capable-write-hc-lake-free = mkFreestandingCapableWriteHcLakeFreeCheck pkgs;
+          freestanding-capable-regenerate-without-lake = mkFreestandingCapableRegenerateWithoutLakeCheck pkgs;
+          ownership-regenerate-read-only = mkOwnershipRegenerateReadOnlyCheck pkgs;
+          ownership-regenerate-compose-only = mkOwnershipRegenerateComposeOnlyCheck pkgs;
+          ownership-regenerate-write-hc-only = mkOwnershipRegenerateWriteHcOnlyCheck pkgs;
+          lake-retire-inventory = mkLakeRetireInventoryCheck pkgs;
+          mult-subset-freestanding-deepen = mkMultSubsetFreestandingDeepenCheck pkgs;
+          host-residual-shrink = mkHostResidualShrinkCheck pkgs;
         }
       );
 
       packages = forEachSystem (
-        { pkgs, ... }:
+        { pkgs, system }:
         {
           # Frozen snapshot of the pure progress report (CI artifact / nix build).
           progress-report = mkProgressReport pkgs;
           default = mkSourceHygieneCheck pkgs;
+        }
+        // lib.optionalAttrs (system == "x86_64-linux") {
+          slake-bootstrap = import ./nix/slake-bootstrap.nix {
+            inherit lib pkgs system;
+            driver = ./src/systems/SystemsLean/PackageTypecheck.lean;
+          };
         }
       );
 

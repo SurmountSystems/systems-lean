@@ -1,7 +1,7 @@
 /-
   SYSTEMS_LEAN_HOST partial -- HostModuleCheckExtractSubsetRebuildTerm named-walk
   wrappers (CheckersLater-role walk; ErasureSubsetRebuildTerm walk is the prior
-  closed set). CheckersLater walk is 617; Tail is 863; Later is 785;
+  closed set). CheckersLater walk is 617; Tail is 923; Later is 795;
   ParityMultTerm walk, ParityLinearTerm walk, ParityTypesTerm walk,
   ParityProgramTerm walk, ParityEmitTerm walk, EmitMultScaffoldTerm
   walk, EmitLinearScaffoldTerm walk, EmitTypesScaffoldTerm walk,

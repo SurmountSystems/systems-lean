@@ -1,7 +1,7 @@
 /-
   SYSTEMS_LEAN_HOST partial -- HostModuleCheckLlvmTypesTextTerm named-walk
   wrappers (CheckersLater-role walk; SubsetPackageJoinTerm walk is the prior
-  closed set). CheckersLater walk is 617; Tail is 863; Later is 785;
+  closed set).
   ParityMultTerm walk, ParityLinearTerm walk, ParityTypesTerm walk,
   ParityProgramTerm walk, ParityEmitTerm walk, EmitMultScaffoldTerm
   walk, EmitLinearScaffoldTerm walk, EmitTypesScaffoldTerm walk,
@@ -22,12 +22,12 @@
   ComposeSubsetEmitTerm walk, ErasureSubsetEmitTerm walk,
   ExtractSubsetEmitTerm walk, MultSubsetEmitTerm walk,
   MultSubsetRebuildTerm walk, LinearSubsetRebuildTerm walk,
-  TypesSubsetRebuildTerm walk, ProgramSubsetRebuildTerm walk,
+  TypesSubsetRebuildTerm walk,
   GraphSubsetRebuildTerm walk, and SubsetPackageJoinTerm walk
   stay as compile deps. Do not dump onto those.
   Side: classic Lean elaborator under src/systems/ (not freestanding C).
   Role module extracted so ElabMeetNamedWalkHostModuleCheckCheckersLater
-  stays 617 and under about 780. Same namespace SystemsLean.ElabMeet.
+  does not gain these wrappers. Same namespace SystemsLean.ElabMeet.
   Shared path, barrel, and name-list compile helpers stay in
   ElabMeetNamedWalk. Prior SubsetPackageJoinTerm wrappers stay in
   ElabMeetNamedWalkHostModuleCheckSubsetPackageJoinTerm. Do not grow that walk.
@@ -61,7 +61,7 @@
   Do not grow ElabMeetCompile.
   Do not plant live HostModuleCheckLlvmTypesTextTerm.lean.
   Do not skip to HostModuleCheckMultFsDeepenTerm.
-  Rec-depth 8192 keep on later ElabMeet fold; this extract does not fold.
+  This extract does not fold.
 
   Spec (readable):
   - HostModuleCheckLlvmTypesTextTerm wrappers live here:
@@ -72,43 +72,11 @@
     tryCompileNamedHostModuleCheckLlvmTypesTextTermSubset,
     tryCompileAfterHostModuleCheckLlvmTypesTextTermDeps.
     Named membership is the prior SubsetPackageJoinTerm closed set plus
-    HostModuleCheckLlvmTypesTextTerm last. Barrel order among that
-    closed set; skip Linear, skip IrGraph, skip HostGraphMain,
-    skip HostCompose. Compile order is the SubsetPackageJoinTerm compile
-    order, then HostModuleCheckLlvmTypesTextTerm last. EmitPlanTerm
-    is a compile dependency only (already on the KernelEmitTerm /
-    ParityMultTerm / ParityLinearTerm / ParityTypesTerm /
-    ParityProgramTerm / ParityEmitTerm / EmitMultScaffoldTerm /
-    EmitLinearScaffoldTerm / EmitTypesScaffoldTerm /
-    EmitProgramScaffoldTerm / EmitGraphScaffoldTerm /
-    EmitComposeScaffoldTerm / EmitErasureScaffoldTerm /
-    EmitExtractScaffoldTerm / EmitBannerScaffoldTerm /
-    KernelSelfApplyTerm / ProductOutKernelTerm / CompilePathTerm /
-    JoinMapTerm / SelfHostTerm / SurfaceMatrixTerm /
-    SpecProofTerm / DualResidualTerm / CompilePathMultTerm /
-    CompilePathLinearTerm / CompilePathTypesTerm /
-    CompilePathProgramTerm / CompilePathGraphTerm /
-    CompilePathComposeTerm / CompilePathErasureTerm /
-    CompilePathExtractTerm / CompilePathPlanTerm /
-    CompilePathApplyTerm / CompilePathBodyTerm /
-    FirstSurfaceTerm / LinearSubsetEmitTerm / TypesSubsetEmitTerm /
-    ProgramSubsetEmitTerm / GraphSubsetEmitTerm /
-    ComposeSubsetEmitTerm / ErasureSubsetEmitTerm /
-    ExtractSubsetEmitTerm / MultSubsetEmitTerm /
-    MultSubsetRebuildTerm / LinearSubsetRebuildTerm /
-    TypesSubsetRebuildTerm / ProgramSubsetRebuildTerm /
-    GraphSubsetRebuildTerm / SubsetPackageJoinTerm order), not a
-    named plus-one.
-    IrGraph and HostCompose are compile dependencies only. After-deps
-    are the SubsetPackageJoinTerm compile order.
-    HostModuleCheckLlvmTypesTextTerm imports HostModuleCheckSurface and
-    HostModuleCheckEmitPlanTerm (same dispatcher-split honesty as
-    HostModuleCheckSubsetPackageJoinTerm; EmitPlanTerm is compile-dep only).
-    RequiredDecls / RequiredDeclsProduct / RequiredDeclsLater are already
-    named members of the closed set, not extra plus-ones.
+    HostModuleCheckLlvmTypesTextTerm last. Compile order is the
+    SubsetPackageJoinTerm compile order, then
+    HostModuleCheckLlvmTypesTextTerm last.
+    After-deps are the SubsetPackageJoinTerm compile order.
     Do not plant live HostModuleCheckLlvmTypesTextTerm.lean.
-  - slakeOwnsPackageTypecheck stays false. FullHost stays false.
-    Do not claim 48. Living tip stays 47 of about 206.
 
   Greppable: SYSTEMS_LEAN_HOST, HOST-ELAB-MEET, SLAKE_ELAB_MEET,
   tryCompileOnDiskModule, tryCompileOnDiskModuleIO,
@@ -128,9 +96,6 @@
   Red/green: lake build SystemsLean.ElabMeetNamedWalkHostModuleCheckLlvmTypesTextTerm;
   just systems-host.
   Module must stay ASCII.
-  Not freestanding residual free. Not PROVABLY. Not llvm unlock.
-  Not FullHost. Not FullHostElaborateRemains true. Not Lake gone.
-  slakeOwnsPackageTypecheck stays false.
 -/
 
 import Lean
@@ -205,42 +170,14 @@ def findLiveHostModuleCheckLlvmTypesTextTermPath : IO (Option System.FilePath) :
 /-- Named HostModuleCheckLlvmTypesTextTerm subset of the live SystemsLean library.
     Membership is the prior SubsetPackageJoinTerm closed set plus
     HostModuleCheckLlvmTypesTextTerm last.
-    Barrel order among that closed set; skip Linear, skip IrGraph,
-    skip HostGraphMain, skip HostCompose. Compile order holds the
-    subset-surface closure.
     Greppable: namedClosedHostModuleCheckLlvmTypesTextTermSubsetNames.
     SystemsLean.HostModuleCheckLlvmTypesTextTerm. -/
 def namedClosedHostModuleCheckLlvmTypesTextTermSubsetNames : List String :=
   namedClosedHostModuleCheckSubsetPackageJoinTermSubsetNames ++
     ["SystemsLean.HostModuleCheckLlvmTypesTextTerm"]
 
-/-- Compile order honors imports: SubsetPackageJoinTerm compile order, then
-    HostModuleCheckLlvmTypesTextTerm last. IrGraph and HostCompose are
-    compile dependencies only. Mult first. Membership list vs compile
-    order. EmitPlanTerm is a compile dependency only (already on the
-    KernelEmitTerm / ParityMultTerm / ParityLinearTerm / ParityTypesTerm /
-    ParityProgramTerm / ParityEmitTerm / EmitMultScaffoldTerm /
-    EmitLinearScaffoldTerm / EmitTypesScaffoldTerm /
-    EmitProgramScaffoldTerm / EmitGraphScaffoldTerm /
-    EmitComposeScaffoldTerm / EmitErasureScaffoldTerm /
-    EmitExtractScaffoldTerm / EmitBannerScaffoldTerm /
-    KernelSelfApplyTerm / ProductOutKernelTerm / CompilePathTerm /
-    JoinMapTerm / SelfHostTerm / SurfaceMatrixTerm / SpecProofTerm /
-    DualResidualTerm / CompilePathMultTerm / CompilePathLinearTerm /
-    CompilePathTypesTerm / CompilePathProgramTerm / CompilePathGraphTerm /
-    CompilePathComposeTerm / CompilePathErasureTerm /
-    CompilePathExtractTerm / CompilePathPlanTerm /
-    CompilePathApplyTerm / CompilePathBodyTerm /
-    FirstSurfaceTerm / LinearSubsetEmitTerm / TypesSubsetEmitTerm /
-    ProgramSubsetEmitTerm / GraphSubsetEmitTerm /
-    ComposeSubsetEmitTerm / ErasureSubsetEmitTerm /
-    ExtractSubsetEmitTerm / MultSubsetEmitTerm /
-    MultSubsetRebuildTerm / LinearSubsetRebuildTerm /
-    TypesSubsetRebuildTerm / ProgramSubsetRebuildTerm /
-    GraphSubsetRebuildTerm / SubsetPackageJoinTerm order), not a
-    named plus-one.
-    RequiredDecls / RequiredDeclsProduct / RequiredDeclsLater
-    are already named members of the closed set.
+/-- Compile order is the SubsetPackageJoinTerm compile order, then
+    HostModuleCheckLlvmTypesTextTerm last.
     Greppable: namedClosedHostModuleCheckLlvmTypesTextTermCompileOrder. -/
 def namedClosedHostModuleCheckLlvmTypesTextTermCompileOrder : List String :=
   namedClosedHostModuleCheckSubsetPackageJoinTermCompileOrder ++
@@ -254,7 +191,7 @@ def barrelListsNamedHostModuleCheckLlvmTypesTextTermSubset (text : String) : Boo
 
 /-- Compile the named HostModuleCheckLlvmTypesTextTerm subset after reading
     the live lakefile. Wrapper over tryCompileNamedMemberListIO.
-    Compile order honors imports: Mult first, then the SubsetPackageJoinTerm
+    Passes the subset names and the compile order: SubsetPackageJoinTerm
     compile order, then HostModuleCheckLlvmTypesTextTerm last.
     Greppable: tryCompileNamedHostModuleCheckLlvmTypesTextTermSubset.
     tryCompileOnDiskModule. SystemsLean.HostModuleCheckLlvmTypesTextTerm. -/
@@ -278,15 +215,8 @@ def tryCompileNamedHostModuleCheckLlvmTypesTextTermSubset
   catch _ =>
     pure false
 
-/-- Compile live Mult first, then the SubsetPackageJoinTerm compile order
-    (including EmitPlanTerm and MultTerm compile deps),
-    put those .olean files on the search path, then compile srcPath
-    as thmMod.
-    HostModuleCheckLlvmTypesTextTerm imports HostModuleCheckSurface and
-    HostModuleCheckEmitPlanTerm. EmitPlanTerm is not a named member
-    this slice. RequiredDecls / RequiredDeclsProduct / RequiredDeclsLater
-    are already named members. IrGraph and HostCompose are compile
-    dependencies only. Do not plant on the live tree. Wrapper over
+/-- Compile srcPath as thmMod after namedClosedHostModuleCheckSubsetPackageJoinTermCompileOrder.
+    Do not plant on the live tree. Wrapper over
     tryCompileAfterNamedDepsIO.
     Greppable: tryCompileAfterHostModuleCheckLlvmTypesTextTermDeps.
     tryCompileOnDiskModule. -/

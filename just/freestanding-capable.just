@@ -114,77 +114,17 @@ freestanding-capable-read:
 # productPathFreestandingCapableRead, productPathFreestandingCapableReadLakeFreeRecipe,
 # FREESTANDING-CAPABLE-STEP-CONTRACT-READ, FREESTANDING-PERFORM-GAP-READ-SSOT,
 # SELF-HOST-PRODUCT-PATH-FREESTANDING-CAPABLE-GAP
+
+_freestanding_capable_read_lake_free := '''
+let
+  lib = (import (builtins.getFlake "nixpkgs") {}).lib;
+  novel = import ./nix/novel-source.nix { inherit lib; src = ./.; };
+  h = import ./nix/freestanding-capable-read-lake-free.nix { inherit lib; root = novel; };
+in if h.ok then h.summary + "\n" else throw h.summary
+'''
+
 freestanding-capable-read-lake-free:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    emit_dir="src/systems/emit"
-    echo "== freestanding-capable-read-lake-free (B26 Lake-free freestanding-capable READ; CapableRead) =="
-    echo "  stage: SLAKE_SELF_HOST_PRODUCT_PATH_FREESTANDING_CAPABLE_GAP_V0"
-    echo "  measure: productPathFreestandingCapableRead true"
-    echo "  contract: FREESTANDING-CAPABLE-STEP-CONTRACT-READ depth (token + HEADER/BODY)"
-    echo "  Lake-free: no lake build/exe; freestanding-capable dual SSOT structural read"
-    echo "  not ownership-regenerate-read-only; not compose/write; not Full; not perform claimed"
-    echo "  not residual free; not PROVABLY; complete stays false"
-    if [[ ! -d "$emit_dir" ]]; then
-      echo "error: missing emit dir $emit_dir" >&2
-      exit 1
-    fi
-    # Mult..Out dual SSOT: base:token:headerBlock:bodyBlock (B16 freestandingCapableReadDualSsot).
-    # Authority: CapableRead.dualSsotSpecs.
-    specs=(
-      "host_emit_mult.ssot.txt:HOST-EMIT-MULT:MULT_C_HEADER:MULT_C_BODY"
-      "host_emit_linear.ssot.txt:HOST-EMIT-LINEAR:LINEAR_C_HEADER:LINEAR_C_BODY"
-      "host_emit_erasure.ssot.txt:HOST-EMIT-ERASURE:ERASURE_C_HEADER:ERASURE_C_BODY"
-      "host_emit_extract.ssot.txt:HOST-EMIT-EXTRACT:EXTRACT_C_HEADER:EXTRACT_C_BODY"
-      "host_emit_types.ssot.txt:HOST-EMIT-TYPES:TYPES_C_HEADER:TYPES_C_BODY"
-      "host_emit_program.ssot.txt:HOST-EMIT-PROGRAM:PROGRAM_C_HEADER:PROGRAM_C_BODY"
-      "host_emit_graph.ssot.txt:HOST-EMIT-GRAPH:GRAPH_C_HEADER:GRAPH_C_BODY"
-      "host_emit_compose.ssot.txt:HOST-EMIT-COMPOSE:COMPOSE_C_HEADER:COMPOSE_C_BODY"
-      "host_emit_plan.ssot.txt:HOST-EMIT-PLAN:PLAN_C_HEADER:PLAN_C_BODY"
-      "host_emit_apply.ssot.txt:HOST-EMIT-APPLY:APPLY_C_HEADER:APPLY_C_BODY"
-      "host_emit_body_fragment.ssot.txt:HOST-EMIT-SSOT:BODY_C_HEADER:BODY_C_BODY"
-      "host_emit_banner.ssot.txt:HOST-EMIT-BANNER:BANNER_C_HEADER:BANNER_C_BODY"
-    )
-    checked=0
-    for spec in "${specs[@]}"; do
-      base="${spec%%:*}"
-      rest="${spec#*:}"
-      token="${rest%%:*}"
-      rest2="${rest#*:}"
-      header="${rest2%%:*}"
-      body="${rest2#*:}"
-      path="$emit_dir/$base"
-      if [[ ! -f "$path" ]]; then
-        echo "error: missing dual SSOT: $path" >&2
-        exit 1
-      fi
-      if [[ ! -s "$path" ]]; then
-        echo "error: empty dual SSOT: $path" >&2
-        exit 1
-      fi
-      if ! grep -Fq "$token" "$path"; then
-        echo "error: dual SSOT missing token $token: $path" >&2
-        exit 1
-      fi
-      if ! grep -Fq "# ${header}_BEGIN" "$path"; then
-        echo "error: dual SSOT missing HEADER begin ${header}_BEGIN: $path" >&2
-        exit 1
-      fi
-      if ! grep -Fq "# ${header}_END" "$path"; then
-        echo "error: dual SSOT missing HEADER end ${header}_END: $path" >&2
-        exit 1
-      fi
-      if ! grep -Fq "# ${body}_BEGIN" "$path"; then
-        echo "error: dual SSOT missing BODY begin ${body}_BEGIN: $path" >&2
-        exit 1
-      fi
-      if ! grep -Fq "# ${body}_END" "$path"; then
-        echo "error: dual SSOT missing BODY end ${body}_END: $path" >&2
-        exit 1
-      fi
-      checked=$((checked + 1))
-    done
-    echo "freestanding-capable-read-lake-free: GREEN (Lake-free freestanding-capable READ; checked ${checked} dual SSOT token+HEADER/BODY; B26 CapableRead)"
+    @nix eval --impure --raw --expr {{quote(_freestanding_capable_read_lake_free)}}
 
 # Partial B17: freestanding-capable plan/apply/body COMPOSE without FreestandingEmit
 # as product authority (freestandingCapableComposePlanApplyBody; HEADER/BODY +
@@ -234,83 +174,16 @@ freestanding-capable-compose:
 # productPathFreestandingCapableCompose, productPathFreestandingCapableComposeLakeFreeRecipe,
 # FREESTANDING-CAPABLE-STEP-CONTRACT-COMPOSE, FREESTANDING-PERFORM-GAP-COMPOSE,
 # SELF-HOST-PRODUCT-PATH-FREESTANDING-CAPABLE-GAP
+_freestanding_capable_compose_lake_free := '''
+let
+  lib = (import (builtins.getFlake "nixpkgs") {}).lib;
+  novel = import ./nix/novel-source.nix { inherit lib; src = ./.; };
+  h = import ./nix/freestanding-capable-compose-lake-free.nix { inherit lib; root = novel; };
+in if h.ok then h.summary + "\n" else throw h.summary
+'''
+
 freestanding-capable-compose-lake-free:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    emit_dir="src/systems/emit"
-    echo "== freestanding-capable-compose-lake-free (B27 Lake-free freestanding-capable COMPOSE; CapableCompose) =="
-    echo "  stage: SLAKE_SELF_HOST_PRODUCT_PATH_FREESTANDING_CAPABLE_GAP_V0"
-    echo "  measure: productPathFreestandingCapableCompose true"
-    echo "  contract: FREESTANDING-CAPABLE-STEP-CONTRACT-COMPOSE depth (token + HEADER/BODY + ordered compose substrate)"
-    echo "  Lake-free: no lake build/exe; freestanding-capable plan/apply/body structural compose"
-    echo "  not ownership-regenerate-compose-only; not write; not Full; not perform claimed"
-    echo "  not residual free; not PROVABLY; complete stays false"
-    if [[ ! -d "$emit_dir" ]]; then
-      echo "error: missing emit dir $emit_dir" >&2
-      exit 1
-    fi
-    # Plan/apply/body dual SSOT: base:token:headerBlock:bodyBlock
-    # (B17 freestandingCapableComposePlanApplyBody).
-    # Authority: CapableCompose.planApplyBodySpecs.
-    specs=(
-      "host_emit_plan.ssot.txt:HOST-EMIT-PLAN:PLAN_C_HEADER:PLAN_C_BODY"
-      "host_emit_apply.ssot.txt:HOST-EMIT-APPLY:APPLY_C_HEADER:APPLY_C_BODY"
-      "host_emit_body_fragment.ssot.txt:HOST-EMIT-BODY:BODY_C_HEADER:BODY_C_BODY"
-    )
-    checked=0
-    for spec in "${specs[@]}"; do
-      base="${spec%%:*}"
-      rest="${spec#*:}"
-      token="${rest%%:*}"
-      rest2="${rest#*:}"
-      header="${rest2%%:*}"
-      body="${rest2#*:}"
-      path="$emit_dir/$base"
-      if [[ ! -f "$path" ]]; then
-        echo "error: missing compose dual SSOT: $path" >&2
-        exit 1
-      fi
-      if [[ ! -s "$path" ]]; then
-        echo "error: empty compose dual SSOT: $path" >&2
-        exit 1
-      fi
-      if ! grep -Fq "$token" "$path"; then
-        echo "error: compose dual SSOT missing token $token: $path" >&2
-        exit 1
-      fi
-      if ! grep -Fq "# ${header}_BEGIN" "$path"; then
-        echo "error: compose dual SSOT missing HEADER begin ${header}_BEGIN: $path" >&2
-        exit 1
-      fi
-      if ! grep -Fq "# ${header}_END" "$path"; then
-        echo "error: compose dual SSOT missing HEADER end ${header}_END: $path" >&2
-        exit 1
-      fi
-      if ! grep -Fq "# ${body}_BEGIN" "$path"; then
-        echo "error: compose dual SSOT missing BODY begin ${body}_BEGIN: $path" >&2
-        exit 1
-      fi
-      if ! grep -Fq "# ${body}_END" "$path"; then
-        echo "error: compose dual SSOT missing BODY end ${body}_END: $path" >&2
-        exit 1
-      fi
-      checked=$((checked + 1))
-    done
-    # Ordered compose substrate markers (B17 freestandingCapableComposePlanApplyBody
-    # writer path + contract + gap ids). Distinct from ownership presence+token-only.
-    # Writer-path / contract / gap live in host Lean; require module names them.
-    host_compose="src/systems/SystemsLean/CapableCompose.lean"
-    if [[ ! -f "$host_compose" ]]; then
-      echo "error: missing freestanding-capable COMPOSE module $host_compose" >&2
-      exit 1
-    fi
-    for ot in "WRITER-PATH-STEP-COMPOSE-PLAN-APPLY-BODY" "FREESTANDING-CAPABLE-STEP-CONTRACT-COMPOSE" "FREESTANDING-PERFORM-GAP-COMPOSE" "freestandingCapableComposePlanApplyBody"; do
-      if ! grep -Fq "$ot" "$host_compose"; then
-        echo "error: freestanding-capable COMPOSE module missing ordered marker $ot: $host_compose" >&2
-        exit 1
-      fi
-    done
-    echo "freestanding-capable-compose-lake-free: GREEN (Lake-free freestanding-capable COMPOSE; checked ${checked} plan/apply/body dual SSOT token+HEADER/BODY; ordered compose markers; B27 CapableCompose)"
+    @nix eval --impure --raw --expr {{quote(_freestanding_capable_compose_lake_free)}}
 
 # Partial B18: freestanding-capable freestanding .h/.c WRITE without FreestandingEmit
 # as product authority (freestandingCapableWriteFreestandingHc; dual SSOT HEADER/BODY
@@ -361,109 +234,16 @@ freestanding-capable-write-hc:
 # productPathFreestandingCapableWriteHc, productPathFreestandingCapableWriteHcLakeFreeRecipe,
 # FREESTANDING-CAPABLE-STEP-CONTRACT-WRITE-HC, FREESTANDING-PERFORM-GAP-WRITE-HC,
 # SELF-HOST-PRODUCT-PATH-FREESTANDING-CAPABLE-GAP
+_freestanding_capable_write_hc_lake_free := '''
+let
+  lib = (import (builtins.getFlake "nixpkgs") {}).lib;
+  novel = import ./nix/novel-source.nix { inherit lib; src = ./.; };
+  h = import ./nix/freestanding-capable-write-hc-lake-free.nix { inherit lib; root = novel; };
+in if h.ok then h.summary + "\n" else throw h.summary
+'''
+
 freestanding-capable-write-hc-lake-free:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    emit_dir="src/systems/emit"
-    echo "== freestanding-capable-write-hc-lake-free (B28 Lake-free freestanding-capable WRITE-HC; CapableWriteHc) =="
-    echo "  stage: SLAKE_SELF_HOST_PRODUCT_PATH_FREESTANDING_CAPABLE_GAP_V0"
-    echo "  measure: productPathFreestandingCapableWriteHc true"
-    echo "  contract: FREESTANDING-CAPABLE-STEP-CONTRACT-WRITE-HC depth (token + HEADER/BODY + write substrate)"
-    echo "  Lake-free: no lake build/exe; freestanding-capable dual SSOT structural write substrate"
-    echo "  not ownership-regenerate-write-hc-only; not Full; not perform claimed"
-    echo "  not residual free; not PROVABLY; complete stays false"
-    if [[ ! -d "$emit_dir" ]]; then
-      echo "error: missing emit dir $emit_dir" >&2
-      exit 1
-    fi
-    # Mult..Out dual SSOT: base:token:headerBlock:bodyBlock
-    # (B18 freestandingCapableWriteFreestandingHc write inputs).
-    # Authority: CapableWriteHc.dualSsotSpecs.
-    specs=(
-      "host_emit_banner.ssot.txt:HOST-EMIT-BANNER:BANNER_C_HEADER:BANNER_C_BODY"
-      "host_emit_mult.ssot.txt:HOST-EMIT-MULT:MULT_C_HEADER:MULT_C_BODY"
-      "host_emit_linear.ssot.txt:HOST-EMIT-LINEAR:LINEAR_C_HEADER:LINEAR_C_BODY"
-      "host_emit_erasure.ssot.txt:HOST-EMIT-ERASURE:ERASURE_C_HEADER:ERASURE_C_BODY"
-      "host_emit_extract.ssot.txt:HOST-EMIT-EXTRACT:EXTRACT_C_HEADER:EXTRACT_C_BODY"
-      "host_emit_types.ssot.txt:HOST-EMIT-TYPES:TYPES_C_HEADER:TYPES_C_BODY"
-      "host_emit_program.ssot.txt:HOST-EMIT-PROGRAM:PROGRAM_C_HEADER:PROGRAM_C_BODY"
-      "host_emit_graph.ssot.txt:HOST-EMIT-GRAPH:GRAPH_C_HEADER:GRAPH_C_BODY"
-      "host_emit_compose.ssot.txt:HOST-EMIT-COMPOSE:COMPOSE_C_HEADER:COMPOSE_C_BODY"
-      "host_emit_plan.ssot.txt:HOST-EMIT-PLAN:PLAN_C_HEADER:PLAN_C_BODY"
-      "host_emit_apply.ssot.txt:HOST-EMIT-APPLY:APPLY_C_HEADER:APPLY_C_BODY"
-      "host_emit_body_fragment.ssot.txt:HOST-EMIT-BODY:BODY_C_HEADER:BODY_C_BODY"
-    )
-    checked=0
-    for spec in "${specs[@]}"; do
-      base="${spec%%:*}"
-      rest="${spec#*:}"
-      token="${rest%%:*}"
-      rest2="${rest#*:}"
-      header="${rest2%%:*}"
-      body="${rest2#*:}"
-      path="$emit_dir/$base"
-      if [[ ! -f "$path" ]]; then
-        echo "error: missing write dual SSOT: $path" >&2
-        exit 1
-      fi
-      if [[ ! -s "$path" ]]; then
-        echo "error: empty write dual SSOT: $path" >&2
-        exit 1
-      fi
-      if ! grep -Fq "$token" "$path"; then
-        echo "error: write dual SSOT missing token $token: $path" >&2
-        exit 1
-      fi
-      if ! grep -Fq "# ${header}_BEGIN" "$path"; then
-        echo "error: write dual SSOT missing HEADER begin ${header}_BEGIN: $path" >&2
-        exit 1
-      fi
-      if ! grep -Fq "# ${header}_END" "$path"; then
-        echo "error: write dual SSOT missing HEADER end ${header}_END: $path" >&2
-        exit 1
-      fi
-      if ! grep -Fq "# ${body}_BEGIN" "$path"; then
-        echo "error: write dual SSOT missing BODY begin ${body}_BEGIN: $path" >&2
-        exit 1
-      fi
-      if ! grep -Fq "# ${body}_END" "$path"; then
-        echo "error: write dual SSOT missing BODY end ${body}_END: $path" >&2
-        exit 1
-      fi
-      checked=$((checked + 1))
-    done
-    # Write substrate: templates + freestanding .h/.c stage token + host markers.
-    # Distinct from ownership-regenerate-write-hc-only (presence+token only).
-    for tmpl in "template_slake_freestanding.h.in" "template_slake_freestanding.c.in"; do
-      tpath="$emit_dir/$tmpl"
-      if [[ ! -f "$tpath" || ! -s "$tpath" ]]; then
-        echo "error: missing or empty write template: $tpath" >&2
-        exit 1
-      fi
-    done
-    for wire in "slake_freestanding.h" "slake_freestanding.c"; do
-      wpath="$emit_dir/$wire"
-      if [[ ! -f "$wpath" || ! -s "$wpath" ]]; then
-        echo "error: missing or empty freestanding write wire: $wpath" >&2
-        exit 1
-      fi
-      if ! grep -Fq "SLAKE_EMIT_FREESTANDING_C_V0" "$wpath"; then
-        echo "error: freestanding write wire missing stage token SLAKE_EMIT_FREESTANDING_C_V0: $wpath" >&2
-        exit 1
-      fi
-    done
-    host_write="src/systems/SystemsLean/CapableWriteHc.lean"
-    if [[ ! -f "$host_write" ]]; then
-      echo "error: missing freestanding-capable WRITE-HC module $host_write" >&2
-      exit 1
-    fi
-    for ot in "WRITER-PATH-STEP-WRITE-FREESTANDING-HC" "FREESTANDING-CAPABLE-STEP-CONTRACT-WRITE-HC" "FREESTANDING-PERFORM-GAP-WRITE-HC" "freestandingCapableWriteFreestandingHc" "slake_freestanding.h" "slake_freestanding.c"; do
-      if ! grep -Fq "$ot" "$host_write"; then
-        echo "error: freestanding-capable WRITE-HC module missing write substrate marker $ot: $host_write" >&2
-        exit 1
-      fi
-    done
-    echo "freestanding-capable-write-hc-lake-free: GREEN (Lake-free freestanding-capable WRITE-HC; checked ${checked} dual SSOT token+HEADER/BODY; templates+wire+host markers; B28 CapableWriteHc)"
+    @nix eval --impure --raw --expr {{quote(_freestanding_capable_write_hc_lake_free)}}
 
 # Partial B19: freestanding-capable ordered regenerate pipeline without FreestandingEmit
 # as product authority (freestandingCapableOrderedRegenerate = READ then COMPOSE then
@@ -507,115 +287,16 @@ freestanding-capable-regenerate:
 # Product StillUsesLake / DependsOnLake stay true until S4 / M6.
 # Greppable: freestanding-capable-regenerate-without-lake, PRODUCT-WIRE-WITHOUT-LAKE,
 # productWireWithoutLakeFinishedClaimed, prebuiltCapableRegenerateRel.
+_freestanding_capable_regenerate_without_lake := '''
+let
+  lib = (import (builtins.getFlake "nixpkgs") {}).lib;
+  novel = import ./nix/novel-source.nix { inherit lib; src = ./.; };
+  h = import ./nix/freestanding-capable-regenerate-without-lake.nix { inherit lib; root = novel; };
+in if h.ok then h.summary + "\n" else throw h.summary
+'''
+
 freestanding-capable-regenerate-without-lake:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    root="$(pwd)"
-    systems_dir="$root/src/systems"
-    lean_dir="$systems_dir/SystemsLean"
-    emit_dir="$systems_dir/emit"
-    out_dir="$root/out/freestanding-c"
-    out_h="$emit_dir/slake_freestanding.h"
-    out_c="$emit_dir/slake_freestanding.c"
-    install_h="$out_dir/slake_freestanding.h"
-    install_c="$out_dir/slake_freestanding.c"
-    prebuilt="$systems_dir/.lake/build/bin/slake-freestanding-capable-regenerate"
-    mod="$lean_dir/CapableRegenerate.lean"
-    echo "== freestanding-capable-regenerate-without-lake (M4 product-wire measured step; no lake on hot path) =="
-    echo "  prebuilt: $prebuilt"
-    echo "  output: emit + out/freestanding-c dual-eq WRITE; dual evidence greps"
-    if [[ ! -f "$mod" ]]; then
-      echo "error: missing $mod" >&2
-      exit 1
-    fi
-    if ! grep -qF 'productWireWithoutLakeFinishedClaimed' "$mod"; then
-      echo "error: missing productWireWithoutLakeFinishedClaimed in $mod" >&2
-      exit 1
-    fi
-    if ! grep -qF 'justRecipeProductWireWithoutLake' "$mod"; then
-      echo "error: missing justRecipeProductWireWithoutLake pin in $mod" >&2
-      exit 1
-    fi
-    if ! grep -qF 'freestanding-capable-regenerate-without-lake' "$mod"; then
-      echo "error: missing freestanding-capable-regenerate-without-lake cite in $mod" >&2
-      exit 1
-    fi
-    if ! grep -qF 'productWireWithoutLakeKeepsHostLake' "$mod"; then
-      echo "error: missing productWireWithoutLakeKeepsHostLake honesty in $mod" >&2
-      exit 1
-    fi
-    if ! grep -qF 'prebuiltCapableRegenerateRel' "$mod"; then
-      echo "error: missing prebuiltCapableRegenerateRel in $mod" >&2
-      exit 1
-    fi
-    if ! grep -qF 'stillUsesLake' "$mod"; then
-      echo "error: missing stillUsesLake honesty in $mod" >&2
-      exit 1
-    fi
-    if [[ ! -x "$prebuilt" ]]; then
-      echo "error: missing prebuilt CapableRegenerate binary: $prebuilt" >&2
-      echo "  bootstrap once (not hot path): (cd src/systems && lake build slake-freestanding-capable-regenerate)" >&2
-      echo "  then re-run: just freestanding-capable-regenerate-without-lake" >&2
-      exit 1
-    fi
-    # Hot path: run prebuilt ELF only. Do not call lake build / lake exe / lake env.
-    echo "  hot path: exec prebuilt CapableRegenerate (no lake)"
-    "$prebuilt" "$root"
-    if [[ ! -f "$out_h" ]]; then
-      echo "error: missing freestanding header after without-Lake regenerate: $out_h" >&2
-      exit 1
-    fi
-    if [[ ! -f "$out_c" ]]; then
-      echo "error: missing freestanding source after without-Lake regenerate: $out_c" >&2
-      exit 1
-    fi
-    if [[ ! -f "$install_h" ]]; then
-      echo "error: missing Out install header after without-Lake regenerate: $install_h" >&2
-      exit 1
-    fi
-    if [[ ! -f "$install_c" ]]; then
-      echo "error: missing Out install source after without-Lake regenerate: $install_c" >&2
-      exit 1
-    fi
-    for tok in SLAKE_EMIT_FREESTANDING_C_V0 HOST-EMIT-MULT HOST-EMIT-LINEAR HOST-EMIT-SSOT; do
-      if ! grep -qF "$tok" "$out_h"; then
-        echo "error: $out_h missing greppable token $tok" >&2
-        exit 1
-      fi
-      if ! grep -qF "$tok" "$out_c"; then
-        echo "error: $out_c missing greppable token $tok" >&2
-        exit 1
-      fi
-      if ! grep -qF "$tok" "$install_h"; then
-        echo "error: $install_h missing greppable token $tok" >&2
-        exit 1
-      fi
-      if ! grep -qF "$tok" "$install_c"; then
-        echo "error: $install_c missing greppable token $tok" >&2
-        exit 1
-      fi
-    done
-    if ! grep -qF 'productWireWithoutLakeReady' "$mod"; then
-      echo "error: productWireWithoutLakeReady missing after without-Lake regenerate (host bar)" >&2
-      exit 1
-    fi
-    if ! grep -qE 'def productWireWithoutLakeFinishedClaimed[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
-      echo "error: productWireWithoutLakeFinishedClaimed must be true for M4 without-Lake finished" >&2
-      exit 1
-    fi
-    if ! grep -qE 'def stillUsesLake[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
-      echo "error: stillUsesLake must stay true (product host residual remains)" >&2
-      exit 1
-    fi
-    if ! grep -qE 'def dependsOnLake[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
-      echo "error: dependsOnLake must stay true (product host residual remains)" >&2
-      exit 1
-    fi
-    if ! grep -qE 'def productPathFreestandingCapableRegenerateDependsOnLake[[:space:]]*:[[:space:]]*Bool[[:space:]]*:=[[:space:]]*true' "$mod"; then
-      echo "error: productPathFreestandingCapableRegenerateDependsOnLake must stay true" >&2
-      exit 1
-    fi
-    echo "freestanding-capable-regenerate-without-lake: GREEN"
+    @nix eval --impure --raw --expr {{quote(_freestanding_capable_regenerate_without_lake)}}
 
 # Partial B20: freestanding-capable Install Out without FreestandingEmit as product
 # authority (freestandingCapableInstallFreestandingOut; emit .h/.c -> out/freestanding-c/).

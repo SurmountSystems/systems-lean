@@ -64,56 +64,16 @@ ownership-regenerate-install-only:
 # pure Nix systems-emit-wire also walks the same 12 dual SSOT files independently.
 # Greppable: ownership-regenerate-read-only, productPathOwnershipRegenerateReadLakeFree,
 # OWNERSHIP-REGENERATE-READ-LAKE-FREE, SELF-HOST-PRODUCT-PATH-OWNERSHIP-REGENERATE
+_ownership_regenerate_read_only := '''
+let
+  lib = (import (builtins.getFlake "nixpkgs") {}).lib;
+  novel = import ./nix/novel-source.nix { inherit lib; src = ./.; };
+  h = import ./nix/ownership-regenerate-read-only.nix { inherit lib; root = novel; };
+in if h.ok then h.summary + "\n" else throw h.summary
+'''
+
 ownership-regenerate-read-only:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    emit_dir="src/systems/emit"
-    echo "== ownership-regenerate-read-only (B23 Lake-free ownership regenerate READ path) =="
-    echo "  stage: SLAKE_SELF_HOST_PRODUCT_PATH_OWNERSHIP_REGENERATE_V0"
-    echo "  token: OWNERSHIP-REGENERATE-READ-LAKE-FREE"
-    echo "  Lake-free: no lake build/exe; dual SSOT presence+token only"
-    echo "  not full ownership regenerate without Lake; not ownership claimed; not Full"
-    echo "  distinct from B14 CapableRead freestanding-capable-read-lake-free; not freestanding perform claimed"
-    if [[ ! -d "$emit_dir" ]]; then
-      echo "error: missing emit dir $emit_dir" >&2
-      exit 1
-    fi
-    # Mult..Out dual SSOT basenames + HOST-EMIT tokens (B8/B11 ownership surface).
-    # Authority: ProductPathReadSsot.dualSsotSpecs (see recipe header).
-    pairs=(
-      "host_emit_mult.ssot.txt:HOST-EMIT-MULT"
-      "host_emit_linear.ssot.txt:HOST-EMIT-LINEAR"
-      "host_emit_erasure.ssot.txt:HOST-EMIT-ERASURE"
-      "host_emit_extract.ssot.txt:HOST-EMIT-EXTRACT"
-      "host_emit_types.ssot.txt:HOST-EMIT-TYPES"
-      "host_emit_program.ssot.txt:HOST-EMIT-PROGRAM"
-      "host_emit_graph.ssot.txt:HOST-EMIT-GRAPH"
-      "host_emit_compose.ssot.txt:HOST-EMIT-COMPOSE"
-      "host_emit_plan.ssot.txt:HOST-EMIT-PLAN"
-      "host_emit_apply.ssot.txt:HOST-EMIT-APPLY"
-      "host_emit_body_fragment.ssot.txt:HOST-EMIT-SSOT"
-      "host_emit_banner.ssot.txt:HOST-EMIT-BANNER"
-    )
-    checked=0
-    for pair in "${pairs[@]}"; do
-      base="${pair%%:*}"
-      token="${pair##*:}"
-      path="$emit_dir/$base"
-      if [[ ! -f "$path" ]]; then
-        echo "error: missing dual SSOT: $path" >&2
-        exit 1
-      fi
-      if [[ ! -s "$path" ]]; then
-        echo "error: empty dual SSOT: $path" >&2
-        exit 1
-      fi
-      if ! grep -Fq "$token" "$path"; then
-        echo "error: dual SSOT missing token $token: $path" >&2
-        exit 1
-      fi
-      checked=$((checked + 1))
-    done
-    echo "ownership-regenerate-read-only: GREEN (Lake-free READ path piece; checked ${checked} dual SSOT; B23)"
+    @nix eval --impure --raw --expr {{quote(_ownership_regenerate_read_only)}}
 
 # Partial B24 Lake-free ownership regenerate COMPOSE path piece.
 # Plan/apply/body dual SSOT presence+token under emit/ (compose substrate).
@@ -127,47 +87,16 @@ ownership-regenerate-read-only:
 # Greppable: ownership-regenerate-compose-only,
 # productPathOwnershipRegenerateComposeLakeFree,
 # OWNERSHIP-REGENERATE-COMPOSE-LAKE-FREE, SELF-HOST-PRODUCT-PATH-OWNERSHIP-REGENERATE
+_ownership_regenerate_compose_only := '''
+let
+  lib = (import (builtins.getFlake "nixpkgs") {}).lib;
+  novel = import ./nix/novel-source.nix { inherit lib; src = ./.; };
+  h = import ./nix/ownership-regenerate-compose-only.nix { inherit lib; root = novel; };
+in if h.ok then h.summary + "\n" else throw h.summary
+'''
+
 ownership-regenerate-compose-only:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    emit_dir="src/systems/emit"
-    echo "== ownership-regenerate-compose-only (B24 Lake-free ownership regenerate COMPOSE path) =="
-    echo "  stage: SLAKE_SELF_HOST_PRODUCT_PATH_OWNERSHIP_REGENERATE_V0"
-    echo "  token: OWNERSHIP-REGENERATE-COMPOSE-LAKE-FREE"
-    echo "  Lake-free: no lake build/exe; plan/apply/body dual SSOT presence+token only"
-    echo "  not full ownership regenerate without Lake; not ownership claimed; not Full"
-    echo "  not B14 CapableCompose; not freestanding perform claimed"
-    if [[ ! -d "$emit_dir" ]]; then
-      echo "error: missing emit dir $emit_dir" >&2
-      exit 1
-    fi
-    # Plan/apply/body dual SSOT basenames + HOST-EMIT tokens (B12 compose surface).
-    # Authority: ProductPathComposePlan.planApplyBodySpecs (see recipe header).
-    pairs=(
-      "host_emit_plan.ssot.txt:HOST-EMIT-PLAN"
-      "host_emit_apply.ssot.txt:HOST-EMIT-APPLY"
-      "host_emit_body_fragment.ssot.txt:HOST-EMIT-BODY"
-    )
-    checked=0
-    for pair in "${pairs[@]}"; do
-      base="${pair%%:*}"
-      token="${pair##*:}"
-      path="$emit_dir/$base"
-      if [[ ! -f "$path" ]]; then
-        echo "error: missing compose dual SSOT: $path" >&2
-        exit 1
-      fi
-      if [[ ! -s "$path" ]]; then
-        echo "error: empty compose dual SSOT: $path" >&2
-        exit 1
-      fi
-      if ! grep -Fq "$token" "$path"; then
-        echo "error: compose dual SSOT missing token $token: $path" >&2
-        exit 1
-      fi
-      checked=$((checked + 1))
-    done
-    echo "ownership-regenerate-compose-only: GREEN (Lake-free COMPOSE path piece; checked ${checked} plan/apply/body SSOT; B24)"
+    @nix eval --impure --raw --expr {{quote(_ownership_regenerate_compose_only)}}
 
 # Partial B25 Lake-free ownership regenerate WRITE-HC path piece.
 # Freestanding emit .h/.c substrate presence+token under emit/ (write-hc surface).
@@ -182,46 +111,16 @@ ownership-regenerate-compose-only:
 # Greppable: ownership-regenerate-write-hc-only,
 # productPathOwnershipRegenerateWriteHcLakeFree,
 # OWNERSHIP-REGENERATE-WRITE-HC-LAKE-FREE, SELF-HOST-PRODUCT-PATH-OWNERSHIP-REGENERATE
+_ownership_regenerate_write_hc_only := '''
+let
+  lib = (import (builtins.getFlake "nixpkgs") {}).lib;
+  novel = import ./nix/novel-source.nix { inherit lib; src = ./.; };
+  h = import ./nix/ownership-regenerate-write-hc-only.nix { inherit lib; root = novel; };
+in if h.ok then h.summary + "\n" else throw h.summary
+'''
+
 ownership-regenerate-write-hc-only:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    emit_dir="src/systems/emit"
-    echo "== ownership-regenerate-write-hc-only (B25 Lake-free ownership regenerate WRITE-HC path) =="
-    echo "  stage: SLAKE_SELF_HOST_PRODUCT_PATH_OWNERSHIP_REGENERATE_V0"
-    echo "  token: OWNERSHIP-REGENERATE-WRITE-HC-LAKE-FREE"
-    echo "  Lake-free: no lake build/exe; freestanding .h/.c presence+token only"
-    echo "  not full ownership regenerate without Lake; not ownership claimed; not Full"
-    echo "  not B14 CapableWriteHc; not freestanding perform claimed"
-    if [[ ! -d "$emit_dir" ]]; then
-      echo "error: missing emit dir $emit_dir" >&2
-      exit 1
-    fi
-    # Freestanding emit wire basenames + stage tokens (B13/B18 write-hc surface).
-    # Authority: ProductPathWriteHc.emitHeaderBase / emitSourceBase (see recipe header).
-    pairs=(
-      "slake_freestanding.h:SLAKE_EMIT_FREESTANDING_C_V0"
-      "slake_freestanding.c:SLAKE_EMIT_FREESTANDING_C_V0"
-    )
-    checked=0
-    for pair in "${pairs[@]}"; do
-      base="${pair%%:*}"
-      token="${pair##*:}"
-      path="$emit_dir/$base"
-      if [[ ! -f "$path" ]]; then
-        echo "error: missing freestanding write-hc substrate: $path" >&2
-        exit 1
-      fi
-      if [[ ! -s "$path" ]]; then
-        echo "error: empty freestanding write-hc substrate: $path" >&2
-        exit 1
-      fi
-      if ! grep -Fq "$token" "$path"; then
-        echo "error: freestanding write-hc missing token $token: $path" >&2
-        exit 1
-      fi
-      checked=$((checked + 1))
-    done
-    echo "ownership-regenerate-write-hc-only: GREEN (Lake-free WRITE-HC path piece; checked ${checked} freestanding .h/.c; B25)"
+    @nix eval --impure --raw --expr {{quote(_ownership_regenerate_write_hc_only)}}
 
 # Partial B29: ordered Lake-free ownership regenerate JOIN beyond B22..B28.
 # Ties freestanding Capable* Lake-free measures (B26..B28) with ownership path
