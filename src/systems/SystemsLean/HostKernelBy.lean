@@ -26,13 +26,20 @@
 
 import SystemsLean.HostTerm
 import SystemsLean.HostKernelReduce
+import SystemsLean.HostKernelMarker
+import SystemsLean.HostKernelApply
+import SystemsLean.HostKernelFilter
 import SystemsLean.HostKernelRfl
 import SystemsLean.LessThan
 
 namespace SystemsLean.HostKernelBy
 
 open SystemsLean.HostTerm
-open SystemsLean.HostKernelReduce (DefEnv reduceN reduceFuel multDefEnv lookupDef substN)
+open SystemsLean.HostKernelReduce
+  (DefEnv reduceN reduceFuel multDefEnv lookupDef substN)
+open SystemsLean.HostKernelMarker (markerAfterRead)
+open SystemsLean.HostKernelApply (applyAfterMarker)
+open SystemsLean.HostKernelFilter (filterAfterApply)
 open SystemsLean.HostKernelRfl (eqFuel rflEqType termEqN)
 open SystemsLean.LessThan (lessTok)
 
@@ -105,15 +112,23 @@ def startsBy (arms : List (Prod Pat Term)) : Bool :=
   | (Pat.ctor0 c, _) :: _ => c.raw == "zero" || c.raw == "succ"
   | _ => false
 
+/-- The stored filter match, after the plan body misses. -/
+def filterJudgment (scrut : Term) (arms : List (Prod Pat Term)) :
+    ByJudgment :=
+  match filterAfterApply (Term.match_ scrut arms) with
+  | some ty => ByJudgment.accept ty
+  | none => ByJudgment.notBy
+
 /-- notBy leaves an ordinary Mult match to the existing arm checker.
-    A zero or succ scrutinee variable is this proof, accept or reject. -/
+    A zero or succ scrutinee variable is this proof, accept or reject.
+    The stored filterArgs match is List String after that proof misses. -/
 def judgeBy (defs : DefEnv) (scrut : Term) (arms : List (Prod Pat Term)) :
     ByJudgment :=
   match scrut with
   | Term.var _ =>
     if startsBy arms then judgeNest 4 0 defs (Term.match_ scrut arms)
-    else ByJudgment.notBy
-  | _ => ByJudgment.notBy
+    else filterJudgment scrut arms
+  | _ => filterJudgment scrut arms
 
 def absurdTerm (k : Nat) : Term :=
   Term.app (Term.app (Term.var (n "absurd")) (Term.var (n "h")))
@@ -431,14 +446,33 @@ def judgeRwHyp (defs : DefEnv) (t : Term) : Option HostType :=
                     (Term.app (Term.const (n "Eq")) rewritten)
                     (Term.litBool true))
 
-/-- Unfold first, then cases, then one local equality rewrite. -/
+/-- Unfold first, then cases, then one local equality rewrite.
+    `>` of two nat sides is Bool after those miss.
+    The stored ssot search is Option String after that miss.
+    requireFile is IO Unit only after that search misses.
+    The stored spec list is List ComposeSsotSpec after that miss.
+    The stored read is IO String after that list misses.
+    The stored marker is String after that read misses.
+    A stuck comparison is not rewritten to true.
+    A missing block is not turned into some.
+    A missing path stays the error arm.
+    An empty list is not the spec list. -/
 def judgeTactic (defs : DefEnv) (t : Term) : Option HostType :=
   match judgeUnfold defs t with
   | some ty => some ty
   | none =>
     match judgeCases defs t with
     | some ty => some ty
-    | none => judgeRwHyp defs t
+    | none =>
+      match judgeRwHyp defs t with
+      | some ty => some ty
+      | none => markerAfterRead t
+
+/-- The ite miss. The marker runs first.
+    This plan body is IO Unit only after that marker misses.
+    Incomplete inputs stay the error arm. -/
+def requireAfterMiss (t : Term) : Option HostType :=
+  applyAfterMarker t
 
 def isValidSkipOmega : Term :=
   Term.match_ (Term.var (n "scrut")) [

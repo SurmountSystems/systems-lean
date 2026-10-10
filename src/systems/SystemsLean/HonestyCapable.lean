@@ -6,8 +6,8 @@
   `structure Name where` then one or more `field : String` and `deriving Repr`.
   A field whose type is not String is none.
   A later def that is not `name : String` or `name : Bool` is not consumed.
-  The first token of that def is the stop token.
-  This front does not parse `let rec` or `System.FilePath`.
+  The name of that def is the stop token.
+  Option String let rec is accepted. Compose IO is separate.
   A chain may use `(name == "literal")`, `(name == true)`,
   `(name == false)`, a bare true Bool, and prefix `!` on a false Bool.
   The stored value has to match. false is not accepted as true.
@@ -29,6 +29,9 @@ import SystemsLean.HostKernelReduce
 import SystemsLean.HonestyFront
 import SystemsLean.HonestyDecide
 import SystemsLean.HonestyBound
+import SystemsLean.HonestyRequire
+import SystemsLean.HonestySearch
+import SystemsLean.HonestyCompose
 
 namespace SystemsLean.HonestyCapable
 
@@ -36,93 +39,11 @@ open SystemsLean.HostTerm
 open SystemsLean.HostKernelReduce
 open SystemsLean.HonestyDecide
 open SystemsLean.HonestyFront (strip isIdent unquote parseDotted parseFuel
-  isLetter isDigit isWs isIdentChar)
+  isIdentChar)
 open SystemsLean.HonestyBound
-
-inductive TMode where
-  | norm
-  | id (cur : List Char)
-  | str (cur : List Char)
-
-def emitId (acc : List String) (cur : List Char) : List String :=
-  String.mk cur.reverse :: acc
-
-def emitStr (acc : List String) (cur : List Char) : List String :=
-  String.mk ('"' :: cur.reverse ++ ['"']) :: acc
-
-/-- Tokens for this dialect. `==`, `&&`, `:=`, and `=>` stay one token.
-    A lone `=` or `&` is none. `>` is one token. An unknown character
-    returns the tokens already read and drops that character.
-    An unclosed string is none. -/
-def tok : List Char -> TMode -> List String -> Option (List String)
-  | [], TMode.norm, acc => some acc.reverse
-  | [], TMode.id cur, acc => some (emitId acc cur).reverse
-  | [], TMode.str _, _ => none
-  | '"' :: rest, TMode.str cur, acc =>
-    tok rest TMode.norm (emitStr acc cur)
-  | c :: rest, TMode.str cur, acc =>
-    tok rest (TMode.str (c :: cur)) acc
-  | ':' :: '=' :: rest, TMode.norm, acc =>
-    tok rest TMode.norm (":=" :: acc)
-  | '=' :: '>' :: rest, TMode.norm, acc =>
-    tok rest TMode.norm ("=>" :: acc)
-  | '=' :: '=' :: rest, TMode.norm, acc =>
-    tok rest TMode.norm ("==" :: acc)
-  | '&' :: '&' :: rest, TMode.norm, acc =>
-    tok rest TMode.norm ("&&" :: acc)
-  | '=' :: _, TMode.norm, _ => none
-  | '&' :: _, TMode.norm, _ => none
-  | '!' :: rest, TMode.norm, acc =>
-    tok rest TMode.norm ("!" :: acc)
-  | ':' :: rest, TMode.norm, acc =>
-    tok rest TMode.norm (":" :: acc)
-  | '(' :: rest, TMode.norm, acc =>
-    tok rest TMode.norm ("(" :: acc)
-  | ')' :: rest, TMode.norm, acc =>
-    tok rest TMode.norm (")" :: acc)
-  | '.' :: rest, TMode.norm, acc =>
-    tok rest TMode.norm ("." :: acc)
-  | '>' :: rest, TMode.norm, acc =>
-    tok rest TMode.norm (">" :: acc)
-  | '"' :: rest, TMode.norm, acc =>
-    tok rest (TMode.str []) acc
-  | c :: rest, TMode.norm, acc =>
-    if isWs c then tok rest TMode.norm acc
-    else if isLetter c || c == '_' then
-      tok rest (TMode.id [c]) acc
-    else if isDigit c then
-      tok rest TMode.norm (String.mk [c] :: acc)
-    else
-      some acc.reverse
-  | ':' :: '=' :: rest, TMode.id cur, acc =>
-    tok rest TMode.norm (":=" :: emitId acc cur)
-  | '=' :: '>' :: rest, TMode.id cur, acc =>
-    tok rest TMode.norm ("=>" :: emitId acc cur)
-  | '=' :: '=' :: rest, TMode.id cur, acc =>
-    tok rest TMode.norm ("==" :: emitId acc cur)
-  | '&' :: '&' :: rest, TMode.id cur, acc =>
-    tok rest TMode.norm ("&&" :: emitId acc cur)
-  | '=' :: _, TMode.id _, _ => none
-  | '&' :: _, TMode.id _, _ => none
-  | '!' :: rest, TMode.id cur, acc =>
-    tok rest TMode.norm ("!" :: emitId acc cur)
-  | ':' :: rest, TMode.id cur, acc =>
-    tok rest TMode.norm (":" :: emitId acc cur)
-  | '(' :: rest, TMode.id cur, acc =>
-    tok rest TMode.norm ("(" :: emitId acc cur)
-  | ')' :: rest, TMode.id cur, acc =>
-    tok rest TMode.norm (")" :: emitId acc cur)
-  | '.' :: rest, TMode.id cur, acc =>
-    tok rest TMode.norm ("." :: emitId acc cur)
-  | '>' :: rest, TMode.id cur, acc =>
-    tok rest TMode.norm (">" :: emitId acc cur)
-  | c :: rest, TMode.id cur, acc =>
-    if isIdentChar c then
-      tok rest (TMode.id (c :: cur)) acc
-    else if isWs c then
-      tok rest TMode.norm (emitId acc cur)
-    else
-      some (emitId acc cur).reverse
+open SystemsLean.HonestyRequire (parseBinderDef stopName)
+open SystemsLean.HonestySearch (searchStored)
+open SystemsLean.HonestyCompose (tok TMode parseSpecList SpecParse)
 
 structure CapEnv where
   strs : List (Prod String String)
@@ -473,7 +394,7 @@ inductive CapOut where
   | stop (tok : String)
   | ok (m : Module)
 
-/-- Gap tail, `end`, or the first token still unparsed. -/
+/-- Gap tail, `end`, or the next def name still unparsed. -/
 def closeRest (ns : String) (defs : List Cmd) (env : CapEnv)
     (ts : List String) : CapOut :=
   match parseGap env ts with
@@ -491,12 +412,13 @@ def closeRest (ns : String) (defs : List Cmd) (env : CapEnv)
       match finish ns defs ts with
       | some m => CapOut.ok m
       | none => CapOut.miss
-    | t :: _ =>
-      if defs.isEmpty then CapOut.miss else CapOut.stop t
+    | _ :: _ =>
+      if defs.isEmpty then CapOut.miss else CapOut.stop (stopName ts)
     | [] => CapOut.miss
 
 /-- After the simple defs: a String structure, a binder Bool if,
-    the Capable IO tail, or `end`. Anything else stops on its first token.
+    a two-String Option let rec, the Capable IO tail, or `end`.
+    Anything else stops on the def name.
     A bad accepted form is miss, not a stop token. -/
 def takeForms (fuel : Nat) (ns : String) (defs : List Cmd) (env : CapEnv)
     (ts : List String) : CapOut :=
@@ -512,8 +434,17 @@ def takeForms (fuel : Nat) (ns : String) (defs : List Cmd) (env : CapEnv)
         | none => CapOut.miss
         | some (more, env2, rest2) =>
           takeForms k ns (defs ++ [cmd] ++ more) env2 rest2
+    | "def" :: _ :: ":" :: _ =>
+      match parseSpecList ts with
+      | SpecParse.bad => CapOut.miss
+      | SpecParse.skip => closeRest ns defs env ts
+      | SpecParse.got cmd rest =>
+        match parseDefs parseFuel env [] rest with
+        | none => CapOut.miss
+        | some (more, env2, rest2) =>
+          takeForms k ns (defs ++ [cmd] ++ more) env2 rest2
     | "def" :: _ :: "(" :: _ =>
-      match parseBoundBool ts with
+      match parseBinderDef ts with
       | Bound.bad => CapOut.miss
       | Bound.skip => closeRest ns defs env ts
       | Bound.got cmd rest =>
@@ -727,10 +658,10 @@ def capableStopToy : String :=
   "def ssotBlock (content name : String) : Option String :=\n" ++
   "end SystemsLean.CapableCompose\n"
 
-/-- `def ssotBlock` is not this Bool if. The first token is def. -/
+/-- An Option String header with no let rec body is miss. -/
 def capableStopToken : Bool :=
   match stoppedToken capableStopToy, parseCapableText capableStopToy with
-  | some "def", none => true
+  | none, none => true
   | _, _ => false
 
 def capableGtToy : String :=
@@ -747,18 +678,48 @@ def capableGtAccepts : Bool :=
   | some _ => true
   | none => false
 
+/-- Same let rec shape. Binder names are the two String args. -/
+def ssotText (fn b1 b2 : String) : String :=
+  "def " ++ fn ++ " (" ++ b1 ++ " " ++ b2 ++
+  " : String) : Option String :=\n" ++
+  "  let beginMark := \"# \" ++ " ++ b2 ++ " ++ \"_BEGIN\"\n" ++
+  "  let endMark := \"# \" ++ " ++ b2 ++ " ++ \"_END\"\n" ++
+  "  let rec go (grab : Bool) (acc : List String)" ++
+  " : List String -> Option String\n" ++
+  "    | [] =>\n" ++
+  "      if grab || acc.isEmpty then none\n" ++
+  "      else some (String.intercalate \"\\n\" acc.reverse ++ \"\\n\")\n" ++
+  "    | line :: rest =>\n" ++
+  "      if !grab && line == beginMark then go true acc rest\n" ++
+  "      else if grab && line == endMark then\n" ++
+  "        some (String.intercalate \"\\n\" acc.reverse ++ \"\\n\")\n" ++
+  "      else if grab then go true (line :: acc) rest\n" ++
+  "      else go false acc rest\n" ++
+  "  go false [] (" ++ b1 ++ ".splitOn \"\\n\")\n"
+
+/-- Two string binders, Option String, the stored let rec search. -/
+def ssotOk (m : Module) (b1 b2 : String) : Bool :=
+  match m.commands with
+  | Cmd.namespace _ :: Cmd.defBind _ bs ret body :: _ =>
+    match bs, ret with
+    | [(n1, HostType.string), (n2, HostType.string)],
+        HostType.option HostType.string =>
+      n1 == n b1 && n2 == n b2 && searchStored body b1 b2
+    | _, _ => false
+  | _ => false
+
 def capableGtStopToy : String :=
   "namespace SystemsLean.CapableCompose\n" ++
   "def containsStr (s needle : String) : Bool :=\n" ++
   "  if needle.isEmpty then false\n" ++
   "  else (s.splitOn needle).length > 1\n" ++
-  "def ssotBlock (content name : String) : Option String :=\n" ++
-  "end SystemsLean.CapableCompose\n"
+  ssotText "ssotBlock" "content" "name" ++
+  "def requireFile (path : System.FilePath) : IO Unit := do\n"
 
-/-- After containsStr, the next def is the first unparsed token. -/
+/-- After the let rec, the next def name is requireFile. -/
 def capableGtStops : Bool :=
   match stoppedToken capableGtStopToy, parseCapableText capableGtStopToy with
-  | some "def", none => true
+  | some "requireFile", none => true
   | _, _ => false
 
 def capableNoGtToy : String :=
@@ -773,5 +734,27 @@ def capableNoGtRejects : Bool :=
   match parseCapableText capableNoGtToy, stoppedToken capableNoGtToy with
   | none, none => true
   | _, _ => false
+
+def capableSsotToy : String :=
+  "namespace SystemsLean.SsotToy\n" ++
+  ssotText "ssotBlock" "content" "name" ++
+  "end SystemsLean.SsotToy\n"
+
+/-- The let rec Option def, then end, parses. The body is that match. -/
+def capableSsotAccepts : Bool :=
+  match parseCapableText capableSsotToy with
+  | some m => ssotOk m "content" "name"
+  | none => false
+
+def capableSsotAltToy : String :=
+  "namespace SystemsLean.AltToy\n" ++
+  ssotText "blockTwo" "left" "right" ++
+  "end SystemsLean.AltToy\n"
+
+/-- Another two-String let rec, with other binder names, parses. -/
+def capableSsotAltAccepts : Bool :=
+  match parseCapableText capableSsotAltToy with
+  | some m => ssotOk m "left" "right"
+  | none => false
 
 end SystemsLean.HonestyCapable

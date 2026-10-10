@@ -10,6 +10,9 @@
   unfolds when the import has its body. name on mult0, mult1,
   and multOmega is the string the match returns. A different
   string stays different. map of none is none.
+  `>` of two nat literals reduces. Greater is true. Not greater
+  is false. A side that is not a literal stays the application.
+  That stuck application is not true.
   This is not a by or cases tactic kernel.
   Does not call Lean.Elab.processCommands.
   slakeOwnsPackageTypecheck stays false.
@@ -127,6 +130,14 @@ def applyPat (fuel : Nat) (p : Pat) (scrut body : Term) : Option Term :=
     | Term.some_ u => some (substN fuel x.raw u body)
     | _ => none
 
+/-- Both literals compare. Anything else is the same application.
+    A stuck `>` is not Bool true. A false comparison is not true. -/
+def reduceGt (lhs rhs : Term) : Term :=
+  match lhs, rhs with
+  | Term.litNat a, Term.litNat b => Term.litBool (decide (a > b))
+  | _, _ =>
+    Term.app (Term.app (Term.const (n ">")) lhs) rhs
+
 def reduceMatch (fuel : Nat) (scrut : Term) (arms : List (Prod Pat Term)) :
     Option Term :=
   match fuel with
@@ -187,6 +198,8 @@ def reduceApp (fuel : Nat) (defs : DefEnv) (f a : Term) : Term :=
         | Term.some_ x => reduceN k defs (Term.some_ (Term.app g x))
         | Term.none_ => Term.none_
         | _ => Term.app f a
+      else if nm.raw == ">" then
+        reduceGt g a
       else
         Term.app f a
     | _ => Term.app f a
@@ -265,6 +278,49 @@ def mapNameFailClosed : Bool :=
 def mapNameRejectsWrongString : Bool :=
   match reducedMap 0 with
   | Term.some_ (Term.litString got) => !(got == "MULT-1")
+  | _ => false
+
+/-- A nat literal, or `.length`, which this kernel already reads as Nat. -/
+def natSide (t : Term) : Bool :=
+  match t with
+  | Term.litNat _ => true
+  | Term.proj _ f => f.raw == "length"
+  | _ => false
+
+/-- `>` of two nat sides is Bool. Another head is none.
+    This does not rewrite the term to true. -/
+def gtType (t : Term) : Option HostType :=
+  match t with
+  | Term.app (Term.app (Term.const nm) lhs) rhs =>
+    if nm.raw == ">" && natSide lhs && natSide rhs then
+      some HostType.bool
+    else
+      none
+  | _ => none
+
+def gtApp (a b : Nat) : Term :=
+  Term.app (Term.app (Term.const (n ">")) (Term.litNat a)) (Term.litNat b)
+
+/-- 2 > 1 reduces to true. -/
+def gtGreaterIsTrue : Bool :=
+  match reduceN reduceFuel [] (gtApp 2 1) with
+  | Term.litBool b => b == true
+  | _ => false
+
+/-- 0 > 1 reduces to false, not true. -/
+def gtFalseStaysFalse : Bool :=
+  match reduceN reduceFuel [] (gtApp 0 1) with
+  | Term.litBool b => b == false
+  | _ => false
+
+/-- A variable on the left stays the application. It is not true. -/
+def gtStuckNotTrue : Bool :=
+  match reduceN reduceFuel []
+      (Term.app
+        (Term.app (Term.const (n ">")) (Term.var (n "n")))
+        (Term.litNat 0)) with
+  | Term.litBool _ => false
+  | Term.app (Term.app (Term.const nm) _) _ => nm.raw == ">"
   | _ => false
 
 end SystemsLean.HostKernelReduce

@@ -148,19 +148,33 @@ let
     "MultFront"
     "HostKernelReduce"
     "HostKernelRfl"
+    "HostKernelSsot"
+    "HostKernelRequire"
+    "HostKernelSpecs"
+    "HostKernelRead"
+    "HostKernelMarker"
+    "HostKernelApply"
+    "HostKernelFilter"
     "HostKernelBy"
+    "HostKernelIte"
     "HostKernel"
     "HonestyFront"
     "HonestyDecide"
     "HonestyThmFront"
     "HonestyBound"
+    "HonestyLetRec"
+    "HonestySpecList"
+    "HonestyCompose"
+    "HonestyRequire"
+    "HonestySearch"
     "HonestyCapable"
+    "ThinMainFront"
     "SlakeCheckSource"
   ];
 
   closureFiles = map (mod: "SystemsLean/${mod}.lean") (closureMods ++ [ "PackageTypecheck" ]);
 
-  # A flake copy of this repo omits files git does not track. Sixteen
+  # A flake copy of this repo omits files git does not track. Twenty-one
   # closure modules are untracked, and this file must not git add.
   # SLAKE_SYSTEMS_ROOT is the real src/systems directory so those
   # modules are copied. Without it, the fallback is the flake snapshot.

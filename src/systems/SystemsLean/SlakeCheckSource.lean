@@ -23,6 +23,7 @@ import SystemsLean.HostKernel
 import SystemsLean.HonestyFront
 import SystemsLean.HonestyThmFront
 import SystemsLean.HonestyCapable
+import SystemsLean.ThinMainFront
 import SystemsLean.MultFront
 
 namespace SystemsLean.SlakeCheckSource
@@ -32,6 +33,8 @@ namespace SystemsLean.SlakeCheckSource
     If that returns none, HonestyFront reads string and Bool defs.
     If that returns none, HonestyThmFront reads `by decide`.
     If that returns none, HonestyCapable reads the Capable surface.
+    If that returns none, ThinMainFront reads one import and a
+    forwarding main. The imported name is the callee.
     If that returns none, the old front still reads the one-line dialect.
     If every front fails, there is no module.
     No on-disk file is claimed accepted.
@@ -50,9 +53,12 @@ def readModule (src : String) : Option SystemsLean.HostTerm.Module :=
         match SystemsLean.HonestyCapable.parseCapableText src with
         | some m => some m
         | none =>
-          match SystemsLean.HostFront.parseSource src with
-          | SystemsLean.HostFront.FrontResult.accept m => some m
-          | SystemsLean.HostFront.FrontResult.reject _ => none
+          match SystemsLean.ThinMainFront.parseThinMain src with
+          | some m => some m
+          | none =>
+            match SystemsLean.HostFront.parseSource src with
+            | SystemsLean.HostFront.FrontResult.accept m => some m
+            | SystemsLean.HostFront.FrontResult.reject _ => none
 
 /-- Source text passes Slake's checker when the shared reader yields a
     module and slakeCheckerAccepts that module.

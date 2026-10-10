@@ -1,8 +1,9 @@
 /-
   Module: SystemsLean.HonestyBound
   One Bool def whose binders are String and whose body is an if.
-  The then-branch is false. The else-branch is a `>` check.
-  `>` is a token. A missing `>` is not this def.
+  The then-branch is false. The else-branch is the comparison term.
+  That comparison is not collapsed to true.
+  `>` is a required token. A missing `>` is not this def.
   This is not `let rec` and not `System.FilePath`.
   A false then-branch stays false.
   Does not call Lean.Elab.processCommands.
@@ -44,13 +45,29 @@ termination_by fuel
 def asBinders (names : List String) : List (Prod Name HostType) :=
   names.map fun s => (n s, HostType.string)
 
-/-- Then is the written false. Else is the accepted `>` form, as a Bool.
-    This does not evaluate `>`. The then-branch is not rewritten to true. -/
-def boundBody (cond src : String) : Term :=
+/-- One digit token as Nat. A non-digit is zero, not a Bool. -/
+def digitNat (s : String) : Nat :=
+  match s.toList with
+  | [c] => if isDigit c then c.toNat - '0'.toNat else 0
+  | _ => 0
+
+/-- Then is the written false.
+    Else is `(src.splitOn arg).length > num` as a comparison term.
+    The comparison is not collapsed to true.
+    The then-branch is not rewritten to true. -/
+def boundBody (cond src arg num : String) : Term :=
   Term.ite
     (Term.proj (Term.var (n cond)) (n "isEmpty"))
     (Term.litBool false)
-    (Term.litBool true)
+    (Term.app
+      (Term.app
+        (Term.const (n ">"))
+        (Term.proj
+          (Term.app
+            (Term.proj (Term.var (n src)) (n "splitOn"))
+            (Term.var (n arg)))
+          (n "length")))
+      (Term.litNat (digitNat num)))
 
 def digitTok (s : String) : Bool :=
   match s.toList with
@@ -66,7 +83,7 @@ def parseIfGt (binders : List String) (ts : List String) :
       :: "length" :: ">" :: num :: rest =>
     if mem binders cond && mem binders src && mem binders arg
         && digitTok num then
-      some (boundBody cond src, rest)
+      some (boundBody cond src arg num, rest)
     else
       none
   | _ => none

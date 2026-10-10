@@ -33,13 +33,15 @@ import SystemsLean.HostTerm
 import SystemsLean.HostKernelReduce
 import SystemsLean.HostKernelRfl
 import SystemsLean.HostKernelBy
+import SystemsLean.HostKernelIte
 
 namespace SystemsLean.HostKernel
 
 open SystemsLean.HostTerm
 open SystemsLean.HostKernelReduce
 open SystemsLean.HostKernelRfl (rflEqType)
-open SystemsLean.HostKernelBy (judgeBy ByJudgment judgeTactic)
+open SystemsLean.HostKernelBy (judgeBy ByJudgment judgeTactic requireAfterMiss)
+open SystemsLean.HostKernelIte (iteType)
 
 /-! ### HOST-KERNEL / SLAKE_HOST_KERNEL (Mult-first kernel typecheck) -/
 
@@ -342,18 +344,11 @@ def inferTermN :
                     | none => none
           inferArms fuel arms
     | Term.ite c t1 e =>
-      match inferTermN fuel env defs ss (some HostType.bool) c with
-      | some cty =>
-        if !hostTypeEq cty HostType.bool then none
-        else
-          match inferTermN fuel env defs ss expected t1 with
-          | none => none
-          | some tty =>
-            match inferTermN fuel env defs ss expected e with
-            | some ety =>
-              if hostTypeEq tty ety then some tty else none
-            | none => none
-      | none => none
+      iteType expected t1 e
+        (inferTermN fuel env defs ss (some HostType.bool) c)
+        (inferTermN fuel env defs ss expected t1)
+        (inferTermN fuel env defs ss expected e)
+        (requireAfterMiss (Term.ite c t1 e))
     | Term.decideEq a b =>
       match inferTermN fuel env defs ss none a with
       | none => none
