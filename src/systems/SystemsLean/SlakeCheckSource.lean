@@ -24,6 +24,16 @@ import SystemsLean.HonestyFront
 import SystemsLean.HonestyThmFront
 import SystemsLean.HonestyCapable
 import SystemsLean.ThinMainFront
+import SystemsLean.HonestyEqFront
+import SystemsLean.HonestyMeasureFront
+import SystemsLean.HonestyMeasureMainFront
+import SystemsLean.HonestyFullBarFront
+import SystemsLean.HonestyReadFront
+import SystemsLean.HonestyReadThmFront
+import SystemsLean.HonestyPipelineThmFront
+import SystemsLean.HonestyStepThmFront
+import SystemsLean.HonestyGapThmFront
+import SystemsLean.HonestyPipelineFront
 import SystemsLean.MultFront
 
 namespace SystemsLean.SlakeCheckSource
@@ -33,8 +43,37 @@ namespace SystemsLean.SlakeCheckSource
     If that returns none, HonestyFront reads string and Bool defs.
     If that returns none, HonestyThmFront reads `by decide`.
     If that returns none, HonestyCapable reads the Capable surface.
+    If that returns none, HonestyMeasureFront reads one IO Unit
+    measure. The def name is the command. The file name is not read.
+    If that returns none, HonestyMeasureMainFront reads that measure
+    when main is the next def. No Bool sits between them.
+    The file name is not read. A false Bool stays false.
     If that returns none, ThinMainFront reads one import and a
     forwarding main. The imported name is the callee.
+    If that returns none, HonestyEqFront reads rfl or by decide
+    on a seeded import. The file name is not hardcoded.
+    If that returns none, HonestyFullBarFront reads rfl or by
+    decide on import SystemsLean.CapableFullBar.
+    The file name is not hardcoded.
+    If that returns none, HonestyReadFront reads
+    namespace SystemsLean.CapableRead. The file name is not
+    hardcoded. Full stays false.
+    If that returns none, HonestyReadThmFront reads rfl or by
+    decide on import SystemsLean.CapableRead.
+    The file name is not hardcoded. Full stays false.
+    If that returns none, HonestyPipelineThmFront reads rfl or by
+    decide on import SystemsLean.CapableRegenerate.
+    The file name is not hardcoded. A false Bool stays false.
+    If that returns none, HonestyStepThmFront reads rfl or by
+    decide on import SystemsLean.CapableStepContract.
+    The file name is not hardcoded. A false Bool stays false.
+    If that returns none, HonestyGapThmFront reads rfl or by
+    decide on import SystemsLean.Capable.
+    The file name is not hardcoded. A false Bool stays false.
+    If that returns none, HonestyPipelineFront reads imports,
+    then the written namespace, string and Bool pins, one
+    FilePath IO Unit pipeline, filterArgs, and main.
+    A false Bool stays false. The file name is not hardcoded.
     If that returns none, the old front still reads the one-line dialect.
     If every front fails, there is no module.
     No on-disk file is claimed accepted.
@@ -53,12 +92,46 @@ def readModule (src : String) : Option SystemsLean.HostTerm.Module :=
         match SystemsLean.HonestyCapable.parseCapableText src with
         | some m => some m
         | none =>
-          match SystemsLean.ThinMainFront.parseThinMain src with
+          match SystemsLean.HonestyMeasureFront.parseMeasureText src with
           | some m => some m
           | none =>
-            match SystemsLean.HostFront.parseSource src with
-            | SystemsLean.HostFront.FrontResult.accept m => some m
-            | SystemsLean.HostFront.FrontResult.reject _ => none
+            match SystemsLean.HonestyMeasureMainFront.parseMeasureMainText src with
+            | some m => some m
+            | none =>
+              match SystemsLean.ThinMainFront.parseThinMain src with
+              | some m => some m
+              | none =>
+                match SystemsLean.HonestyEqFront.parseHonestyEqText src with
+                | some m => some m
+                | none =>
+                  match SystemsLean.HonestyFullBarFront.parseHonestyFullBarText src with
+                  | some m => some m
+                  | none =>
+                    match SystemsLean.HonestyReadFront.parseHonestyReadText src with
+                    | some m => some m
+                    | none =>
+                      match SystemsLean.HonestyReadThmFront.parseHonestyReadThmText src with
+                      | some m => some m
+                      | none =>
+                        match SystemsLean.HonestyPipelineThmFront.parseHonestyPipelineThmText
+                            src with
+                        | some m => some m
+                        | none =>
+                          match SystemsLean.HonestyStepThmFront.parseHonestyStepThmText
+                              src with
+                          | some m => some m
+                          | none =>
+                            match SystemsLean.HonestyGapThmFront.parseHonestyGapThmText
+                                src with
+                            | some m => some m
+                            | none =>
+                              match SystemsLean.HonestyPipelineFront.parseHonestyPipelineText
+                                  src with
+                              | some m => some m
+                              | none =>
+                                match SystemsLean.HostFront.parseSource src with
+                                | SystemsLean.HostFront.FrontResult.accept m => some m
+                                | SystemsLean.HostFront.FrontResult.reject _ => none
 
 /-- Source text passes Slake's checker when the shared reader yields a
     module and slakeCheckerAccepts that module.

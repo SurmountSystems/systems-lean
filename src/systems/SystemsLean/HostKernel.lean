@@ -34,6 +34,7 @@ import SystemsLean.HostKernelReduce
 import SystemsLean.HostKernelRfl
 import SystemsLean.HostKernelBy
 import SystemsLean.HostKernelIte
+import SystemsLean.HostKernelForward
 
 namespace SystemsLean.HostKernel
 
@@ -42,6 +43,7 @@ open SystemsLean.HostKernelReduce
 open SystemsLean.HostKernelRfl (rflEqType)
 open SystemsLean.HostKernelBy (judgeBy ByJudgment judgeTactic requireAfterMiss)
 open SystemsLean.HostKernelIte (iteType)
+open SystemsLean.HostKernelForward (forwardMain)
 
 /-! ### HOST-KERNEL / SLAKE_HOST_KERNEL (Mult-first kernel typecheck) -/
 
@@ -305,7 +307,10 @@ def inferTermN :
               match inferTermN fuel env defs ss none a with
               | some _ => inferTermN fuel env defs ss none f
               | none => none
-          | _ => none
+          | funTy => forwardMain expected funTy fn a
+              (match a with
+                | Term.var v => lookupEnv env v.raw
+                | _ => none)
       | _ =>
         match inferTermN fuel env defs ss none f with
         | some (HostType.arrow d c) =>

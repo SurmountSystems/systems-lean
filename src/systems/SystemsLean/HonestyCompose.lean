@@ -60,6 +60,8 @@ def tok : List Char -> TMode -> List String -> Option (List String)
     tok rest TMode.norm ("&&" :: acc)
   | '+' :: '+' :: rest, TMode.norm, acc =>
     tok rest TMode.norm ("++" :: acc)
+  | '+' :: rest, TMode.norm, acc =>
+    tok rest TMode.norm ("+" :: acc)
   | '|' :: '|' :: rest, TMode.norm, acc =>
     tok rest TMode.norm ("||" :: acc)
   | '|' :: rest, TMode.norm, acc =>
@@ -114,6 +116,8 @@ def tok : List Char -> TMode -> List String -> Option (List String)
     tok rest TMode.norm ("&&" :: emitId acc cur)
   | '+' :: '+' :: rest, TMode.id cur, acc =>
     tok rest TMode.norm ("++" :: emitId acc cur)
+  | '+' :: rest, TMode.id cur, acc =>
+    tok rest TMode.norm ("+" :: emitId acc cur)
   | '|' :: '|' :: rest, TMode.id cur, acc =>
     tok rest TMode.norm ("||" :: emitId acc cur)
   | '|' :: rest, TMode.id cur, acc =>

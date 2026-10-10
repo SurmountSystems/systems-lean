@@ -13,11 +13,13 @@
 
 import SystemsLean.HostTerm
 import SystemsLean.HostKernelMarker
+import SystemsLean.HostKernelMeasure
 
 namespace SystemsLean.HostKernelApply
 
 open SystemsLean.HostTerm
 open SystemsLean.HostKernelMarker (markerAfterRead)
+open SystemsLean.HostKernelMeasure (measureType)
 
 def ioUnit : HostType :=
   HostType.named (n "IO.Unit")
@@ -125,11 +127,14 @@ def applyType (t : Term) : Option HostType :=
       none
   | _ => none
 
-/-- The marker first. This body only after that misses. -/
+/-- The marker first. Apply next. The measure only after both miss. -/
 def applyAfterMarker (t : Term) : Option HostType :=
   match markerAfterRead t with
   | some ty => some ty
-  | none => applyType t
+  | none =>
+    match applyType t with
+    | some ty => some ty
+    | none => measureType t
 
 def app2 (fn : String) (a b : Term) : Term :=
   Term.app (Term.app (Term.const (n fn)) a) b

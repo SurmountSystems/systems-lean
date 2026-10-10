@@ -13,11 +13,13 @@
 
 import SystemsLean.HostTerm
 import SystemsLean.HostKernelRequire
+import SystemsLean.HostKernelDual
 
 namespace SystemsLean.HostKernelSpecs
 
 open SystemsLean.HostTerm
 open SystemsLean.HostKernelRequire (requireAfterSsot)
+open SystemsLean.HostKernelDual (dualListType)
 
 def listTy : HostType :=
   HostType.named (n "List ComposeSsotSpec")
@@ -55,11 +57,15 @@ def listSpine : Term -> Bool
 def specsType (t : Term) : Option HostType :=
   if listSpine t then some listTy else none
 
-/-- requireFile first. This list only after that misses. -/
+/-- requireFile first. The five-field list only after that misses.
+    A four-field DualSsotSpec list only after the five-field list misses. -/
 def specsAfterRequire (t : Term) : Option HostType :=
   match requireAfterSsot t with
   | some ty => some ty
-  | none => specsType t
+  | none =>
+    match specsType t with
+    | some ty => some ty
+    | none => dualListType t
 
 def oneSpec : Term :=
   Term.structLit

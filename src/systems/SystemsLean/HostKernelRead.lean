@@ -13,11 +13,13 @@
 
 import SystemsLean.HostTerm
 import SystemsLean.HostKernelSpecs
+import SystemsLean.HostKernelDual
 
 namespace SystemsLean.HostKernelRead
 
 open SystemsLean.HostTerm
 open SystemsLean.HostKernelSpecs (specsAfterRequire)
+open SystemsLean.HostKernelDual (dualUnitRead)
 
 def ioStr : HostType :=
   HostType.named (n "IO.String")
@@ -91,11 +93,15 @@ def readType (t : Term) : Option HostType :=
     | _ => none
   | _ => none
 
-/-- The spec list first. This read only after that misses. -/
+/-- The spec list first. IO String only after that misses.
+    IO Unit for an ok leaf only after that IO String misses. -/
 def readAfterSpecs (t : Term) : Option HostType :=
   match specsAfterRequire t with
   | some ty => some ty
-  | none => readType t
+  | none =>
+    match readType t with
+    | some ty => some ty
+    | none => dualUnitRead t
 
 def err (msg : String) : Term :=
   Term.app (Term.const (n "IO.userError")) (Term.litString msg)
