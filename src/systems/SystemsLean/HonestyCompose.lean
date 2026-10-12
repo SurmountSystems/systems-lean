@@ -38,8 +38,8 @@ def emitId (acc : List String) (cur : List Char) : List String :=
 def emitStr (acc : List String) (cur : List Char) : List String :=
   String.mk ('"' :: cur.reverse ++ ['"']) :: acc
 
-/-- Same tokens as the spec list, plus `/`. An unknown character
-    keeps the tokens so far. -/
+/-- Same tokens as the spec list, plus `/` and `=`. An unknown
+    character keeps the tokens so far. `=>` and `==` stay one token. -/
 def tok : List Char -> TMode -> List String -> Option (List String)
   | [], TMode.norm, acc => some acc.reverse
   | [], TMode.id cur, acc => some (emitId acc cur).reverse
@@ -56,6 +56,8 @@ def tok : List Char -> TMode -> List String -> Option (List String)
     tok rest TMode.norm ("=>" :: acc)
   | '=' :: '=' :: rest, TMode.norm, acc =>
     tok rest TMode.norm ("==" :: acc)
+  | '=' :: rest, TMode.norm, acc =>
+    tok rest TMode.norm ("=" :: acc)
   | '&' :: '&' :: rest, TMode.norm, acc =>
     tok rest TMode.norm ("&&" :: acc)
   | '+' :: '+' :: rest, TMode.norm, acc =>
@@ -112,6 +114,8 @@ def tok : List Char -> TMode -> List String -> Option (List String)
     tok rest TMode.norm ("=>" :: emitId acc cur)
   | '=' :: '=' :: rest, TMode.id cur, acc =>
     tok rest TMode.norm ("==" :: emitId acc cur)
+  | '=' :: rest, TMode.id cur, acc =>
+    tok rest TMode.norm ("=" :: emitId acc cur)
   | '&' :: '&' :: rest, TMode.id cur, acc =>
     tok rest TMode.norm ("&&" :: emitId acc cur)
   | '+' :: '+' :: rest, TMode.id cur, acc =>

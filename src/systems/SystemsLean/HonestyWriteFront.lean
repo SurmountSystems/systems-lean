@@ -27,7 +27,7 @@ namespace SystemsLean.HonestyWriteFront
 
 open SystemsLean.HostTerm
 open SystemsLean.HonestyFront (strip parseDotted parseFuel isIdent)
-open SystemsLean.HonestyCompose (tok TMode)
+open SystemsLean.HonestyCompose (tok TMode parseFilter SpecParse)
 open SystemsLean.HonestyCapable (CapEnv emptyEnv addStr parseDefs)
 open SystemsLean.HonestyThmFront (parseDecide cmdRejects)
 open SystemsLean.HonestyPipelineFront
@@ -48,7 +48,15 @@ def hasLoad : List String -> Bool
 def seedEnv : CapEnv :=
   addStr (addStr emptyEnv "stageId" stageLit) "dualEqualityGateId" gateLit
 
-def parseThms (fuel : Nat) (defs : DefEnv) (acc : List Cmd)
+def seedCmd (name lit : String) : Cmd :=
+  Cmd.def_ (n name) (some HostType.string) (Term.litString lit)
+
+def seedCmds : List Cmd :=
+  [ seedCmd "stageId" stageLit
+  , seedCmd "dualEqualityGateId" gateLit ]
+
+def parseThms (fuel : Nat)
+    (defs : SystemsLean.HostKernelReduce.DefEnv) (acc : List Cmd)
     (ts : List String) : Option (Prod (List Cmd) (List String)) :=
   match fuel with
   | 0 => none
@@ -78,7 +86,8 @@ def finish (ns : String) (imps : List String) (pins1 : List Cmd)
   else if endOk ns ts then
     let cmds :=
       importCmds imps ++ [Cmd.namespace (n ns)] ++ pins1
-        ++ [filt] ++ pins2 ++ thms ++ [Cmd.endNamespace (n ns)]
+        ++ [filt] ++ seedCmds ++ pins2 ++ thms
+        ++ [Cmd.endNamespace (n ns)]
     let m : Module := { name := n ns, commands := cmds }
     if isWellFormed m then some m else none
   else
@@ -113,7 +122,7 @@ def afterIo (ns : String) (imps : List String) (pins1 : List Cmd)
   match ioHeader ts with
   | none => none
   | some bodyTs =>
-    match skipUntil parseFuel [] bodyTs with
+    match skipUntil 4096 [] bodyTs with
     | none => none
     | some (body, restIo) =>
       if !hasTok body "println" then

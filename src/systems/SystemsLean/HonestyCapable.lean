@@ -314,7 +314,7 @@ def parseDef (env : CapEnv) (ts : List String) :
           some (cmd, addBool env name false body, rest2)
         | _ =>
           if reducesTrue env body then
-            let cmd := Cmd.def_ (n name) (some HostType.bool) body
+            let cmd := Cmd.def_ (n name) (some HostType.bool) (Term.litBool true)
             some (cmd, addBool env name true body, rest2)
           else
             none
