@@ -20,6 +20,9 @@
 import SystemsLean.HostTerm
 import SystemsLean.HonestyFront
 import SystemsLean.HonestyNatClaimFront
+import SystemsLean.DiaphenesRawCarrier
+import SystemsLean.DiaphenesLivePins
+import SystemsLean.DiaphenesDriverPins
 
 namespace SystemsLean.HonestyStrCatFront
 
@@ -130,7 +133,7 @@ def tok (fuel : Nat) (cs : List Char) (mode : TMode) (acc : List String) :
       else tok k (c :: rest) TMode.norm (emitId acc cur)
 termination_by fuel
 
-def parseHonestyStrCatText (src : String) :
+def ownParse (src : String) :
     Option SystemsLean.HostTerm.Module :=
   match strip src.toList SMode.code [] with
   | none => none
@@ -138,5 +141,18 @@ def parseHonestyStrCatText (src : String) :
     match tok tokFuel kept TMode.norm [] with
     | none => none
     | some ts => parseToks ts
+
+def parseHonestyStrCatText (src : String) :
+    Option SystemsLean.HostTerm.Module :=
+  match ownParse src with
+  | some m => some m
+  | none =>
+    match SystemsLean.DiaphenesRawCarrier.parseRaw src with
+    | some m => some m
+    | none =>
+      match SystemsLean.DiaphenesLivePins.parseLive src with
+      | some m => some m
+      | none =>
+        SystemsLean.DiaphenesDriverPins.parseDriver src
 
 end SystemsLean.HonestyStrCatFront

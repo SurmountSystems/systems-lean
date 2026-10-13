@@ -7,6 +7,9 @@
   A decide or rfl whose sides differ is a def with no type.
   A thin forwarding main is not this front.
   A namespace file with no import is not this front.
+  After the eq surface, an empty HostModuleCheck barrel.
+  After that barrel, a HostFrontLive pin with FullHost false.
+  A false Bool stays false.
   This is not a general Lean parser.
   Does not call Lean.Elab.processCommands.
   slakeOwnsPackageTypecheck stays false.
@@ -17,6 +20,8 @@ import SystemsLean.HonestyFront
 import SystemsLean.HonestyThmFront
 import SystemsLean.HonestyDecide
 import SystemsLean.HostKernelReduce
+import SystemsLean.BellerophonHmcBarrel
+import SystemsLean.BellerophonLivePin
 
 namespace SystemsLean.HonestyEqFront
 
@@ -177,8 +182,8 @@ def eqFinish (ns imp : String) (thms : List Cmd) (ts : List String) :
       | none => none
     | _ => none
 
-/-- Parse this surface. none means not this front. -/
-def parseHonestyEqText (src : String) : Option Module :=
+/-- rfl or by decide. none means not this surface. -/
+def parseEqSurface (src : String) : Option Module :=
   match strip src.toList SMode.code [] with
   | none => none
   | some kept =>
@@ -203,6 +208,16 @@ def parseHonestyEqText (src : String) : Option Module :=
             | _ => none
         | none => none
       | _ => none
+
+/-- Eq surface, else an empty HostModuleCheck barrel,
+    else a HostFrontLive pin with FullHost false. -/
+def parseHonestyEqText (src : String) : Option Module :=
+  match parseEqSurface src with
+  | some m => some m
+  | none =>
+    match BellerophonHmcBarrel.parseHmcBarrel src with
+    | some m => some m
+    | none => BellerophonLivePin.parseLivePin src
 
 def toy : String :=
   "import SystemsLean.CapableCompose\n" ++
@@ -244,6 +259,11 @@ def namespaceMisses : Bool :=
   match parseHonestyEqText "namespace SystemsLean.Capable\n" with
   | none => true
   | some _ => false
+
+def pinHookAccepts : Bool :=
+  match parseHonestyEqText BellerophonLivePin.pinToy with
+  | some m => isWellFormed m
+  | none => false
 
 def otherImportMisses : Bool :=
   match parseHonestyEqText

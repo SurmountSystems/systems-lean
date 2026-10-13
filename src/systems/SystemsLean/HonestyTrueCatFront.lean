@@ -17,6 +17,7 @@
 import SystemsLean.HostTerm
 import SystemsLean.HonestyFront
 import SystemsLean.HonestyStrCatFront
+import SystemsLean.DiaphenesNsAtoms
 
 namespace SystemsLean.HonestyTrueCatFront
 
@@ -421,11 +422,16 @@ def parseItems (fuel : Nat) (st : St) (ts : List String) : Option Module :=
 termination_by fuel
 
 def parseHonestyTrueCatText (src : String) : Option Module :=
+  let fall : Option Module :=
+    SystemsLean.DiaphenesNsAtoms.parseNsAtoms src
   match strip src.toList SMode.code [] with
-  | none => none
+  | none => fall
   | some kept =>
     match tok tokFuel kept TMode.norm [] with
-    | none => none
-    | some ts => parseItems itemFuel emptySt ts
+    | none => fall
+    | some ts =>
+      match parseItems itemFuel emptySt ts with
+      | some m => some m
+      | none => fall
 
 end SystemsLean.HonestyTrueCatFront

@@ -28,6 +28,7 @@ import SystemsLean.LessThan
 import SystemsLean.MultFrontBinders
 import SystemsLean.MultFrontType
 import SystemsLean.TheoremBinder
+import SystemsLean.FranciscoChain
 
 namespace SystemsLean.MultFront
 
@@ -729,20 +730,26 @@ def finishModule (cmds : List Cmd) : Option Module :=
     `<` is LessThan.lessTok. `<;>` is lessTok, then semiTok, then gtTok.
     `some` of a quoted literal is Term.some_ of Term.litString.
     Does not read the filesystem. Does not call Lean.Elab.processCommands.
+    A parsed mult module is returned as itself.
+    None tries SystemsLean.FranciscoChain.parseFrancisco.
     Does not claim an on-disk file was accepted. -/
 def parseMultText (src : String) : Option Module :=
-  match stripGo src.toList SMode.code [] with
-  | none => none
-  | some kept =>
-    match tokGo kept TMode.norm [] with
+  let parsed : Option Module :=
+    match stripGo src.toList SMode.code [] with
     | none => none
-    | some ts =>
-      if hasNsMarker ts || hasIndMarker ts then
-        match parseCmdsN parseFuel false false [] ts with
-        | some cmds => finishModule cmds
-        | none => none
-      else
-        none
+    | some kept =>
+      match tokGo kept TMode.norm [] with
+      | none => none
+      | some ts =>
+        if hasNsMarker ts || hasIndMarker ts then
+          match parseCmdsN parseFuel false false [] ts with
+          | some cmds => finishModule cmds
+          | none => none
+        else
+          none
+  match parsed with
+  | some m => some m
+  | none => SystemsLean.FranciscoChain.parseFrancisco src
 
 /-- `src` is in the SystemsLean/Mult.lean dialect when parseMultText accepts it.
     The string is that file's text, not a golden and not full Lean 4.

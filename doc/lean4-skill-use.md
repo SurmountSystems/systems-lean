@@ -1,6 +1,10 @@
 # Project lean4 skill use (Systems Lean)
 
-**Kind:** agent skill guidance. Policy index: `AGENTS.md` (**Project agent skills**). Skill body: `.agents/skills/lean4/SKILL.md`.
+**Kind:** agent skill guidance. Policy index: `AGENTS.md` (**Project agent skills**). Agents read the skill through `.agents/skills/lean4/SKILL.md`. The body is the read-only submodule `skills/lean4-skills`. Do not patch that submodule.
+
+## Yield (2026-10-12)
+
+Project `AGENTS.md` wins over the Lean 4 skill. No Lean and no Lake on this laptop. One remote job through the builder slot. Do not fill the three CompilerSpec sorries. Do not commit. Do not ask the operator when the plan already decides. An L3 does not spawn. Search before prove and 100-character lines apply when a proof is actually in scope. Do not add project Python. The paragraphs below stay as the older skill map.
 
 ### When to reach for lean4 tools (planned / residual work)
 

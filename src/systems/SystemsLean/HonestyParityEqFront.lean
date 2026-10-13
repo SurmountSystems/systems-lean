@@ -2,7 +2,7 @@
   Module: SystemsLean.HonestyParityEqFront
   Front for theorems and examples over SystemsLean.DualEqWriteParity.
   The import string selects the seed. The file name is not stored.
-  A file that is not import plus that namespace is none.
+  A file that is not this parity shape may still match a Callisto shape.
   DualEqWriteParity.lean and DualEqWriteParityMain.lean are none.
   Every theorem and every example is checked with decideHolds.
   A mismatch is none. There is no typeless Bool stand-in.
@@ -20,6 +20,30 @@
 import SystemsLean.HonestyDecide
 import SystemsLean.HonestyFront
 import SystemsLean.HonestyThmFront
+import SystemsLean.CallistoLiveTriple
+import SystemsLean.CallistoLivePair
+import SystemsLean.CallistoKernelTwo
+import SystemsLean.CallistoRawEmbed
+import SystemsLean.CallistoLiveTrue
+import SystemsLean.CallistoLiveMut
+import SystemsLean.CallistoLiveFour
+import SystemsLean.CallistoLiveRear
+import SystemsLean.CallistoLiveSurface
+import SystemsLean.CallistoLoadPair
+import SystemsLean.CallistoFiveTrue
+import SystemsLean.CallistoCheckDriver
+import SystemsLean.CallistoCheckBarrel
+import SystemsLean.CallistoCheckCite
+import SystemsLean.CallistoLinearStruct
+import SystemsLean.CallistoLinearThm
+import SystemsLean.CallistoMultFront
+import SystemsLean.CallistoPathPlan
+import SystemsLean.CallistoProofCases
+import SystemsLean.CallistoBenchMain
+import SystemsLean.CallistoSelfHost
+import SystemsLean.CallistoElfThm
+import SystemsLean.CallistoImportOnly
+import SystemsLean.CallistoThmOne
 
 namespace SystemsLean.HonestyParityEqFront
 
@@ -412,8 +436,8 @@ def finish (ns : String) (w : ParityWalk) (ts : List String) :
   else
     none
 
-/-- Parse this surface. none means not this import, or a bad claim. -/
-def parseHonestyParityEqText (src : String) : Option Module :=
+/-- Parity seed only. none here still tries the Callisto shapes. -/
+def parseParityOnly (src : String) : Option Module :=
   match strip src.toList SMode.code [] with
   | none => none
   | some kept =>
@@ -441,6 +465,48 @@ def parseHonestyParityEqText (src : String) : Option Module :=
             none
         | none => none
       | _ => none
+
+def tryParse (src : String) :
+    List (String -> Option Module) -> Option Module
+  | [] => none
+  | p :: ps =>
+    match p src with
+    | some m => some m
+    | none => tryParse src ps
+
+/-- Existing shapes first. parseThmOne stays last. -/
+def callistoParsers : List (String -> Option Module) :=
+  [ SystemsLean.CallistoLiveTriple.parseLiveTriple
+  , SystemsLean.CallistoLivePair.parseLivePair
+  , SystemsLean.CallistoKernelTwo.parseKernelTwo
+  , SystemsLean.CallistoRawEmbed.parseRawEmbed
+  , SystemsLean.CallistoLiveTrue.parseLiveTrue
+  , SystemsLean.CallistoLiveMut.parseLiveMut
+  , SystemsLean.CallistoLiveFour.parseLiveFour
+  , SystemsLean.CallistoLiveRear.parseLiveRear
+  , SystemsLean.CallistoLiveSurface.parseLiveSurface
+  , SystemsLean.CallistoLoadPair.parseLoadPair
+  , SystemsLean.CallistoFiveTrue.parseFiveTrue
+  , SystemsLean.CallistoCheckDriver.parseCheckDriver
+  , SystemsLean.CallistoCheckBarrel.parseCheckBarrel
+  , SystemsLean.CallistoCheckCite.parseCheckCite
+  , SystemsLean.CallistoLinearStruct.parseLinearStruct
+  , SystemsLean.CallistoLinearThm.parseLinearThm
+  , SystemsLean.CallistoMultFront.parseMultFront
+  , SystemsLean.CallistoPathPlan.parsePathPlan
+  , SystemsLean.CallistoProofCases.parseProofCases
+  , SystemsLean.CallistoBenchMain.parseBenchMain
+  , SystemsLean.CallistoSelfHost.parseSelfHost
+  , SystemsLean.CallistoElfThm.parseElfThm
+  , SystemsLean.CallistoImportOnly.parseImportOnly
+  , SystemsLean.CallistoThmOne.parseThmOne
+  ]
+
+/-- Parity shape, else one Callisto shape, else none. -/
+def parseHonestyParityEqText (src : String) : Option Module :=
+  match parseParityOnly src with
+  | some m => some m
+  | none => tryParse src callistoParsers
 
 def parityToyHead : String :=
   "import SystemsLean.DualEqWriteParity\n" ++

@@ -19,6 +19,15 @@
 -/
 
 import SystemsLean.HonestyFront
+import SystemsLean.AdastriaScan
+import SystemsLean.AdastriaElabMeet
+import SystemsLean.AdastriaEmitUnit
+import SystemsLean.AdastriaHostFrontLive
+import SystemsLean.AdastriaHostModCheck
+import SystemsLean.AdastriaHostImport
+import SystemsLean.AdastriaEqBinder
+import SystemsLean.AdastriaFsEmitLoad
+import SystemsLean.AdastriaFrontGoldens
 
 namespace SystemsLean.HonestyDualResFront
 
@@ -246,7 +255,7 @@ def finish (ns : String) (cmds : List Cmd) (ts : List String) :
   | _ => none
 
 /-- Parse this surface. none means not these imports, or a bad claim. -/
-def parseHonestyDualResText (src : String) : Option Module :=
+def parseDualOnly (src : String) : Option Module :=
   match strip src.toList SMode.code [] with
   | none => none
   | some kept =>
@@ -265,6 +274,39 @@ def parseHonestyDualResText (src : String) : Option Module :=
             | none => none
           | none => none
         | _ => none
+
+def parseAdastria (src : String) : Option Module :=
+  match SystemsLean.AdastriaScan.parse src with
+  | some m => some m
+  | none =>
+    match SystemsLean.AdastriaElabMeet.parse src with
+    | some m => some m
+    | none =>
+      match SystemsLean.AdastriaEmitUnit.parse src with
+      | some m => some m
+      | none =>
+        match SystemsLean.AdastriaHostFrontLive.parse src with
+        | some m => some m
+        | none =>
+          match SystemsLean.AdastriaHostModCheck.parse src with
+          | some m => some m
+          | none =>
+            match SystemsLean.AdastriaHostImport.parse src with
+            | some m => some m
+            | none =>
+              match SystemsLean.AdastriaEqBinder.parse src with
+              | some m => some m
+              | none =>
+                match SystemsLean.AdastriaFsEmitLoad.parse src with
+                | some m => some m
+                | none =>
+                  SystemsLean.AdastriaFrontGoldens.parse src
+
+/-- Dual shape first. Adastria shapes only when that parse is none. -/
+def parseHonestyDualResText (src : String) : Option Module :=
+  match parseDualOnly src with
+  | some m => some m
+  | none => parseAdastria src
 
 def dualHead : String :=
   "import SystemsLean.ProductPath\n" ++

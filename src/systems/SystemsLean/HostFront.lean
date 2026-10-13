@@ -67,6 +67,17 @@
 import SystemsLean.HostTerm
 import SystemsLean.Mult
 import SystemsLean.HostFrontGoldens
+import SystemsLean.EdmontonTypecheckDriver
+import SystemsLean.EdmontonLivePin
+import SystemsLean.EdmontonLiveCheck
+import SystemsLean.EdmontonTheoremOnly
+import SystemsLean.EdmontonTheoremMix
+import SystemsLean.EdmontonProductForward
+import SystemsLean.EdmontonStringBody
+import SystemsLean.EdmontonTheoremMain
+import SystemsLean.EdmontonClosedBody
+import SystemsLean.EdmontonMainClosed
+import SystemsLean.EdmontonTwoEnd
 
 namespace SystemsLean.HostFront
 
@@ -553,9 +564,47 @@ def foldLines (lines : List String) : FrontResult :=
         | LineParse.cmd c => go modName (cmds ++ [c]) rest
   go none [] lines
 
-/-- Parse full source text (newline-separated). Greppable: parseSource. -/
+/-- Parse full source text (newline-separated). Greppable: parseSource.
+    The one-line dialect stays first. Edmonton readers run only when
+    that dialect rejects, and each reader returns none on other shapes. -/
 def parseSource (src : String) : FrontResult :=
-  foldLines (src.splitOn "\n")
+  let folded : FrontResult := foldLines (src.splitOn "\n")
+  match folded with
+  | FrontResult.accept m => FrontResult.accept m
+  | FrontResult.reject _ =>
+    match SystemsLean.EdmontonTypecheckDriver.parseTypecheckDriver src with
+    | some m => FrontResult.accept m
+    | none =>
+      match SystemsLean.EdmontonLivePin.parseLivePin src with
+      | some m => FrontResult.accept m
+      | none =>
+        match SystemsLean.EdmontonLiveCheck.parseLiveCheck src with
+        | some m => FrontResult.accept m
+        | none =>
+          match SystemsLean.EdmontonTheoremOnly.parseTheoremOnly src with
+          | some m => FrontResult.accept m
+          | none =>
+            match SystemsLean.EdmontonTheoremMix.parseTheoremMix src with
+            | some m => FrontResult.accept m
+            | none =>
+              match SystemsLean.EdmontonProductForward.parseProductForward src with
+              | some m => FrontResult.accept m
+              | none =>
+                match SystemsLean.EdmontonStringBody.parseStringBody src with
+                | some m => FrontResult.accept m
+                | none =>
+                  match SystemsLean.EdmontonTheoremMain.parseTheoremMain src with
+                  | some m => FrontResult.accept m
+                  | none =>
+                    match SystemsLean.EdmontonClosedBody.parseClosedBody src with
+                    | some m => FrontResult.accept m
+                    | none =>
+                      match SystemsLean.EdmontonMainClosed.parseMainClosed src with
+                      | some m => FrontResult.accept m
+                      | none =>
+                        match SystemsLean.EdmontonTwoEnd.parseTwoEnd src with
+                        | some m => FrontResult.accept m
+                        | none => folded
 
 /-- Accept path: isWellFormed true on accepted module. -/
 def acceptOk (r : FrontResult) : Bool :=

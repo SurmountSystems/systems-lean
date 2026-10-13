@@ -128,6 +128,54 @@ Always remember. The five parallel implementors are five L2 coordinators. Each c
 
 Always remember. Keep the council of five online when there is more work planned. The seats are Adastria, Bellerophon, Callisto, Diaphenes, and Edmonton. While package modules remain, all five stay online. A seat that dies is filled in that same turn. Resume that conversation if it can still work. Start a new grok-4.7 coordinator only when that conversation died before the work started. Do not go to six. Do not put two coordinators on one file. Do not start a second compile or a second review while the first is still running. Dual-pin: `~/.grok/AGENTS.md` same heading.
 
+### Six file coordinators for checker work (operator 2026-10-12)
+
+This subsection wins for this checker work. The older three, five, and six paragraphs stay. A later copy in this file that still says not to go to six does not replace this subsection.
+
+The six file coordinators are Adastria, Bellerophon, Callisto, Diaphenes, Edmonton, and Francisco. Six file coordinators stay in play while front files or uncovered names remain. Do not open a seventh file coordinator.
+
+The builder slot is extra. It is the only remote Lean and the only Nix build, on surmount-1 (ssh nixbuilder@surmount-1), nice 19, LEAN_NUM_THREADS=1, 192 GiB ceiling. No lean and no lake on horizon.
+
+Hunter is extra. Hunter is a skeptical drumbeat every 30 minutes in the L1 session. Hunter asks L1. Hunter does not edit Lean and does not take a file. A seat that exits is refilled in that same turn. A quiet few minutes is not a stall. Hunter does not kill a healthy seat.
+
+Each beat asks what got better in the process, the docs, the tools, or the workflows, and what repeated miss is still only in chat. A real miss is written down. No change is invented to look busy.
+
+L1 assigns lanes and does not implement. An L2 does the work and spawns an L3 only when the slice is hard. An L3 does not spawn. There is no L4.
+
+The same subsection is in `~/.grok/AGENTS.md`.
+
+### Shotgun context (operator 2026-10-13)
+
+The operator said always remember. Incorporate this into all goals and plans.
+
+Shotgun context. Keep two tracks in the same session. One track is working
+on the current fix. The other track is testing and debugging the next
+item. When the working track finishes, it takes the test that is ready.
+When a test finishes, the next failure goes to the working track. Then
+they swap. Always be testing, then move to the next item. Do not sit
+idle while a test or compile is running. Do not wait for a compile to
+die before looking at the next file.
+
+Both tracks share one context: the same goal, the same log, and the same
+constraints. Do not open a second session for the other track.
+
+Hard edits and hard debugging go to an L3. An L2 coordinates. An L2
+spawns an L3 when the slice is hard. An L3 implements, researches, or
+reviews. An L3 does not spawn. There is no L4.
+
+This does not start a second copy of an exclusive job. For the Systems
+Lean bootstrap, the exclusive job is one remote Nix build on surmount-1,
+nice 19, one Lean thread, 192 GiB ceiling. Do not raise that ceiling. Do
+not compile Lean on the laptop.
+
+Dual-pin: ~/.grok/AGENTS.md, the same heading.
+
+### Remote acceptance check, not a seat reading names (operator 2026-10-12)
+
+The 2606-name acceptance set is checked by running the bootstrap executable's `--slake-check` on surmount-1, one module per process. Reading the sources and comparing them to written contracts is not that check. Do not assign seats to read the name list instead of running the checker. The builder slot is the only remote Lean. Six file seats do not SSH.
+
+Older paragraphs stay. This does not replace the six file coordinators subsection above. The same subsection is in `~/.grok/AGENTS.md`.
+
 ### Wrap targets come from the inventory on disk (operator 2026-09-21)
 
 Parent picks the next wrap from the unwrapped-product inventory of files that exist (`/home/hunter/.agents/reports/grok-impl-summary-inventory-verify.md`, which replaced `/home/hunter/.agents/reports/grok-impl-summary-unwrapped-modules.md`). Confirm the path with `test -f` before spawn.
@@ -186,6 +234,8 @@ Upstream skill packs may suggest commits, global installs, or Python helpers. **
 - Novel product work stays **Idris 2 / Lean 4 / pure Nix** under `src/` and `nix/`. Submodule Python/shell under `skills/` is **upstream tooling**, not a license to add project Python.
 - Do **not** edit `skills/*` as product. Bump the submodule pin; send fixes upstream.
 - Freestanding honesty: classic Lean ahead-of-time and mathlib workflows are **not** freestanding product wire. Skill use for host Lean proofs is fine; do not sell it as `out/freestanding-c` residual free.
+
+Systems Lean yield (2026-10-12): project rules here win over the upstream skill. No Lean and no Lake on horizon. Do not fill the CompilerSpec sorries. Do not make a checkpoint commit. An L3 does not spawn. Search before prove and 100-character lines apply only when a real proof is in scope. The same yield is in `doc/lean4-skill-use.md`. Agents read the skill through `.agents/skills/lean4/SKILL.md`. The body is the read-only submodule `skills/lean4-skills`. Do not patch that submodule.
 
 ### Not under `ref/`
 
@@ -569,6 +619,31 @@ Dual-pin: `~/.grok/AGENTS.md` section *Low time preference and completeness*.
   checker but lack an exit-0 log. Say which count it is. Update the
   number when a checker lands. Do not quote 117, 131, or an older 126
   after a newer count exists. Dual-pin: `~/.grok/AGENTS.md` same heading.
+- **Seat progress count on every table (operator 2026-10-13):** always
+  remember. Every status table that lists a file seat has a progress
+  cell. For this failing-check pass the cell is `N of 356`. N is how
+  many names in that seat's range have a landed checker change (a new
+  reader or an edit to a front that seat owns). N is not the remote
+  exit-0 count. The remote counts stay 470 exit 0 and 2136 exit 1 until
+  a new WALKER_DONE. A seat with no landed change is 0 of 356. The six
+  together are `N of 2136`, and that addition is the six N values. The
+  seat writes `N of 356` in its short report when the count changes.
+  L1 reads those reports. L1 does not invent N. If a report is missing,
+  the cell is 0 of 356 and L1 asks that seat for the line. Dual-pin:
+  `~/.grok/AGENTS.md` same heading.
+- **Repeat-sentence seat refill (operator 2026-10-13):** always remember.
+  A file seat that stops because the reply repeated the same sentence is
+  refilled in that turn on the same range. The refill edits the reader
+  already on disk. It does not re-read the 356 names and it does not
+  restate the plan. On the first failing-check pass, Diaphenes, Francisco,
+  and Adastria each stopped that way. Dual-pin: `~/.grok/AGENTS.md` same
+  heading.
+- **A reader counts when a front calls it (operator 2026-10-13):** always
+  remember. A report of `N of 356` counts names only when a front that
+  seat owns calls the reader. On the 02:04Z beat, Francisco's report said
+  356 of 356 and no front outside the Francisco readers called them. That
+  seat goes back onto the hook. The cell keeps the report line and says
+  the hook is still open. Dual-pin: `~/.grok/AGENTS.md` same heading.
 - **Five L2 coordinators, not only nested specialists (operator 2026-09-25):**
   always remember. Remaining checker work runs as five L2 coordinators
   at once, on disjoint files, as parallel as the ranges allow. A nested
@@ -1726,3 +1801,7 @@ Later: real builds and tests as defined in residual -- not vibes.
 - Restart a fat Lake job on **horizon**
 - Kill, `pkill`, or stop host processes unless the operator names the PID or job
 - Flip `FullHost` or package-typecheck pins, or open Linear / IrGraph unless residual already requires them
+
+## L1 does not check the builder (operator 2026-10-13)
+
+The main session does not SSH, does not read the remote walk log, and does not check builder pids. A status check of the live Nix build or the package check is an L2. After that run finishes, the closeout is an L2. This does not start a second build.

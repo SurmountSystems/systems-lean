@@ -19,6 +19,8 @@ Coding agents working on Lean sources in this repo should load the **project** `
 | **Policy / when to use** | Root `AGENTS.md` section **Project agent skills** (task map, residual loop, commits, freestanding honesty) |
 | **Init submodule** | `git submodule update --init --recursive skills/lean4-skills` |
 
+Agents read the skill through `.agents/skills/lean4/SKILL.md`. The body is the read-only submodule `skills/lean4-skills`. Agents do not patch that submodule. Yield lives in `doc/lean4-skill-use.md` and project `AGENTS.md`, not in the submodule.
+
 This is **not** the same as `ref/lean4/.claude/skills/` (upstream Lean compiler CI/build agent notes). Prefer the project skill for theorem-proving and `.lean` edit workflows.
 
 Optional helper `PATH` for full script wrappers: `skills/lean4-skills/plugins/lean4/bin`.

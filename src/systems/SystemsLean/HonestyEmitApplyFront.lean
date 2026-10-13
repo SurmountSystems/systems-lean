@@ -9,6 +9,19 @@
   to the same true value. A false pin stays false.
   A lone Bool true is not a stand-in for an unreduced chain.
   This is not a general Lean parser.
+  A one-raw-string module is accepted when the seed is none.
+  An import, a theorem, and a bare literal are accepted after that.
+  An import, no theorem, a bare literal, and another code line
+  are accepted after that.
+  An import, no theorem, no bare literal, and another code line
+  are accepted after that. The module is the namespace and its end.
+  No import, a bare literal, and another code line are accepted after that.
+  An import, a column-0 mutual, a bare end, and a matching
+  namespace end are accepted after that. Theorems stay out.
+  The mutual block is not emitted. Kernel fuel stays 64.
+  One import, a namespace, and its end, with no other command,
+  are accepted after that.
+  False Bool literals stay false.
   Does not call Lean.Elab.processCommands.
   slakeOwnsPackageTypecheck stays false.
   Module must stay ASCII.
@@ -16,6 +29,13 @@
 
 import SystemsLean.HonestyDecide
 import SystemsLean.HonestyFront
+import SystemsLean.BellerophonRawString
+import SystemsLean.BellerophonImportThm
+import SystemsLean.BellerophonImportLit
+import SystemsLean.BellerophonImportCode
+import SystemsLean.BellerophonNsCode
+import SystemsLean.BellerophonMutualEnd
+import SystemsLean.BellerophonImportNs
 
 namespace SystemsLean.HonestyEmitApplyFront
 
@@ -699,8 +719,8 @@ def takeImports (fuel : Nat) (need : List String) (ts : List String) :
     | _ => none
 termination_by fuel
 
-/-- Parse this surface. none means not these imports, or a bad claim. -/
-def parseHonestyEmitApplyText (src : String) : Option Module :=
+/-- Parse the emit-apply seed. none means not these imports, or a bad claim. -/
+def parseEmitApplySeed (src : String) : Option Module :=
   if !seedHolds then
     none
   else
@@ -726,91 +746,28 @@ def parseHonestyEmitApplyText (src : String) : Option Module :=
             | none => none
           | _ => none
 
-def thmToyHead : String :=
-  "import SystemsLean.Mult\n"
-  ++ "import SystemsLean.Types\n"
-  ++ "import SystemsLean.HostCompose\n"
-  ++ "import SystemsLean.EmitApplyScaffold\n"
-  ++ "namespace SystemsLean.EmitApply\n"
-
-def thmToyNum : String :=
-  "theorem applyCap_eq_32 : applyCap = 32 := rfl\n"
-
-def thmToyFalse : String :=
-  "theorem applyIsValid_failClosed_false : "
-  ++ "applyIsValid Apply.failClosed = false := by decide\n"
-
-def thmToyTrue : String :=
-  "theorem applyOk_empty_true : "
-  ++ "applyOk HostCompose.empty = true := by decide\n"
-
-def thmToyEx : String :=
-  "example : applyOk HostCompose.empty = true := by decide\n"
-
-def thmToyEnd : String :=
-  "end SystemsLean.EmitApply\n"
-
-def thmToySrc : String :=
-  thmToyHead ++ thmToyNum ++ thmToyFalse ++ thmToyTrue ++ thmToyEx
-    ++ thmToyEnd
-
-def thmBadSrc : String :=
-  thmToyHead ++ thmToyNum
-    ++ "theorem applyIsValid_failClosed_false : "
-    ++ "applyIsValid Apply.failClosed = true := by decide\n"
-    ++ thmToyTrue ++ thmToyEx ++ thmToyEnd
-
-/-- Four DualResidual imports. The EmitApply seed is absent. -/
-def thmFourSrc : String :=
-  "import SystemsLean.ProductPath\n"
-  ++ "import SystemsLean.InventoryClose\n"
-  ++ "import SystemsLean.SelfApplyFs\n"
-  ++ "import SystemsLean.LlvmHold\n"
-  ++ "namespace SystemsLean.DualResidual\n"
-  ++ "end SystemsLean.DualResidual\n"
-
-/-- Five imports ending in DualResidual. Theorems namespace is none. -/
-def thmFiveSrc : String :=
-  "import SystemsLean.ProductPath\n"
-  ++ "import SystemsLean.InventoryClose\n"
-  ++ "import SystemsLean.SelfApplyFs\n"
-  ++ "import SystemsLean.LlvmHold\n"
-  ++ "import SystemsLean.DualResidual\n"
-  ++ "namespace SystemsLean.DualResidualTheorems\n"
-  ++ "end SystemsLean.DualResidualTheorems\n"
-
-def cmdIsHeld (c : Cmd) : Bool :=
-  match c with
-  | Cmd.def_ _ (some HostType.bool) (Term.litBool true) => true
-  | _ => false
-
-/-- One numeric rfl, one false decide, one held true, one example.
-    rfl and the example stay out of the command list. -/
-def thmToyShape : Bool :=
-  match parseHonestyEmitApplyText thmToySrc with
-  | some m =>
-    match m.commands with
-    | Cmd.importModule _ :: Cmd.importModule _ ::
-        Cmd.importModule _ :: Cmd.importModule _ ::
-        Cmd.namespace _ :: c ::
-        Cmd.endNamespace _ :: [] =>
-      cmdIsHeld c && isWellFormed m && seedHolds
-    | _ => false
-  | none => false
-
-/-- Flipping the false pin to true is none. -/
-def thmToyRejects : Bool :=
-  match parseHonestyEmitApplyText thmBadSrc with
-  | none => true
-  | some _ => false
-
-/-- The four-import sibling is none. The five-import sibling is none. -/
-def thmSiblingNone : Bool :=
-  match parseHonestyEmitApplyText thmFourSrc with
+/-- Seed, then raw, theorem, literal, code, ns, mutual, one import. -/
+def parseHonestyEmitApplyText (src : String) : Option Module :=
+  match parseEmitApplySeed src with
+  | some m => some m
   | none =>
-    match parseHonestyEmitApplyText thmFiveSrc with
-    | none => true
-    | some _ => false
-  | some _ => false
+    match BellerophonRawString.parseRawString src with
+    | some m => some m
+    | none =>
+      match BellerophonImportThm.parseImportThm src with
+      | some m => some m
+      | none =>
+        match BellerophonImportLit.parseImportLit src with
+        | some m => some m
+        | none =>
+          match BellerophonImportCode.parseImportCode src with
+          | some m => some m
+          | none =>
+            match BellerophonNsCode.parseNsCode src with
+            | some m => some m
+            | none =>
+              match BellerophonMutualEnd.parseMutualEnd src with
+              | some m => some m
+              | none => BellerophonImportNs.parseImportNs src
 
 end SystemsLean.HonestyEmitApplyFront
