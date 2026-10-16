@@ -5,8 +5,8 @@
   A false Bool stays false. Bool true is not emitted.
   Does not call Lean.Elab.processCommands.
   slakeOwnsPackageTypecheck stays false.
-  A character literal whose body is a double quote is rewritten
-  before the scan, because the shared scan treats that quote as a string.
+  The scan treats a character literal, a nested block comment, and a
+  raw string as themselves, so this binder does not rewrite the source.
 -/
 
 import SystemsLean.AdastriaScan
@@ -20,14 +20,8 @@ open SystemsLean.AdastriaScan
 def shape (f : Fact) : Bool :=
   baseOk f && f.ns == "SystemsLean.EqSomeBinder" && f.sawStruct
 
-def rewriteQuoteChar : List Char -> List Char
-  | [] => []
-  | '\'' :: '"' :: '\'' :: rest =>
-    '\'' :: 'q' :: '\'' :: rewriteQuoteChar rest
-  | c :: rest => c :: rewriteQuoteChar rest
-
 def parse (src : String) : Option Module :=
-  match scan (String.ofList (rewriteQuoteChar src.toList)) with
+  match scan src with
   | none => none
   | some f =>
     if shape f then witness f else none
@@ -60,6 +54,28 @@ def quoteCharSrc : String :=
 
 def quoteCharSome : Bool :=
   match parse quoteCharSrc with
+  | some _ => true
+  | none => false
+
+def nestBlkSrc : String :=
+  "namespace SystemsLean.EqSomeBinder\n" ++
+  "structure AppliedName where\n" ++
+  "def mark : Bool := /- outer /- \" -/ still \" -/\n" ++
+  "end SystemsLean.EqSomeBinder\n"
+
+def nestBlkSome : Bool :=
+  match parse nestBlkSrc with
+  | some _ => true
+  | none => false
+
+def rawZeroSrc : String :=
+  "namespace SystemsLean.EqSomeBinder\n" ++
+  "structure AppliedName where\n" ++
+  "def mark : String := r\"foo\\\"\n" ++
+  "end SystemsLean.EqSomeBinder\n"
+
+def rawZeroSome : Bool :=
+  match parse rawZeroSrc with
   | some _ => true
   | none => false
 

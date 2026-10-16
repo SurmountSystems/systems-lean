@@ -170,6 +170,14 @@ not compile Lean on the laptop.
 
 Dual-pin: ~/.grok/AGENTS.md, the same heading.
 
+### An L2 that is still reading after a few minutes is doing the work (operator 2026-10-15)
+
+The operator said this again on 2026-10-15. L2s coordinate. L3s do the reads, the compares, the SSH checks, and the edits.
+
+An L2 that compacts before 10 minutes, or that is still issuing those tools after about 8 minutes, did the work itself. That is the failure. Spawn an L3 for that work at the start. Do not follow up an L2 to change it from doer to coordinator. A follow-up is compacted away. End that L2 and start a coordinator whose first action is the L3.
+
+The older sentence that easy work can stay on an L2 does not cover a multi-file read, a builder compare, or a package check. When they disagree, the work goes to an L3. One already-named one-line edit can stay on the L2. A comparison cannot. Do not delete the older sentences.
+
 ### Remote acceptance check, not a seat reading names (operator 2026-10-12)
 
 The 2606-name acceptance set is checked by running the bootstrap executable's `--slake-check` on surmount-1, one module per process. Reading the sources and comparing them to written contracts is not that check. Do not assign seats to read the name list instead of running the checker. The builder slot is the only remote Lean. Six file seats do not SSH.

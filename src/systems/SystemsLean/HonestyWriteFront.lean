@@ -10,6 +10,7 @@
   The writer def is not emitted as Bool true.
   A namespace file with no import is none.
   A thin forwarding main is none.
+  A miss of this writer shape tries the tactic form.
   This is not a general Lean parser.
   Does not call Lean.Elab.processCommands.
   slakeOwnsPackageTypecheck stays false.
@@ -22,6 +23,7 @@ import SystemsLean.HonestyCapable
 import SystemsLean.HonestyCompose
 import SystemsLean.HonestyThmFront
 import SystemsLean.HonestyPipelineFront
+import SystemsLean.DiaphenesTacticForm
 
 namespace SystemsLean.HonestyWriteFront
 
@@ -153,14 +155,21 @@ def parseToks (ts : List String) : Option Module :=
   | some (imps, rest) => parseNs imps rest
   | none => none
 
-/-- Load import, then the written namespace. none is not this shape. -/
+/-- Load import, then the written namespace.
+    A miss calls the tactic-form reader. -/
 def parseHonestyWriteText (src : String) : Option Module :=
   match strip src.toList HonestyFront.SMode.code [] with
-  | none => none
+  | none =>
+    SystemsLean.DiaphenesTacticForm.parseTacticForm src
   | some kept =>
     match tok kept TMode.norm [] with
-    | none => none
-    | some ts => parseToks ts
+    | none =>
+      SystemsLean.DiaphenesTacticForm.parseTacticForm src
+    | some ts =>
+      match parseToks ts with
+      | some m => some m
+      | none =>
+        SystemsLean.DiaphenesTacticForm.parseTacticForm src
 
 def filterText : String :=
   "def filterArgs : List String -> List String\n" ++

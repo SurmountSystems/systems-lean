@@ -596,4 +596,43 @@ def illegalLinearUseFailReady : Bool :=
     && decide ((onceUse 7).fst = 7)
     && decide (((bind consume keep).run (mint 7)).fst = 7)
 
+/-! ### Owned linear cell (one heap object)
+    OnceRes is an indexed step, not a heap cell. This cell is the next
+    construct: one object, allocate once, free once. A second free fails.
+    Not a linear pair. Not all-types use-check. Not a garbage collector. -/
+
+/-- One owned cell. live means the object has not been freed. -/
+structure OwnedCell where
+  payload : Nat
+  live : Bool
+  deriving Repr, DecidableEq
+
+/-- Allocate one owned cell. live starts true. -/
+def cellAlloc (n : Nat) : OwnedCell :=
+  { payload := n, live := true }
+
+/-- True when this cell may still be freed once. -/
+def cellFreeOk (c : OwnedCell) : Bool :=
+  c.live
+
+/-- The same cell after its one free. live is false. -/
+def cellSpent (c : OwnedCell) : OwnedCell :=
+  { payload := c.payload, live := false }
+
+/-- First free of a fresh cell is ok. -/
+def cellFirstFree (n : Nat) : Bool :=
+  cellFreeOk (cellAlloc n)
+
+/-- Second free is not ok. Decidable illegal second consume of one cell. -/
+def cellSecondFree (n : Nat) : Bool :=
+  match cellFreeOk (cellSpent (cellAlloc n)) with
+  | true => false
+  | false => true
+
+/-- A fresh owned cell may be freed once. -/
+theorem cell_first_free_ok (n : Nat) : cellFirstFree n = true := rfl
+
+/-- A second free of that same cell fails. -/
+theorem cell_second_free_fails (n : Nat) : cellSecondFree n = true := rfl
+
 end SystemsLean.LinearUseFail

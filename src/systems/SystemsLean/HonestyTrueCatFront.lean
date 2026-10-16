@@ -8,6 +8,7 @@
   A false Bool stays false. Theorems and examples are not emitted.
   `native_decide` and `example` are required and are not emitted.
   A Nat literal def is none. The file name is not hardcoded.
+  A miss of this shape tries the tactic form.
   This is not a general Lean parser.
   Does not call Lean.Elab.processCommands.
   slakeOwnsPackageTypecheck stays false.
@@ -17,7 +18,7 @@
 import SystemsLean.HostTerm
 import SystemsLean.HonestyFront
 import SystemsLean.HonestyStrCatFront
-import SystemsLean.DiaphenesNsAtoms
+import SystemsLean.DiaphenesTacticForm
 
 namespace SystemsLean.HonestyTrueCatFront
 
@@ -422,16 +423,31 @@ def parseItems (fuel : Nat) (st : St) (ts : List String) : Option Module :=
 termination_by fuel
 
 def parseHonestyTrueCatText (src : String) : Option Module :=
-  let fall : Option Module :=
-    SystemsLean.DiaphenesNsAtoms.parseNsAtoms src
   match strip src.toList SMode.code [] with
-  | none => fall
+  | none =>
+    SystemsLean.DiaphenesTacticForm.parseTacticForm src
   | some kept =>
     match tok tokFuel kept TMode.norm [] with
-    | none => fall
+    | none =>
+      SystemsLean.DiaphenesTacticForm.parseTacticForm src
     | some ts =>
       match parseItems itemFuel emptySt ts with
       | some m => some m
-      | none => fall
+      | none =>
+        SystemsLean.DiaphenesTacticForm.parseTacticForm src
+
+def tacticFallbackSome : Bool :=
+  match parseHonestyTrueCatText (
+      "import SystemsLean.HostTerm\n"
+        ++ "namespace SystemsLean.Toy\n"
+        ++ "theorem t : true = true := by decide\n"
+        ++ "end SystemsLean.Toy\n") with
+  | some m => m.name.raw == "SystemsLean.Toy"
+  | none => false
+
+def namespaceMisses : Bool :=
+  match parseHonestyTrueCatText "namespace SystemsLean.Toy\n" with
+  | none => true
+  | some _ => false
 
 end SystemsLean.HonestyTrueCatFront

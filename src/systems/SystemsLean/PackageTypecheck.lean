@@ -25,6 +25,10 @@
   --slake-check is HostKernel.slakeChecker and does not call processCommands.
   The --compile-one path still does. slakeOwnsPackageTypecheck stays false.
   --slake-check NAME reads that on-disk module and calls SlakeCheckSource.checkSource. It does not call processCommands. It does not claim the sources were accepted. The --compile-one path still calls processCommands. slakeOwnsPackageTypecheck stays false.
+  --walk-root DIR with --slake-check NAME resolves NAME under DIR.
+  Dots become slashes, then .lean. One module per process.
+  That path does not require SystemsLean/Mult.lean.
+  Without --walk-root, the SystemsLean library walk is unchanged.
   Module: SystemsLean.PackageTypecheck
   Short role name (not ProductPathFreestanding*).
   Red/green: just slake-typecheck-src-systems (chunked product walk;
@@ -36,6 +40,7 @@
 import Lean
 import SystemsLean.HostKernel
 import SystemsLean.SlakeCheckSource
+import SystemsLean.WalkRoot
 
 namespace SystemsLean.PackageTypecheck
 
@@ -460,6 +465,49 @@ def runSlakeCheckOnDiskIO (n : String) : IO UInt32 := do
         flushOut
         return 1
 
+def runSlakeCheckAtRoot (n : String) (root : System.FilePath) : IO UInt32 := do
+  IO.println s!"slake-check on-disk {n}"
+  IO.println "path is HostFront.parseSource then HostKernel.slakeChecker"
+  IO.println "does not call Lean.Elab.processCommands"
+  IO.println "a missing object file is not a rejection"
+  IO.println "this invocation does not by itself claim the source was accepted"
+  IO.println "HostFront.parseSource is a line-oriented Mult-first dialect, not full Lean 4"
+  IO.println "a real SystemsLean/*.lean file may reject; that is a front or kernel result, not package ownership"
+  IO.println "slakeOwnsPackageTypecheck false"
+  IO.println "FullHost false"
+  IO.println s!"walk-root {root}"
+  match <- SystemsLean.WalkRoot.resolveModule root n with
+  | none =>
+    printMiss s!"{n} missing source"
+    return 1
+  | some srcPath =>
+    if !(<- srcPath.pathExists) then
+      printMiss s!"{n} missing source"
+      return 1
+    let read <-
+      try
+        let text <- IO.FS.readFile srcPath
+        pure (some text)
+      catch e =>
+        printMiss s!"{n} unreadable source {e.toString}"
+        pure none
+    match read with
+    | none => return 1
+    | some text =>
+      match SystemsLean.SlakeCheckSource.rejectLayer text with
+      | none =>
+        IO.println s!"slake-check checker returned true for {n}"
+        IO.println "slakeOwnsPackageTypecheck false"
+        flushOut
+        return 0
+      | some layer =>
+        IO.eprintln s!"slake-check checker returned false for {n}"
+        IO.eprintln layer
+        IO.eprintln "that is not package ownership"
+        IO.eprintln "slakeOwnsPackageTypecheck false"
+        flushOut
+        return 1
+
 /-- Slake's checker path. Not the Lean elaborator.
     A module name checks that one on-disk file through checkSource.
     No name checks the fixture.
@@ -467,7 +515,11 @@ def runSlakeCheckOnDiskIO (n : String) : IO UInt32 := do
 def runSlakeCheckIO (args : List String) : IO UInt32 := do
   match slakeCheckModuleName args with
   | some n =>
-    return (<- runSlakeCheckOnDiskIO n)
+    match SystemsLean.WalkRoot.walkRootFromArgs args with
+    | some root =>
+      return (<- runSlakeCheckAtRoot n root)
+    | none =>
+      return (<- runSlakeCheckOnDiskIO n)
   | none =>
     IO.println "slake-check: Slake checker (HostKernel.slakeChecker)"
     IO.println "accepts a HostTerm.Module when slakeCheckerAccepts"

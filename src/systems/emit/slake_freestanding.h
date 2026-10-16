@@ -189,6 +189,20 @@ int slake_consume_token_is_live(const slake_consume_token *ct);
  */
 int slake_consume_token_check_fail_closed(const slake_consume_token *ct);
 
+/* Owned linear cell: one heap object. Consume frees it once.
+ * Allocate is malloc. Free is free. No garbage collector.
+ * No reference count. No Lean runtime. A second free of the
+ * same owner slot fails closed (the slot is null).
+ */
+typedef struct slake_linear_cell {
+  uint32_t payload;
+} slake_linear_cell;
+
+/* 0 ok and *out holds the cell. -1 if out is null or malloc fails. */
+int slake_linear_cell_alloc(slake_linear_cell **out, uint32_t payload);
+/* 0 frees once and sets *cell to null. -1 if cell or *cell is null. */
+int slake_linear_cell_free(slake_linear_cell **cell);
+
 /* ---- Erasure (Erasure.slake / ERASE-RULE-MULT-0 / ERASE-NO-RUNTIME) ----
  * Zero-payload marker for MULT-0; EDGE-PROP / ERASE-PROP imperfect on sides.
  * HOST-EMIT-ERASURE: dialect from SystemsLean.EmitErasure + host_emit_erasure.ssot.txt

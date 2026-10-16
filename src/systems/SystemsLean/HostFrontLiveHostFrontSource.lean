@@ -44,7 +44,8 @@ def liveHostFrontSource0 : String := r#"/-
   Pat: _ | Nat | Name (ctor0)
 
   Without-Lake (A9): host-front-without-lake + develop clean-bootstrap (pins in
-  HostResidualShrink). Out of scope: Mult package write; full Lean; host free; PROVABLY / llvm; product tip flips.
+  HostResidualShrink). Out of scope: Mult package write; full Lean; host free;
+  PROVABLY / llvm; product tip flips.
 
   Theorems (HOST-FRONT-THEOREM / HOST-FRONT-SMOKE): live in
   SystemsLean.HostFrontTheorems (same namespace; long-file peel). Ready /
@@ -67,10 +68,13 @@ def liveHostFrontSource0 : String := r#"/-
   HOST_COMPOSE_V0, HOST-COMPOSE, COMPOSE-FIXTURE,
   isWellFormed, UNIT_SURFACE host surface, MULT-0, MULT-1, MULT-OMEGA.
   Module: SystemsLean.HostFront
+  The one-line dialect line parser lives in SystemsLean.HostFrontLine.
+  foldLines, parseSource, pins, and the driver stay here.
+  parseSource still calls EdmontonChain only when that dialect rejects.
+  The mutual-form reader stays last in that chain.
   Long-file peel: HOST-FRONT-THEOREM + HOST-FRONT-SMOKE in
   SystemsLean.HostFrontTheorems (same namespace). Dual-pinned golden texts +
-  file names in SystemsLean.HostFrontGoldens (same namespace). Core parse +
-  structural pins + readiness + driver stay here.
+  file names in SystemsLean.HostFrontGoldens (same namespace).
   Short role name (not ProductPath* kitchen-sink).
   Dual evidence: Lean structural pins on dual-pinned golden String constants
   (match on-disk goldens) + lake exe / just host-front over files.
@@ -83,6 +87,8 @@ def liveHostFrontSource0 : String := r#"/-
 import SystemsLean.HostTerm
 import SystemsLean.Mult
 import SystemsLean.HostFrontGoldens
+import SystemsLean.HostFrontLine
+import SystemsLean.EdmontonChain
 
 namespace SystemsLean.HostFront
 
@@ -176,269 +182,91 @@ def FrontResult.acceptCmdCount : FrontResult -> Nat
   | FrontResult.accept m => m.commands.length
   | FrontResult.reject _ => 0
 
-/-! ### Line parse helpers (List-based; decide-friendly) -/
-
-/-- True when char is horizontal whitespace. -/
-def isWs (c : Char) : Bool := c == ' ' || c == '\t' || c == '\r'
-
-/-- Single-pass token collector. -/
-def lineTokensGo (cur : List Char) (acc : List String) :
-    List Char -> List String
-  | [] =>
-    let acc' :=
-      if cur.isEmpty then acc else String.ofList cur.reverse :: acc
-    acc'.reverse
-  | c :: rest =>
-    if isWs c then
-      if cur.isEmpty then
-        lineTokensGo [] acc rest
+/-- Fold source lines into a Module. Fail closed. -/
+def foldLines (lines : List String) : FrontResult :=
+  let rec go (modName : Option Name) (cmds : List Cmd) :
+      List String -> FrontResult
+    | [] =>
+      match modName with
+      | none =>
+        if cmds.isEmpty then FrontResult.reject reasonEmptyModule
+        else FrontResult.reject reasonMissingModule
+      | some name =>
+        let m : Module := { name := name, commands := cmds }
+        if cmds.isEmpty then
+          FrontResult.reject reasonEmptyModule
+        else if isWellFormed m then
+          FrontResult.accept m
+        else
+          FrontResult.reject reasonNotWellFormed
+    | line :: rest =>
+      if isIgnorableLine line then
+        go modName cmds rest
       else
-        lineTokensGo [] (String.ofList cur.reverse :: acc) rest
-    else
-      lineTokensGo (c :: cur) acc rest
+        match parseLineTokens (lineTokens line) with
+        | LineParse.err reason => FrontResult.reject reason
+        | LineParse.moduleName name =>
+          match modName with
+          | some _ => FrontResult.reject reasonLineShape
+          | none => go (some name) cmds rest
+        | LineParse.cmd c => go modName (cmds ++ [c]) rest
+  go none [] lines
 
-/-- Split line into non-empty whitespace-separated tokens. -/
-def lineTokens (line : String) : List String :=
-  lineTokensGo [] [] line.toList
+/-- Parse full source text (newline-separated). Greppable: parseSource.
+    The one-line dialect stays first. EdmontonChain runs only when that
+    dialect rejects. The mutual-form reader is last in that chain. -/
+def parseSource (src : String) : FrontResult :=
+  let folded : FrontResult := foldLines (src.splitOn "\n")
+  match folded with
+  | FrontResult.accept m => FrontResult.accept m
+  | FrontResult.reject _ =>
+    match SystemsLean.EdmontonChain.parseEdmonton src with
+    | some m => FrontResult.accept m
+    | none => folded
 
-/-- True when line is blank or a # comment (after leading spaces). -/
-def isIgnorableLine (line : String) : Bool :=
-  let toks := lineTokens line
-  match toks with
-  | [] => true
-  | t :: _ =>
-    match t.toList with
-    | '#' :: _ => true
+/-- Accept path: isWellFormed true on accepted module. -/
+def acceptOk (r : FrontResult) : Bool :=
+  match r with
+  | FrontResult.accept m => isWellFormed m
+  | FrontResult.reject _ => false
+
+/-! ### Golden structural pins (embedded dual-pinned strings) -/
+
+/-- True when module has a def_ with the given name.
+    Greppable helper for golden structural pins. -/
+def hasDefNamed (m : Module) (name : String) : Bool :=
+  m.commands.any fun c =>
+    match c with
+    | Cmd.def_ n _ _ => n.raw == name
     | _ => false
 
-/-- Digit char. -/
-def isDigit (c : Char) : Bool := '0' <= c && c <= '9'
-
-/-- True when token is a non-empty decimal Nat literal. -/
-def isNatLit (s : String) : Bool :=
-  let cs := s.toList
-  !cs.isEmpty && cs.all isDigit
-
-/-- Parse Nat from digit string (fail closed). -/
-def ofNatLit? (s : String) : Option Nat :=
-  if !isNatLit s then none
-  else
-    let rec go (acc : Nat) : List Char -> Nat
-      | [] => acc
-      | c :: rest => go (acc * 10 + (c.toNat - '0'.toNat)) rest
-    some (go 0 s.toList)
-
-/-- True when token is a double-quoted string literal. -/
-def isStringLit (s : String) : Bool :=
-  let cs := s.toList
-  match cs with
-  | '"' :: rest =>
-    match rest.reverse with
-    | '"' :: _ => true
+/-- True when module has def_ name with litString body val.
+    Greppable helper for golden structural pins. -/
+def hasLitStringDef (m : Module) (name val : String) : Bool :=
+  m.commands.any fun c =>
+    match c with
+    | Cmd.def_ n _ body =>
+      n.raw == name
+        && (match body with
+            | Term.litString s => s == val
+            | _ => false)
     | _ => false
-  | _ => false
 
-/-- Strip surrounding quotes from a string literal token. -/
-def stripStringLit (s : String) : String :=
-  let cs := s.toList
-  match cs with
-  | '"' :: rest =>
-    match rest.reverse with
-    | '"' :: mid => String.ofList mid.reverse
-    | _ => s
-  | _ => s
+/-- G1 parse accept + well-formed + Mult inductive present.
+    Greppable: hostFrontGoodG1. -/
+def hostFrontGoodG1 : Bool :=
+  let r := parseSource goodG1Text
+  acceptOk r
+    && r.acceptCmdCount >= 8
+    && (match r with
+        | FrontResult.accept m =>
+          m.commands.any fun c =>
+            match c with
+            | Cmd.inductive_ name ctors _ =>
+              name.raw == "Mult" && ctors.length == 3
+            | _ => false
+        | _ => false)
 
-/-- Reserved syntax keywords (not bare identifiers).
-    Type names Mult/Nat/String/Bool/Option are NOT keywords so `inductive Mult`
-    works; parseHostType still prefers Mult/Nat/... base types first. -/
-def isKeyword (s : String) : Bool :=
-  s == "module" || s == "import" || s == "namespace" || s == "end"
-    || s == "open" || s == "inductive" || s == "deriving" || s == "def"
-    || s == "check" || s == "match" || s == "some" || s == "none"
-    || s == "true" || s == "false" || s == "var" || s == "const"
-    || s == "app" || s == ":=" || s == ":" || s == "->" || s == "|"
-    || s == "=>" || s == "(" || s == ")" || s == "_"
-
-/-- Bare identifier: non-empty, not keyword, not nat, not string lit. -/
-def isIdent (s : String) : Bool :=
-  !s.isEmpty && !isKeyword s && !isNatLit s && !isStringLit s
-
-/-- Fuel for recursive type/term parse. -/
-def parseFuel : Nat := 64
-
-/-! ### HostType parse -/
-
-/-- Parse one HostType; returns (type, remaining tokens). -/
-def parseHostTypeN : Nat -> List String -> Option (Prod HostType (List String))
-  | 0, _ => none
-  | Nat.succ n, toks =>
-    match toks with
-    | [] => none
-    | "Mult" :: rest => some (HostType.mult, rest)
-    | "Nat" :: rest => some (HostType.nat, rest)
-    | "String" :: rest => some (HostType.string, rest)
-    | "Bool" :: rest => some (HostType.bool, rest)
-    | "Option" :: rest =>
-      match parseHostTypeN n rest with
-      | some (t, rest2) => some (HostType.option t, rest2)
-      | none => none
-    | t :: rest =>
-      if isIdent t then
-        some (HostType.named (HostTerm.n t), rest)
-      else
-        none
-
-/-- Parse HostType with optional trailing arrow chain (right-assoc).
-    Mult -> String, Nat -> Option Mult. -/
-def parseHostTypeArrowN : Nat -> List String -> Option (Prod HostType (List String))
-  | 0, _ => none
-  | Nat.succ n, toks =>
-    match parseHostTypeN n toks with
-    | none => none
-    | some (left, rest) =>
-      match rest with
-      | "->" :: rest2 =>
-        match parseHostTypeArrowN n rest2 with
-        | some (right, rest3) => some (HostType.arrow left right, rest3)
-        | none => none
-      | _ => some (left, rest)
-
-/-- Entry HostType parse. -/
-def parseHostType (toks : List String) : Option (Prod HostType (List String)) :=
-  parseHostTypeArrowN parseFuel toks
-
-/-! ### Pat / Term parse -/
-
-/-- Parse one pattern. -/
-def parsePat : List String -> Option (Prod Pat (List String))
-  | [] => none
-  | "_" :: rest => some (Pat.wild, rest)
-  | t :: rest =>
-    if isNatLit t then
-      match ofNatLit? t with
-      | some k => some (Pat.litNat k, rest)
-      | none => none
-    else if isIdent t then
-      some (Pat.ctor0 (HostTerm.n t), rest)
-    else
-      none
-
-/-- Atom term: no match (used for match arm bodies and nested apps).
-    Mult-first v0 arm bodies are atoms only (no nested match). -/
-def parseAtomTermN : Nat -> List String -> Option (Prod Term (List String))
-  | 0, _ => none
-  | Nat.succ n, toks =>
-    match toks with
-    | [] => none
-    | "none" :: rest => some (Term.none_, rest)
-    | "true" :: rest => some (Term.litBool true, rest)
-    | "false" :: rest => some (Term.litBool false, rest)
-    | "some" :: rest =>
-      match parseAtomTermN n rest with
-      | some (t, rest2) => some (Term.some_ t, rest2)
-      | none => none
-    | "var" :: name :: rest =>
-      if isIdent name then some (Term.var (HostTerm.n name), rest) else none
-    | "const" :: name :: rest =>
-      if isIdent name then some (Term.const (HostTerm.n name), rest) else none
-    | "app" :: rest =>
-      match parseAtomTermN n rest with
-      | some (f, rest1) =>
-        match parseAtomTermN n rest1 with
-        | some (a, rest2) => some (Term.app f a, rest2)
-        | none => none
-      | none => none
-    | "(" :: rest =>
-      match parseAtomTermN n rest with
-      | some (t, ")" :: rest2) => some (t, rest2)
-      | _ => none
-    | t :: rest =>
-      if isNatLit t then
-        match ofNatLit? t with
-        | some k => some (Term.litNat k, rest)
-        | none => none
-      else if isStringLit t then
-        some (Term.litString (stripStringLit t), rest)
-      else if isIdent t then
-        some (Term.const (HostTerm.n t), rest)
-      else
-        none
-
-/-- Parse match arms: `| Pat => AtomTerm` repeated. -/
-def parseMatchArmsN :
-    Nat -> Nat -> List (Prod Pat Term) -> List String ->
-      Option (Prod (List (Prod Pat Term)) (List String))
-  | _, 0, _, _ => none
-  | termFuel, Nat.succ f, acc, ts =>
-    match ts with
-    | "|" :: restA =>
-      match parsePat restA with
-      | none => none
-      | some (p, "=>" :: restB) =>
-        match parseAtomTermN termFuel restB with
-        | none => none
-        | some (body, restC) =>
-          parseMatchArmsN termFuel f (acc ++ [(p, body)]) restC
-      | some _ => none
-    | _ => some (acc, ts)
-
-/-- Parse term with fuel (match uses atom bodies only; no mutual recursion). -/
-def parseTermN : Nat -> List String -> Option (Prod Term (List String))
-  | 0, _ => none
-  | Nat.succ n, toks =>
-    match toks with
-    | [] => none
-    | "match" :: rest =>
-      match parseAtomTermN n rest with
-      | none => none
-      | some (scrut, rest1) =>
-        match parseMatchArmsN n n [] rest1 with
-        | some (armList, rest2) =>
-          if armList.isEmpty then none
-          else some (Term.match_ scrut armList, rest2)
-        | none => none
-    | _ => parseAtomTermN (Nat.succ n) toks
-
-/-- Entry Term parse. -/
-def parseTerm (toks : List String) : Option (Prod Term (List String)) :=
-  parseTermN parseFuel toks
-
-/-- Require full consume. -/
-def parseTermAll (toks : List String) : Option Term :=
-  match parseTerm toks with
-  | some (t, []) => some t
-  | _ => none
-
-/-- Require full type consume. -/
-def parseHostTypeAll (toks : List String) : Option HostType :=
-  match parseHostType toks with
-  | some (ty, []) => some ty
-  | _ => none
-
-/-! ### Command parse -/
-
-/-- Split tokens at first ":=" into (before, after). -/
-def splitAtAssign : List String -> Option (Prod (List String) (List String))
-  | [] => none
-  | ":=" :: rest => some ([], rest)
-  | t :: rest =>
-    match splitAtAssign rest with
-    | some (pre, post) => some (t :: pre, post)
-    | none => none
-
-/-- Split tokens at first ":" into (before, after). Not ":=". -/
-def splitAtColon : List String -> Option (Prod (List String) (List String))
-  | [] => none
-  | ":" :: rest => some ([], rest)
-  | t :: rest =>
-    match splitAtColon rest with
-    | some (pre, post) => some (t :: pre, post)
-    | none => none
-
-/-- Parse inductive ctor list until deriving or end. -/
-def parseCtors : List String -> Option (Prod (List CtorDecl) (List String))
-  | [] => some ([], [])
-  | "deriving" :: rest => some ([], "deriving" :: rest)
 "#
 
 end SystemsLean.HostFrontLiveHostFront

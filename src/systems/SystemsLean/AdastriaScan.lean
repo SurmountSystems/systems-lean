@@ -91,23 +91,70 @@ def countHash : List Char -> Nat -> Prod Nat (List Char)
   | '#' :: cs, n => countHash cs (n + 1)
   | cs, n => (n, cs)
 
+/-- Only r, then zero or more #, then a quote. A bare #" is not raw. -/
 def startsRaw (cs : List Char) : Option (Prod Nat (List Char)) :=
   match cs with
-  | 'r' :: rest => hashes rest
-  | rest => hashes rest
-where
-  hashes
-    | '#' :: rest =>
-      let (n, rest2) := countHash rest 1
-      match rest2 with
-      | '"' :: rest3 => some (n, rest3)
-      | _ => none
+  | 'r' :: rest =>
+    let (n, rest2) := countHash rest 0
+    match rest2 with
+    | '"' :: rest3 => some (n, rest3)
     | _ => none
+  | _ => none
 
 def takeHash : Nat -> List Char -> Option (List Char)
   | 0, cs => some cs
   | Nat.succ k, '#' :: cs => takeHash k cs
   | _, _ => none
+
+def isHex (c : Char) : Bool :=
+  ('0' <= c && c <= '9') || ('a' <= c && c <= 'f')
+    || ('A' <= c && c <= 'F')
+
+def skipHex : Nat -> List Char -> Option (List Char)
+  | 0, cs => some cs
+  | Nat.succ k, c :: cs =>
+    if isHex c then skipHex k cs else none
+  | _, [] => none
+
+/-- One quotable char, or x plus two hex, or u plus four hex. -/
+def skipEscape : List Char -> Option (List Char)
+  | [] => none
+  | c :: rest =>
+    if c == '\\' || c == '"' || c == '\'' || c == 'r'
+        || c == 'n' || c == 't' then
+      some rest
+    else if c == 'x' then skipHex 2 rest
+    else if c == 'u' then skipHex 4 rest
+    else none
+
+def closeTick : List Char -> Option (List Char)
+  | '\'' :: rest => some rest
+  | _ => none
+
+/-- Suffix after a finished char lit, or none if it is not one. -/
+def skipCharLit : List Char -> Option (List Char)
+  | '\'' :: '\'' :: _ => none
+  | '\'' :: '\\' :: rest =>
+    match skipEscape rest with
+    | some rest2 => closeTick rest2
+    | none => none
+  | '\'' :: _ :: '\'' :: rest => some rest
+  | _ => none
+
+/-- Keep the newline so the caller still stops on it. -/
+def skipToNl : List Char -> List Char
+  | [] => []
+  | '\n' :: cs => '\n' :: cs
+  | _ :: cs => skipToNl cs
+
+/-- The opening / - is already gone, and depth starts at 1. -/
+def skipBlk (depth : Nat) : List Char -> Option (List Char)
+  | [] => none
+  | '/' :: '-' :: rest => skipBlk (depth + 1) rest
+  | '-' :: '/' :: rest =>
+    if depth <= 1 then some rest
+    else skipBlk (depth - 1) rest
+  | _ :: rest => skipBlk depth rest
 
 def skipHSpace : List Char -> List Char
   | ' ' :: cs => skipHSpace cs
@@ -131,28 +178,39 @@ def scanDefLine (fuel : Nat) (cs : List Char) (want sawF : Bool) :
   match fuel, cs with
   | 0, _ => LineStop.eof sawF
   | _, [] => LineStop.eof sawF
-  | _, '\n' :: rest => LineStop.nl rest sawF
+  | Nat.succ k, '-' :: '-' :: _ =>
+    scanDefLine k (skipToNl cs) want sawF
+  | Nat.succ k, '/' :: '-' :: rest =>
+    match skipBlk 1 rest with
+    | none => LineStop.eof sawF
+    | some rest2 => scanDefLine k rest2 want sawF
   | Nat.succ k, _ =>
-    match startsRaw cs with
-    | some _ => LineStop.rawAt cs sawF
+    match skipCharLit cs with
+    | some rest => scanDefLine k rest want sawF
     | none =>
       match cs with
-      | '"' :: rest =>
-        match skipPlain rest with
-        | none => LineStop.eof sawF
-        | some rest2 => scanDefLine k rest2 want sawF
-      | ':' :: '=' :: rest =>
-        scanDefLine k rest true sawF
-      | ' ' :: rest => scanDefLine k rest want sawF
-      | '\t' :: rest => scanDefLine k rest want sawF
-      | c :: rest =>
-        if isLetter c || c == '_' then
-          let (id, rest2) := readIdent cs []
-          let sawF2 := sawF || (want && id == "false")
-          scanDefLine k rest2 false sawF2
-        else
-          scanDefLine k rest false sawF
-      | [] => LineStop.eof sawF
+      | '\n' :: rest => LineStop.nl rest sawF
+      | _ =>
+        match startsRaw cs with
+        | some _ => LineStop.rawAt cs sawF
+        | none =>
+          match cs with
+          | '"' :: rest =>
+            match skipPlain rest with
+            | none => LineStop.eof sawF
+            | some rest2 => scanDefLine k rest2 want sawF
+          | ':' :: '=' :: rest =>
+            scanDefLine k rest true sawF
+          | ' ' :: rest => scanDefLine k rest want sawF
+          | '\t' :: rest => scanDefLine k rest want sawF
+          | c :: rest =>
+            if isLetter c || c == '_' then
+              let (id, rest2) := readIdent cs []
+              let sawF2 := sawF || (want && id == "false")
+              scanDefLine k rest2 false sawF2
+            else
+              scanDefLine k rest false sawF
+          | [] => LineStop.eof sawF
 termination_by fuel
 
 inductive Mode where
@@ -344,33 +402,37 @@ def go (fuel : Nat) (cs : List Char) (s : Scan) : Option Fact :=
             depth := 1
             hot := false }
         | _ =>
-          match startsRaw cs with
-          | some (n, rest) =>
-            go k rest { s with
-              mode := Mode.raw
-              rawNeed := n
-              hot := false
-              keep := false }
+          match skipCharLit cs with
+          | some rest =>
+            go k rest { s with hot := false, keep := false }
           | none =>
-            match cs with
-            | '"' :: rest =>
-              go k rest { s with mode := Mode.str, hot := false }
-            | '@' :: rest =>
-              if s.hot then
-                go k rest { s with mode := Mode.attr, hot := false }
-              else
-                go k rest { s with hot := false }
-            | '#' :: rest =>
-              go k rest { s with hot := false, keep := false }
-            | c :: rest =>
-              if s.hot && (isLetter c || c == '_') then
-                let (rest2, s2) := onIdent cs s
-                go k rest2 s2
-              else if c == ' ' || c == '\t' || c == '\r' then
-                go k rest s
-              else
+            match startsRaw cs with
+            | some (n, rest) =>
+              go k rest { s with
+                mode := Mode.raw
+                rawNeed := n
+                hot := false
+                keep := false }
+            | none =>
+              match cs with
+              | '"' :: rest =>
+                go k rest { s with mode := Mode.str, hot := false }
+              | '@' :: rest =>
+                if s.hot then
+                  go k rest { s with mode := Mode.attr, hot := false }
+                else
+                  go k rest { s with hot := false }
+              | '#' :: rest =>
                 go k rest { s with hot := false, keep := false }
-            | [] => some s.fact
+              | c :: rest =>
+                if s.hot && (isLetter c || c == '_') then
+                  let (rest2, s2) := onIdent cs s
+                  go k rest2 s2
+                else if c == ' ' || c == '\t' || c == '\r' then
+                  go k rest s
+                else
+                  go k rest { s with hot := false, keep := false }
+              | [] => some s.fact
 termination_by fuel
 
 def scan (src : String) : Option Fact :=

@@ -167,6 +167,24 @@ def linearFixtureCompilePathReady : Bool :=
 def linearFixtureDoesNotMeanResidualFree : Bool :=
   linearFixtureCompilePathReady && !linearFixtureResidualFreeClaimed
 
+/-- Live and spent views of the Linear fixture (not a new resource).
+    Live is the minted host of linearFixtureLinearNode (Mult.mult1).
+    Spent is that host after ConsumeToken consume. Non-recursive. -/
+mutual
+  /-- Live view: minted MULT-1 host (linearFixtureLinearNode, ConsumeToken). -/
+  def linearFixtureLiveView : Option Host :=
+    lowerLinearFixtureCompose
+
+  /-- Spent view: ConsumeToken consume of linearFixtureLiveView. -/
+  def linearFixtureSpentView : Option Host :=
+    match linearFixtureLiveView with
+    | none => none
+    | some hcLive =>
+        match HostCompose.consume hcLive with
+        | HostCompose.ConsumeResult.ok hcSpent _ => some hcSpent
+        | HostCompose.ConsumeResult.notLive => none
+end
+
 /-! ### COMPILE-PATH-LINEAR-THEOREM (readable Linear e2e statements, then proofs)
 
   Real Lean theorems for Linear fixture compile path only. Does not flip

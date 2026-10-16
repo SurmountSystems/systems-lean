@@ -250,11 +250,12 @@ structure Scan where
   bools : List (Prod String Bool)
   strs : List (Prod String String)
   hasAppend : Bool
+  hasDrop : Bool
 
 def zero : Scan :=
   { imports := [], namespaces := [], ends := [], theoremN := 0,
     exampleN := 0, mainN := 0, structN := 0, rawN := 0, bools := [],
-    strs := [], hasAppend := false }
+    strs := [], hasAppend := false, hasDrop := false }
 
 def unAttr (t : String) : String :=
   if t.startsWith "@[" then
@@ -274,7 +275,8 @@ def isStart (t : String) : Bool :=
     || t.startsWith "import " || t.startsWith "namespace "
     || t.startsWith "end " || t == "end" || t.startsWith "axiom "
     || t.startsWith "inductive " || t.startsWith "set_option "
-    || t.startsWith "mutual " || t.startsWith "abbrev "
+    || t == "mutual" || t.startsWith "mutual "
+    || t.startsWith "abbrev "
     || t.startsWith "instance " || t.startsWith "class "
     || t.startsWith "private " || t.startsWith "noncomputable "
     || t.startsWith "protected " || t.startsWith "partial "
@@ -292,6 +294,32 @@ def addLine (chunks : List (List String)) (raw : String) :
     | [] => chunks
     | h :: rest => (h ++ [t]) :: rest
 
+def mutualLine (t : String) : Bool :=
+  t == "mutual" || t.startsWith "mutual "
+
+def chunkHasMutual (body : String) (lines : List String) : Bool :=
+  mutualLine body || lines.any (fun t => mutualLine (trim t))
+
+def tacticWord (s : String) : Bool :=
+  s == "by" || s == "decide" || s == "native_decide"
+
+/-- Whole ident tokens only. Underscore keeps native_decide one word. -/
+def hasTacticWord (s : String) : Bool :=
+  go s.toList []
+where
+  go : List Char -> List Char -> Bool
+    | [], [] => false
+    | [], cur => tacticWord (String.mk cur.reverse)
+    | c :: rest, cur =>
+      if identChar c then go rest (c :: cur)
+      else if tacticWord (String.mk cur.reverse) then true
+      else go rest []
+
+def tacticRhs (flat : String) : Bool :=
+  match assignRhs flat with
+  | none => false
+  | some rhs => hasTacticWord rhs
+
 def classify (b : Scan) (lines : List String) : Scan :=
   let flat := joinSp lines
   let b :=
@@ -299,6 +327,8 @@ def classify (b : Scan) (lines : List String) : Scan :=
   let b :=
     if hasPart flat "RAW" then { b with rawN := b.rawN + 1 } else b
   let body := dropMods 6 flat
+  let b :=
+    if chunkHasMutual body lines then { b with hasDrop := true } else b
   if body.startsWith "import " then
     let m := trim (dropN body 7)
     if m == "" || m == "RAW" then b
@@ -312,27 +342,29 @@ def classify (b : Scan) (lines : List String) : Scan :=
     let m := trim (dropN body 4)
     if m == "" then b else { b with ends := b.ends ++ [m] }
   else if body.startsWith "theorem " then
-    { b with theoremN := b.theoremN + 1 }
+    let b := { b with theoremN := b.theoremN + 1 }
+    if tacticRhs flat then { b with hasDrop := true } else b
   else if body.startsWith "example" then
-    { b with exampleN := b.exampleN + 1 }
+    let b := { b with exampleN := b.exampleN + 1 }
+    if tacticRhs flat then { b with hasDrop := true } else b
   else if body.startsWith "structure " then
     { b with structN := b.structN + 1 }
   else if body.startsWith "def " then
     let rest := trim (dropN body 4)
     let name := takeIdent rest
-    if name == "main" then { b with mainN := b.mainN + 1 }
-    else if name == "" then b
+    if name == "main" then { b with mainN := b.mainN + 1, hasDrop := true }
+    else if name == "" then { b with hasDrop := true }
     else
       match retKind flat with
       | some RetKind.bool =>
         match chunkBool lines false with
         | some v => { b with bools := b.bools ++ [(name, v)] }
-        | none => b
+        | none => { b with hasDrop := true }
       | some RetKind.str =>
         match chunkStr lines false with
         | some lit => { b with strs := b.strs ++ [(name, lit)] }
-        | none => b
-      | none => b
+        | none => { b with hasDrop := true }
+      | none => { b with hasDrop := true }
   else b
 
 def gather : List String -> List (List String) -> List (List String)

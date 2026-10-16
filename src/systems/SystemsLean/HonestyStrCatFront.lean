@@ -11,6 +11,7 @@
   A false Bool stays false. Bool true is not a stand-in.
   A lone Bool true def is none. The false Bool is emitted as false.
   A namespace file with no import is none.
+  A miss of this shape tries the tactic form.
   This is not a general Lean parser.
   Does not call Lean.Elab.processCommands.
   slakeOwnsPackageTypecheck stays false.
@@ -20,9 +21,7 @@
 import SystemsLean.HostTerm
 import SystemsLean.HonestyFront
 import SystemsLean.HonestyNatClaimFront
-import SystemsLean.DiaphenesRawCarrier
-import SystemsLean.DiaphenesLivePins
-import SystemsLean.DiaphenesDriverPins
+import SystemsLean.DiaphenesTacticForm
 
 namespace SystemsLean.HonestyStrCatFront
 
@@ -147,12 +146,20 @@ def parseHonestyStrCatText (src : String) :
   match ownParse src with
   | some m => some m
   | none =>
-    match SystemsLean.DiaphenesRawCarrier.parseRaw src with
-    | some m => some m
-    | none =>
-      match SystemsLean.DiaphenesLivePins.parseLive src with
-      | some m => some m
-      | none =>
-        SystemsLean.DiaphenesDriverPins.parseDriver src
+    SystemsLean.DiaphenesTacticForm.parseTacticForm src
+
+def tacticFallbackSome : Bool :=
+  match parseHonestyStrCatText (
+      "import SystemsLean.HostTerm\n"
+        ++ "namespace SystemsLean.Toy\n"
+        ++ "theorem t : true = true := by decide\n"
+        ++ "end SystemsLean.Toy\n") with
+  | some m => m.name.raw == "SystemsLean.Toy"
+  | none => false
+
+def namespaceMisses : Bool :=
+  match parseHonestyStrCatText "namespace SystemsLean.Toy\n" with
+  | none => true
+  | some _ => false
 
 end SystemsLean.HonestyStrCatFront

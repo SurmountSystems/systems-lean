@@ -43,6 +43,7 @@ import SystemsLean.CallistoBenchMain
 import SystemsLean.CallistoSelfHost
 import SystemsLean.CallistoElfThm
 import SystemsLean.CallistoImportOnly
+import SystemsLean.CallistoThmForm
 import SystemsLean.CallistoThmOne
 
 namespace SystemsLean.HonestyParityEqFront
@@ -499,6 +500,7 @@ def callistoParsers : List (String -> Option Module) :=
   , SystemsLean.CallistoSelfHost.parseSelfHost
   , SystemsLean.CallistoElfThm.parseElfThm
   , SystemsLean.CallistoImportOnly.parseImportOnly
+  , SystemsLean.CallistoThmForm.parseThmForm
   , SystemsLean.CallistoThmOne.parseThmOne
   ]
 

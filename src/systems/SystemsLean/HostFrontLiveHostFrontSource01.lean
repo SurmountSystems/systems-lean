@@ -14,184 +14,7 @@ namespace SystemsLean.HostFrontLiveHostFront
 /-- Dual-pinned live HostFront.lean bytes, second half.
     Concatenate liveHostFrontSource0 then liveHostFrontSource1 before parse.
     Greppable: liveHostFrontSource1, PARSE-LIVE-HOST-FRONT. -/
-def liveHostFrontSource1 : String := r#"  | t :: rest =>
-    if isIdent t then
-      match parseCtors rest with
-      | some (cs, rest2) => some ({ name := HostTerm.n t } :: cs, rest2)
-      | none => none
-    else
-      none
-
-/-- Parse deriving class list (all remaining idents). -/
-def parseDeriving : List String -> Option (List Name)
-  | [] => some []
-  | t :: rest =>
-    if isIdent t then
-      match parseDeriving rest with
-      | some ns => some (HostTerm.n t :: ns)
-      | none => none
-    else
-      none
-
-/-- Parse one non-ignorable line into a command or module-name event. -/
-inductive LineParse where
-  | moduleName (name : Name)
-  | cmd (c : Cmd)
-  | err (reason : String)
-  deriving Repr
-
-/-- Parse command line tokens. -/
-def parseLineTokens (toks : List String) : LineParse :=
-  match toks with
-  | [] => LineParse.err reasonLineShape
-  | "module" :: name :: [] =>
-    if isIdent name then LineParse.moduleName (HostTerm.n name)
-    else LineParse.err reasonLineShape
-  | "module" :: _ => LineParse.err reasonLineShape
-  | "import" :: name :: [] =>
-    if isIdent name then LineParse.cmd (Cmd.importModule (HostTerm.n name))
-    else LineParse.err reasonLineShape
-  | "import" :: _ => LineParse.err reasonLineShape
-  | "namespace" :: name :: [] =>
-    if isIdent name then LineParse.cmd (Cmd.namespace (HostTerm.n name))
-    else LineParse.err reasonLineShape
-  | "namespace" :: _ => LineParse.err reasonLineShape
-  | "end" :: name :: [] =>
-    if isIdent name then LineParse.cmd (Cmd.endNamespace (HostTerm.n name))
-    else LineParse.err reasonLineShape
-  | "end" :: _ => LineParse.err reasonLineShape
-  | "open" :: rest =>
-    if rest.isEmpty then LineParse.err reasonLineShape
-    else if rest.all isIdent then
-      LineParse.cmd (Cmd.openNs (rest.map HostTerm.n))
-    else
-      LineParse.err reasonLineShape
-  | "inductive" :: name :: rest =>
-    if !isIdent name then LineParse.err reasonLineShape
-    else
-      match parseCtors rest with
-      | none => LineParse.err reasonParseFail
-      | some (ctors, rest2) =>
-        if ctors.isEmpty then LineParse.err reasonZeroCtor
-        else
-          match rest2 with
-          | [] =>
-            LineParse.cmd (Cmd.inductive_ (HostTerm.n name) ctors [])
-          | "deriving" :: derRest =>
-            match parseDeriving derRest with
-            | some der =>
-              LineParse.cmd (Cmd.inductive_ (HostTerm.n name) ctors der)
-            | none => LineParse.err reasonParseFail
-          | _ => LineParse.err reasonLineShape
-  | "def" :: name :: rest =>
-    if !isIdent name then LineParse.err reasonLineShape
-    else
-      match splitAtAssign rest with
-      | none => LineParse.err reasonLineShape
-      | some (pre, bodyToks) =>
-        let tyOpt : Option (Option HostType) :=
-          match pre with
-          | [] => some none
-          | ":" :: tyToks =>
-            match parseHostTypeAll tyToks with
-            | some ty => some (some ty)
-            | none => none
-          | _ => none
-        match tyOpt with
-        | none => LineParse.err reasonParseFail
-        | some ty =>
-          match parseTermAll bodyToks with
-          | some body => LineParse.cmd (Cmd.def_ (HostTerm.n name) ty body)
-          | none => LineParse.err reasonParseFail
-  | "check" :: rest =>
-    match splitAtColon rest with
-    | none => LineParse.err reasonLineShape
-    | some (tmToks, tyToks) =>
-      match parseTermAll tmToks, parseHostTypeAll tyToks with
-      | some tm, some ty => LineParse.cmd (Cmd.check tm ty)
-      | _, _ => LineParse.err reasonParseFail
-  | head :: _ =>
-    if isKeyword head then LineParse.err reasonLineShape
-    else LineParse.err reasonUnknownCmd
-
-/-- Fold source lines into a Module. Fail closed. -/
-def foldLines (lines : List String) : FrontResult :=
-  let rec go (modName : Option Name) (cmds : List Cmd) :
-      List String -> FrontResult
-    | [] =>
-      match modName with
-      | none =>
-        if cmds.isEmpty then FrontResult.reject reasonEmptyModule
-        else FrontResult.reject reasonMissingModule
-      | some name =>
-        let m : Module := { name := name, commands := cmds }
-        if cmds.isEmpty then
-          FrontResult.reject reasonEmptyModule
-        else if isWellFormed m then
-          FrontResult.accept m
-        else
-          FrontResult.reject reasonNotWellFormed
-    | line :: rest =>
-      if isIgnorableLine line then
-        go modName cmds rest
-      else
-        match parseLineTokens (lineTokens line) with
-        | LineParse.err reason => FrontResult.reject reason
-        | LineParse.moduleName name =>
-          match modName with
-          | some _ => FrontResult.reject reasonLineShape
-          | none => go (some name) cmds rest
-        | LineParse.cmd c => go modName (cmds ++ [c]) rest
-  go none [] lines
-
-/-- Parse full source text (newline-separated). Greppable: parseSource. -/
-def parseSource (src : String) : FrontResult :=
-  foldLines (src.splitOn "\n")
-
-/-- Accept path: isWellFormed true on accepted module. -/
-def acceptOk (r : FrontResult) : Bool :=
-  match r with
-  | FrontResult.accept m => isWellFormed m
-  | FrontResult.reject _ => false
-
-/-! ### Golden structural pins (embedded dual-pinned strings) -/
-
-/-- True when module has a def_ with the given name.
-    Greppable helper for golden structural pins. -/
-def hasDefNamed (m : Module) (name : String) : Bool :=
-  m.commands.any fun c =>
-    match c with
-    | Cmd.def_ n _ _ => n.raw == name
-    | _ => false
-
-/-- True when module has def_ name with litString body val.
-    Greppable helper for golden structural pins. -/
-def hasLitStringDef (m : Module) (name val : String) : Bool :=
-  m.commands.any fun c =>
-    match c with
-    | Cmd.def_ n _ body =>
-      n.raw == name
-        && (match body with
-            | Term.litString s => s == val
-            | _ => false)
-    | _ => false
-
-/-- G1 parse accept + well-formed + Mult inductive present.
-    Greppable: hostFrontGoodG1. -/
-def hostFrontGoodG1 : Bool :=
-  let r := parseSource goodG1Text
-  acceptOk r
-    && r.acceptCmdCount >= 8
-    && (match r with
-        | FrontResult.accept m =>
-          m.commands.any fun c =>
-            match c with
-            | Cmd.inductive_ name ctors _ =>
-              name.raw == "Mult" && ctors.length == 3
-            | _ => false
-        | _ => false)
-
-/-- G2 parse accept + well-formed.
+def liveHostFrontSource1 : String := r#"/-- G2 parse accept + well-formed.
     Greppable: hostFrontGoodG2. -/
 def hostFrontGoodG2 : Bool :=
   let r := parseSource goodG2Text
@@ -357,7 +180,7 @@ def hostFrontDoesNotMeanResidualFree : Bool :=
 
 /-! ### HOST-FRONT-THEOREM + HOST-FRONT-SMOKE peeled to HostFrontTheorems
     (same namespace). Cites: hostFrontReady_true, HostFrontTheorems.
-    Core parse + goldens + readiness + driver stay here. -/
+    foldLines, parseSource, goldens, readiness, and the driver stay here. -/
 
 /-! ### Driver (short banners only; AGENTS driver stdout policy) -/
 
@@ -406,7 +229,9 @@ def checkGoldenFile (path : System.FilePath) (expectedText : String)
 def runGoldenSuite (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: Mult-first host fragment front-end =="
   IO.println s!"  surface={surfaceId} host={hostId} goldens={goldensRel}"
-  IO.println s!"  structuralReady={hostFrontReady} hostResidual={hostFrontHostElaboratorResidualRemains}"
+  IO.println
+    (s!"  structuralReady={hostFrontReady} "
+      ++ s!"hostResidual={hostFrontHostElaboratorResidualRemains}")
   let gdir := root / goldensRel
   requireFile gdir "goldens directory"
   checkGoldenFile (gdir / goodG1File) goodG1Text true none "G1"
@@ -423,7 +248,9 @@ def runGoldenSuite (root : System.FilePath) : IO Unit := do
   unless hostFrontReady do
     IO.eprintln s!"error: {stageId} hostFrontReady false"
     throw (IO.userError "hostFrontReady false")
-  IO.println s!"GREEN {stageId}: goldens G1/G2/G3/G4/G5/G6/G7 accept B1-B4 reject; dual-pin ok; host residual remains"
+  IO.println
+    (s!"GREEN {stageId}: goldens G1/G2/G3/G4/G5/G6/G7 accept "
+      ++ s!"B1-B4 reject; dual-pin ok; host residual remains")
 
 /-- CLI: run golden suite. Fail-closed. -/
 def main (args : List String) : IO UInt32 := do

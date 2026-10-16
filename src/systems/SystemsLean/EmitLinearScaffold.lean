@@ -152,14 +152,32 @@ def consumeTokenApiDecls : String :=
     ++ " */\n"
     ++ "int slake_consume_token_check_fail_closed(const slake_consume_token *ct);\n"
 
+/-- Owned linear cell decls. One heap object. malloc then free once. -/
+def linearCellApiDecls : String :=
+  "/* Owned linear cell: one heap object. Consume frees it once.\n"
+    ++ " * Allocate is malloc. Free is free. No garbage collector.\n"
+    ++ " * No reference count. No Lean runtime. A second free of the\n"
+    ++ " * same owner slot fails closed (the slot is null).\n"
+    ++ " */\n"
+    ++ "typedef struct slake_linear_cell {\n"
+    ++ "  uint32_t payload;\n"
+    ++ "} slake_linear_cell;\n"
+    ++ "\n"
+    ++ "/* 0 ok and *out holds the cell. -1 if out is null or malloc fails. */\n"
+    ++ "int slake_linear_cell_alloc(slake_linear_cell **out, uint32_t payload);\n"
+    ++ "/* 0 frees once and sets *cell to null. -1 if cell or *cell is null. */\n"
+    ++ "int slake_linear_cell_free(slake_linear_cell **cell);\n"
+
 /-- linearHeaderFragment -- freestanding Linear header text (HOST-EMIT-LINEAR SSoT).
-    slake_linear_token + consume_token decls. Compatible with frozen product wire. -/
+    slake_linear_token + consume_token decls + one owned cell. -/
 def linearHeaderFragment : String :=
   linearHeaderOpen
     ++ linearTokenApiDecls
     ++ "\n"
     ++ consumeTokenHeaderOpen
     ++ consumeTokenApiDecls
+    ++ "\n"
+    ++ linearCellApiDecls
 
 /-- host_id body (CONSUME_TOKEN_HOST_V0 greppable string). -/
 def consumeTokenHostIdBody : String :=
@@ -296,6 +314,38 @@ def consumeTokenBodies : String :=
     ++ "  return slake_check_fail_closed(&b);\n"
     ++ "}\n"
 
+/-- Owned linear cell bodies. malloc then free. No garbage collector. -/
+def linearCellBodies : String :=
+  "/* Platform allocate and free. No stdlib include. No garbage collector. */\n"
+    ++ "extern void *malloc(unsigned long);\n"
+    ++ "extern void free(void *);\n"
+    ++ "\n"
+    ++ "int slake_linear_cell_alloc(slake_linear_cell **out, uint32_t payload)\n"
+    ++ "{\n"
+    ++ "  slake_linear_cell *p;\n"
+    ++ "\n"
+    ++ "  if (out == 0) {\n"
+    ++ "    return -1;\n"
+    ++ "  }\n"
+    ++ "  p = (slake_linear_cell *)malloc((unsigned long)sizeof(slake_linear_cell));\n"
+    ++ "  if (p == 0) {\n"
+    ++ "    return -1;\n"
+    ++ "  }\n"
+    ++ "  p->payload = payload;\n"
+    ++ "  *out = p;\n"
+    ++ "  return 0;\n"
+    ++ "}\n"
+    ++ "\n"
+    ++ "int slake_linear_cell_free(slake_linear_cell **cell)\n"
+    ++ "{\n"
+    ++ "  if (cell == 0 || *cell == 0) {\n"
+    ++ "    return -1;\n"
+    ++ "  }\n"
+    ++ "  free(*cell);\n"
+    ++ "  *cell = 0;\n"
+    ++ "  return 0;\n"
+    ++ "}\n"
+
 /-- Body section open for Linear + ConsumeToken. -/
 def linearBodyOpen : String :=
   "/* ---- Linear (LINEAR-EXACT-ONCE; JOIN-ALG ConsumeToken dual anchor on sides) ----\n"
@@ -311,7 +361,7 @@ def consumeTokenBodyOpen : String :=
     ++ " */\n"
 
 /-- linearBodyFragment -- freestanding Linear body text (HOST-EMIT-LINEAR SSoT).
-    host_id + linear_token_* + consume_token_* matching frozen product wire. -/
+    host_id + linear_token_* + consume_token_* + one owned cell. -/
 def linearBodyFragment : String :=
   linearBodyOpen
     ++ "\n"
@@ -322,6 +372,8 @@ def linearBodyFragment : String :=
     ++ consumeTokenBodyOpen
     ++ "\n"
     ++ consumeTokenBodies
+    ++ "\n"
+    ++ linearCellBodies
 
 /-- Ownership comment carries HOST-EMIT-LINEAR + FreestandingEmit embed honesty. -/
 def ownershipHonestyOk : Bool :=

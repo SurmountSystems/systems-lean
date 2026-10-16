@@ -1,6 +1,7 @@
 /-
   SYSTEMS_LEAN_HOST partial -- QTT use-check surfaces:
-  ConsumeToken exact-once (MULT-1) then UnrestrictedShare (MULT-OMEGA).
+  ConsumeToken exact-once (MULT-1) then UnrestrictedShare (MULT-OMEGA)
+  then checkErasedAbsent (grade 0).
   Side: classic Lean elaborator under src/systems/ (not freestanding C).
   Greppable: QTT-USE-CHECK-CONSUME-TOKEN, QTT-USE-CHECK-UNRESTRICTED-SHARE
 
@@ -12,6 +13,7 @@
   - Other ids in the log are ignored for that check.
   - Tiny usage log of use events for ONE named MULT-OMEGA id (UnrestrictedShare).
   - 0 uses = drop ok; 1 use = ok; 2 or more = share ok.
+  - checkErasedAbsent (grade 0): 0 runtime uses = ok; 1 or more = drop.
   - This is NOT all-types use-check. NOT HostCompose live-flag. NOT Idris
     LinearCheck as Slake. NOT elaborator MULT-1 on Linear.Token axioms.
   - JoinMap unrestrictedShareHostUseOk is Mult omega + shareNat, not this log.
@@ -22,6 +24,9 @@
   - checkUnrestrictedShare_drop / checkUnrestrictedShare_once /
     checkUnrestrictedShare_share
   - unrestrictedShareUseCheckReady (omega ok plus MULT-1 contrast)
+  - checkErasedAbsent_absent / checkErasedAbsent_once /
+    checkErasedAbsent_many
+  - erasedAbsentUseCheckReady (absent ok, once drop, many drop)
 
   These UseCheck theorems do NOT set SpecProof.proofCompleteClaimed true.
   Named surfaces != host proof complete != residual free != all-types use-check.
@@ -40,7 +45,9 @@
   checkConsumeToken_drop, checkConsumeToken_ok, checkConsumeToken_doubleSpend,
   checkUnrestrictedShare_drop, checkUnrestrictedShare_once,
   checkUnrestrictedShare_share, consumeTokenUseCheckReady,
-  unrestrictedShareUseCheckReady, UNIT_SURFACE
+  unrestrictedShareUseCheckReady, checkErasedAbsent,
+  checkErasedAbsent_absent, checkErasedAbsent_once,
+  checkErasedAbsent_many, erasedAbsentUseCheckReady, UNIT_SURFACE
   host surface. Module: SystemsLean.UseCheck
   Red/green: just systems-host (nix/systems-host-presence/).
   Module must stay ASCII.
@@ -137,5 +144,30 @@ def unrestrictedShareUseCheckReady : Bool :=
     && decide (checkUnrestrictedShare 1 [{ id := 1 }, { id := 1 }] = Check.ok)
     && decide (checkConsumeToken 1 [] = Check.drop)
     && decide (checkConsumeToken 1 [{ id := 1 }, { id := 1 }] = Check.doubleSpend)
+
+/-- QTT grade 0 on one count: zero runtime uses are ok.
+    One or more is drop. Not all-types use-check. -/
+def checkErasedAbsent (n : Nat) : Check :=
+  match n with
+  | 0 => Check.ok
+  | _ => Check.drop
+
+/-- Zero runtime uses of an erased id are ok. -/
+theorem checkErasedAbsent_absent :
+    checkErasedAbsent 0 = Check.ok := rfl
+
+/-- One runtime use of an erased id is drop. -/
+theorem checkErasedAbsent_once :
+    checkErasedAbsent 1 = Check.drop := rfl
+
+/-- Two runtime uses of an erased id are drop. -/
+theorem checkErasedAbsent_many :
+    checkErasedAbsent 2 = Check.drop := rfl
+
+/-- Grade-0 ready pin: absent ok, once drop, many drop. -/
+def erasedAbsentUseCheckReady : Bool :=
+  decide (checkErasedAbsent 0 = Check.ok)
+    && decide (checkErasedAbsent 1 = Check.drop)
+    && decide (checkErasedAbsent 2 = Check.drop)
 
 end SystemsLean.UseCheck

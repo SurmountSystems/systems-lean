@@ -11,6 +11,7 @@
   The fail-closed record is not emitted as Bool true.
   A namespace file with no import is none.
   A String-field structure is none. A literal Bool true def is none.
+  A miss of this shape tries the tactic form.
   This is not a general Lean parser.
   Does not call Lean.Elab.processCommands.
   slakeOwnsPackageTypecheck stays false.
@@ -19,6 +20,7 @@
 
 import SystemsLean.HostTerm
 import SystemsLean.HonestyFront
+import SystemsLean.DiaphenesTacticForm
 
 namespace SystemsLean.HonestyVerdictFront
 
@@ -525,7 +527,7 @@ def parseItems (fuel : Nat) (st : St) (ts : List String) :
     | none => none
   | Nat.succ k, "private" :: "def" :: "main" :: _ => none
   | Nat.succ k, "private" :: "def" :: rest =>
-    match parseDef st rest with
+    match afterSkip st rest with
     | some (st2, rest2) => parseItems k st2 rest2
     | none => none
   | Nat.succ k, "def" :: "main" :: _ => none
@@ -583,10 +585,30 @@ def parseToks (ts : List String) : Option Module :=
 
 def parseHonestyVerdictText (src : String) : Option Module :=
   match strip src.toList SMode.code [] with
-  | none => none
+  | none =>
+    SystemsLean.DiaphenesTacticForm.parseTacticForm src
   | some kept =>
     match tok tokFuel kept TMode.norm [] with
-    | none => none
-    | some ts => parseToks ts
+    | none =>
+      SystemsLean.DiaphenesTacticForm.parseTacticForm src
+    | some ts =>
+      match parseToks ts with
+      | some m => some m
+      | none =>
+        SystemsLean.DiaphenesTacticForm.parseTacticForm src
+
+def tacticFallbackSome : Bool :=
+  match parseHonestyVerdictText (
+      "import SystemsLean.HostTerm\n"
+        ++ "namespace SystemsLean.Toy\n"
+        ++ "theorem t : true = true := by decide\n"
+        ++ "end SystemsLean.Toy\n") with
+  | some m => m.name.raw == "SystemsLean.Toy"
+  | none => false
+
+def namespaceMisses : Bool :=
+  match parseHonestyVerdictText "namespace SystemsLean.Toy\n" with
+  | none => true
+  | some _ => false
 
 end SystemsLean.HonestyVerdictFront

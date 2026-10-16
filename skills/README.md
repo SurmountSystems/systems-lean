@@ -5,7 +5,7 @@ Not novel Systems Lean implementation.
 
 | Path | Upstream | Role |
 |------|----------|------|
-| `skills/lean4-skills` | [cameronfreer/lean4-skills](https://github.com/cameronfreer/lean4-skills) | Lean 4 prove / formalize / review / golf workflows for coding agents |
+| `skills/lean4-skills` | [SurmountSystems/lean4-skills](https://github.com/SurmountSystems/lean4-skills) | Lean 4 prove / formalize / review / golf workflows for coding agents |
 
 ## Discovery (project skill root)
 

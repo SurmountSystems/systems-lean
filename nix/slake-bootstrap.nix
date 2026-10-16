@@ -1,15 +1,21 @@
 # SPDX-License-Identifier: Unlicense
-# Upstream Lean 4.34.1, built by Nix so the interpreter is in the store.
+# Upstream Lean 4.35.0, built by Nix so the interpreter is in the store.
 # The sandbox stays on. Do not set a no-chroot attribute on these
 # derivations, and do not fetch the linux release tarball.
 # This binary is the bootstrap. It does not mean Slake compiles Slake.
 # Do not claim slakeOwnsPackageTypecheck.
 #
-# The compiler source is leanprover/lean4 tag v4.34.1, the same pin as
+# The compiler source is leanprover/lean4 tag v4.35.0, the same pin as
 # src/systems/lean-toolchain. It is not the nixpkgs lean 4.30.0 package.
 # GMP 6.3.0, OpenSSL 3, and LibUV come from nixpkgs. USE_MIMALLOC is off
 # so CMake does not clone mimalloc. Cadical 2.1.3 and leantar 0.1.20 are
 # on PATH so CMake does not clone or download them either.
+# There is no LEAN4LEAN or USE_LEAN4LEAN option. EXCLUDE_FROM_ALL does
+# not skip the configure-time git check. lean4lean tag lean4-bundle-4.35
+# is fetched, and postPatch copies that tree only if the target is built.
+# nanoda, con-leche, and con-ron are not part of ALL, so postPatch drops
+# their git clones and does not fetch them. The LibUV git clone is only
+# in the Emscripten branch. Linux configure uses find_package(LibUV).
 #
 # The driver is PackageTypecheck.lean. lean loads each import from an
 # olean on LEAN_PATH. A search path that is only the Lean 4 library
@@ -66,18 +72,81 @@ let
     '';
   };
 
+  # Same tag in src/CMakeLists.txt and stage0/src/CMakeLists.txt.
+  # Nested stage cmake does not receive the root cmakeFlags, so postPatch
+  # writes this store path into both lists. make all does not build it.
+  lean4leanSrc = pkgs.fetchFromGitHub {
+    owner = "Kha";
+    repo = "lean4lean";
+    tag = "lean4-bundle-4.35";
+    hash = "sha256-VTxvXgJrHeY4ZFRHuyCVFS+iMhTIgTn2h9CWK3BuA9k=";
+  };
+
   # The CMake setup hook treats a missing parallel flag as on, and then
   # make would add -j. Clear that after configure so this stays one job.
   lean = pkgs.stdenv.mkDerivation {
     pname = "lean4";
-    version = "4.34.1";
+    version = "4.35.0";
 
     src = pkgs.fetchFromGitHub {
       owner = "leanprover";
       repo = "lean4";
-      tag = "v4.34.1";
-      hash = "sha256-JO1pCqWeotC4zjiIQZccEPXfVHnuDQC0DugyuJvIMRs=";
+      tag = "v4.35.0";
+      hash = "sha256-WjyIRo2BvfnNq13r+YSnTc6VaYupKJIsgfQhFBMa0aU=";
     };
+
+    # Copy lean4lean into the external-project source dir, which is under
+    # the build tree, not the store. Drop git clones that configure would
+    # evaluate. LibUV stays in the unevaluated Emscripten branch.
+    postPatch = ''
+      lean4lean_src=${lean4leanSrc}
+      rewrite_cmake() {
+        srcfile="$1"
+        tmpfile="$srcfile.rewritten"
+        awk -v lean4lean_src="$lean4lean_src" '
+          function drop_git_tag() {
+            if ((getline nxt) > 0) {
+              if (nxt ~ /^[[:space:]]*GIT_TAG[[:space:]]/) {
+                return
+              }
+              print nxt
+            }
+          }
+          /^[[:space:]]*GIT_REPOSITORY https:\/\/github.com\/Kha\/lean4lean$/ {
+            print "    DOWNLOAD_COMMAND ''${CMAKE_COMMAND} -E copy_directory " lean4lean_src " <SOURCE_DIR>"
+            print "    UPDATE_COMMAND \"\""
+            drop_git_tag()
+            next
+          }
+          /^[[:space:]]*GIT_REPOSITORY https:\/\/github.com\/(ammkrn\/nanoda_lib|leanprover\/con-leche|leanprover\/con-ron)$/ {
+            print "    DOWNLOAD_COMMAND ''${CMAKE_COMMAND} -E echo \"not part of ALL\""
+            print "    UPDATE_COMMAND \"\""
+            drop_git_tag()
+            next
+          }
+          /^[[:space:]]*GIT_SUBMODULES ""$/ {
+            next
+          }
+          { print }
+        ' "$srcfile" > "$tmpfile"
+        mv "$tmpfile" "$srcfile"
+      }
+      rewrite_cmake src/CMakeLists.txt
+      rewrite_cmake stage0/src/CMakeLists.txt
+      for f in src/CMakeLists.txt stage0/src/CMakeLists.txt; do
+        if grep -q "GIT_REPOSITORY https://github.com/Kha/lean4lean" "$f" \
+          || grep -q "GIT_REPOSITORY https://github.com/ammkrn/nanoda_lib" "$f" \
+          || grep -q "GIT_REPOSITORY https://github.com/leanprover/con-leche" "$f" \
+          || grep -q "GIT_REPOSITORY https://github.com/leanprover/con-ron" "$f"; then
+          echo "git clone still present in $f" >&2
+          exit 1
+        fi
+        if ! grep -q "copy_directory $lean4lean_src" "$f"; then
+          echo "lean4lean source path missing in $f" >&2
+          exit 1
+        fi
+      done
+    '';
 
     preConfigure = ''
       patchShebangs stage0/src/bin src/bin
@@ -152,6 +221,9 @@ let
     "EdmontonClosedBody"
     "EdmontonMainClosed"
     "EdmontonTwoEnd"
+    "EdmontonMutualForm"
+    "EdmontonChain"
+    "HostFrontLine"
     "HostFront"
     "TheoremBinder"
     "MultFrontBinders"
@@ -218,6 +290,7 @@ let
     "HonestyStepThmFront"
     "HonestyGapThmFront"
     "HonestyPipelineFront"
+    "DiaphenesTacticForm"
     "HonestyWriteFront"
     "HonestyLoadFront"
     "HonestyCatchFront"
@@ -259,6 +332,7 @@ let
     "CallistoElfThm"
     "CallistoImportOnly"
     "CallistoThmOne"
+    "CallistoThmForm"
     "HonestyParityEqFront"
     "AdastriaScan"
     "AdastriaElabMeet"
@@ -281,6 +355,7 @@ let
     "HonestyEmitApplyFront"
     "HonestyEmitScafFront"
     "SlakeCheckSource"
+    "WalkRoot"
   ];
 
   closureFiles = map (mod: "SystemsLean/${mod}.lean") (closureMods ++ [ "PackageTypecheck" ]);
@@ -375,7 +450,7 @@ let
     }
   ) { tree = null; cs = [ ]; } closureMods;
 
-  # Upstream Lean 4.34.1 emits C for the driver. Thread cap is -j 1.
+  # Upstream Lean 4.35.0 emits C for the driver. Thread cap is -j 1.
   # LEAN_PATH is the closure olean tree, not the Lean library alone.
   stageA = builtins.derivation (
     buildEnv

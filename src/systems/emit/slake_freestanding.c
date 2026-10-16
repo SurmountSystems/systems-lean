@@ -234,6 +234,36 @@ int slake_consume_token_check_fail_closed(const slake_consume_token *ct)
   return slake_check_fail_closed(&b);
 }
 
+/* Platform allocate and free. No stdlib include. No garbage collector. */
+extern void *malloc(unsigned long);
+extern void free(void *);
+
+int slake_linear_cell_alloc(slake_linear_cell **out, uint32_t payload)
+{
+  slake_linear_cell *p;
+
+  if (out == 0) {
+    return -1;
+  }
+  p = (slake_linear_cell *)malloc((unsigned long)sizeof(slake_linear_cell));
+  if (p == 0) {
+    return -1;
+  }
+  p->payload = payload;
+  *out = p;
+  return 0;
+}
+
+int slake_linear_cell_free(slake_linear_cell **cell)
+{
+  if (cell == 0 || *cell == 0) {
+    return -1;
+  }
+  free(*cell);
+  *cell = 0;
+  return 0;
+}
+
 /* ---- Erasure (ERASE-RULE-MULT-0 / ERASE-NO-RUNTIME) ----
  * HOST-EMIT-ERASURE: dialect from SystemsLean.EmitErasure + host_emit_erasure.ssot.txt
  * (Lean FreestandingEmit embeds this Erasure product text).
