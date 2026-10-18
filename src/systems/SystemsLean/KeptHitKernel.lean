@@ -36,8 +36,13 @@ import SystemsLean.RejectNot
 import SystemsLean.RejectXor
 import SystemsLean.RejectStrictOr
 import SystemsLean.RejectStrictAnd
-import SystemsLean.RejectBneIdent
+import SystemsLean.RejectBoolBne
+import SystemsLean.RejectBoolBeq
 import SystemsLean.RejectDecideBang
+import SystemsLean.RejectNotPrefix
+import SystemsLean.RejectOrInfix
+import SystemsLean.RejectAndInfix
+import SystemsLean.RejectXorInfix
 
 namespace SystemsLean.KeptHitKernel
 
@@ -257,8 +262,13 @@ def typedPass (h : KeptHit) (src : String) : Bool :=
     && !SystemsLean.RejectXor.rejects src
     && !SystemsLean.RejectStrictOr.rejects src
     && !SystemsLean.RejectStrictAnd.rejects src
-    && !SystemsLean.RejectBneIdent.rejects src
+    && !SystemsLean.RejectBoolBne.rejects src
+    && !SystemsLean.RejectBoolBeq.rejects src
     && !SystemsLean.RejectDecideBang.rejects src
+    && !SystemsLean.RejectNotPrefix.rejects src
+    && !SystemsLean.RejectOrInfix.rejects src
+    && !SystemsLean.RejectAndInfix.rejects src
+    && !SystemsLean.RejectXorInfix.rejects src
     && match typesOf h src with
        | none => false
        | some ty =>

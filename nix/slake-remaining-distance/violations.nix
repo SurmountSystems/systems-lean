@@ -1,40 +1,39 @@
 # SPDX-License-Identifier: Unlicense
 # Violation list for the remaining-distance meter. Occupancy 49.
-# FullHost false. Rebuild 23 GREEN. Current ELF s0sjpz1.
-# wpc482yn is no longer current. ildbshq8 is no longer current.
-# l04l55ig is no longer current. p763g8sb is no longer current.
-# TopScan.olean is not the living miss. StrictAndToy CHECK_EXIT 1 on
-# s0sjpz1. CompilePathLinear CHECK_EXIT 0 on s0sjpz1. strictOrToy
-# CHECK_EXIT 1 on wpc482yn (history). CompilePathLinear CHECK_EXIT 0
-# on wpc482yn (history). xorToy fail-closed on ildbshq8 (history).
-# notToy fail-closed on l04l55ig (history). AndToy fail-closed on
-# p763g8sb (history). RejectNot 466 hooked and fail-closed.
-# RejectXor.lean 467 hooked. Exclusive rebuild 24 of a Bool.bne toy
-# is the living remaining. Current independently reviewed ELF stays
-# s0sjpz1 (149297912 bytes) until that rebuild quotes a NEW store
-# path. RejectBneIdent typedPass hook is GREEN. RejectBneIdent.lean
-# source GREEN 528 lines, reviewer PASS, HostKernel 779.
-# RejectBneIdent EXISTS 528. Living RejectBne.lean EXISTS for token
-# != only. Do not keep typedPass hook of RejectBneIdent as living
-# leftover (hook is GREEN). Do not keep RejectBneIdent.lean 528
-# unhooked as living leftover (source is GREEN). Do not keep
-# research-after-strictAnd as living leftover. Do not name
-# RejectBneIdent.lean MISSING. Do not name wpc482yn as current.
-# Do not name exclusive rebuild 23
-# of a strictAnd toy as living leftover (Nix is not still live).
-# RejectStrictAnd typedPass hook GREEN. Do not keep typedPass hook of
-# RejectStrictAnd as living leftover. RejectStrictAnd EXISTS 510.
-# RejectStrictAnd source GREEN. Do not name RejectStrictAnd.lean
-# MISSING as living leftover. Do not name SSH BLOCKED as living
-# leftover.
-# RejectStrictOr EXISTS 510. Do not name RejectStrictOr.lean
-# MISSING as living leftover. Do not name Bool.strictAnd as next
-# remaining. Do not name Bool.strictOr as next remaining. Do not
-# name exclusive rebuild 22 of a strictOr toy as living leftover.
-# Do not name research of the next typedPass leftover after strictOr
-# as living leftover. FranciscoUseCheck.lean is MISSING. Do not
-# name ildbshq8 as current. Open stays Open. Comments-only C
-# needle.ok true fails this meter.
+# FullHost false. Rebuild 23 GREEN. Current independently reviewed
+# ELF /nix/store/97p32bdbdw6v79yxydi1y4s4s39ksp8j-slake-bootstrap
+# (149467016 bytes). That path is not
+# /nix/store/4s8fq7rcyq65nfl0qgj1pdx6kk7jpf5k-slake-bootstrap
+# (149447232 bytes). /nix/store/4s8fq7rcyq65nfl0qgj1pdx6kk7jpf5k-slake-bootstrap
+# (149447232 bytes) is no longer current.
+# /nix/store/s7achs1g5mlxdwk92a6mqnpxwz19c0mz-slake-bootstrap
+# (149403616 bytes) is no longer current.
+# /nix/store/2b2yl85hy7nbcx27xm02h2xq5jcg0mnh-slake-bootstrap
+# (149384352 bytes) is no longer current.
+# /nix/store/vd819cjncxn614xzk47d051msvd93gr1-slake-bootstrap
+# (149334976 bytes) is no longer current. rebuild 24 BLOCKED: Mult-place.drv
+# /nix/store/vnaf6g728b5pph6pgkjj2idmy7jk9sf2-slake-bootstrap-Mult-place.drv
+# signal 9. No NEW ELF from rebuild 24. Copy set already on the builder.
+# dest RejectNotPrefix.lean done. Prefix-not toy CHECK_EXIT 1 kept reject.
+# infix || toy CHECK_EXIT 1 kept reject on the current independently reviewed ELF.
+# infix && toy CHECK_EXIT 1 kept reject on the current independently reviewed ELF.
+# infix ^^ toy CHECK_EXIT 1 kept reject on the current independently reviewed ELF.
+# infix Boolean tokens || && ^^ are dest-and-hook done on this ELF.
+# CompilePathLinear CHECK_EXIT 0. RejectOrInfix.lean EXISTS (done dest).
+# RejectAndInfix.lean EXISTS (done dest). Do not reopen RejectAndInfix.lean as remaining.
+# RejectXorInfix.lean EXISTS (done dest). Do not reopen RejectXorInfix.lean as remaining.
+# Do not reopen RejectNotPrefix.lean as remaining.
+# next leftover after infix Boolean tokens || && ^^ dest-and-hook done is being named.
+# An Ident-suffix name is not a dest. Do not mint an Ident-suffix dest.
+# dest RejectBoolBeq.lean done. Bool.beq toy CHECK_EXIT 1 kept reject.
+# Token == already lives in RejectBeqThm. Bool.beq lives in
+# RejectBoolBeq. BeqIdentToy is not a product dest. An Ident-suffix
+# name is not a dest. Do not mint RejectBang. the later toy directory is bool-beq.
+# RejectBoolBne.lean EXISTS (done dest; rename GREEN). old Ident-suffix
+# path missing. Bool.bne lives in RejectBoolBne. Token != is RejectBne.
+# rebuild 24 prior miss: Mult-place.drv signal 9. Do not name rebuild
+# 24 GREEN. Open stays Open. Comments-only C needle.ok true fails this
+# meter.
 { lib, specs, honesty, ctx }:
 let
   inherit (honesty)
@@ -99,8 +98,10 @@ let
     staleRebuild19WalkerOleanLeftover staleRebuild19EqSomeBinderLeftover staleRebuild19TypecheckDriverLeftover staleRebuild19EdmontonChainLeftover
     staleRebuild19HostFrontSuccessorInFlight staleRebuild19OldSuccessorInFlight
     staleRebuild20NextLeftover lacksRebuild20Green lacksTopScanNotLivingMiss staleTopScanOleanLivingMiss
-    staleRebuild21NextLeftover lacksRebuild21Green staleXorToyStaysNotFailClosed lacksXorToyFailClosed staleResearchAfterXorInFlight staleRebuild22NextLeftover staleResearchAfterStrictOr lacksStrictAndLeftover lacksBneIdentHookGreen staleTypedPassHookBneIdentLeftover staleResearchAfterStrictAnd staleBneIdentMissing staleBneIdentUnhooked staleBneIdentIdentLeftover staleSshBlockedLeftover staleRebuild23NextLeftover lacksRebuild23Green staleRebuild23InFlight staleS0sjpz1LeftoverNotCurrent staleIndependentlyReviewedWpc lacksIndependentlyReviewedS0 lacksStrictAndToyFailClosed lacksCompilePathLinearOnS0 staleTypedPassHookStrictAndLeftover lacksRejectStrictAndHookGreen staleStrictAndRejectMissing staleBoolStrictAndMissingLeftover lacksRejectStrictAndExists staleBoolStrictOrNextLeftover lacksRebuild22Green staleRebuild22InFlight staleRebuild22LeftoverNotGreen staleStrictOrToyStaysNotFailClosed lacksStrictOrToyFailClosed lacksCompilePathLinearOnWpc staleTypedPassHookStrictOrLeftover staleStrictOrRejectMissing staleRebuild21InFlight staleRebuild21LeftoverNotGreen staleXorUnhooked staleRebuild21XorUnhookedNextLeftover lacksXorHooked
-    lacksFranciscoUseCheckMissing
+    staleRebuild21NextLeftover lacksRebuild21Green staleXorToyStaysNotFailClosed lacksXorToyFailClosed staleResearchAfterXorInFlight staleRebuild22NextLeftover staleResearchAfterStrictOr lacksStrictAndLeftover staleRebuild24Green staleRebuild24InFlight staleRejectBneIdentNamed staleRejectBeqIdentNamed staleRejectBoolBeqIdentNamed staleBoolBneMissing staleBoolBneLanding staleBoolBneToyLeftover staleLeftoverIdentBne staleCurrentElfNickname staleResearchAfterStrictAnd staleSshBlockedLeftover staleRebuild23NextLeftover lacksRebuild23Green staleRebuild23InFlight staleS0sjpz1LeftoverNotCurrent staleIndependentlyReviewedWpc lacksIndependentlyReviewedS0 lacksStrictAndToyFailClosed lacksCompilePathLinearOnS0 staleTypedPassHookStrictAndLeftover lacksRejectStrictAndHookGreen staleStrictAndRejectMissing staleBoolStrictAndMissingLeftover lacksRejectStrictAndExists staleBoolStrictOrNextLeftover lacksRebuild22Green staleRebuild22InFlight staleRebuild22LeftoverNotGreen staleStrictOrToyStaysNotFailClosed lacksStrictOrToyFailClosed lacksCompilePathLinearOnWpc staleTypedPassHookStrictOrLeftover staleStrictOrRejectMissing staleRebuild21InFlight staleRebuild21LeftoverNotGreen staleXorUnhooked staleRebuild21XorUnhookedNextLeftover lacksXorHooked
+    staleFranciscoUseCheckNamed
+    staleIndependentlyReviewedVd819 staleCurrentVd819 lacksNoLongerCurrentVd819 staleBoolBeqDestLeftover staleBoolBeqSourceLand lacksBoolBeqDoneDest lacksBoolBeqToyCheckExit
+    staleIndependentlyReviewed2b2 staleCurrent2b2 lacksNoLongerCurrent2b2 staleIndependentlyReviewedS7achs staleCurrentS7achs lacksNoLongerCurrentS7achs staleIndependentlyReviewedJzaimy staleCurrentJzaimy lacksNoLongerCurrentJzaimy staleIndependentlyReviewed4s8 staleCurrent4s8 lacksNoLongerCurrent4s8 stalePrefixNotLeftover lacksInfixOrToyCheckExit lacksRejectOrInfixDoneDest lacksRejectAndInfixDest lacksInfixAndToyCheckExit lacksInfixXorToyCheckExit lacksRejectXorInfixDoneDest lacksInfixBooleanTokensDestAndHook staleInfixAndResearchLeftover staleRejectXorInfixIdentNamed staleAndInfixHookLeftover staleRejectAndInfixIdentNamed staleBoolBeqResearchLeftover lacksPrefixNotToyCheckExit lacksRejectNotPrefixDoneDest staleRejectNotPrefixDestLeftover staleRejectBangNamed staleRejectNotPrefixIdentNamed
     lacksCompilePathLinear lacksCondToyFailClosed lacksDcondToyFailClosed
     ;
   inherit (ctx)
@@ -109,7 +110,9 @@ let
     hkLines ucLines frLines hfLines keptHitLines
     hostFrontText hostFrontHooked pinText pinLiveRelOk useCheckProgressN
     leftoverNeedleFails ifFindWordStructuralOk ifFindWordStaleCallOnLaptop
-    franciscoUseCheckExists bneIdentExists bneIdentLines
+    franciscoUseCheckExists rejectBoolBneExists rejectBoolBneLines
+    rejectBoolBeqExists rejectBoolBeqLines beqThmExists notPrefixExists
+    orInfixExists andInfixExists xorInfixExists
     ifExists ifLines iteExists iteLines decideExists decideLines
     condExists condLines ditExists ditLines dcondExists dcondLines
     bifExists bifLines orExists orLines andExists andLines notExists notLines probeText probeHasBan
@@ -176,57 +179,57 @@ in
   ++ flag rebuild9StaleInFlight
     "living summary still says rebuild 9 in flight (rebuild 9 GREEN on w9775kbs)"
   ++ flag currentLacksS0sjpz1
-    "living rebuild rows omit current ELF s0sjpz1 / 149297912 bytes"
+    "living rebuild rows omit the current independently reviewed ELF store hash / 149467016 bytes"
   ++ flag staleCurrentWpc482yn
-    "living summary still names wpc482yn as current (wpc482yn is no longer current; current ELF is s0sjpz1)"
+    "living summary still names wpc482yn as current (wpc482yn is no longer current; the current produced slake-bootstrap ELF)"
   ++ flag lacksNoLongerCurrentWpc
     "rebuild23GreenRow or rebuild22GreenRow omits wpc482yn is no longer current"
   ++ flag staleCurrentIldbshq8
-    "living summary still names ildbshq8 as current (ildbshq8 is no longer current; current ELF is s0sjpz1)"
+    "living summary still names ildbshq8 as current (ildbshq8 is no longer current; the current produced slake-bootstrap ELF)"
   ++ flag lacksNoLongerCurrentIldb
     "rebuild22GreenRow or rebuild21GreenRow omits ildbshq8 is no longer current"
   ++ flag staleCurrentL04l55ig
-    "living summary still names l04l55ig as current (l04l55ig is no longer current; current ELF is s0sjpz1)"
+    "living summary still names l04l55ig as current (l04l55ig is no longer current; the current produced slake-bootstrap ELF)"
   ++ flag lacksNoLongerCurrentL04
     "rebuild21GreenRow or rebuild20GreenRow omits l04l55ig is no longer current"
   ++ flag staleCurrentP763g8sb
-    "living summary still names p763g8sb as current (p763g8sb is no longer current; current ELF is s0sjpz1)"
+    "living summary still names p763g8sb as current (p763g8sb is no longer current; the current produced slake-bootstrap ELF)"
   ++ flag lacksNoLongerCurrentP763
     "rebuild20GreenRow or rebuild19GreenRow omits p763g8sb is no longer current"
   ++ flag staleCurrentImsr2xgr
-    "living summary still names imsr2xgr as current (imsr2xgr is no longer current; current ELF is s0sjpz1)"
+    "living summary still names imsr2xgr as current (imsr2xgr is no longer current; the current produced slake-bootstrap ELF)"
   ++ flag lacksNoLongerCurrentImsr
     "rebuild19GreenRow or rebuild18GreenRow omits imsr2xgr is no longer current"
   ++ flag staleCurrentVh2cdi00
-    "living summary still names vh2cdi00 as current (vh2cdi00 is no longer current; current ELF is s0sjpz1)"
+    "living summary still names vh2cdi00 as current (vh2cdi00 is no longer current; the current produced slake-bootstrap ELF)"
   ++ flag lacksNoLongerCurrentVh2
     "rebuild18GreenRow or rebuild17GreenRow omits vh2cdi00 is no longer current"
   ++ flag staleCurrentXw41jhmv
-    "living summary still names xw41jhmv as current (xw41jhmv is no longer current; current ELF is s0sjpz1)"
+    "living summary still names xw41jhmv as current (xw41jhmv is no longer current; the current produced slake-bootstrap ELF)"
   ++ flag lacksNoLongerCurrentXw41
     "rebuild17GreenRow or rebuild16GreenRow omits xw41jhmv is no longer current"
   ++ flag staleCurrentIbdxkpf7
-    "living summary still names ibdxkpf7 as current (ibdxkpf7 is no longer current; current ELF is s0sjpz1)"
+    "living summary still names ibdxkpf7 as current (ibdxkpf7 is no longer current; the current produced slake-bootstrap ELF)"
   ++ flag lacksNoLongerCurrentIbdx
     "rebuild16GreenRow or rebuild15GreenRow omits ibdxkpf7 is no longer current"
   ++ flag staleCurrentL85gkygc
-    "living summary still names l85gkygc as current (l85gkygc is no longer current; current ELF is s0sjpz1)"
+    "living summary still names l85gkygc as current (l85gkygc is no longer current; the current produced slake-bootstrap ELF)"
   ++ flag lacksNoLongerCurrentL85
     "rebuild14GreenRow or rebuild15GreenRow or rebuild16GreenRow omits l85gkygc is no longer current"
   ++ flag staleCurrentWiky18mm
-    "living summary still names wiky18mm as current (wiky18mm is no longer current; current ELF is s0sjpz1)"
+    "living summary still names wiky18mm as current (wiky18mm is no longer current; the current produced slake-bootstrap ELF)"
   ++ flag lacksNoLongerCurrentWiky
     "rebuild13GreenRow or rebuild14GreenRow omits wiky18mm is no longer current"
   ++ flag staleCurrentH0j4119
-    "living summary still names h0j4119d as current (h0j4119d is no longer current; current ELF is s0sjpz1)"
+    "living summary still names h0j4119d as current (h0j4119d is no longer current; the current produced slake-bootstrap ELF)"
   ++ flag lacksNoLongerCurrentH0j
     "rebuild12GreenRow or rebuild13GreenRow or rebuild14GreenRow omits h0j4119d is no longer current"
   ++ flag staleCurrentLpxw2099
-    "living summary still names lpxw2099 as current (lpxw2099 is no longer current; current ELF is s0sjpz1)"
+    "living summary still names lpxw2099 as current (lpxw2099 is no longer current; the current produced slake-bootstrap ELF)"
   ++ flag lacksNoLongerCurrentLpxw
     "rebuild13GreenRow or rebuild14GreenRow omits lpxw2099 is no longer current"
   ++ flag staleCurrentW9775
-    "living summary still names w9775kbs as current (current ELF is s0sjpz1)"
+    "living summary still names w9775kbs as current (the current produced slake-bootstrap ELF)"
   ++ flag l9NamedCurrent
     "rebuild9GreenRow names l9l72744 as current (must stay not l9l72744)"
   ++ flag pcjNamedCurrent
@@ -234,7 +237,7 @@ in
   ++ flag lacksRebuild9Green
     "living summary omits Rebuild 9 GREEN"
   ++ flag staleRebuild8Green
-    "living summary still says Rebuild 8 GREEN (current ELF is s0sjpz1)"
+    "living summary still says Rebuild 8 GREEN (the current produced slake-bootstrap ELF)"
   ++ flag lacksMatchToyFailClosed
     "rebuild9GreenRow omits MatchToy CHECK_EXIT 1 fail-closed on Bool-valued match"
   ++ flag matchMissingFrozen
@@ -506,19 +509,19 @@ in
   ++ flag staleRebuild11NextLeftover
     "living summary still says next leftover is exclusive Nix of rebuild 11 then IfToy (Rebuild 17 GREEN)"
   ++ flag staleRebuild12InFlight
-    "living summary still says rebuild 12 exclusive in flight (Rebuild 12 GREEN; current ELF is s0sjpz1)"
+    "living summary still says rebuild 12 exclusive in flight (Rebuild 12 GREEN; the current produced slake-bootstrap ELF)"
   ++ flag lacksRebuild12Green
     "living summary omits Rebuild 12 GREEN"
   ++ flag staleRebuild12NextLeftover
     "living summary still says next leftover is exclusive Nix of rebuild 12 then IteToy (Rebuild 17 GREEN)"
   ++ flag staleRebuild13InFlight
-    "living summary still says rebuild 13 in flight (Rebuild 13 GREEN; current ELF is s0sjpz1)"
+    "living summary still says rebuild 13 in flight (Rebuild 13 GREEN; the current produced slake-bootstrap ELF)"
   ++ flag lacksRebuild13Green
     "living summary omits Rebuild 13 GREEN"
   ++ flag staleRebuild13NextLeftover
     "living summary still says next leftover is decide-ascription typedPass hook then exclusive rebuild 13 (Rebuild 17 GREEN)"
   ++ flag staleRebuild14InFlight
-    "living summary still says rebuild 14 in flight (Rebuild 14 GREEN; current ELF is s0sjpz1)"
+    "living summary still says rebuild 14 in flight (Rebuild 14 GREEN; the current produced slake-bootstrap ELF)"
   ++ flag lacksRebuild14Green
     "living summary omits Rebuild 14 GREEN"
   ++ flag staleRebuild14NextLeftover
@@ -528,7 +531,7 @@ in
   ++ flag staleRebuild15InFlight
     "living summary still says rebuild 15 exclusive in flight (Rebuild 15 GREEN; not in flight)"
   ++ flag staleRebuild15NoNewElf
-    "living summary still says rebuild 15 no NEW ELF (Rebuild 15 GREEN produced historical ibdxkpf7; current ELF is s0sjpz1)"
+    "living summary still says rebuild 15 no NEW ELF (Rebuild 15 GREEN produced historical ibdxkpf7; the current produced slake-bootstrap ELF)"
   ++ flag staleRebuild15NextBifLeftover
     "living summary still says next leftover is RejectBif hook after exclusive rebuild 15 diteToy (RejectBif hook GREEN in source; ${specs.strictAndLeftoverNeedle})"
   ++ flag staleRebuild15NextDcondLeftover
@@ -536,9 +539,9 @@ in
   ++ flag lacksRebuild15Green
     "living summary omits Rebuild 15 GREEN"
   ++ flag staleRebuild16InFlight
-    "living summary still says rebuild 16 exclusive in flight (Rebuild 16 GREEN; not in flight; current ELF is s0sjpz1)"
+    "living summary still says rebuild 16 exclusive in flight (Rebuild 16 GREEN; not in flight; the current produced slake-bootstrap ELF)"
   ++ flag staleRebuild16NoNewElf
-    "living summary still says rebuild 16 no NEW ELF (Rebuild 16 GREEN produced historical xw41jhmv; current ELF is s0sjpz1)"
+    "living summary still says rebuild 16 no NEW ELF (Rebuild 16 GREEN produced historical xw41jhmv; the current produced slake-bootstrap ELF)"
   ++ flag lacksRebuild16Green
     "living summary omits Rebuild 16 GREEN"
   ++ flag staleRebuild16NextDcondLeftover
@@ -546,7 +549,7 @@ in
   ++ flag staleRebuild17NextLeftover
     "living summary still says next leftover is RejectDcond hook then exclusive rebuild 17 (Rebuild 19 GREEN; ${specs.strictAndLeftoverNeedle})"
   ++ flag staleRebuild17InFlight
-    "living summary still says rebuild 17 exclusive in flight (Rebuild 17 GREEN; not in flight; current ELF is s0sjpz1)"
+    "living summary still says rebuild 17 exclusive in flight (Rebuild 17 GREEN; not in flight; the current produced slake-bootstrap ELF)"
   ++ flag lacksRebuild17Green
     "living summary omits Rebuild 17 GREEN"
   ++ flag staleRebuild18NextLeftover
@@ -554,7 +557,7 @@ in
   ++ flag staleRebuild18HookRemaining
     "living summary still says next leftover is RejectOr hook then exclusive rebuild 18 (RejectOr hook GREEN in source; ${specs.strictAndLeftoverNeedle})"
   ++ flag staleRebuild18InFlight
-    "living summary still says rebuild 18 exclusive in flight (Rebuild 18 GREEN; not in flight; current ELF is s0sjpz1)"
+    "living summary still says rebuild 18 exclusive in flight (Rebuild 18 GREEN; not in flight; the current produced slake-bootstrap ELF)"
   ++ flag lacksRebuild18Green
     "living summary omits Rebuild 18 GREEN"
   ++ flag staleRebuild19NextLeftover
@@ -570,13 +573,13 @@ in
   ++ flag lacksRebuild19Green
     "living summary omits Rebuild 19 GREEN"
   ++ flag staleRebuild19WalkerOleanLeftover
-    "living summary still names Walker.olean of module SystemsLean.Walker does not exist in the KeptDrop-tree as the living miss (Walker is in closureMods; TopScan.olean is not the living miss; current ELF s0sjpz1)"
+    "living summary still names Walker.olean of module SystemsLean.Walker does not exist in the KeptDrop-tree as the living miss (Walker is in closureMods; TopScan.olean is not the living miss; the current produced slake-bootstrap ELF)"
   ++ flag staleRebuild19EqSomeBinderLeftover
-    "living summary still names EqSomeBinder-place.drv builder failed due to signal 9 as the living miss (signal 9 count 0; TopScan.olean is not the living miss; current ELF s0sjpz1)"
+    "living summary still names EqSomeBinder-place.drv builder failed due to signal 9 as the living miss (signal 9 count 0; TopScan.olean is not the living miss; the current produced slake-bootstrap ELF)"
   ++ flag staleRebuild19TypecheckDriverLeftover
-    "living summary still says TypecheckDriver.lean missing on the builder (TypecheckDriver compiled on the last Nix; TopScan.olean is not the living miss; current ELF s0sjpz1)"
+    "living summary still says TypecheckDriver.lean missing on the builder (TypecheckDriver compiled on the last Nix; TopScan.olean is not the living miss; the current produced slake-bootstrap ELF)"
   ++ flag staleRebuild19EdmontonChainLeftover
-    "living summary still says builder HostFront.lean still import SystemsLean.EdmontonChain (HostFront copy stayed landed; TopScan.olean is not the living miss; current ELF s0sjpz1)"
+    "living summary still says builder HostFront.lean still import SystemsLean.EdmontonChain (HostFront copy stayed landed; TopScan.olean is not the living miss; the current produced slake-bootstrap ELF)"
   ++ flag staleRebuild19HostFrontSuccessorInFlight
     "living summary still says successor exclusive rebuild 01a14b51-a32d-76b6-8bf1-6440c795da2f in flight (that successor finished BLOCKED; Rebuild 19 GREEN)"
   ++ flag staleRebuild19OldSuccessorInFlight
@@ -588,7 +591,7 @@ in
   ++ flag lacksTopScanNotLivingMiss
     "living summary omits TopScan.olean is not the living miss"
   ++ flag staleTopScanOleanLivingMiss
-    "living summary still names TopScan.olean of module SystemsLean.TopScan does not exist in the KeptDrop-tree as the living miss (Rebuild 20 GREEN; TopScan.olean is not the living miss; current ELF s0sjpz1)"
+    "living summary still names TopScan.olean of module SystemsLean.TopScan does not exist in the KeptDrop-tree as the living miss (Rebuild 20 GREEN; TopScan.olean is not the living miss; leftover is ${specs.strictAndLeftoverNeedle})"
   ++ flag staleRebuild21NextLeftover
     "living summary still says next leftover is rebuild 21 of xorToy (Rebuild 21 GREEN; ${specs.strictAndLeftoverNeedle})"
   ++ flag lacksRebuild21Green
@@ -605,22 +608,46 @@ in
     "living summary still says next leftover is research of the next typedPass leftover after strictOr (leftover is ${specs.strictAndLeftoverNeedle})"
   ++ flag lacksStrictAndLeftover
     "living summary omits ${specs.strictAndLeftoverNeedle}"
-  ++ flag lacksBneIdentHookGreen
-    "living summary omits RejectBneIdent typedPass hook is GREEN"
-  ++ flag staleTypedPassHookBneIdentLeftover
-    "living summary still says next leftover is the typedPass hook of RejectBneIdent (RejectBneIdent typedPass hook is GREEN; leftover is ${specs.strictAndLeftoverNeedle})"
+  ++ flag staleRebuild24Green
+    "living summary names Rebuild 24 GREEN (rebuild 24 BLOCKED; leftover is ${specs.strictAndLeftoverNeedle})"
+  ++ flag staleRebuild24InFlight
+    "living summary still names exclusive rebuild 24 of a Bool.bne toy as in flight or waiting for a NEW store path (rebuild 24 is a prior miss BLOCKED; leftover is ${specs.strictAndLeftoverNeedle})"
+  ++ flag staleRejectBneIdentNamed
+    "living summary still names the retired packed module (old Ident-suffix path missing; Bool.bne lives in RejectBoolBne; leftover is ${specs.strictAndLeftoverNeedle})"
+  ++ flag staleRejectBeqIdentNamed
+    "living summary still names an Ident-suffix beq dest (leftover is ${specs.strictAndLeftoverNeedle})"
+  ++ flag staleRejectBoolBeqIdentNamed
+    "living summary still names an Ident-suffix Bool.beq dest (leftover is ${specs.strictAndLeftoverNeedle})"
+  ++ flag staleBoolBneMissing
+    "living leftover still names RejectBoolBne.lean as absent (RejectBoolBne.lean EXISTS (rename GREEN); leftover is ${specs.strictAndLeftoverNeedle})"
+  ++ flag staleBoolBneLanding
+    "living leftover still says rename L2 is landing RejectBoolBne.lean (RejectBoolBne.lean EXISTS (rename GREEN); leftover is ${specs.strictAndLeftoverNeedle})"
+  ++ flag staleBoolBneToyLeftover
+    "living leftover still names exclusive rebuild of a Bool.bne toy (RejectBoolBne is done dest; leftover is ${specs.strictAndLeftoverNeedle})"
+  ++ flag staleLeftoverIdentBne
+    "living leftover still names leftover identifier bne / Bool.bne (leftover is ${specs.strictAndLeftoverNeedle})"
+  ++ flag staleCurrentElfNickname
+    "living summary nicknames the current produced slake-bootstrap ELF by an 8-character store hash (quote the full store path, then the current produced slake-bootstrap ELF)"
   ++ flag staleResearchAfterStrictAnd
     "living summary still names research-after-strictAnd as the living leftover (leftover is ${specs.strictAndLeftoverNeedle})"
-  ++ flag staleBneIdentMissing
-    "living summary still names RejectBneIdent.lean MISSING (RejectBneIdent EXISTS 528, source GREEN; leftover is ${specs.strictAndLeftoverNeedle})"
-  ++ flag staleBneIdentUnhooked
-    "living summary still names RejectBneIdent.lean 528 unhooked as the living leftover (RejectBneIdent.lean source GREEN 528; leftover is ${specs.strictAndLeftoverNeedle})"
-  ++ flag staleBneIdentIdentLeftover
-    "living summary still says next leftover is identifier bne / Bool.bne (leftover is ${specs.strictAndLeftoverNeedle})"
-  ++ flag (!bneIdentExists)
-    "RejectBneIdent.lean is MISSING on disk (leftover encoding expected EXISTS 528, source GREEN)"
-  ++ flag (bneIdentExists && bneIdentLines != null && bneIdentLines > specs.lineFailOver)
-    "RejectBneIdent.lean lines over ${toString specs.lineFailOver}"
+  ++ flag (!rejectBoolBneExists)
+    "RejectBoolBne.lean disk absent (rename GREEN expected EXISTS 528)"
+  ++ flag (rejectBoolBneExists && rejectBoolBneLines != null && rejectBoolBneLines > specs.lineFailOver)
+    "RejectBoolBne.lean lines over ${toString specs.lineFailOver}"
+  ++ flag (!rejectBoolBeqExists)
+    "RejectBoolBeq.lean disk absent (dest RejectBoolBeq.lean done dest expected EXISTS 531)"
+  ++ flag (rejectBoolBeqExists && rejectBoolBeqLines != null && rejectBoolBeqLines > specs.lineFailOver)
+    "RejectBoolBeq.lean lines over ${toString specs.lineFailOver}"
+  ++ flag (!beqThmExists)
+    "RejectBeqThm.lean disk absent (Token == already lives in RejectBeqThm)"
+  ++ flag (!notPrefixExists)
+    "RejectNotPrefix.lean disk absent (dest RejectNotPrefix.lean done dest)"
+  ++ flag (!orInfixExists)
+    "RejectOrInfix.lean disk absent (dest RejectOrInfix.lean done dest)"
+  ++ flag (!andInfixExists)
+    "RejectAndInfix.lean disk absent (dest RejectAndInfix.lean done dest)"
+  ++ flag (!xorInfixExists)
+    "RejectXorInfix.lean disk absent (dest RejectXorInfix.lean done dest)"
   ++ flag staleSshBlockedLeftover
     "living summary still names leftover as SSH BLOCKED independent resample (leftover is ${specs.strictAndLeftoverNeedle})"
   ++ flag staleRebuild23NextLeftover
@@ -630,15 +657,89 @@ in
   ++ flag staleRebuild23InFlight
     "living summary still says rebuild 23 exclusive in flight (Nix is not still live; leftover is ${specs.strictAndLeftoverNeedle})"
   ++ flag staleS0sjpz1LeftoverNotCurrent
-    "living summary still names s0sjpz1 is leftover, not current (s0sjpz1 is current independently reviewed ELF)"
+    "living summary still names the current produced slake-bootstrap ELF as leftover, not current"
   ++ flag staleIndependentlyReviewedWpc
-    "living summary still names current independently reviewed ELF /nix/store/wpc482ynsqa9ambfszvjabmfrsdj2408-slake-bootstrap (wpc482yn is no longer current; current independently reviewed ELF is s0sjpz1)"
+    "living summary still names current independently reviewed ELF /nix/store/wpc482ynsqa9ambfszvjabmfrsdj2408-slake-bootstrap (wpc482yn is no longer current; leftover is ${specs.strictAndLeftoverNeedle})"
   ++ flag lacksIndependentlyReviewedS0
-    "living summary omits current independently reviewed ELF /nix/store/s0sjpz1gz8vq50cm9fsks6ccs8yhvmk3-slake-bootstrap"
+    "living summary omits current independently reviewed ELF /nix/store/97p32bdbdw6v79yxydi1y4s4s39ksp8j-slake-bootstrap"
+  ++ flag staleIndependentlyReviewed4s8
+    "living summary still names current independently reviewed ELF /nix/store/4s8fq7rcyq65nfl0qgj1pdx6kk7jpf5k-slake-bootstrap (that ELF is no longer current; leftover is ${specs.strictAndLeftoverNeedle})"
+  ++ flag staleCurrent4s8
+    "living summary still names /nix/store/4s8fq7rcyq65nfl0qgj1pdx6kk7jpf5k-slake-bootstrap as current (that ELF is no longer current; leftover is ${specs.strictAndLeftoverNeedle})"
+  ++ flag lacksNoLongerCurrent4s8
+    "living summary omits /nix/store/4s8fq7rcyq65nfl0qgj1pdx6kk7jpf5k-slake-bootstrap (149447232 bytes) is no longer current"
+  ++ flag staleIndependentlyReviewedJzaimy
+    "living summary still names current independently reviewed ELF /nix/store/jzaimy5hq45h12h1905ajk1qyjgdjjia-slake-bootstrap (that ELF is no longer current; leftover is ${specs.strictAndLeftoverNeedle})"
+  ++ flag staleCurrentJzaimy
+    "living summary still names /nix/store/jzaimy5hq45h12h1905ajk1qyjgdjjia-slake-bootstrap as current (that ELF is no longer current; leftover is ${specs.strictAndLeftoverNeedle})"
+  ++ flag lacksNoLongerCurrentJzaimy
+    "living summary omits /nix/store/jzaimy5hq45h12h1905ajk1qyjgdjjia-slake-bootstrap (149423320 bytes) is no longer current"
+  ++ flag staleIndependentlyReviewedS7achs
+    "living summary still names current independently reviewed ELF /nix/store/s7achs1g5mlxdwk92a6mqnpxwz19c0mz-slake-bootstrap (that ELF is no longer current; leftover is ${specs.strictAndLeftoverNeedle})"
+  ++ flag staleCurrentS7achs
+    "living summary still names /nix/store/s7achs1g5mlxdwk92a6mqnpxwz19c0mz-slake-bootstrap as current (that ELF is no longer current; leftover is ${specs.strictAndLeftoverNeedle})"
+  ++ flag lacksNoLongerCurrentS7achs
+    "living summary omits /nix/store/s7achs1g5mlxdwk92a6mqnpxwz19c0mz-slake-bootstrap (149403616 bytes) is no longer current"
+  ++ flag stalePrefixNotLeftover
+    "living summary still names leftover as next typedPass after prefix not, research in flight (leftover is ${specs.strictAndLeftoverNeedle})"
+  ++ flag lacksInfixOrToyCheckExit
+    "living summary omits infix || toy CHECK_EXIT 1 kept reject"
+  ++ flag lacksRejectOrInfixDoneDest
+    "living summary omits RejectOrInfix.lean EXISTS (done dest)"
+  ++ flag lacksRejectAndInfixDest
+    "living leftover omits RejectAndInfix.lean EXISTS (done dest)"
+  ++ flag lacksInfixAndToyCheckExit
+    "living summary omits infix && toy CHECK_EXIT 1 kept reject"
+  ++ flag lacksInfixXorToyCheckExit
+    "living summary omits infix ^^ toy CHECK_EXIT 1 kept reject"
+  ++ flag lacksRejectXorInfixDoneDest
+    "living leftover omits RejectXorInfix.lean EXISTS (done dest)"
+  ++ flag lacksInfixBooleanTokensDestAndHook
+    "living leftover omits infix Boolean tokens || && ^^ are dest-and-hook done"
+  ++ flag staleInfixAndResearchLeftover
+    "living leftover still claims next leftover is next typedPass after infix && is being named by research (infix Boolean tokens || && ^^ are dest-and-hook done; leftover is ${specs.strictAndLeftoverNeedle})"
+  ++ flag staleRejectXorInfixIdentNamed
+    "living summary still names an Ident-suffix RejectXorInfix dest (leftover is ${specs.strictAndLeftoverNeedle})"
+  ++ flag staleAndInfixHookLeftover
+    "living leftover still names dest RejectAndInfix.lean EXISTS, hook in flight (RejectAndInfix.lean EXISTS (done dest); leftover is ${specs.strictAndLeftoverNeedle})"
+  ++ flag staleRejectAndInfixIdentNamed
+    "living summary still names an Ident-suffix RejectAndInfix dest (leftover is ${specs.strictAndLeftoverNeedle})"
+  ++ flag staleIndependentlyReviewed2b2
+    "living summary still names current independently reviewed ELF /nix/store/2b2yl85hy7nbcx27xm02h2xq5jcg0mnh-slake-bootstrap (that ELF is no longer current; leftover is ${specs.strictAndLeftoverNeedle})"
+  ++ flag staleCurrent2b2
+    "living summary still names /nix/store/2b2yl85hy7nbcx27xm02h2xq5jcg0mnh-slake-bootstrap as current (that ELF is no longer current; leftover is ${specs.strictAndLeftoverNeedle})"
+  ++ flag lacksNoLongerCurrent2b2
+    "living summary omits /nix/store/2b2yl85hy7nbcx27xm02h2xq5jcg0mnh-slake-bootstrap (149384352 bytes) is no longer current"
+  ++ flag staleBoolBeqResearchLeftover
+    "living summary still names leftover as research of the next typedPass leftover after Bool.beq (leftover is ${specs.strictAndLeftoverNeedle})"
+  ++ flag lacksPrefixNotToyCheckExit
+    "living summary omits Prefix-not toy CHECK_EXIT 1 kept reject"
+  ++ flag lacksRejectNotPrefixDoneDest
+    "living summary omits RejectNotPrefix.lean EXISTS (done dest)"
+  ++ flag staleRejectNotPrefixDestLeftover
+    "living leftover still names RejectNotPrefix.lean as remaining (RejectNotPrefix.lean EXISTS (done dest); leftover is ${specs.strictAndLeftoverNeedle})"
+  ++ flag staleRejectBangNamed
+    "living summary still names RejectBang (do not mint RejectBang; leftover is ${specs.strictAndLeftoverNeedle})"
+  ++ flag staleRejectNotPrefixIdentNamed
+    "living summary still names an Ident-suffix RejectNotPrefix dest (leftover is ${specs.strictAndLeftoverNeedle})"
+  ++ flag staleIndependentlyReviewedVd819
+    "living summary still names current independently reviewed ELF /nix/store/vd819cjncxn614xzk47d051msvd93gr1-slake-bootstrap (that ELF is no longer current; leftover is ${specs.strictAndLeftoverNeedle})"
+  ++ flag staleCurrentVd819
+    "living summary still names /nix/store/vd819cjncxn614xzk47d051msvd93gr1-slake-bootstrap as current (that ELF is no longer current; leftover is ${specs.strictAndLeftoverNeedle})"
+  ++ flag lacksNoLongerCurrentVd819
+    "living summary omits /nix/store/vd819cjncxn614xzk47d051msvd93gr1-slake-bootstrap (149334976 bytes) is no longer current"
+  ++ flag staleBoolBeqDestLeftover
+    "living summary still names living dest leftover is RejectBoolBeq.lean for identifier Bool.beq (RejectBoolBeq.lean EXISTS (done dest); leftover is ${specs.strictAndLeftoverNeedle})"
+  ++ flag staleBoolBeqSourceLand
+    "living summary still says source land of RejectBoolBeq.lean / Bool.beq in flight (RejectBoolBeq.lean EXISTS (done dest); leftover is ${specs.strictAndLeftoverNeedle})"
+  ++ flag lacksBoolBeqDoneDest
+    "living summary omits RejectBoolBeq.lean EXISTS (done dest)"
+  ++ flag lacksBoolBeqToyCheckExit
+    "living summary omits Bool.beq toy CHECK_EXIT 1 kept reject"
   ++ flag lacksStrictAndToyFailClosed
-    "living summary omits StrictAndToy fail-closed (CHECK_EXIT 1, banner kept reject) on ELF s0sjpz1"
+    "living summary omits StrictAndToy fail-closed (CHECK_EXIT 1, banner kept reject) on the current produced slake-bootstrap ELF"
   ++ flag lacksCompilePathLinearOnS0
-    "living summary omits CompilePathLinear CHECK_EXIT 0 (banner checker returned true) on ELF s0sjpz1"
+    "living summary omits CompilePathLinear CHECK_EXIT 0 (banner checker returned true) on the current produced slake-bootstrap ELF"
   ++ flag staleTypedPassHookStrictAndLeftover
     "living summary still says next leftover is typedPass hook of RejectStrictAnd (RejectStrictAnd typedPass hook GREEN; leftover is ${specs.strictAndLeftoverNeedle})"
   ++ flag lacksRejectStrictAndHookGreen
@@ -677,10 +778,10 @@ in
     "living summary still says next leftover is RejectXor.lean 467 unhooked (RejectXor hook GREEN; ${specs.strictAndLeftoverNeedle})"
   ++ flag lacksXorHooked
     "living summary omits RejectXor.lean 467 hooked"
-  ++ flag lacksFranciscoUseCheckMissing
-    "living summary omits FranciscoUseCheck.lean is MISSING"
+  ++ flag staleFranciscoUseCheckNamed
+    "living summary still names a seat-prefixed UseCheck dest as a product file"
   ++ flag franciscoUseCheckExists
-    "FranciscoUseCheck.lean EXISTS (must stay MISSING; not a living product file)"
+    "seat-prefixed UseCheck dest EXISTS (must stay absent; not a living product file)"
   ++ flag lacksCompilePathLinear
     "living summary omits CompilePathLinear CHECK_EXIT 0"
   ++ flag lacksCondToyFailClosed

@@ -3,49 +3,45 @@
 # from files on this laptop. Does not claim slakeOwnsPackageTypecheck.
 # Does not mix specimen keep with Lean 4 / mathlib clocks. Does not mill.
 # Remote ELF proof is out of this gate. Occupancy 49. FullHost false.
-# Rebuild 23 GREEN. Current ELF s0sjpz1 (149297912 bytes).
-# wpc482yn is no longer current (historical 149261080 bytes).
-# ildbshq8 is no longer current (historical 149216304 bytes).
-# l04l55ig is no longer current (historical 149182256 bytes).
-# p763g8sb is no longer current (historical 149148200 bytes).
-# imsr2xgr is no longer current (historical 149048400 bytes).
-# vh2cdi00 is no longer current. Rebuild 23 is not in flight.
-# TopScan.olean is not the living miss. StrictAndToy CHECK_EXIT 1 on
-# s0sjpz1. CompilePathLinear CHECK_EXIT 0 on s0sjpz1. strictOrToy
-# CHECK_EXIT 1 on wpc482yn (history). CompilePathLinear CHECK_EXIT 0
-# on wpc482yn (history). xorToy fail-closed on ildbshq8 (history).
-# notToy fail-closed on l04l55ig (history). AndToy fail-closed on
-# p763g8sb (history). OrToy fail-closed on imsr2xgr. RejectAnd
-# fail-closed on p763g8sb. RejectNot 466 hooked and fail-closed.
-# RejectXor.lean 467 hooked.
-# Exclusive rebuild 24 of a Bool.bne toy is the living remaining.
-# Current independently reviewed ELF stays s0sjpz1 (149297912 bytes)
-# until that rebuild quotes a NEW store path. RejectBneIdent typedPass
-# hook is GREEN. RejectBneIdent.lean source GREEN 528 lines, reviewer
-# PASS, HostKernel 779. RejectBneIdent EXISTS 528.
-# Living RejectBne.lean EXISTS for token != only. Do not keep
-# typedPass hook of RejectBneIdent as living leftover (hook is GREEN).
-# Do not keep RejectBneIdent.lean 528 unhooked as living leftover
-# (source is GREEN).
-# Do not keep research-after-strictAnd as living leftover. Do not name
-# RejectBneIdent.lean MISSING. Do not name wpc482yn as current.
-# Do not name exclusive rebuild 23 of a strictAnd toy as living leftover
-# (Nix is not still live).
-# RejectStrictAnd typedPass hook GREEN. Do not keep typedPass hook of
-# RejectStrictAnd as living leftover. RejectStrictAnd EXISTS 510.
-# RejectStrictAnd source GREEN. Do not name RejectStrictAnd.lean
-# MISSING as living leftover. Do not name SSH BLOCKED as living
-# leftover. RejectStrictOr EXISTS 510. Do not name
-# RejectStrictOr.lean MISSING as living leftover. Do not name
-# Bool.strictAnd as next remaining. Do not name Bool.strictOr as next
-# remaining. Do not name exclusive rebuild 22 of a strictOr toy as
-# living leftover. Do not name research of the next typedPass leftover
-# after strictOr as living leftover. FranciscoUseCheck.lean is MISSING.
-# Walker.lean 367. UseCheck 177 of 356. Occupancy 49. Do not name
-# ildbshq8 as current. Comments-only C needle
-# (nix/gutierrez-honesty/comments-only-needle.nix) must fail closed:
-# needle.ok true fails this meter. Living tree may stay EVAL_EXIT 0
-# while that needle is EVAL_EXIT 1. Open stays Open.
+# Rebuild 23 GREEN. Current independently reviewed ELF
+# /nix/store/97p32bdbdw6v79yxydi1y4s4s39ksp8j-slake-bootstrap
+# (149467016 bytes). That path is not
+# /nix/store/4s8fq7rcyq65nfl0qgj1pdx6kk7jpf5k-slake-bootstrap
+# (149447232 bytes). /nix/store/4s8fq7rcyq65nfl0qgj1pdx6kk7jpf5k-slake-bootstrap
+# (149447232 bytes) is no longer current.
+# /nix/store/jzaimy5hq45h12h1905ajk1qyjgdjjia-slake-bootstrap
+# (149423320 bytes) is no longer current.
+# /nix/store/s7achs1g5mlxdwk92a6mqnpxwz19c0mz-slake-bootstrap
+# (149403616 bytes) is no longer current.
+# /nix/store/2b2yl85hy7nbcx27xm02h2xq5jcg0mnh-slake-bootstrap
+# (149384352 bytes) is no longer current.
+# /nix/store/vd819cjncxn614xzk47d051msvd93gr1-slake-bootstrap
+# (149334976 bytes) is no longer current. rebuild 24 BLOCKED: Mult-place.drv
+# /nix/store/vnaf6g728b5pph6pgkjj2idmy7jk9sf2-slake-bootstrap-Mult-place.drv
+# signal 9. No NEW ELF from rebuild 24. Copy set already on the builder.
+# dest RejectNotPrefix.lean done. Prefix-not toy CHECK_EXIT 1 kept reject.
+# infix || toy CHECK_EXIT 1 kept reject on the current independently reviewed ELF.
+# infix && toy CHECK_EXIT 1 kept reject on the current independently reviewed ELF.
+# infix ^^ toy CHECK_EXIT 1 kept reject on the current independently reviewed ELF.
+# infix Boolean tokens || && ^^ are dest-and-hook done on this ELF.
+# CompilePathLinear CHECK_EXIT 0. RejectOrInfix.lean EXISTS (done dest).
+# RejectAndInfix.lean EXISTS (done dest). Do not reopen RejectAndInfix.lean as remaining.
+# RejectXorInfix.lean EXISTS (done dest). Do not reopen RejectXorInfix.lean as remaining.
+# Do not reopen RejectNotPrefix.lean as remaining.
+# next leftover after infix Boolean tokens || && ^^ dest-and-hook done is being named.
+# An Ident-suffix name is not a dest. Do not mint an Ident-suffix dest.
+# dest RejectBoolBeq.lean done. Bool.beq toy CHECK_EXIT 1 kept reject.
+# Token == already lives in RejectBeqThm. Bool.beq lives in
+# RejectBoolBeq. BeqIdentToy is not a product dest. An Ident-suffix
+# name is not a dest. Do not mint RejectBang. the later toy directory is bool-beq.
+# RejectBoolBne.lean EXISTS (done dest; rename GREEN). old Ident-suffix
+# path missing. Bool.bne lives in RejectBoolBne. Token != is RejectBne.
+# rebuild 24 prior miss: Mult-place.drv signal 9. Do not name rebuild
+# 24 GREEN.
+# Walker.lean 367. UseCheck 177 of 356. Occupancy 49. Comments-only C
+# needle (nix/gutierrez-honesty/comments-only-needle.nix) must fail
+# closed: needle.ok true fails this meter. Living tree may stay
+# EVAL_EXIT 0 while that needle is EVAL_EXIT 1. Open stays Open.
 #
 #   import ./slake-remaining-distance { inherit lib; root = repoRoot; }
 #   -> { ok, violations, summary }
@@ -147,18 +143,45 @@ let
   leftoverExhaustedOk = leftoverNeedleFails == [ ];
   franciscoUseCheckExists = exists specs.franciscoUseCheckRel;
   franciscoUseCheckRow =
-    if franciscoUseCheckExists then "FranciscoUseCheck.lean EXISTS (FAIL; not a living product file)"
-    else "FranciscoUseCheck.lean is MISSING (not a living product file)";
+    if franciscoUseCheckExists then "seat-prefixed UseCheck dest EXISTS (FAIL; not a living product file)"
+    else "seat-prefixed UseCheck dest is absent (not a living product file)";
   bneExists = exists specs.bneRel;
   bneRow =
     if bneExists then specs.bneLeftoverRowPresent else specs.bneLeftoverRow;
-  bneIdentExists = exists specs.bneIdentRel;
-  bneIdentLines = linesOf specs.bneIdentRel;
-  bneIdentNRow =
-    if bneIdentLines == null then
-      "RejectBneIdent.lean disk MISSING (FAIL; leftover encoding expected source GREEN 528)"
+  rejectBoolBneExists = exists specs.boolBneRel;
+  rejectBoolBneLines = linesOf specs.boolBneRel;
+  rejectBoolBneNRow =
+    if rejectBoolBneLines == null then
+      "RejectBoolBne.lean disk absent (FAIL; rename GREEN expected EXISTS 528)"
     else
-      "${nRow "RejectBneIdent.lean" bneIdentLines} (expect ${toString specs.bneIdentExpect}; source GREEN 528 lines, reviewer PASS, HostKernel 779; RejectBneIdent typedPass hook is GREEN; leftover is exclusive rebuild 24 of a Bool.bne toy; current independently reviewed ELF stays s0sjpz1 (149297912 bytes) until that rebuild quotes a NEW store path; fail if over ${toString specs.lineFailOver})";
+      "${nRow "RejectBoolBne.lean" rejectBoolBneLines} (expect ${toString specs.boolBneExpect}; RejectBoolBne.lean EXISTS (rename GREEN); old Ident-suffix path missing; Bool.bne lives in RejectBoolBne; leftover is next leftover after infix Boolean tokens || && ^^ dest-and-hook done is being named; leftover is rebuild 24 BLOCKED Mult-place.drv signal 9; the current produced slake-bootstrap ELF; fail if over ${toString specs.lineFailOver})";
+  rejectBoolBeqExists = exists specs.boolBeqRel;
+  rejectBoolBeqLines = linesOf specs.boolBeqRel;
+  rejectBoolBeqNRow =
+    if rejectBoolBeqLines == null then
+      "RejectBoolBeq.lean disk absent (FAIL; dest RejectBoolBeq.lean done dest expected EXISTS 531)"
+    else
+      "${nRow "RejectBoolBeq.lean" rejectBoolBeqLines} (expect ${toString specs.boolBeqExpect}; RejectBoolBeq.lean EXISTS (done dest); Bool.beq toy CHECK_EXIT 1 kept reject; Token == already lives in RejectBeqThm; Bool.beq lives in RejectBoolBeq; BeqIdentToy is not a product dest; An Ident-suffix name is not a dest; the later toy directory is bool-beq; leftover is next leftover after infix Boolean tokens || && ^^ dest-and-hook done is being named; leftover is rebuild 24 BLOCKED Mult-place.drv signal 9; the current produced slake-bootstrap ELF; fail if over ${toString specs.lineFailOver})";
+  beqThmExists = exists specs.beqThmRel;
+  beqThmRow =
+    if beqThmExists then "RejectBeqThm.lean EXISTS (Token == already lives in RejectBeqThm)"
+    else "RejectBeqThm.lean disk absent (FAIL; Token == already lives in RejectBeqThm)";
+  notPrefixExists = exists specs.notPrefixRel;
+  notPrefixRow =
+    if notPrefixExists then "RejectNotPrefix.lean EXISTS (done dest); Prefix-not toy CHECK_EXIT 1 kept reject"
+    else "RejectNotPrefix.lean disk absent (FAIL; dest RejectNotPrefix.lean done dest)";
+  orInfixExists = exists specs.orInfixRel;
+  orInfixRow =
+    if orInfixExists then "RejectOrInfix.lean EXISTS (done dest); infix || toy CHECK_EXIT 1 kept reject"
+    else "RejectOrInfix.lean disk absent (FAIL; dest RejectOrInfix.lean done dest)";
+  andInfixExists = exists specs.andInfixRel;
+  andInfixRow =
+    if andInfixExists then "RejectAndInfix.lean EXISTS (done dest); infix && toy CHECK_EXIT 1 kept reject"
+    else "RejectAndInfix.lean disk absent (FAIL; dest RejectAndInfix.lean done dest)";
+  xorInfixExists = exists specs.xorInfixRel;
+  xorInfixRow =
+    if xorInfixExists then "RejectXorInfix.lean EXISTS (done dest); infix ^^ toy CHECK_EXIT 1 kept reject"
+    else "RejectXorInfix.lean disk absent (FAIL; dest RejectXorInfix.lean done dest)";
   matchExists = exists specs.matchRel;
   matchRow =
     if matchExists then specs.matchLeftoverRowPresent else specs.matchLeftoverRow;
@@ -277,7 +300,7 @@ let
     inherit occupancyN occupancyProbe50 occupancyProbe49;
     inherit hkLines ucLines frLines hfLines keptHitLines;
     inherit hostFrontText hostFrontHooked pinText pinLiveRelOk useCheckProgressN;
-    inherit leftoverNeedleFails ifFindWordStructuralOk ifFindWordStaleCallOnLaptop franciscoUseCheckExists bneIdentExists bneIdentLines;
+    inherit leftoverNeedleFails ifFindWordStructuralOk ifFindWordStaleCallOnLaptop franciscoUseCheckExists rejectBoolBneExists rejectBoolBneLines rejectBoolBeqExists rejectBoolBeqLines beqThmExists notPrefixExists orInfixExists andInfixExists xorInfixExists;
     inherit ifExists ifLines iteExists iteLines decideExists decideLines;
     inherit condExists condLines ditExists ditLines dcondExists dcondLines;
     inherit bifExists bifLines orExists orLines andExists andLines notExists notLines probeText probeHasBan;
@@ -400,7 +423,13 @@ let
     + "\n${remainingRow}"
     + "\n${leftoverRow}"
     + "\n${bneRow}"
-    + "\n${bneIdentNRow}"
+    + "\n${rejectBoolBneNRow}"
+    + "\n${rejectBoolBeqNRow}"
+    + "\n${beqThmRow}"
+    + "\n${notPrefixRow}"
+    + "\n${orInfixRow}"
+    + "\n${andInfixRow}"
+    + "\n${xorInfixRow}"
     + "\n${matchRow}"
     + "\n${findWordRow}"
     + "\n${ifRow}"
@@ -448,6 +477,7 @@ let
     + "\n${specs.rebuild21GreenRow}"
     + "\n${specs.rebuild22GreenRow}"
     + "\n${specs.rebuild23GreenRow}"
+    + "\n${specs.rebuild24BlockedRow}"
     + (if ok then "" else "\n" + lib.concatStringsSep "\n" violations);
 in
 {

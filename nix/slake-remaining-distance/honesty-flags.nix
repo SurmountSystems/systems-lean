@@ -1,40 +1,39 @@
 # SPDX-License-Identifier: Unlicense
 # Living-row honesty flags for the remaining-distance meter.
-# Occupancy 49. FullHost false. Rebuild 23 GREEN. Current ELF s0sjpz1.
-# wpc482yn is no longer current. ildbshq8 is no longer current.
-# l04l55ig is no longer current. p763g8sb is no longer current.
-# imsr2xgr is no longer current. vh2cdi00 is no longer current.
-# StrictAndToy CHECK_EXIT 1 on s0sjpz1. CompilePathLinear CHECK_EXIT 0
-# on s0sjpz1. strictOrToy CHECK_EXIT 1 on wpc482yn (history).
-# CompilePathLinear CHECK_EXIT 0 on wpc482yn (history). xorToy
-# fail-closed on ildbshq8 (history). notToy fail-closed on
-# l04l55ig (history). AndToy fail-closed on p763g8sb (history).
-# RejectNot 466 hooked and fail-closed. RejectXor.lean 467 hooked.
-# Exclusive rebuild 24 of a Bool.bne toy is the living remaining.
-# Current independently reviewed ELF stays s0sjpz1 (149297912 bytes)
-# until that rebuild quotes a NEW store path. RejectBneIdent typedPass
-# hook is GREEN. RejectBneIdent.lean source GREEN 528 lines, reviewer
-# PASS, HostKernel 779. RejectBneIdent EXISTS 528.
-# Living RejectBne.lean EXISTS for token != only. Do not keep
-# typedPass hook of RejectBneIdent as living leftover (hook is GREEN).
-# Do not keep RejectBneIdent.lean 528 unhooked as living leftover
-# (source is GREEN).
-# Do not keep research-after-strictAnd as living leftover. Do not name
-# RejectBneIdent.lean MISSING. Do not name wpc482yn as current.
-# Do not name exclusive rebuild 23 of a strictAnd toy as living leftover
-# (Nix is not still live).
-# RejectStrictAnd typedPass hook GREEN. Do not keep typedPass hook of
-# RejectStrictAnd as living leftover. RejectStrictAnd EXISTS 510.
-# RejectStrictAnd source GREEN. Do not name RejectStrictAnd.lean
-# MISSING as living leftover. Do not name SSH BLOCKED as living
-# leftover. RejectStrictOr EXISTS 510. Do not name
-# RejectStrictOr.lean MISSING as living leftover. Do not name
-# Bool.strictAnd as next remaining. Do not name Bool.strictOr as next
-# remaining. Do not name exclusive rebuild 22 of a strictOr toy as
-# living leftover. Do not name research of the next typedPass leftover
-# after strictOr as living leftover. Do not mill.
-# FranciscoUseCheck.lean is
-# MISSING. Open stays Open.
+# Occupancy 49. FullHost false. Rebuild 23 GREEN. Current
+# independently reviewed ELF
+# /nix/store/97p32bdbdw6v79yxydi1y4s4s39ksp8j-slake-bootstrap
+# (149467016 bytes). That path is not
+# /nix/store/4s8fq7rcyq65nfl0qgj1pdx6kk7jpf5k-slake-bootstrap
+# (149447232 bytes). /nix/store/4s8fq7rcyq65nfl0qgj1pdx6kk7jpf5k-slake-bootstrap
+# (149447232 bytes) is no longer current.
+# /nix/store/s7achs1g5mlxdwk92a6mqnpxwz19c0mz-slake-bootstrap
+# (149403616 bytes) is no longer current.
+# /nix/store/2b2yl85hy7nbcx27xm02h2xq5jcg0mnh-slake-bootstrap
+# (149384352 bytes) is no longer current.
+# /nix/store/vd819cjncxn614xzk47d051msvd93gr1-slake-bootstrap
+# (149334976 bytes) is no longer current. rebuild 24 BLOCKED: Mult-place.drv
+# /nix/store/vnaf6g728b5pph6pgkjj2idmy7jk9sf2-slake-bootstrap-Mult-place.drv
+# signal 9. No NEW ELF from rebuild 24. Copy set already on the builder.
+# dest RejectNotPrefix.lean done. Prefix-not toy CHECK_EXIT 1 kept reject.
+# infix || toy CHECK_EXIT 1 kept reject on the current independently reviewed ELF.
+# infix && toy CHECK_EXIT 1 kept reject on the current independently reviewed ELF.
+# infix ^^ toy CHECK_EXIT 1 kept reject on the current independently reviewed ELF.
+# infix Boolean tokens || && ^^ are dest-and-hook done on this ELF.
+# CompilePathLinear CHECK_EXIT 0. RejectOrInfix.lean EXISTS (done dest).
+# RejectAndInfix.lean EXISTS (done dest). Do not reopen RejectAndInfix.lean as remaining.
+# RejectXorInfix.lean EXISTS (done dest). Do not reopen RejectXorInfix.lean as remaining.
+# Do not reopen RejectNotPrefix.lean as remaining.
+# next leftover after infix Boolean tokens || && ^^ dest-and-hook done is being named.
+# An Ident-suffix name is not a dest. Do not mint an Ident-suffix dest.
+# dest RejectBoolBeq.lean done. Bool.beq toy CHECK_EXIT 1 kept reject.
+# Token == already lives in RejectBeqThm. Bool.beq lives in
+# RejectBoolBeq. BeqIdentToy is not a product dest. An Ident-suffix
+# name is not a dest. Do not mint RejectBang. the later toy directory is bool-beq.
+# RejectBoolBne.lean EXISTS (done dest; rename GREEN). old Ident-suffix
+# path missing. Bool.bne lives in RejectBoolBne. Token != is RejectBne.
+# rebuild 24 prior miss: Mult-place.drv signal 9. Do not name rebuild
+# 24 GREEN. Do not mill. Open stays Open.
 { lib, specs, has, rows, disk }:
 let
   inherit (rows)
@@ -107,7 +106,8 @@ let
     || has needle specs.rebuild20GreenRow
     || has needle specs.rebuild21GreenRow
     || has needle specs.rebuild22GreenRow
-    || has needle specs.rebuild23GreenRow;
+    || has needle specs.rebuild23GreenRow
+    || has needle specs.rebuild24BlockedRow;
 
   bneMissingFrozen =
     bneExists && has specs.bneMissingFrozenNeedle specs.rebuild9GreenRow;
@@ -680,28 +680,81 @@ let
     livingHas specs.researchAfterStrictOrNeedle;
   lacksStrictAndLeftover =
     !(livingHas specs.strictAndLeftoverNeedle)
-    || !(livingHas specs.rebuild24UntilNewStoreNeedle)
-    || !(livingHas specs.bneIdentExistsNeedle)
-    || !(livingHas specs.bneIdentSourceGreenNeedle)
-    || !(livingHas specs.bneIdentSourceGreen528Needle)
-    || !(livingHas specs.bneIdentHookGreenNeedle)
+    || !(livingHas specs.rebuild24BlockedNeedle)
+    || !(livingHas specs.multPlaceDrvNeedle)
+    || !(livingHas specs.rebuild24Signal9Needle)
+    || !(livingHas specs.rebuild24PriorMissNeedle)
+    || !(livingHas specs.rebuild10NoNewElfNeedle)
+    || !(livingHas specs.copySetAlreadyNeedle)
+    || !(livingHas specs.boolBneRenameGreenNeedle)
+    || !(livingHas specs.boolBneFormNeedle)
+    || !(livingHas specs.oldIdentSuffixMissingNeedle)
+    || !(livingHas specs.boolBeqDoneDestNeedle)
+    || !(livingHas specs.boolBeqToyCheckExitNeedle)
+    || !(livingHas specs.beqThmTokenNeedle)
+    || !(livingHas specs.boolBeqFormNeedle)
+    || !(livingHas specs.beqIdentToyNotDestNeedle)
+    || !(livingHas specs.identSuffixNotDestNeedle)
+    || !(livingHas specs.laterToyDirNeedle)
+    || !(livingHas specs.boolBeqExistsNeedle)
+    || !(livingHas specs.boolBneExistsNeedle)
     || !(livingHas specs.rejectBneExistsTokenNeedle)
     || !(livingHas specs.leftoverS0sjpz1HashNeedle)
-    || !(livingHas specs.leftoverS0sjpz1BytesNeedle);
-  lacksBneIdentHookGreen =
-    !(livingHas specs.bneIdentHookGreenNeedle);
-  staleTypedPassHookBneIdentLeftover =
-    livingHas specs.staleTypedPassHookBneIdentNeedle;
+    || !(livingHas specs.leftoverS0sjpz1BytesNeedle)
+    || !(livingHas specs.leftoverVd819HashNeedle)
+    || !(livingHas specs.leftoverVd819BytesNeedle)
+    || !(livingHas specs.noLongerCurrentVd819Needle)
+    || !(livingHas specs.leftover2b2HashNeedle)
+    || !(livingHas specs.leftover2b2BytesNeedle)
+    || !(livingHas specs.noLongerCurrent2b2Needle)
+    || !(livingHas specs.leftoverS7achsHashNeedle)
+    || !(livingHas specs.leftoverS7achsBytesNeedle)
+    || !(livingHas specs.noLongerCurrentS7achsNeedle)
+    || !(livingHas specs.leftoverJzaimyHashNeedle)
+    || !(livingHas specs.leftoverJzaimyBytesNeedle)
+    || !(livingHas specs.noLongerCurrentJzaimyNeedle)
+    || !(livingHas specs.leftover4s8HashNeedle)
+    || !(livingHas specs.leftover4s8BytesNeedle)
+    || !(livingHas specs.noLongerCurrent4s8Needle)
+    || !(livingHas specs.prefixNotToyCheckExitNeedle)
+    || !(livingHas specs.rejectNotPrefixDoneDestNeedle)
+    || !(livingHas specs.currentProducedElfNeedle)
+    || !(livingHas specs.independentlyReviewedS0Needle)
+    || !(livingHas specs.infixOrToyCheckExitNeedle)
+    || !(livingHas specs.rejectOrInfixDoneDestNeedle)
+    || !(livingHas specs.infixAndToyCheckExitNeedle)
+    || !(livingHas specs.rejectAndInfixDoneDestNeedle)
+    || !(livingHas specs.infixXorToyCheckExitNeedle)
+    || !(livingHas specs.rejectXorInfixDoneDestNeedle)
+    || !(livingHas specs.infixBooleanTokensDestAndHookDoneNeedle);
+  staleRebuild24Green =
+    livingHas specs.rebuild24GreenNeedle;
+  staleRebuild24InFlight =
+    livingHas specs.staleRebuild24InFlightNeedle
+    || livingHas specs.rebuild24UntilNewStoreNeedle;
+  staleRejectBneIdentNamed =
+    livingHas specs.staleRejectBneIdentNeedle;
+  staleRejectBeqIdentNamed =
+    livingHas specs.staleRejectBeqIdentNeedle;
+  staleRejectBoolBeqIdentNamed =
+    livingHas specs.staleRejectBoolBeqIdentNeedle;
+  staleBoolBneMissing =
+    livingHas specs.staleBoolBneMissingNeedle;
+  staleBoolBneLanding =
+    livingHas specs.boolBneLandingNeedle;
+  staleBoolBneToyLeftover =
+    livingHas specs.boolBneToyRebuildInFlightNeedle;
+  staleLeftoverIdentBne =
+    livingHas specs.leftoverIdentBneNeedle;
+  staleCurrentElfNickname =
+    livingHas specs.staleCurrentElfShortNeedle
+    || livingHas specs.staleCurrentElfPrefixNeedle
+    || livingHas specs.staleCurrentElfParenNeedle
+    || livingHas specs.staleCurrentElfOnNeedle
+    || livingHas specs.staleCurrentElfStaysNeedle;
   staleResearchAfterStrictAnd =
     livingHas specs.researchAfterStrictAndNeedle
     || livingHas specs.staleResearchAfterStrictAndLeftoverNeedle;
-  staleBneIdentMissing =
-    livingHas specs.staleBneIdentMissingNeedle
-    || livingHas specs.staleBneIdentMissingAltNeedle;
-  staleBneIdentUnhooked =
-    livingHas specs.bneIdentUnhookedNeedle;
-  staleBneIdentIdentLeftover =
-    livingHas specs.staleBneIdentIdentLeftoverNeedle;
   staleSshBlockedLeftover =
     livingHas specs.staleSshBlockedLeftoverNeedle;
   staleRebuild23NextLeftover =
@@ -717,6 +770,102 @@ let
     livingHas specs.independentlyReviewedWpcNeedle;
   lacksIndependentlyReviewedS0 =
     !(livingHas specs.independentlyReviewedS0Needle);
+  staleIndependentlyReviewed4s8 =
+    livingHas specs.independentlyReviewed4s8Needle;
+  staleCurrent4s8 =
+    livingHas specs.staleCurrent4s8StoreNeedle
+    || livingHas specs.staleCurrent4s8ShortNeedle
+    || livingHas specs.staleCurrent4s8ProducedNeedle
+    || livingHas specs.staleCurrent4s8StaysNeedle
+    || livingHas specs.staleCurrent4s8ReviewedNeedle;
+  lacksNoLongerCurrent4s8 =
+    !(livingHas specs.noLongerCurrent4s8Needle);
+  staleIndependentlyReviewed2b2 =
+    livingHas specs.independentlyReviewed2b2Needle;
+  staleCurrent2b2 =
+    livingHas specs.staleCurrent2b2StoreNeedle
+    || livingHas specs.staleCurrent2b2ShortNeedle
+    || livingHas specs.staleCurrent2b2ProducedNeedle
+    || livingHas specs.staleCurrent2b2StaysNeedle
+    || livingHas specs.staleCurrent2b2ReviewedNeedle;
+  lacksNoLongerCurrent2b2 =
+    !(livingHas specs.noLongerCurrent2b2Needle);
+  staleIndependentlyReviewedS7achs =
+    livingHas specs.independentlyReviewedS7achsNeedle;
+  staleCurrentS7achs =
+    livingHas specs.staleCurrentS7achsStoreNeedle
+    || livingHas specs.staleCurrentS7achsShortNeedle
+    || livingHas specs.staleCurrentS7achsProducedNeedle
+    || livingHas specs.staleCurrentS7achsStaysNeedle
+    || livingHas specs.staleCurrentS7achsReviewedNeedle;
+  lacksNoLongerCurrentS7achs =
+    !(livingHas specs.noLongerCurrentS7achsNeedle);
+  stalePrefixNotLeftover =
+    livingHas specs.stalePrefixNotLeftoverNeedle;
+  lacksInfixOrToyCheckExit =
+    !(livingHas specs.infixOrToyCheckExitNeedle);
+  lacksRejectOrInfixDoneDest =
+    !(livingHas specs.rejectOrInfixDoneDestNeedle);
+  lacksRejectAndInfixDest =
+    !(livingHas specs.rejectAndInfixDoneDestNeedle);
+  lacksInfixAndToyCheckExit =
+    !(livingHas specs.infixAndToyCheckExitNeedle);
+  lacksInfixXorToyCheckExit =
+    !(livingHas specs.infixXorToyCheckExitNeedle);
+  lacksRejectXorInfixDoneDest =
+    !(livingHas specs.rejectXorInfixDoneDestNeedle);
+  lacksInfixBooleanTokensDestAndHook =
+    !(livingHas specs.infixBooleanTokensDestAndHookDoneNeedle);
+  staleInfixAndResearchLeftover =
+    livingHas specs.staleInfixAndResearchLeftoverNeedle;
+  staleRejectXorInfixIdentNamed =
+    livingHas specs.staleRejectXorInfixIdentNeedle;
+  staleAndInfixHookLeftover =
+    livingHas specs.staleAndInfixHookLeftoverNeedle
+    || livingHas specs.rejectAndInfixExistsNeedle;
+  staleRejectAndInfixIdentNamed =
+    livingHas specs.staleRejectAndInfixIdentNeedle;
+  staleIndependentlyReviewedJzaimy =
+    livingHas specs.independentlyReviewedJzaimyNeedle;
+  staleCurrentJzaimy =
+    livingHas specs.staleCurrentJzaimyStoreNeedle
+    || livingHas specs.staleCurrentJzaimyShortNeedle
+    || livingHas specs.staleCurrentJzaimyProducedNeedle
+    || livingHas specs.staleCurrentJzaimyStaysNeedle
+    || livingHas specs.staleCurrentJzaimyReviewedNeedle;
+  lacksNoLongerCurrentJzaimy =
+    !(livingHas specs.noLongerCurrentJzaimyNeedle);
+  staleBoolBeqResearchLeftover =
+    livingHas specs.staleBoolBeqResearchLeftoverNeedle;
+  lacksPrefixNotToyCheckExit =
+    !(livingHas specs.prefixNotToyCheckExitNeedle);
+  lacksRejectNotPrefixDoneDest =
+    !(livingHas specs.rejectNotPrefixDoneDestNeedle);
+  staleRejectNotPrefixDestLeftover =
+    livingHas specs.staleRejectNotPrefixDestLeftoverNeedle
+    || livingHas specs.staleRejectNotPrefixRemainingNeedle;
+  staleRejectBangNamed =
+    livingHas specs.staleRejectBangNeedle;
+  staleRejectNotPrefixIdentNamed =
+    livingHas specs.staleRejectNotPrefixIdentNeedle;
+  staleIndependentlyReviewedVd819 =
+    livingHas specs.independentlyReviewedVd819Needle;
+  staleCurrentVd819 =
+    livingHas specs.staleCurrentVd819StoreNeedle
+    || livingHas specs.staleCurrentVd819ShortNeedle
+    || livingHas specs.staleCurrentVd819ProducedNeedle
+    || livingHas specs.staleCurrentVd819StaysNeedle
+    || livingHas specs.staleCurrentVd819ReviewedNeedle;
+  lacksNoLongerCurrentVd819 =
+    !(livingHas specs.noLongerCurrentVd819Needle);
+  staleBoolBeqDestLeftover =
+    livingHas specs.staleBoolBeqDestLeftoverNeedle;
+  staleBoolBeqSourceLand =
+    livingHas specs.boolBeqSourceLandNeedle;
+  lacksBoolBeqDoneDest =
+    !(livingHas specs.boolBeqDoneDestNeedle);
+  lacksBoolBeqToyCheckExit =
+    !(livingHas specs.boolBeqToyCheckExitNeedle);
   lacksStrictAndToyFailClosed =
     !(livingHas specs.strictAndToyFailClosedNeedle)
     || !(livingHas specs.strictAndToyFailClosedOnS0Needle)
@@ -764,8 +913,9 @@ let
     livingHas specs.staleRebuild21XorUnhookedNextLeftoverNeedle;
   lacksXorHooked =
     !(livingHas specs.xorHookedNeedle);
-  lacksFranciscoUseCheckMissing =
-    !(livingHas specs.franciscoUseCheckMissingNeedle);
+  staleFranciscoUseCheckNamed =
+    livingHas specs.franciscoUseCheckMissingNeedle
+    || livingHas "FranciscoUseCheck.lean";
   lacksCompilePathLinear =
     !(livingHas "CompilePathLinear CHECK_EXIT 0");
   lacksCondToyFailClosed =
@@ -839,7 +989,9 @@ in
   inherit staleRebuild19WalkerOleanLeftover staleRebuild19EqSomeBinderLeftover staleRebuild19TypecheckDriverLeftover staleRebuild19EdmontonChainLeftover;
   inherit staleRebuild19HostFrontSuccessorInFlight staleRebuild19OldSuccessorInFlight;
   inherit staleRebuild20NextLeftover lacksRebuild20Green lacksTopScanNotLivingMiss staleTopScanOleanLivingMiss;
-  inherit staleRebuild21NextLeftover lacksRebuild21Green staleXorToyStaysNotFailClosed lacksXorToyFailClosed staleResearchAfterXorInFlight staleRebuild22NextLeftover staleResearchAfterStrictOr lacksStrictAndLeftover lacksBneIdentHookGreen staleTypedPassHookBneIdentLeftover staleResearchAfterStrictAnd staleBneIdentMissing staleBneIdentUnhooked staleBneIdentIdentLeftover staleSshBlockedLeftover staleRebuild23NextLeftover lacksRebuild23Green staleRebuild23InFlight staleS0sjpz1LeftoverNotCurrent staleIndependentlyReviewedWpc lacksIndependentlyReviewedS0 lacksStrictAndToyFailClosed lacksCompilePathLinearOnS0 staleTypedPassHookStrictAndLeftover lacksRejectStrictAndHookGreen staleStrictAndRejectMissing staleBoolStrictAndMissingLeftover lacksRejectStrictAndExists staleBoolStrictOrNextLeftover lacksRebuild22Green staleRebuild22InFlight staleRebuild22LeftoverNotGreen staleStrictOrToyStaysNotFailClosed lacksStrictOrToyFailClosed lacksCompilePathLinearOnWpc staleTypedPassHookStrictOrLeftover staleStrictOrRejectMissing staleRebuild21InFlight staleRebuild21LeftoverNotGreen staleXorUnhooked staleRebuild21XorUnhookedNextLeftover lacksXorHooked;
-  inherit lacksFranciscoUseCheckMissing;
+  inherit staleRebuild21NextLeftover lacksRebuild21Green staleXorToyStaysNotFailClosed lacksXorToyFailClosed staleResearchAfterXorInFlight staleRebuild22NextLeftover staleResearchAfterStrictOr lacksStrictAndLeftover staleRebuild24Green staleRebuild24InFlight staleRejectBneIdentNamed staleRejectBeqIdentNamed staleRejectBoolBeqIdentNamed staleBoolBneMissing staleBoolBneLanding staleBoolBneToyLeftover staleLeftoverIdentBne staleCurrentElfNickname staleResearchAfterStrictAnd staleSshBlockedLeftover staleRebuild23NextLeftover lacksRebuild23Green staleRebuild23InFlight staleS0sjpz1LeftoverNotCurrent staleIndependentlyReviewedWpc lacksIndependentlyReviewedS0 lacksStrictAndToyFailClosed lacksCompilePathLinearOnS0 staleTypedPassHookStrictAndLeftover lacksRejectStrictAndHookGreen staleStrictAndRejectMissing staleBoolStrictAndMissingLeftover lacksRejectStrictAndExists staleBoolStrictOrNextLeftover lacksRebuild22Green staleRebuild22InFlight staleRebuild22LeftoverNotGreen staleStrictOrToyStaysNotFailClosed lacksStrictOrToyFailClosed lacksCompilePathLinearOnWpc staleTypedPassHookStrictOrLeftover staleStrictOrRejectMissing staleRebuild21InFlight staleRebuild21LeftoverNotGreen staleXorUnhooked staleRebuild21XorUnhookedNextLeftover lacksXorHooked;
+  inherit staleFranciscoUseCheckNamed;
+  inherit staleIndependentlyReviewedVd819 staleCurrentVd819 lacksNoLongerCurrentVd819 staleBoolBeqDestLeftover staleBoolBeqSourceLand lacksBoolBeqDoneDest lacksBoolBeqToyCheckExit;
+  inherit staleIndependentlyReviewed2b2 staleCurrent2b2 lacksNoLongerCurrent2b2 staleIndependentlyReviewedS7achs staleCurrentS7achs lacksNoLongerCurrentS7achs staleIndependentlyReviewedJzaimy staleCurrentJzaimy lacksNoLongerCurrentJzaimy staleIndependentlyReviewed4s8 staleCurrent4s8 lacksNoLongerCurrent4s8 stalePrefixNotLeftover lacksInfixOrToyCheckExit lacksRejectOrInfixDoneDest lacksRejectAndInfixDest lacksInfixAndToyCheckExit lacksInfixXorToyCheckExit lacksRejectXorInfixDoneDest lacksInfixBooleanTokensDestAndHook staleInfixAndResearchLeftover staleRejectXorInfixIdentNamed staleAndInfixHookLeftover staleRejectAndInfixIdentNamed staleBoolBeqResearchLeftover lacksPrefixNotToyCheckExit lacksRejectNotPrefixDoneDest staleRejectNotPrefixDestLeftover staleRejectBangNamed staleRejectNotPrefixIdentNamed;
   inherit lacksCompilePathLinear lacksCondToyFailClosed lacksDcondToyFailClosed;
 }

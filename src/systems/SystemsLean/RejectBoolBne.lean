@@ -1,9 +1,9 @@
 /-
-  Module: SystemsLean.RejectBneIdent
+  Module: SystemsLean.RejectBoolBne
   A theorem whose conclusion is a Bool-valued `Bool.bne`
   is a Bool ascription, not a Prop theorem. The tactic is
   still `by decide`. KeptHitKernel.hasEqSign maps `=` inside
-  `Bool.bne (1 = 1) true` to HostType.bool, so the bneIdent
+  `Bool.bne (1 = 1) true` to HostType.bool, so the Bool.bne
   toy still makes typedPass true. This helper fail-closes
   that ascription. Whole-identifier `bne` via wordHere "bne"
   hits token `bne` and `Bool.bne` after the dot. It does not
@@ -50,7 +50,7 @@
 import SystemsLean.KeptWalk
 import SystemsLean.MutualForm
 
-namespace SystemsLean.RejectBneIdent
+namespace SystemsLean.RejectBoolBne
 
 open SystemsLean.MutualForm (
   startsWord trim stripCR isIdentChar)
@@ -99,7 +99,7 @@ where
     `strictOr`. Not `dcond`. Not `cond`. Not `dite`. Not
     `bif`. Not `ite`. Not `if` / `then` / `else`. Not
     match-arrow. Not `==`. Not `decide`. -/
-def hasBneIdent (cs : List Char) : Bool :=
+def hasBoolBne (cs : List Char) : Bool :=
   match findWord "bne" cs with
   | none => false
   | some _ => true
@@ -107,7 +107,7 @@ def hasBneIdent (cs : List Char) : Bool :=
 /-- Theorem ascription is ok when it is not whole-identifier
     `bne`. -/
 def thmAscriptionOk (s : String) : Bool :=
-  !(hasBneIdent s.toList)
+  !(hasBoolBne s.toList)
 
 def isWs (c : Char) : Bool :=
   c == ' ' || c == '\t' || c == '\r'
@@ -163,10 +163,10 @@ def thmTypeOf : List String -> Option String
 def thmTypeSrc (src : String) : Option String :=
   thmTypeOf (src.splitOn "\n")
 
-/-- Walk-root toy: optionHostToy shape plus Bool bne.
+/-- Walk-root toy: optionHostToy shape plus Bool.bne.
     Ascription is `Bool.bne (1 = 1) true`, not a
     fun-underscore match-arrow lambda. Inner `=` is required. -/
-def bneIdentToy : String :=
+def boolBneToy : String :=
   "namespace N\n" ++
   "def linearN : Nat := 2\n" ++
   "mutual\n" ++
@@ -190,7 +190,7 @@ def bnebToy : String :=
 
 /-- Identifier `beq` is not whole-identifier `bne`. Must not
     be this helper. -/
-def beqIdentToy : String :=
+def boolBeqToy : String :=
   "namespace N\n" ++
   "def linearN : Nat := 2\n" ++
   "mutual\n" ++
@@ -395,107 +395,107 @@ def rejects (src : String) : Bool :=
   | some t => !thmAscriptionOk t
   | none => false
 
-/-- Bool-valued bne theorem ascription fails closed. -/
-def rejectBneIdent : Bool := rejects bneIdentToy
+/-- Bool-valued Bool.bne theorem ascription fails closed. -/
+def rejectBoolBne : Bool := rejects boolBneToy
 
 /-- Ident `bneb` is not this helper. -/
-def acceptBnebNotBneIdent : Bool :=
+def acceptBnebNotBoolBne : Bool :=
   match thmTypeSrc bnebToy with
   | some t => thmAscriptionOk t && !rejects bnebToy
   | none => false
 
 /-- Identifier `beq` is not this helper. -/
-def acceptBeqIdentNotBneIdent : Bool :=
-  match thmTypeSrc beqIdentToy with
-  | some t => thmAscriptionOk t && !rejects beqIdentToy
+def acceptBoolBeqNotBoolBne : Bool :=
+  match thmTypeSrc boolBeqToy with
+  | some t => thmAscriptionOk t && !rejects boolBeqToy
   | none => false
 
 /-- Token `!=` is not this helper. -/
-def acceptBneTokenNotBneIdent : Bool :=
+def acceptBneTokenNotBoolBne : Bool :=
   match thmTypeSrc bneTokenToy with
   | some t => thmAscriptionOk t && !rejects bneTokenToy
   | none => false
 
 /-- Bool xor is not this helper. -/
-def acceptXorNotBneIdent : Bool :=
+def acceptXorNotBoolBne : Bool :=
   match thmTypeSrc xorToy with
   | some t => thmAscriptionOk t && !rejects xorToy
   | none => false
 
 /-- Bool and is not this helper. -/
-def acceptAndNotBneIdent : Bool :=
+def acceptAndNotBoolBne : Bool :=
   match thmTypeSrc andToy with
   | some t => thmAscriptionOk t && !rejects andToy
   | none => false
 
 /-- Bool or is not this helper. -/
-def acceptOrNotBneIdent : Bool :=
+def acceptOrNotBoolBne : Bool :=
   match thmTypeSrc orToy with
   | some t => thmAscriptionOk t && !rejects orToy
   | none => false
 
 /-- Bool not is not this helper. -/
-def acceptNotNotBneIdent : Bool :=
+def acceptNotNotBoolBne : Bool :=
   match thmTypeSrc notToy with
   | some t => thmAscriptionOk t && !rejects notToy
   | none => false
 
 /-- Bool strictAnd is not this helper. -/
-def acceptStrictAndNotBneIdent : Bool :=
+def acceptStrictAndNotBoolBne : Bool :=
   match thmTypeSrc strictAndToy with
   | some t => thmAscriptionOk t && !rejects strictAndToy
   | none => false
 
 /-- Bool strictOr is not this helper. -/
-def acceptStrictOrNotBneIdent : Bool :=
+def acceptStrictOrNotBoolBne : Bool :=
   match thmTypeSrc strictOrToy with
   | some t => thmAscriptionOk t && !rejects strictOrToy
   | none => false
 
 /-- Bool dcond is not this helper. -/
-def acceptDcondNotBneIdent : Bool :=
+def acceptDcondNotBoolBne : Bool :=
   match thmTypeSrc dcondToy with
   | some t => thmAscriptionOk t && !rejects dcondToy
   | none => false
 
 /-- Bool bif is not this helper. -/
-def acceptBifNotBneIdent : Bool :=
+def acceptBifNotBoolBne : Bool :=
   match thmTypeSrc bifToy with
   | some t => thmAscriptionOk t && !rejects bifToy
   | none => false
 
 /-- Bool dite is not this helper. -/
-def acceptDiteNotBneIdent : Bool :=
+def acceptDiteNotBoolBne : Bool :=
   match thmTypeSrc diteToy with
   | some t => thmAscriptionOk t && !rejects diteToy
   | none => false
 
 /-- Bool cond is not this helper. -/
-def acceptCondNotBneIdent : Bool :=
+def acceptCondNotBoolBne : Bool :=
   match thmTypeSrc condToy with
   | some t => thmAscriptionOk t && !rejects condToy
   | none => false
 
 /-- Bool ite is not this helper. -/
-def acceptIteNotBneIdent : Bool :=
+def acceptIteNotBoolBne : Bool :=
   match thmTypeSrc iteToy with
   | some t => thmAscriptionOk t && !rejects iteToy
   | none => false
 
 /-- `if then else` is not this helper. -/
-def acceptIfNotBneIdent : Bool :=
+def acceptIfNotBoolBne : Bool :=
   match thmTypeSrc ifToy with
   | some t => thmAscriptionOk t && !rejects ifToy
   | none => false
 
 /-- Boolean `==` is not this helper. -/
-def acceptBeqNotBneIdent : Bool :=
+def acceptBeqNotBoolBne : Bool :=
   match thmTypeSrc beqThmToy with
   | some t => thmAscriptionOk t && !rejects beqThmToy
   | none => false
 
 /-- Decide ascription is not this helper. -/
-def acceptDecideNotBneIdent : Bool :=
+def acceptDecideNotBoolBne : Bool :=
   match thmTypeSrc decideAscriptionToy with
   | some t => thmAscriptionOk t && !rejects decideAscriptionToy
   | none => false
@@ -513,16 +513,16 @@ def acceptPropEq : Bool :=
   | none => false
 
 def pinsOk : Bool :=
-  rejectBneIdent && acceptBnebNotBneIdent
-    && acceptBeqIdentNotBneIdent && acceptBneTokenNotBneIdent
-    && acceptXorNotBneIdent && acceptAndNotBneIdent
-    && acceptOrNotBneIdent && acceptNotNotBneIdent
-    && acceptStrictAndNotBneIdent && acceptStrictOrNotBneIdent
-    && acceptDcondNotBneIdent && acceptBifNotBneIdent
-    && acceptDiteNotBneIdent && acceptCondNotBneIdent
-    && acceptIteNotBneIdent && acceptIfNotBneIdent
-    && acceptBeqNotBneIdent && acceptDecideNotBneIdent
+  rejectBoolBne && acceptBnebNotBoolBne
+    && acceptBoolBeqNotBoolBne && acceptBneTokenNotBoolBne
+    && acceptXorNotBoolBne && acceptAndNotBoolBne
+    && acceptOrNotBoolBne && acceptNotNotBoolBne
+    && acceptStrictAndNotBoolBne && acceptStrictOrNotBoolBne
+    && acceptDcondNotBoolBne && acceptBifNotBoolBne
+    && acceptDiteNotBoolBne && acceptCondNotBoolBne
+    && acceptIteNotBoolBne && acceptIfNotBoolBne
+    && acceptBeqNotBoolBne && acceptDecideNotBoolBne
     && acceptTrueThm && acceptPropEq
     && !slakeOwnsPackageTypecheck && !flag
 
-end SystemsLean.RejectBneIdent
+end SystemsLean.RejectBoolBne
