@@ -20,8 +20,8 @@ import SystemsLean.HonestyFront
 import SystemsLean.HonestyThmFront
 import SystemsLean.HonestyDecide
 import SystemsLean.HostKernelReduce
-import SystemsLean.BellerophonHmcBarrel
-import SystemsLean.BellerophonLivePin
+import SystemsLean.HmcBarrel
+import SystemsLean.LivePin
 
 namespace SystemsLean.HonestyEqFront
 
@@ -215,9 +215,9 @@ def parseHonestyEqText (src : String) : Option Module :=
   match parseEqSurface src with
   | some m => some m
   | none =>
-    match BellerophonHmcBarrel.parseHmcBarrel src with
+    match HmcBarrel.parseHmcBarrel src with
     | some m => some m
-    | none => BellerophonLivePin.parseLivePin src
+    | none => LivePin.parseLivePin src
 
 def toy : String :=
   "import SystemsLean.CapableCompose\n" ++
@@ -261,7 +261,7 @@ def namespaceMisses : Bool :=
   | some _ => false
 
 def pinHookAccepts : Bool :=
-  match parseHonestyEqText BellerophonLivePin.pinToy with
+  match parseHonestyEqText LivePin.pinToy with
   | some m => isWellFormed m
   | none => false
 

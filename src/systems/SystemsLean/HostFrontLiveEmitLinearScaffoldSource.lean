@@ -42,6 +42,8 @@ def liveEmitLinearScaffoldSource : String := r#"/-
   EMIT-LINEAR-SMOKE, HOST-EMIT-LINEAR-SMOKE, EmitLinearScaffold,
   LINEAR-EXACT-ONCE, CONSUME_TOKEN_HOST_V0, JOIN-ALG, slake_linear_consume,
   slake_consume_token_consume, NON-SSOT, RUNTIME-FS,
+  linearFixtureMintId, linearFixtureLiveView, linearFixtureSpentView,
+  linearFixtureProgramReady_true, slake_linearFixtureMintId,
   UNIT_SURFACE host surface.
   Module: SystemsLean.EmitLinearScaffold
   Red/green: just systems-host; lake build SystemsLean.EmitLinear.
@@ -185,8 +187,39 @@ def linearCellApiDecls : String :=
     ++ "/* 0 frees once and sets *cell to null. -1 if cell or *cell is null. */\n"
     ++ "int slake_linear_cell_free(slake_linear_cell **cell);\n"
 
+/-- CompilePathLinear names as emit function decls. Allocate and free. -/
+def linearFixtureApiDecls : String :=
+  "/* CompilePathLinear names as emit functions (HOST-EMIT-LINEAR).\n"
+    ++ " * Allocate is slake_linear_cell_alloc. Free is slake_linear_cell_free.\n"
+    ++ " * No garbage collector. No Lean runtime. LINEAR-EXACT-ONCE.\n"
+    ++ " * linear def linearFixtureMintId\n"
+    ++ " * mutual linearFixtureLiveView linearFixtureSpentView\n"
+    ++ " * theorem linearFixtureProgramReady_true\n"
+    ++ " * tactic decide\n"
+    ++ " */\n"
+    ++ "/* linearFixtureMintId: allocate one cell with payload 7 (mint id).\n"
+    ++ " * 0 ok and *out holds the cell. -1 if out is null or alloc fails.\n"
+    ++ " */\n"
+    ++ "int slake_linearFixtureMintId(slake_linear_cell **out);\n"
+    ++ "/* linearFixtureLiveView: allocate one live cell (mutual live view).\n"
+    ++ " * 0 ok and *out holds the cell. -1 if out is null or alloc fails.\n"
+    ++ " */\n"
+    ++ "int slake_linearFixtureLiveView(slake_linear_cell **out);\n"
+    ++ "/* linearFixtureSpentView: exact-once free (mutual spent view).\n"
+    ++ " * 0 frees once and sets *cell to null. -1 if cell or *cell is null.\n"
+    ++ " */\n"
+    ++ "int slake_linearFixtureSpentView(slake_linear_cell **cell);\n"
+    ++ "/* linearFixtureProgramReady_true: allocate then free. tactic decide.\n"
+    ++ " * 1 on success (alloc 0 and free 0). 0 otherwise. No leftover heap.\n"
+    ++ " */\n"
+    ++ "int slake_linearFixtureProgramReady_true(void);\n"
+    ++ "/* linearFixtureUse: call the four named fixture functions.\n"
+    ++ " * 1 if all four return success. 0 otherwise. No leftover heap.\n"
+    ++ " */\n"
+    ++ "int slake_linearFixtureUse(void);\n"
+
 /-- linearHeaderFragment -- freestanding Linear header text (HOST-EMIT-LINEAR SSoT).
-    slake_linear_token + consume_token decls + one owned cell. -/
+    slake_linear_token + consume_token decls + one owned cell + fixture names. -/
 def linearHeaderFragment : String :=
   linearHeaderOpen
     ++ linearTokenApiDecls
@@ -195,6 +228,7 @@ def linearHeaderFragment : String :=
     ++ consumeTokenApiDecls
     ++ "\n"
     ++ linearCellApiDecls
+    ++ linearFixtureApiDecls
 
 /-- host_id body (CONSUME_TOKEN_HOST_V0 greppable string). -/
 def consumeTokenHostIdBody : String :=
@@ -362,6 +396,80 @@ def linearCellBodies : String :=
     ++ "  *cell = 0;\n"
     ++ "  return 0;\n"
     ++ "}\n"
+    ++ "\n"
+
+/-- CompilePathLinear names as emit function bodies. Allocate and free. -/
+def linearFixtureBodies : String :=
+  "/* CompilePathLinear names as emit functions (HOST-EMIT-LINEAR).\n"
+    ++ " * Allocate is slake_linear_cell_alloc. Free is slake_linear_cell_free.\n"
+    ++ " * No garbage collector. No Lean runtime. LINEAR-EXACT-ONCE.\n"
+    ++ " * linear def linearFixtureMintId\n"
+    ++ " * mutual linearFixtureLiveView linearFixtureSpentView\n"
+    ++ " * theorem linearFixtureProgramReady_true\n"
+    ++ " * tactic decide\n"
+    ++ " */\n"
+    ++ "int slake_linearFixtureMintId(slake_linear_cell **out)\n"
+    ++ "{\n"
+    ++ "  /* linear def linearFixtureMintId. Payload is mint id 7. */\n"
+    ++ "  return slake_linear_cell_alloc(out, (uint32_t)7);\n"
+    ++ "}\n"
+    ++ "\n"
+    ++ "int slake_linearFixtureLiveView(slake_linear_cell **out)\n"
+    ++ "{\n"
+    ++ "  /* mutual linearFixtureLiveView. Allocate one live cell. */\n"
+    ++ "  return slake_linear_cell_alloc(out, (uint32_t)7);\n"
+    ++ "}\n"
+    ++ "\n"
+    ++ "int slake_linearFixtureSpentView(slake_linear_cell **cell)\n"
+    ++ "{\n"
+    ++ "  /* mutual linearFixtureSpentView. Exact-once free. */\n"
+    ++ "  return slake_linear_cell_free(cell);\n"
+    ++ "}\n"
+    ++ "\n"
+    ++ "int slake_linearFixtureProgramReady_true(void)\n"
+    ++ "{\n"
+    ++ "  slake_linear_cell *cell;\n"
+    ++ "  int rc_alloc;\n"
+    ++ "  int rc_free;\n"
+    ++ "\n"
+    ++ "  /* theorem linearFixtureProgramReady_true. tactic decide. */\n"
+    ++ "  cell = 0;\n"
+    ++ "  rc_alloc = slake_linearFixtureMintId(&cell);\n"
+    ++ "  if (rc_alloc != 0) {\n"
+    ++ "    return 0;\n"
+    ++ "  }\n"
+    ++ "  rc_free = slake_linearFixtureSpentView(&cell);\n"
+    ++ "  if (rc_free != 0) {\n"
+    ++ "    return 0;\n"
+    ++ "  }\n"
+    ++ "  return 1;\n"
+    ++ "}\n"
+    ++ "\n"
+    ++ "int slake_linearFixtureUse(void)\n"
+    ++ "{\n"
+    ++ "  slake_linear_cell *cell;\n"
+    ++ "  int rc;\n"
+    ++ "\n"
+    ++ "  cell = 0;\n"
+    ++ "  rc = slake_linearFixtureMintId(&cell);\n"
+    ++ "  if (rc != 0) {\n"
+    ++ "    return 0;\n"
+    ++ "  }\n"
+    ++ "  rc = slake_linearFixtureSpentView(&cell);\n"
+    ++ "  if (rc != 0) {\n"
+    ++ "    return 0;\n"
+    ++ "  }\n"
+    ++ "  cell = 0;\n"
+    ++ "  rc = slake_linearFixtureLiveView(&cell);\n"
+    ++ "  if (rc != 0) {\n"
+    ++ "    return 0;\n"
+    ++ "  }\n"
+    ++ "  rc = slake_linearFixtureSpentView(&cell);\n"
+    ++ "  if (rc != 0) {\n"
+    ++ "    return 0;\n"
+    ++ "  }\n"
+    ++ "  return slake_linearFixtureProgramReady_true();\n"
+    ++ "}\n"
 
 /-- Body section open for Linear + ConsumeToken. -/
 def linearBodyOpen : String :=
@@ -378,7 +486,7 @@ def consumeTokenBodyOpen : String :=
     ++ " */\n"
 
 /-- linearBodyFragment -- freestanding Linear body text (HOST-EMIT-LINEAR SSoT).
-    host_id + linear_token_* + consume_token_* + one owned cell. -/
+    host_id + linear_token_* + consume_token_* + one owned cell + fixture names. -/
 def linearBodyFragment : String :=
   linearBodyOpen
     ++ "\n"
@@ -391,6 +499,7 @@ def linearBodyFragment : String :=
     ++ consumeTokenBodies
     ++ "\n"
     ++ linearCellBodies
+    ++ linearFixtureBodies
 
 /-- Ownership comment carries HOST-EMIT-LINEAR + FreestandingEmit embed honesty. -/
 def ownershipHonestyOk : Bool :=
@@ -534,6 +643,6 @@ example : emitLinearReady = true := by decide
 example : emitLinearOk = true := by decide
 
 end SystemsLean.EmitLinear
-"#
+#"
 
 end SystemsLean.HostFrontLiveEmitLinearScaffold

@@ -144,6 +144,90 @@ L1 assigns lanes and does not implement. An L2 does the work and spawns an L3 on
 
 The same subsection is in `~/.grok/AGENTS.md`.
 
+### Gutierrez extra (operator 2026-10-17)
+
+Gutierrez (Grok Gutierrez, also known as Gutierrez) is extra, like Hunter and the builder slot. Gutierrez does not fill a file-coordinator seat.
+
+The six file coordinators stay Adastria, Bellerophon, Callisto, Diaphenes, Edmonton, and Francisco. Do not open a seventh file coordinator.
+
+Gutierrez is a tool builder. Gutierrez ships honesty gates and remaining-distance meters (pure Nix, impure eval, flake not wired unless HITL says so). Gutierrez is extra. Gutierrez is not a seventh file coordinator and does not take their Lean ranges.
+
+Hunter asks L1 and does not build. Gutierrez builds tools. Gutierrez's first action is still spawn an L3. Never assume. Quote command and stdout, or say not sampled.
+
+Gutierrez is an L2 extra. Gutierrez's first action is to spawn an L3. Gutierrez does not inventory, grep, SSH, or edit by itself. It still owns tool-building through L3s.
+
+Every spawn prompt names the write set, the forbidden paths, the check that would falsify the claim, and the held-false bools. Do not assume a file, a count, or a remote ELF.
+
+Never assume. Quote the command and the stdout, or say the figure was not sampled.
+
+Through those L3s, Gutierrez owns inventory of work done by those six, and inventory of live product remaining (typed keep, linear use, allocate-free C).
+
+Gutierrez keeps Adastria, Bellerophon, Callisto, Diaphenes, Edmonton, and Francisco honest by checks that would falsify a chat recap (comments-only C, flipped done bools, occupancy 50, package flag true).
+
+Gutierrez keeps them honest: kept-and-named count, `slakeOwnsPackageTypecheck` stays false, occupancy 49, FullHost false, mills 55 through 69, named C functions versus comments, UseCheck progress, dual clocks (specimen keep versus standing 10.0 days / 40.0m Lean 4 and 5.0 days / 20.0m mathlib; do not add those clocks).
+
+Gutierrez keeps them working on mission remaining. Gutierrez does not refill the six onto a blank search or the 2136-name list.
+
+Gutierrez builds or owns remaining-distance proof tools (pure Nix meters that join existing gates). Gutierrez does not grow smoke C. Gutierrez does not mill. The builder slot is extra and exclusive, so Gutierrez does not SSH.
+
+Gutierrez does not edit Lean product files the six own, and does not take a file range. Gutierrez does not edit HostKernel.lean.
+
+L1 assigns. Gutierrez is an L2 extra. Gutierrez spawns L3s. An L3 does not spawn. There is no L4.
+
+Model grok-4.7. Say xhigh. Never Grok 4.6.
+
+Dual-pin: the same subsection lives in `~/.grok/AGENTS.md`.
+
+### Prove honesty, never idle (operator 2026-10-17)
+
+Every L2 and L3 names the check that would falsify their claim, then builds or runs that check. Chat recap is not honesty.
+
+Gutierrez builds honesty tools and reminds the six. The six remind Gutierrez of their next named remaining.
+
+Everyone knows the next named remaining before they spawn: typed keep, linear use, allocate-free C, or an honesty gate.
+
+Never idle while a disjoint remaining exists. Shotgun: one track lands, the other tests the next miss.
+
+Do not stop because a land feels done. Stop only when a checkable Done when is green, or BLOCKED with quoted evidence (line count over 780, exclusive Nix occupied, named miss absent after a file read).
+
+Do not refill Adastria through Francisco onto the walked 2136-name list. Mission remaining still does not sit idle.
+
+The six file coordinators stay Adastria, Bellerophon, Callisto, Diaphenes, Edmonton, and Francisco. Gutierrez is extra, not a seventh file seat. Gutierrez is a tool builder.
+
+First action of an L2 is spawn an L3. Never assume. Quote command and stdout, or say not sampled.
+
+Dual-pin: the same subsection lives in `~/.grok/AGENTS.md`.
+
+### Use L3s, be clear and specific, never assume (operator 2026-10-17)
+
+Operator restated 2026-10-17: always remember to use L3s, be clear and specific, never assume.
+
+This subsection does not replace L2-coordinates-only, L3-does-the-work, never-assume, or six-file-coordinator law. It restates how those rules apply to an inventory-class job.
+
+1. An L2 first action is spawn an L3. The L2 does not grep. The L2 does not read product files. The L2 does not write an inventory itself.
+2. An L3 prompt must name the report paths to read. Do not assume a report exists. The L3 runs `test -f`, then reads. A missing path is MISSING, not a filled cell.
+3. Honesty cells must quote a path and a line, or say not sampled.
+4. Forbidden on this inventory class of job: SSH, mill, Lean compile, UseCheck edits, KeptHitKernel edits, HostKernel edits, a seventh file seat, refilling Adastria through Francisco onto the 2136-name list.
+5. Dual clocks are named separately (specimen count, Lean 4 standing 10.0 days / 40.0m, mathlib standing 5.0 days / 20.0m). Do not add those clocks.
+6. A guess is labeled a guess. Never assume.
+7. Nested specialists use grok-4.7 at xhigh. Never Grok 4.6.
+
+Do not invent a seventh file coordinator. Do not refill Adastria, Bellerophon, Callisto, Diaphenes, Edmonton, or Francisco.
+
+Addendum 2026-10-17. These Operator corrections apply to this heading, not only to Gutierrez extra or Prove honesty.
+
+Do not assume Gutierrez is impotent. Gutierrez is a tool builder that keeps the six file coordinators honest. Gutierrez is not a seventh file coordinator.
+
+Prove what you need to prove, build the honesty tool, know the next remaining, never idle, and stop only with a checkable blocker.
+
+After the honesty gate lands green, spawn the next L3 immediately. Do not exit.
+
+Next remaining if nix/gutierrez-honesty eval is green: own remaining-distance if that module is still missing, or extend honesty to fail closed on comments-only C by importing nix/slake-linear-fixture-c. Run `test -f` first. Never assume.
+
+Remind the six: their next named remaining, the falsifying check, and that they do not stop idle.
+
+Dual-pin: the same subsection lives in `~/.grok/AGENTS.md`.
+
 ### Shotgun context (operator 2026-10-13)
 
 The operator said always remember. Incorporate this into all goals and plans.
@@ -167,6 +251,61 @@ This does not start a second copy of an exclusive job. For the Systems
 Lean bootstrap, the exclusive job is one remote Nix build on surmount-1,
 nice 19, one Lean thread, 192 GiB ceiling. Do not raise that ceiling. Do
 not compile Lean on the laptop.
+
+Dual-pin: ~/.grok/AGENTS.md, the same heading.
+
+### Questions before the next job (operator 2026-10-17)
+
+Before starting the next product job, answer these in ordinary English as
+complete thoughts. Do not skip them. Do not turn them into a questionnaire.
+
+1. Done-line. Name the one produced artifact that would prove this job
+finished the named remaining work. A front, a skip of kernelFailAt, or a
+comment in C does not satisfy elaborator parity.
+2. Which executable. Say whether the next check will run on an ELF that
+contains this land, or on an older store path.
+3. Last miss. Name what failed the last time we did this kind of land.
+Known misses include String.Slice without .copy, a missing closure name,
+HTTP 401, and an L2 still reading after a few minutes. Say whether that
+miss is already on disk.
+4. Exclusive job. Say whether this work is a second remote Lean or Nix
+job, or disjoint files beside the one builder.
+5. Clocks. Say whether we are mixing a specimen-minute estimate with the
+5.0-day mathlib guess or the 10.0-day Lean 4 front-walk guess. Keep those
+clocks apart.
+6. Hunter beat. Say what got better in the process, the docs, the tools,
+or the workflows, and what repeated miss is still only in chat. A real
+miss is written down. No change is invented to look busy.
+7. Mission versus leftover motion. Say whether this job moves typed
+keep, real linear use, and freestanding allocate/free C, or only a
+seat count, a plan addendum, or a name list already walked.
+8. Falsify the claim. Name the check that would still show a front, a
+kernel skip, or a comment in C after we call the job done.
+9. Bottleneck evidence. Quote free, Lean RSS, or pgrep from this turn,
+or say the figure was not sampled. HostKernel.lean at 779 lines is
+closed. It is not the exclusive remote job.
+10. Next failure already on disk. Name the red test or the next named
+miss that is ready when this land finishes.
+11. Gate before Nix. Say whether a short pure Nix eval would have
+caught String.Slice without .copy, or a missing closure name, before a
+rebuild.
+12. Keep versus emit. A keep of CompilePathLinear does not write C.
+Emit is a later regenerate. Do not mix those clocks.
+13. Paid-once. If this session already burned a rebuild on this miss
+class, the gate or the .copy lands before another Nix.
+14. What stays false. slakeOwnsPackageTypecheck, FullHost, occupancy
+49, and mills 55 through 69 stay unless the Operator names a flip.
+15. First action of the L2. Spawn the L3. An L2 that is still reading
+after a few minutes is doing the work.
+16. After HTTP 401. Replace with a fresh coordinator on written facts.
+Do not resume the dead session.
+
+How the next choice gets better. Answer these before spawn. Keep one
+exclusive remote Nix or Lean on surmount-1 while disjoint writers
+continue. After the job, reconcile wall and nested tokens, write the
+miss, and land the gate that would have caught it. The Hunter beat
+writes a real miss. Pick the next job from typed keep, linear use, or
+allocate-free C.
 
 Dual-pin: ~/.grok/AGENTS.md, the same heading.
 
@@ -888,6 +1027,43 @@ another `ProductPathFreestandingPerform*` or `ProductPathFreestandingCapable*`
 filename. Existing long **filenames** may stay until a named rename residual; they
 are scheduled cleanup, not a template. Next new product-path modules use short
 role names (optionally under a short prefix or folder such as `ProductPath/`).
+
+### Seat names are not product names (operator 2026-10-17)
+
+Operator: `open SystemsLean.EdmontonMutualForm` is nonsense. Always remember.
+
+Adastria, Bellerophon, Callisto, Diaphenes, Edmonton, Francisco, Hunter, and
+Gutierrez are **agent seats** (who owns a write set). They are not compiler
+vocabulary. Product Lean modules name the **form or role** in ordinary English.
+
+The named rename residual landed 2026-10-17. Reviewer PASS. Pointer
+`/home/hunter/.agents/reports/impl-seat-name-revise-l2-2026-10-17.md`.
+Leftover seat IDENTIFIERS in product Lean: 0. Reviewer PASS. Pointers
+`/home/hunter/.agents/reports/impl-seat-ident-revise-l2-2026-10-17.md` and
+`/home/hunter/.agents/reports/review-seat-ident-revise-l3-2026-10-17.md`.
+Living product role names are MutualForm, Walker, UseCheck, ThmForm,
+TacticForm, LivePin, Scan, TypecheckDriver, Chain, TwoEnd, and TopScan.
+Destinations: MutualForm 402, Walker 367, UseCheck 610, ThmForm 120,
+TacticForm 332, LivePin 600, Scan 510, TypecheckDriver 262, Chain 78,
+TwoEnd 344, TopScan 464. HostFront imports SystemsLean.Walker and calls
+parseUseCheck. HostKernel 779. `open SystemsLean.EdmontonMutualForm` is
+gone (Operator miss, history). Remaining-distance Walker meter GREEN
+names Walker.lean 367. FranciscoUseCheck.lean is MISSING (not a living
+product file). Seat-prefixed modules are dests now. Seat names remain
+coordinator-table names. Do not keep "existing stay until rename" as if
+files still have seat prefixes.
+
+The miss was a seat prefix on a `mutual`-block scanner. A tired reader
+should see `MutualForm`, not a seat.
+
+Do **not** mint another product file, namespace, or `open` that starts with a
+seat name (`Edmonton*`, `Francisco*`, `Callisto*`, `Diaphenes*`,
+`Bellerophon*`, `Adastria*`).
+
+Chat, reports, and spawn prompts name the real thing: "the mutual-form
+scanner", "the linear use-check". Seat names stay in the coordinator table.
+
+Dual-pin: `~/.grok/AGENTS.md` section *No nicknames*.
 
 ### Theorem names are product too (operator 2026-09-19)
 

@@ -202,6 +202,34 @@ typedef struct slake_linear_cell {
 int slake_linear_cell_alloc(slake_linear_cell **out, uint32_t payload);
 /* 0 frees once and sets *cell to null. -1 if cell or *cell is null. */
 int slake_linear_cell_free(slake_linear_cell **cell);
+/* CompilePathLinear names as emit functions (HOST-EMIT-LINEAR).
+ * Allocate is slake_linear_cell_alloc. Free is slake_linear_cell_free.
+ * No garbage collector. No Lean runtime. LINEAR-EXACT-ONCE.
+ * linear def linearFixtureMintId
+ * mutual linearFixtureLiveView linearFixtureSpentView
+ * theorem linearFixtureProgramReady_true
+ * tactic decide
+ */
+/* linearFixtureMintId: allocate one cell with payload 7 (mint id).
+ * 0 ok and *out holds the cell. -1 if out is null or alloc fails.
+ */
+int slake_linearFixtureMintId(slake_linear_cell **out);
+/* linearFixtureLiveView: allocate one live cell (mutual live view).
+ * 0 ok and *out holds the cell. -1 if out is null or alloc fails.
+ */
+int slake_linearFixtureLiveView(slake_linear_cell **out);
+/* linearFixtureSpentView: exact-once free (mutual spent view).
+ * 0 frees once and sets *cell to null. -1 if cell or *cell is null.
+ */
+int slake_linearFixtureSpentView(slake_linear_cell **cell);
+/* linearFixtureProgramReady_true: allocate then free. tactic decide.
+ * 1 on success (alloc 0 and free 0). 0 otherwise. No leftover heap.
+ */
+int slake_linearFixtureProgramReady_true(void);
+/* linearFixtureUse: call the four named fixture functions.
+ * 1 if all four return success. 0 otherwise. No leftover heap.
+ */
+int slake_linearFixtureUse(void);
 
 /* ---- Erasure (Erasure.slake / ERASE-RULE-MULT-0 / ERASE-NO-RUNTIME) ----
  * Zero-payload marker for MULT-0; EDGE-PROP / ERASE-PROP imperfect on sides.

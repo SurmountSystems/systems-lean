@@ -59,6 +59,7 @@ def liveFrontSource : String := r#"/-
   hostFrontHostElaboratorResidualRemains, hostFrontDoesNotClaimPeerGreen,
   HOST-FRONT-SMOKE, HOST-FRONT-THEOREM, HostFrontTheorems, hostFrontReady_true,
   slake-host-front, just host-front, goldens/host-front, parseSource,
+  walkKept, keptHitModule, KEPT-FORM-DROPPED, KeptWalk, KeptDrop,
   EMPTY-MODULE-FAIL-CLOSED, LINE-SHAPE, UNKNOWN-CMD, NOT-WELL-FORMED,
   ZERO-CTOR-INDUCTIVE, PARSE-FAIL, multFixtureModule, goodG3Text, goodG4Text,
   goodG5Text, goodG6Text, goodG7Text, LINEAR-EXACT-ONCE, shareNat, polyId,
@@ -69,8 +70,11 @@ def liveFrontSource : String := r#"/-
   Module: SystemsLean.HostFront
   The one-line dialect line parser lives in SystemsLean.HostFrontLine.
   foldLines, parseSource, pins, and the driver stay here.
-  parseSource still calls EdmontonChain only when that dialect rejects.
-  The mutual-form reader stays last in that chain.
+  parseSource calls the reader chain when that dialect rejects.
+  walkKept runs when the reader chain returns none (KeptHit keep, not Cmd theorems).
+  parseUseCheck runs when the reader chain and walkKept return none.
+  Hollow reader-chain finish (namespace and end) is drop-fail (KEPT-FORM-DROPPED).
+  The mutual-form scanner stays last in that reader chain.
   Long-file peel: HOST-FRONT-THEOREM + HOST-FRONT-SMOKE in
   SystemsLean.HostFrontTheorems (same namespace). Dual-pinned golden texts +
   file names in SystemsLean.HostFrontGoldens (same namespace).
@@ -87,7 +91,10 @@ import SystemsLean.HostTerm
 import SystemsLean.Mult
 import SystemsLean.HostFrontGoldens
 import SystemsLean.HostFrontLine
-import SystemsLean.EdmontonChain
+import SystemsLean.ReaderChain
+import SystemsLean.KeptWalk
+import SystemsLean.KeptDrop
+import SystemsLean.Walker
 
 namespace SystemsLean.HostFront
 
@@ -211,23 +218,64 @@ def foldLines (lines : List String) : FrontResult :=
         | LineParse.cmd c => go modName (cmds ++ [c]) rest
   go none [] lines
 
+/-- IR witness for a KeptHit. Linear and mutual names as def_. No theorem Cmd. -/
+def keptHitModule (h : SystemsLean.KeptWalk.KeptHit) : Module :=
+  let mf := h.triple.mutualForm
+  let df := h.triple.linearDef
+  let ns := n df.defName
+  { name := ns
+    commands :=
+      [ Cmd.namespace ns
+      , Cmd.def_ (n mf.leftName) none (Term.litNat 0)
+      , Cmd.def_ (n mf.rightName) none (Term.litNat 1)
+      , Cmd.def_ (n df.defName) none (Term.litNat 2)
+      , Cmd.endNamespace ns ] }
+
 /-- Parse full source text (newline-separated). Greppable: parseSource.
-    The one-line dialect stays first. EdmontonChain runs only when that
-    dialect rejects. The mutual-form reader is last in that chain. -/
+    The one-line dialect stays first. ReaderChain runs only when that
+    dialect rejects. walkKept runs when the reader chain returns none. Hollow
+    namespace and end is drop-fail. The mutual-form scanner is last in
+    that reader chain. parseUseCheck runs when those return none. -/
 def parseSource (src : String) : FrontResult :=
   let folded : FrontResult := foldLines (src.splitOn "\n")
   match folded with
   | FrontResult.accept m => FrontResult.accept m
-  | FrontResult.reject _ =>
-    match SystemsLean.EdmontonChain.parseEdmonton src with
-    | some m => FrontResult.accept m
-    | none => folded
+  | FrontResult.reject r =>
+    match SystemsLean.ReaderChain.parseReaderChain src with
+    | some m =>
+      match SystemsLean.KeptDrop.dropFail src (some m) with
+      | some m2 => FrontResult.accept m2
+      | none =>
+        if SystemsLean.KeptDrop.hollowCmds m.commands then
+          match SystemsLean.KeptWalk.walkKept src with
+          | some h => FrontResult.accept (keptHitModule h)
+          | none => FrontResult.reject SystemsLean.KeptDrop.reasonDropped
+        else
+          FrontResult.accept m
+    | none =>
+      match SystemsLean.KeptWalk.walkKept src with
+      | some h => FrontResult.accept (keptHitModule h)
+      | none =>
+        match SystemsLean.Walker.parseUseCheck src with
+        | some m => FrontResult.accept m
+        | none => FrontResult.reject r
 
 /-- Accept path: isWellFormed true on accepted module. -/
 def acceptOk (r : FrontResult) : Bool :=
   match r with
   | FrontResult.accept m => isWellFormed m
   | FrontResult.reject _ => false
+
+/-- walkKept keep: theorem/tactic/mutual/linear-def is not a front reject. -/
+def parseSourceKeptWalkAccepts : Bool :=
+  match parseSource SystemsLean.KeptWalk.keptToy with
+  | FrontResult.accept m =>
+    isWellFormed m && !SystemsLean.KeptDrop.hollowCmds m.commands
+  | FrontResult.reject _ => false
+
+/-- Hollow namespace and end still fails. Greppable: KEPT-FORM-DROPPED. -/
+def parseSourceHollowFails : Bool :=
+  !(parseSource SystemsLean.KeptWalk.hollowToy).isAccept
 
 /-! ### Golden structural pins (embedded dual-pinned strings) -/
 

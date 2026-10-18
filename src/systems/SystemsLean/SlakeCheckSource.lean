@@ -53,6 +53,8 @@ import SystemsLean.HonestyDualResThmFront
 import SystemsLean.HonestyEmitApplyFront
 import SystemsLean.HonestyEmitScafFront
 import SystemsLean.MultFront
+import SystemsLean.KeptHitKernel
+import SystemsLean.KeptReject
 
 namespace SystemsLean.SlakeCheckSource
 
@@ -377,6 +379,14 @@ def acceptsSource (src : String) : Prop :=
     and stopped. TOKEN is the first token not consumed.
     some "kernel reject NAME" when a front yields a module and the
     kernel fails. NAME is the failing command, or ill-formed.
+    some "kept reject" when a kept-walk hit fails acceptKept and
+    kernelFailAt is none. Matching Nat views take that path.
+    A typed KeptHit walk is a pass: Bool or Prop theorem, decide,
+    matching Option Host mutual views, and a linear Nat mint def.
+    CompilePathLinear still takes the acceptKept arm. Count stays 1.
+    That pass does not call kernelFailAt on an untyped Cmd.def_.
+    Hollow namespace and end is not that pass.
+    Missing any of the four is not that pass.
     Does not call Lean.Elab.processCommands.
     A missing object file is not a rejection.
     slakeOwnsPackageTypecheck stays false. -/
@@ -388,8 +398,8 @@ def rejectLayer (src : String) : Option String :=
     | none => some "front reject"
   | some m =>
     match SystemsLean.HostKernel.kernelFailAt m with
-    | none => none
-    | some label => some ("kernel reject " ++ label)
+    | none => SystemsLean.KeptReject.afterKept src none
+    | some label => SystemsLean.KeptReject.afterKept src (some label)
 
 /-- Shared reader, then HostKernel.slakeChecker.
     The Mult front reads the SystemsLean/Mult.lean surface.

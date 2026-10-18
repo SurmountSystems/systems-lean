@@ -18,7 +18,7 @@
 import SystemsLean.HostTerm
 import SystemsLean.HonestyFront
 import SystemsLean.HonestyStrCatFront
-import SystemsLean.DiaphenesTacticForm
+import SystemsLean.TacticForm
 
 namespace SystemsLean.HonestyTrueCatFront
 
@@ -425,16 +425,16 @@ termination_by fuel
 def parseHonestyTrueCatText (src : String) : Option Module :=
   match strip src.toList SMode.code [] with
   | none =>
-    SystemsLean.DiaphenesTacticForm.parseTacticForm src
+    SystemsLean.TacticForm.parseTacticForm src
   | some kept =>
     match tok tokFuel kept TMode.norm [] with
     | none =>
-      SystemsLean.DiaphenesTacticForm.parseTacticForm src
+      SystemsLean.TacticForm.parseTacticForm src
     | some ts =>
       match parseItems itemFuel emptySt ts with
       | some m => some m
       | none =>
-        SystemsLean.DiaphenesTacticForm.parseTacticForm src
+        SystemsLean.TacticForm.parseTacticForm src
 
 def tacticFallbackSome : Bool :=
   match parseHonestyTrueCatText (

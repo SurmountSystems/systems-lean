@@ -23,7 +23,7 @@ import SystemsLean.HonestyCapable
 import SystemsLean.HonestyCompose
 import SystemsLean.HonestyThmFront
 import SystemsLean.HonestyPipelineFront
-import SystemsLean.DiaphenesTacticForm
+import SystemsLean.TacticForm
 
 namespace SystemsLean.HonestyWriteFront
 
@@ -160,16 +160,16 @@ def parseToks (ts : List String) : Option Module :=
 def parseHonestyWriteText (src : String) : Option Module :=
   match strip src.toList HonestyFront.SMode.code [] with
   | none =>
-    SystemsLean.DiaphenesTacticForm.parseTacticForm src
+    SystemsLean.TacticForm.parseTacticForm src
   | some kept =>
     match tok kept TMode.norm [] with
     | none =>
-      SystemsLean.DiaphenesTacticForm.parseTacticForm src
+      SystemsLean.TacticForm.parseTacticForm src
     | some ts =>
       match parseToks ts with
       | some m => some m
       | none =>
-        SystemsLean.DiaphenesTacticForm.parseTacticForm src
+        SystemsLean.TacticForm.parseTacticForm src
 
 def filterText : String :=
   "def filterArgs : List String -> List String\n" ++

@@ -21,7 +21,7 @@
 import SystemsLean.HostTerm
 import SystemsLean.HonestyFront
 import SystemsLean.HonestyNatClaimFront
-import SystemsLean.DiaphenesTacticForm
+import SystemsLean.TacticForm
 
 namespace SystemsLean.HonestyStrCatFront
 
@@ -146,7 +146,7 @@ def parseHonestyStrCatText (src : String) :
   match ownParse src with
   | some m => some m
   | none =>
-    SystemsLean.DiaphenesTacticForm.parseTacticForm src
+    SystemsLean.TacticForm.parseTacticForm src
 
 def tacticFallbackSome : Bool :=
   match parseHonestyStrCatText (

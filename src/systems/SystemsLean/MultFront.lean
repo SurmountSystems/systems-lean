@@ -28,7 +28,7 @@ import SystemsLean.LessThan
 import SystemsLean.MultFrontBinders
 import SystemsLean.MultFrontType
 import SystemsLean.TheoremBinder
-import SystemsLean.FranciscoChain
+import SystemsLean.Chain
 
 namespace SystemsLean.MultFront
 
@@ -731,7 +731,7 @@ def finishModule (cmds : List Cmd) : Option Module :=
     `some` of a quoted literal is Term.some_ of Term.litString.
     Does not read the filesystem. Does not call Lean.Elab.processCommands.
     A parsed mult module is returned as itself.
-    None tries SystemsLean.FranciscoChain.parseFrancisco.
+    None tries SystemsLean.Chain.parseChain.
     Does not claim an on-disk file was accepted. -/
 def parseMultText (src : String) : Option Module :=
   let parsed : Option Module :=
@@ -749,7 +749,7 @@ def parseMultText (src : String) : Option Module :=
           none
   match parsed with
   | some m => some m
-  | none => SystemsLean.FranciscoChain.parseFrancisco src
+  | none => SystemsLean.Chain.parseChain src
 
 /-- `src` is in the SystemsLean/Mult.lean dialect when parseMultText accepts it.
     The string is that file's text, not a golden and not full Lean 4.

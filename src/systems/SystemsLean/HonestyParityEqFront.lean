@@ -2,7 +2,7 @@
   Module: SystemsLean.HonestyParityEqFront
   Front for theorems and examples over SystemsLean.DualEqWriteParity.
   The import string selects the seed. The file name is not stored.
-  A file that is not this parity shape may still match a Callisto shape.
+  A file that is not this parity shape may still match a theorem-form shape.
   DualEqWriteParity.lean and DualEqWriteParityMain.lean are none.
   Every theorem and every example is checked with decideHolds.
   A mismatch is none. There is no typeless Bool stand-in.
@@ -20,31 +20,31 @@
 import SystemsLean.HonestyDecide
 import SystemsLean.HonestyFront
 import SystemsLean.HonestyThmFront
-import SystemsLean.CallistoLiveTriple
-import SystemsLean.CallistoLivePair
-import SystemsLean.CallistoKernelTwo
-import SystemsLean.CallistoRawEmbed
-import SystemsLean.CallistoLiveTrue
-import SystemsLean.CallistoLiveMut
-import SystemsLean.CallistoLiveFour
-import SystemsLean.CallistoLiveRear
-import SystemsLean.CallistoLiveSurface
-import SystemsLean.CallistoLoadPair
-import SystemsLean.CallistoFiveTrue
-import SystemsLean.CallistoCheckDriver
-import SystemsLean.CallistoCheckBarrel
-import SystemsLean.CallistoCheckCite
-import SystemsLean.CallistoLinearStruct
-import SystemsLean.CallistoLinearThm
-import SystemsLean.CallistoMultFront
-import SystemsLean.CallistoPathPlan
-import SystemsLean.CallistoProofCases
-import SystemsLean.CallistoBenchMain
-import SystemsLean.CallistoSelfHost
-import SystemsLean.CallistoElfThm
-import SystemsLean.CallistoImportOnly
-import SystemsLean.CallistoThmForm
-import SystemsLean.CallistoThmOne
+import SystemsLean.LiveTriple
+import SystemsLean.LivePair
+import SystemsLean.KernelTwo
+import SystemsLean.RawEmbed
+import SystemsLean.LiveTrue
+import SystemsLean.LiveMut
+import SystemsLean.LiveFour
+import SystemsLean.LiveRear
+import SystemsLean.LiveSurface
+import SystemsLean.LoadPair
+import SystemsLean.FiveTrue
+import SystemsLean.CheckDriver
+import SystemsLean.CheckBarrel
+import SystemsLean.CheckCite
+import SystemsLean.LinearStruct
+import SystemsLean.LinearThm
+import SystemsLean.MultFrontMut
+import SystemsLean.PathPlan
+import SystemsLean.ProofCases
+import SystemsLean.BenchMain
+import SystemsLean.SelfHostCatch
+import SystemsLean.ElfThm
+import SystemsLean.ImportOnly
+import SystemsLean.ThmForm
+import SystemsLean.ThmOne
 
 namespace SystemsLean.HonestyParityEqFront
 
@@ -437,7 +437,7 @@ def finish (ns : String) (w : ParityWalk) (ts : List String) :
   else
     none
 
-/-- Parity seed only. none here still tries the Callisto shapes. -/
+/-- Parity seed only. none here still tries the theorem-form shapes. -/
 def parseParityOnly (src : String) : Option Module :=
   match strip src.toList SMode.code [] with
   | none => none
@@ -476,39 +476,39 @@ def tryParse (src : String) :
     | none => tryParse src ps
 
 /-- Existing shapes first. parseThmOne stays last. -/
-def callistoParsers : List (String -> Option Module) :=
-  [ SystemsLean.CallistoLiveTriple.parseLiveTriple
-  , SystemsLean.CallistoLivePair.parseLivePair
-  , SystemsLean.CallistoKernelTwo.parseKernelTwo
-  , SystemsLean.CallistoRawEmbed.parseRawEmbed
-  , SystemsLean.CallistoLiveTrue.parseLiveTrue
-  , SystemsLean.CallistoLiveMut.parseLiveMut
-  , SystemsLean.CallistoLiveFour.parseLiveFour
-  , SystemsLean.CallistoLiveRear.parseLiveRear
-  , SystemsLean.CallistoLiveSurface.parseLiveSurface
-  , SystemsLean.CallistoLoadPair.parseLoadPair
-  , SystemsLean.CallistoFiveTrue.parseFiveTrue
-  , SystemsLean.CallistoCheckDriver.parseCheckDriver
-  , SystemsLean.CallistoCheckBarrel.parseCheckBarrel
-  , SystemsLean.CallistoCheckCite.parseCheckCite
-  , SystemsLean.CallistoLinearStruct.parseLinearStruct
-  , SystemsLean.CallistoLinearThm.parseLinearThm
-  , SystemsLean.CallistoMultFront.parseMultFront
-  , SystemsLean.CallistoPathPlan.parsePathPlan
-  , SystemsLean.CallistoProofCases.parseProofCases
-  , SystemsLean.CallistoBenchMain.parseBenchMain
-  , SystemsLean.CallistoSelfHost.parseSelfHost
-  , SystemsLean.CallistoElfThm.parseElfThm
-  , SystemsLean.CallistoImportOnly.parseImportOnly
-  , SystemsLean.CallistoThmForm.parseThmForm
-  , SystemsLean.CallistoThmOne.parseThmOne
+def thmFormParsers : List (String -> Option Module) :=
+  [ SystemsLean.LiveTriple.parseLiveTriple
+  , SystemsLean.LivePair.parseLivePair
+  , SystemsLean.KernelTwo.parseKernelTwo
+  , SystemsLean.RawEmbed.parseRawEmbed
+  , SystemsLean.LiveTrue.parseLiveTrue
+  , SystemsLean.LiveMut.parseLiveMut
+  , SystemsLean.LiveFour.parseLiveFour
+  , SystemsLean.LiveRear.parseLiveRear
+  , SystemsLean.LiveSurface.parseLiveSurface
+  , SystemsLean.LoadPair.parseLoadPair
+  , SystemsLean.FiveTrue.parseFiveTrue
+  , SystemsLean.CheckDriver.parseCheckDriver
+  , SystemsLean.CheckBarrel.parseCheckBarrel
+  , SystemsLean.CheckCite.parseCheckCite
+  , SystemsLean.LinearStruct.parseLinearStruct
+  , SystemsLean.LinearThm.parseLinearThm
+  , SystemsLean.MultFrontMut.parseMultFront
+  , SystemsLean.PathPlan.parsePathPlan
+  , SystemsLean.ProofCases.parseProofCases
+  , SystemsLean.BenchMain.parseBenchMain
+  , SystemsLean.SelfHostCatch.parseSelfHost
+  , SystemsLean.ElfThm.parseElfThm
+  , SystemsLean.ImportOnly.parseImportOnly
+  , SystemsLean.ThmForm.parseThmForm
+  , SystemsLean.ThmOne.parseThmOne
   ]
 
-/-- Parity shape, else one Callisto shape, else none. -/
+/-- Parity shape, else one theorem-form shape, else none. -/
 def parseHonestyParityEqText (src : String) : Option Module :=
   match parseParityOnly src with
   | some m => some m
-  | none => tryParse src callistoParsers
+  | none => tryParse src thmFormParsers
 
 def parityToyHead : String :=
   "import SystemsLean.DualEqWriteParity\n" ++

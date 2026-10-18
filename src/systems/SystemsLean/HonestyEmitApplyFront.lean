@@ -29,13 +29,13 @@
 
 import SystemsLean.HonestyDecide
 import SystemsLean.HonestyFront
-import SystemsLean.BellerophonRawString
-import SystemsLean.BellerophonImportThm
-import SystemsLean.BellerophonImportLit
-import SystemsLean.BellerophonImportCode
-import SystemsLean.BellerophonNsCode
-import SystemsLean.BellerophonMutualEnd
-import SystemsLean.BellerophonImportNs
+import SystemsLean.RawString
+import SystemsLean.ImportThm
+import SystemsLean.ImportLit
+import SystemsLean.ImportCode
+import SystemsLean.NsCode
+import SystemsLean.MutualEnd
+import SystemsLean.ImportNs
 
 namespace SystemsLean.HonestyEmitApplyFront
 
@@ -751,23 +751,23 @@ def parseHonestyEmitApplyText (src : String) : Option Module :=
   match parseEmitApplySeed src with
   | some m => some m
   | none =>
-    match BellerophonRawString.parseRawString src with
+    match RawString.parseRawString src with
     | some m => some m
     | none =>
-      match BellerophonImportThm.parseImportThm src with
+      match ImportThm.parseImportThm src with
       | some m => some m
       | none =>
-        match BellerophonImportLit.parseImportLit src with
+        match ImportLit.parseImportLit src with
         | some m => some m
         | none =>
-          match BellerophonImportCode.parseImportCode src with
+          match ImportCode.parseImportCode src with
           | some m => some m
           | none =>
-            match BellerophonNsCode.parseNsCode src with
+            match NsCode.parseNsCode src with
             | some m => some m
             | none =>
-              match BellerophonMutualEnd.parseMutualEnd src with
+              match MutualEnd.parseMutualEnd src with
               | some m => some m
-              | none => BellerophonImportNs.parseImportNs src
+              | none => ImportNs.parseImportNs src
 
 end SystemsLean.HonestyEmitApplyFront

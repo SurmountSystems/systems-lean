@@ -9,14 +9,14 @@
   A different literal is none. This is not a general Lean parser.
   `&&` lowers to `if c then t else false`, which the kernel
   already checks as Bool. More than 62 literal defs are handed to
-  BellerophonLongLiteral, which keeps at most 62. A false Bool stays
+  LongLiteral, which keeps at most 62. A false Bool stays
   false. Does not call Lean.Elab.processCommands.
   slakeOwnsPackageTypecheck stays false.
   Module must stay ASCII.
 -/
 
 import SystemsLean.HostTerm
-import SystemsLean.BellerophonLongLiteral
+import SystemsLean.LongLiteral
 
 namespace SystemsLean.HonestyFront
 
@@ -342,8 +342,8 @@ def parseHonestyText (src : String) : Option Module :=
           match parseDefs parseFuel [] [] [] rest2 with
           | none => none
           | some (defs, rest3) =>
-            if defs.length >= BellerophonLongLiteral.minDefs then
-              BellerophonLongLiteral.parseLongLiteral src
+            if defs.length >= LongLiteral.minDefs then
+              LongLiteral.parseLongLiteral src
             else
               finish ns defs rest3
       | _ => none

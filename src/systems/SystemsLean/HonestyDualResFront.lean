@@ -19,15 +19,15 @@
 -/
 
 import SystemsLean.HonestyFront
-import SystemsLean.AdastriaScan
-import SystemsLean.AdastriaElabMeet
-import SystemsLean.AdastriaEmitUnit
-import SystemsLean.AdastriaHostFrontLive
-import SystemsLean.AdastriaHostModCheck
-import SystemsLean.AdastriaHostImport
-import SystemsLean.AdastriaEqBinder
-import SystemsLean.AdastriaFsEmitLoad
-import SystemsLean.AdastriaFrontGoldens
+import SystemsLean.Scan
+import SystemsLean.ElabMeetForm
+import SystemsLean.EmitUnitForm
+import SystemsLean.HostFrontLiveForm
+import SystemsLean.HostModCheckForm
+import SystemsLean.HostImportForm
+import SystemsLean.EqBinderForm
+import SystemsLean.FsEmitLoadForm
+import SystemsLean.FrontGoldensForm
 
 namespace SystemsLean.HonestyDualResFront
 
@@ -275,38 +275,38 @@ def parseDualOnly (src : String) : Option Module :=
           | none => none
         | _ => none
 
-def parseAdastria (src : String) : Option Module :=
-  match SystemsLean.AdastriaScan.parse src with
+def parseScanForms (src : String) : Option Module :=
+  match SystemsLean.Scan.parse src with
   | some m => some m
   | none =>
-    match SystemsLean.AdastriaElabMeet.parse src with
+    match SystemsLean.ElabMeetForm.parse src with
     | some m => some m
     | none =>
-      match SystemsLean.AdastriaEmitUnit.parse src with
+      match SystemsLean.EmitUnitForm.parse src with
       | some m => some m
       | none =>
-        match SystemsLean.AdastriaHostFrontLive.parse src with
+        match SystemsLean.HostFrontLiveForm.parse src with
         | some m => some m
         | none =>
-          match SystemsLean.AdastriaHostModCheck.parse src with
+          match SystemsLean.HostModCheckForm.parse src with
           | some m => some m
           | none =>
-            match SystemsLean.AdastriaHostImport.parse src with
+            match SystemsLean.HostImportForm.parse src with
             | some m => some m
             | none =>
-              match SystemsLean.AdastriaEqBinder.parse src with
+              match SystemsLean.EqBinderForm.parse src with
               | some m => some m
               | none =>
-                match SystemsLean.AdastriaFsEmitLoad.parse src with
+                match SystemsLean.FsEmitLoadForm.parse src with
                 | some m => some m
                 | none =>
-                  SystemsLean.AdastriaFrontGoldens.parse src
+                  SystemsLean.FrontGoldensForm.parse src
 
-/-- Dual shape first. Adastria shapes only when that parse is none. -/
+/-- Dual shape first. Scan forms only when that parse is none. -/
 def parseHonestyDualResText (src : String) : Option Module :=
   match parseDualOnly src with
   | some m => some m
-  | none => parseAdastria src
+  | none => parseScanForms src
 
 def dualHead : String :=
   "import SystemsLean.ProductPath\n" ++

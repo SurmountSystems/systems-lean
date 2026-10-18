@@ -105,6 +105,34 @@ typedef struct slake_linear_cell {
 int slake_linear_cell_alloc(slake_linear_cell **out, uint32_t payload);
 /* 0 frees once and sets *cell to null. -1 if cell or *cell is null. */
 int slake_linear_cell_free(slake_linear_cell **cell);
+/* CompilePathLinear names as emit functions (HOST-EMIT-LINEAR).
+ * Allocate is slake_linear_cell_alloc. Free is slake_linear_cell_free.
+ * No garbage collector. No Lean runtime. LINEAR-EXACT-ONCE.
+ * linear def linearFixtureMintId
+ * mutual linearFixtureLiveView linearFixtureSpentView
+ * theorem linearFixtureProgramReady_true
+ * tactic decide
+ */
+/* linearFixtureMintId: allocate one cell with payload 7 (mint id).
+ * 0 ok and *out holds the cell. -1 if out is null or alloc fails.
+ */
+int slake_linearFixtureMintId(slake_linear_cell **out);
+/* linearFixtureLiveView: allocate one live cell (mutual live view).
+ * 0 ok and *out holds the cell. -1 if out is null or alloc fails.
+ */
+int slake_linearFixtureLiveView(slake_linear_cell **out);
+/* linearFixtureSpentView: exact-once free (mutual spent view).
+ * 0 frees once and sets *cell to null. -1 if cell or *cell is null.
+ */
+int slake_linearFixtureSpentView(slake_linear_cell **cell);
+/* linearFixtureProgramReady_true: allocate then free. tactic decide.
+ * 1 on success (alloc 0 and free 0). 0 otherwise. No leftover heap.
+ */
+int slake_linearFixtureProgramReady_true(void);
+/* linearFixtureUse: call the four named fixture functions.
+ * 1 if all four return success. 0 otherwise. No leftover heap.
+ */
+int slake_linearFixtureUse(void);
 # LINEAR_C_HEADER_END
 # LINEAR_C_BODY_BEGIN
 /* ---- Linear (LINEAR-EXACT-ONCE; JOIN-ALG ConsumeToken dual anchor on sides) ----
@@ -276,5 +304,76 @@ int slake_linear_cell_free(slake_linear_cell **cell)
   free(*cell);
   *cell = 0;
   return 0;
+}
+
+/* CompilePathLinear names as emit functions (HOST-EMIT-LINEAR).
+ * Allocate is slake_linear_cell_alloc. Free is slake_linear_cell_free.
+ * No garbage collector. No Lean runtime. LINEAR-EXACT-ONCE.
+ * linear def linearFixtureMintId
+ * mutual linearFixtureLiveView linearFixtureSpentView
+ * theorem linearFixtureProgramReady_true
+ * tactic decide
+ */
+int slake_linearFixtureMintId(slake_linear_cell **out)
+{
+  /* linear def linearFixtureMintId. Payload is mint id 7. */
+  return slake_linear_cell_alloc(out, (uint32_t)7);
+}
+
+int slake_linearFixtureLiveView(slake_linear_cell **out)
+{
+  /* mutual linearFixtureLiveView. Allocate one live cell. */
+  return slake_linear_cell_alloc(out, (uint32_t)7);
+}
+
+int slake_linearFixtureSpentView(slake_linear_cell **cell)
+{
+  /* mutual linearFixtureSpentView. Exact-once free. */
+  return slake_linear_cell_free(cell);
+}
+
+int slake_linearFixtureProgramReady_true(void)
+{
+  slake_linear_cell *cell;
+  int rc_alloc;
+  int rc_free;
+
+  /* theorem linearFixtureProgramReady_true. tactic decide. */
+  cell = 0;
+  rc_alloc = slake_linearFixtureMintId(&cell);
+  if (rc_alloc != 0) {
+    return 0;
+  }
+  rc_free = slake_linearFixtureSpentView(&cell);
+  if (rc_free != 0) {
+    return 0;
+  }
+  return 1;
+}
+
+int slake_linearFixtureUse(void)
+{
+  slake_linear_cell *cell;
+  int rc;
+
+  cell = 0;
+  rc = slake_linearFixtureMintId(&cell);
+  if (rc != 0) {
+    return 0;
+  }
+  rc = slake_linearFixtureSpentView(&cell);
+  if (rc != 0) {
+    return 0;
+  }
+  cell = 0;
+  rc = slake_linearFixtureLiveView(&cell);
+  if (rc != 0) {
+    return 0;
+  }
+  rc = slake_linearFixtureSpentView(&cell);
+  if (rc != 0) {
+    return 0;
+  }
+  return slake_linearFixtureProgramReady_true();
 }
 # LINEAR_C_BODY_END

@@ -11,6 +11,11 @@
   - parseLiveUseCheckSource turns live UseCheck.lean text into HostTerm.Module.
   - Module name is SystemsLean.UseCheck even without a module line.
   - kernelCheckLiveUseCheckSource is HostKernel.kernelCheck of that parse.
+  - liveRel is UseCheck.lean (basename). liveUseCheckRel is the repo path.
+  - HostFront.parseSource calls Walker.parseUseCheck when
+    the reader chain and walkKept return none. hostFrontParseSourceUseCheck is
+    parseSource of the frozen UseCheck bytes. This pin does not freeze
+    HostFront.lean (that liveRel is HostFront.lean).
   - Skip theorems, examples, set_option, open, un-kernelable match/let/app
     bodies, and abbrev leftovers (not isCmdKw). Keep kernelable namespace,
     end, structure, inductive, and kernelable defs.
@@ -28,7 +33,8 @@
   Greppable: SYSTEMS_LEAN_HOST, HOST-FRONT-LIVE-USECHECK,
   SLAKE_HOST_FRONT_LIVE_USECHECK_V0,
   PARSE-LIVE-USECHECK, parseLiveUseCheckSource, kernelCheckLiveUseCheckSource,
-  hostFrontLiveUseCheckReady, liveUseCheckSource, liveUseCheckRel,
+  hostFrontLiveUseCheckReady, liveUseCheckSource, liveUseCheckRel, liveRel,
+  hostFrontParseSourceUseCheck, parseUseCheck,
   UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveUseCheck
   Red/green: just slake-typecheck-usecheck (if dests free); just systems-host dest rows
@@ -65,6 +71,13 @@ def liveUseCheckRel : String := "src/systems/SystemsLean/UseCheck.lean"
 
 /-- Live basename. Filename only, not a path. -/
 def liveRel : String := "UseCheck.lean"
+
+/-- HostFront.parseSource accepts frozen UseCheck.lean via parseUseCheck
+    after the reader chain and walkKept return none. Real match, not hardcoded true. -/
+def hostFrontParseSourceUseCheck : Bool :=
+  match parseSource liveUseCheckSource with
+  | FrontResult.accept m => m.name.raw == "SystemsLean.UseCheck"
+  | FrontResult.reject _ => false
 
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
@@ -342,6 +355,8 @@ def hostFrontLiveUseCheckReady : Bool :=
     && (hostId == "HOST-FRONT-LIVE-USECHECK")
     && (parseId == "PARSE-LIVE-USECHECK")
     && (liveUseCheckRel == "src/systems/SystemsLean/UseCheck.lean")
+    && (liveRel == "UseCheck.lean")
+    && hostFrontParseSourceUseCheck
     && liveParseDoesNotUseMultFixture
     && !hostFrontLiveUseCheckFullHost
     && !hostFrontLiveUseCheckResidualFreeClaimed
@@ -365,7 +380,7 @@ def liveParseRejectsEmpty : Bool :=
 
 def runLiveUseCheck (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: PARSE-LIVE-USECHECK =="
-  IO.println s!"  host={hostId} file={liveUseCheckRel}"
+  IO.println s!"  host={hostId} file={liveUseCheckRel} liveRel={liveRel}"
   let path := root / liveUseCheckRel
   unless (<- path.pathExists) do
     IO.eprintln s!"error: missing {liveUseCheckRel}"

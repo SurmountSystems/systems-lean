@@ -264,6 +264,77 @@ int slake_linear_cell_free(slake_linear_cell **cell)
   return 0;
 }
 
+/* CompilePathLinear names as emit functions (HOST-EMIT-LINEAR).
+ * Allocate is slake_linear_cell_alloc. Free is slake_linear_cell_free.
+ * No garbage collector. No Lean runtime. LINEAR-EXACT-ONCE.
+ * linear def linearFixtureMintId
+ * mutual linearFixtureLiveView linearFixtureSpentView
+ * theorem linearFixtureProgramReady_true
+ * tactic decide
+ */
+int slake_linearFixtureMintId(slake_linear_cell **out)
+{
+  /* linear def linearFixtureMintId. Payload is mint id 7. */
+  return slake_linear_cell_alloc(out, (uint32_t)7);
+}
+
+int slake_linearFixtureLiveView(slake_linear_cell **out)
+{
+  /* mutual linearFixtureLiveView. Allocate one live cell. */
+  return slake_linear_cell_alloc(out, (uint32_t)7);
+}
+
+int slake_linearFixtureSpentView(slake_linear_cell **cell)
+{
+  /* mutual linearFixtureSpentView. Exact-once free. */
+  return slake_linear_cell_free(cell);
+}
+
+int slake_linearFixtureProgramReady_true(void)
+{
+  slake_linear_cell *cell;
+  int rc_alloc;
+  int rc_free;
+
+  /* theorem linearFixtureProgramReady_true. tactic decide. */
+  cell = 0;
+  rc_alloc = slake_linearFixtureMintId(&cell);
+  if (rc_alloc != 0) {
+    return 0;
+  }
+  rc_free = slake_linearFixtureSpentView(&cell);
+  if (rc_free != 0) {
+    return 0;
+  }
+  return 1;
+}
+
+int slake_linearFixtureUse(void)
+{
+  slake_linear_cell *cell;
+  int rc;
+
+  cell = 0;
+  rc = slake_linearFixtureMintId(&cell);
+  if (rc != 0) {
+    return 0;
+  }
+  rc = slake_linearFixtureSpentView(&cell);
+  if (rc != 0) {
+    return 0;
+  }
+  cell = 0;
+  rc = slake_linearFixtureLiveView(&cell);
+  if (rc != 0) {
+    return 0;
+  }
+  rc = slake_linearFixtureSpentView(&cell);
+  if (rc != 0) {
+    return 0;
+  }
+  return slake_linearFixtureProgramReady_true();
+}
+
 /* ---- Erasure (ERASE-RULE-MULT-0 / ERASE-NO-RUNTIME) ----
  * HOST-EMIT-ERASURE: dialect from SystemsLean.EmitErasure + host_emit_erasure.ssot.txt
  * (Lean FreestandingEmit embeds this Erasure product text).
