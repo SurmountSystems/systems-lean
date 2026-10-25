@@ -9,6 +9,7 @@
   After the type, `)` is required. A following `(` must be another binder,
   or the whole parse is none. Otherwise return the binders and the rest.
   Recursion is on a token-list tail bound by match.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostTerm

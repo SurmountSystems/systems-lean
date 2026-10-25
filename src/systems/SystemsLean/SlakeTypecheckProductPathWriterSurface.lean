@@ -19,6 +19,7 @@
   Module: SystemsLean.SlakeTypecheckProductPathWriterSurface
   Checkable writer: just slake-typecheck-productpathwritersurface
   (lean --run; no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveProductPathWriterSurface

@@ -26,6 +26,7 @@
   Module: SystemsLean.SlakeTypecheckSlakeHostToolElfMeasureFieldsX86
   Checkable writer: just slake-typecheck-slakehosttoolelfmeasurefieldsx86
   (lean --run; no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveSlakeHostToolElfMeasureFieldsX86

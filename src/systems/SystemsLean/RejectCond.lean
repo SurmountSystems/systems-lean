@@ -18,6 +18,7 @@
   stays false. ASCII only.
   Scanner is structurally recursive on the remaining character
   list. Does not copy RejectIf findWord / skipIdent.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.KeptWalk

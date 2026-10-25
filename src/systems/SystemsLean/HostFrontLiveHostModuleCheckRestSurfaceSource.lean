@@ -8,7 +8,7 @@
   HostModuleCheckCheckers.lean).
   Greppable: SYSTEMS_LEAN_HOST, PARSE-LIVE-HOSTMODULECHECKRESTSURFACE,
   liveHostModuleCheckRestSurfaceSource, HOST-FRONT-LIVE-HOSTMODULECHECKRESTSURFACE,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveHostModuleCheckRestSurfaceSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

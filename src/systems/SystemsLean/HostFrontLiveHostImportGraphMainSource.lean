@@ -22,7 +22,7 @@
   SLAKE_HOST_IMPORT_GRAPH
   hostImportGraphReady
   Greppable: SYSTEMS_LEAN_HOST, liveHostImportGraphMainSource,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveHostImportGraphMainSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

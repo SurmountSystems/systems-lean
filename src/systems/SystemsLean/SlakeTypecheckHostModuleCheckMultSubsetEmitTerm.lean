@@ -5,6 +5,7 @@
   Not FullHost. Occupancy stays 49. Mill stays 69 of 69.
   slakeOwnsPackageTypecheck stays false.
   Module: SystemsLean.SlakeTypecheckHostModuleCheckMultSubsetEmitTerm
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveHostModuleCheckMultSubsetEmitTermSource

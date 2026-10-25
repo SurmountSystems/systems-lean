@@ -17,6 +17,7 @@
   leftoverAfterCompleteOk, FullHost stays false, occupancy 49,
   Mill stays 69 of 69, not mill leanc.
   Module: SystemsLean.SlakeHostToolElfCompleteOk
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.CompleteOk

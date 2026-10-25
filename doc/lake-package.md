@@ -24,7 +24,7 @@ prose as if they were product names. Detail: root `README.md` Names table,
 
 | Surface | Pin |
 |---------|-----|
-| Lean / Lake | `leanprover/lean4:v4.34.1` |
+| Lean / Lake | `leanprover/lean4:v4.35.0` |
 | Files | `src/systems/lean-toolchain`, `src/lean4/lean-toolchain` (same pin) |
 
 Install once (from monorepo root, often inside `nix develop`):

@@ -13,6 +13,7 @@
   PARSE-LIVE-HOST-FRONT-GOLDENS.
   Module: SystemsLean.SlakeTypecheckHostFrontGoldens
   Checkable writer: lean --run SlakeTypecheckHostFrontGoldens (no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveHostFrontGoldens

@@ -21,6 +21,7 @@
   Module: SystemsLean.SlakeTypecheckCapableRegenerateTheorems
   Checkable writer: just slake-typecheck-capableregeneratetheorems
   (lean --run; no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveCapableRegenerateTheorems

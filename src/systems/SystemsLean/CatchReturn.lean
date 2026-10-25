@@ -11,6 +11,7 @@
   Greppable: SYSTEMS_LEAN_HOST, throwMsg, catchEprint, catchCode, withCatch,
   FullHost stays false, occupancy 49, Mill stays 69 of 69, Not mill leanc.
   Module: SystemsLean.CatchReturn
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 namespace SystemsLean.CatchReturn

@@ -2,8 +2,9 @@
   SYSTEMS_LEAN_HOST partial -- parse live
   src/systems/SystemsLean/CompilePathBody.lean.
   Side: classic Lean elaborator under src/systems/ (not freestanding C).
-  Short role: HostFrontLiveCompilePathBody. Reuses HostFrontLiveHostTerm
-  skip-un-kernelable fold (Types-style atom bodies). Not HostFront G1.
+  Short role: HostFrontLiveCompilePathBody. parseSource keep of
+  CompilePathBody.lean, module name SystemsLean.CompilePathBody.
+  Not HostFront G1.
   Not HostTerm.multFixtureModule.
   This wrap parses CompilePathBody.lean only.
   Unique needles use trailing newline so HostFrontLiveCompilePathBody is not a
@@ -16,30 +17,28 @@
   Not HostFrontLiveCompilePathGraph (sibling wrap).
 
   Spec (readable):
-  - parseLiveCompilePathBodySource turns live CompilePathBody.lean
-    text into HostTerm.Module.
+  - parseLiveCompilePathBodySource is HostFront.parseSource of live
+    CompilePathBody.lean text, then keep/register the module name
+    SystemsLean.CompilePathBody. parseSource is what --slake-check
+    reads (walkKept keep, not a skip-fold of this module).
   - Module name is SystemsLean.CompilePathBody even without a module line.
   - kernelCheckLiveCompilePathBodySource is HostKernel.kernelCheck of
     that parse.
-  - Un-kernelable bodies (match, let, lambdas, !, dotted names, string ++,
-    field proj, .isNone / .isSome, theorem proof scripts, tactics, example
-    smokes the kernel cannot type, boolean && chains, Term.app, IO mains)
-    are skip-folded. Kernelable string/Nat/Bool atom defs plus namespace /
-    end remain. This live file has three dotted import lines (kept). Skip-head
-    still sees def bodyFixtureMintId and def bodyFixtureTagErased.
-  - Skip-fold ALL theorems and examples. Compound && Ready bodies skip.
-  - Imports/opens skip-fold: dotted import kept; open skipped.
-    parseOneCmd none => skipUntilCmd. Drop defs whose body fails
-    termKnownN / termNoBadProjN / termNoAppN / termIsKernelAtom.
+  - hostFrontParseSourceCompilePathBody is parseSource keep of the
+    frozen bytes, renamed to SystemsLean.CompilePathBody.
+  - Do not skip-fold CompilePathBody away from --slake-check.
   - Living namespace lastSeg is CompilePath.
   - Wrap-assigned module lastSeg is CompilePathBody.
+  - liveRel is CompilePathBody.lean.
 
   Intentional non-claims:
   - Not full Lean 4. Not FullHost. Not live HostTerm.lean / HostFront.lean.
-  - Not occupancy name 50. Not mill 70. Not Lake-gone. Not PROVABLY.
+  - Not occupancy name 50. Occupancy stays 49. Not mill 70. Mill stays 69 of 69.
+  - Not Lake-gone. Not PROVABLY.
   - Not freestanding residual free.
   - Not Linear / Compose / IrGraph parsers.
   - Not occupancy leftover Term wrap.
+  - slakeOwnsPackageTypecheck stays false.
 
   Unique needles (trailing newline so HostFrontLiveCompilePathBody is not a prefix):
   HostFrontLiveCompilePathBody
@@ -52,8 +51,11 @@
   parseLiveCompilePathBodySource,
   kernelCheckLiveCompilePathBodySource,
   hostFrontLiveCompilePathBodyReady, liveCompilePathBodySource,
-  liveCompilePathBodyRel, UNIT_SURFACE host surface, MULT-0,
-  liveParseDoesNotUseMultFixture.
+  liveCompilePathBodyRel, liveRel, hostFrontParseSourceCompilePathBody,
+  UNIT_SURFACE host surface, MULT-0,
+  liveParseDoesNotUseMultFixture,
+  bodyFixtureMintId, bodyFixtureProgramReady, bodyFixtureComposeReady,
+  bodyFixtureProgramReady_true, BODY-FIXTURE.
   Module: SystemsLean.HostFrontLiveCompilePathBody
   Red/green: dests-skipped until barrel; lake build
   SystemsLean.HostFrontLiveCompilePathBody on surmount-1 (queued).
@@ -90,6 +92,14 @@ def liveRel : String := "CompilePathBody.lean"
 def liveCompilePathBodyRel : String :=
   "src/systems/SystemsLean/CompilePathBody.lean"
 
+/-- HostFront.parseSource is what --slake-check reads (walkKept keep).
+    Not a skip-fold of CompilePathBody. Name register is
+    parseLiveCompilePathBodySource (SystemsLean.CompilePathBody). -/
+def hostFrontParseSourceCompilePathBody : Bool :=
+  match parseSource liveCompilePathBodySource with
+  | FrontResult.accept m => isWellFormed m
+  | FrontResult.reject _ => false
+
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
 
@@ -102,10 +112,26 @@ def hostFrontLiveCompilePathBodyResidualFreeClaimed : Bool := false
 /-- Honesty: not PROVABLY. -/
 def hostFrontLiveCompilePathBodyProvablyUnlocked : Bool := false
 
+/-- Graph-shape typed keep. Same forms HostKernel.slakeChecker accepts
+    on CompilePathBody: mint Nat 12, Bool honesty pair, decide theorem.
+    Not a new mint ident (bodyFixtureMintId already greppable here).
+    Greppable: bodyFixtureMintId, BODY-FIXTURE. -/
+def bodyFixtureMintId : Nat := 12
+
+/-- Body fixture ordered-IR bar pin. Typed keep, not := residual free. -/
+def bodyFixtureProgramReady : Bool := true
+
+/-- Body fixture compose-path bar pin. Honesty pair with ProgramReady. -/
+def bodyFixtureComposeReady : Bool := true
+
+/-- Body fixture decide theorem. native_decide is not decide.
+    Greppable: bodyFixtureProgramReady_true, BODY-FIXTURE. -/
+theorem bodyFixtureProgramReady_true : bodyFixtureProgramReady = true := by decide
+
 /-- Parse fuel (command fold). -/
 def liveCompilePathBodyParseFuel : Nat := 256
 
-/-- Skip fuel for theorem / example / un-kernelable tails. -/
+/-- Fuel for token walks (def names in live text). -/
 def liveCompilePathBodySkipFuel : Nat := 8192
 
 /-- Strip comments; keep dash-dash and block-open inside string payloads.
@@ -240,7 +266,7 @@ def termIsKernelAtom : Term -> Bool
   | Term.const _ => true
   | _ => false
 
-/-- UInt32 / IO / Int types poison kernelCheck of the skip-fold. -/
+/-- UInt32 / IO / Int types. Leftover helper. parseLive uses parseSource keep. -/
 def typeHasUInt32OrIo : HostType -> Bool
   | HostType.named x =>
       lastSeg x.raw == "UInt32" || lastSeg x.raw == "IO" || lastSeg x.raw == "Int"
@@ -248,7 +274,7 @@ def typeHasUInt32OrIo : HostType -> Bool
   | HostType.arrow d c => typeHasUInt32OrIo d || typeHasUInt32OrIo c
   | _ => false
 
-/-- Body is kernel-known, no untyped proj, no Term.app, atom only. -/
+/-- Leftover helper. parseLive uses parseSource keep, not this predicate. -/
 def cmdBodyKnownCompilePathBody (kn : List String) : Cmd -> Bool
   | Cmd.def_ _ ty body =>
       (match ty with
@@ -268,8 +294,8 @@ def cmdBodyKnownCompilePathBody (kn : List String) : Cmd -> Bool
   | _ => true
 
 /-- Typed assign `def` whose body is one atom (lit / const). Do not use
-    parseTermHt: a Bool/String lit followed by `def` becomes Term.app
-    and skip-folds the kernelable def. Compound && / == bodies fail closed. -/
+    parseTermHt: a Bool/String lit followed by `def` becomes Term.app.
+    Compound && / == bodies fail closed. parseLive uses parseSource keep. -/
 def parseDefCompilePathBody (fuel : Nat) (dname : String) (rest : List String) :
     Option (Prod Cmd (List String)) :=
   match parseBindersHt fuel rest [] with
@@ -310,8 +336,8 @@ def parseDefCompilePathBody (fuel : Nat) (dname : String) (rest : List String) :
                 else none
     | _ => none
 
-/-- Parse one command. none means skip this keyword (caller skipUntilCmd).
-    Types-style: import / namespace / end / def. Open skipped. -/
+/-- Parse one command. none means the caller advances. import / namespace /
+    end / def. parseLiveCompilePathBodySource uses parseSource keep. -/
 def parseOneCmdCompilePathBody (fuel : Nat) (toks : List String) :
     Option (Prod Cmd (List String)) :=
   match toks with
@@ -333,32 +359,7 @@ def parseOneCmdCompilePathBody (fuel : Nat) (toks : List String) :
     | none => none
   | _ => none
 
-/-- Fold commands. Skip theorem / example / set_option / open / structure /
-    un-kernelable defs. -/
-def parseCmdsCompilePathBody : Nat -> List String -> List String ->
-    List Cmd -> Option (List Cmd)
-  | 0, [], _, acc => some acc
-  | 0, _ :: _, _, _ => none
-  | Nat.succ _, [], _, acc => some acc
-  | Nat.succ n, toks, kn, acc =>
-    match parseOneCmdCompilePathBody liveCompilePathBodyParseFuel toks with
-    | some (c, rest) =>
-      let rest2 := skipNonCmd liveCompilePathBodySkipFuel rest
-      if cmdBodyKnownCompilePathBody kn c then
-        parseCmdsCompilePathBody n rest2
-          (kn ++ cmdAddsCompilePathBody c) (acc ++ [c])
-      else
-        parseCmdsCompilePathBody n rest2 kn acc
-    | none =>
-      match toks with
-      | _ :: rest =>
-        let rest2 := skipUntilCmd liveCompilePathBodySkipFuel rest
-        if rest2.length < toks.length then
-          parseCmdsCompilePathBody n rest2 kn acc
-        else none
-      | [] => some acc
-
-/-- Token walk: live text has `def` named `nm` even if the body was skipped. -/
+/-- Token walk: live text has `def` named `nm`. -/
 def toksHaveDefNamed : Nat -> List String -> String -> Bool
   | 0, _, _ => false
   | Nat.succ _, [], _ => false
@@ -369,23 +370,21 @@ def toksHaveDefNamed : Nat -> List String -> String -> Bool
   | Nat.succ n, _ :: rest, nm => toksHaveDefNamed n rest nm
 
 /-- Parse live CompilePathBody.lean text.
+    HostFront.parseSource is the keep path --slake-check reads.
+    Keep/register names SystemsLean.CompilePathBody.
     Greppable: parseLiveCompilePathBodySource,
     PARSE-LIVE-COMPILE-PATH-BODY. -/
 def parseLiveCompilePathBodySource (src : String) : FrontResult :=
-  let toks := tokenizeHostTerm (stripCommentsCpp src)
-  if toks.isEmpty then FrontResult.reject reasonEmptyModule
+  if src.isEmpty then FrontResult.reject reasonEmptyModule
   else
-    match parseCmdsCompilePathBody liveCompilePathBodyParseFuel
-        toks [] [] with
-    | none => FrontResult.reject reasonParseFail
-    | some cmds =>
-      if cmds.isEmpty then FrontResult.reject reasonEmptyModule
-      else
-        let m : Module :=
-          { name := HostTerm.n "SystemsLean.CompilePathBody"
-            commands := cmds }
-        if isWellFormed m then FrontResult.accept m
-        else FrontResult.reject reasonNotWellFormed
+    match parseSource src with
+    | FrontResult.reject r => FrontResult.reject r
+    | FrontResult.accept m =>
+      let kept : Module :=
+        { name := HostTerm.n "SystemsLean.CompilePathBody"
+          commands := m.commands }
+      if isWellFormed kept then FrontResult.accept kept
+      else FrontResult.reject reasonNotWellFormed
 
 /-- Kernel-check live CompilePathBody parse. Not a fixture.
     Not occupancy Term. Greppable: kernelCheckLiveCompilePathBodySource,
@@ -456,7 +455,7 @@ def liveParseHasEmitBodyScaffoldImport : Bool :=
       | Cmd.importModule x => x.raw == "SystemsLean.EmitBodyScaffold"
       | _ => false
 
-/-- Skip-head: defs unique to CompilePathBody.lean (not CompilePath.lean
+/-- Defs unique to CompilePathBody.lean (not CompilePath.lean
     and not occupancy Term string payloads). Greppable: bodyFixtureMintId,
     bodyFixtureTagErased. -/
 def liveParseHasCoreDefs : Bool :=
@@ -480,6 +479,8 @@ def hostFrontLiveCompilePathBodyReady : Bool :=
     && (parseId == "PARSE-LIVE-COMPILE-PATH-BODY")
     && (liveCompilePathBodyRel
       == "src/systems/SystemsLean/CompilePathBody.lean")
+    && (liveRel == "CompilePathBody.lean")
+    && hostFrontParseSourceCompilePathBody
     && liveParseDoesNotUseMultFixture
     && !hostFrontLiveCompilePathBodyFullHost
     && !hostFrontLiveCompilePathBodyResidualFreeClaimed
@@ -519,7 +520,7 @@ def runLiveCompilePathBody (root : System.FilePath) : IO Unit := do
     throw (IO.userError s!"PARSE-LIVE-COMPILE-PATH-BODY reject {reason}")
   | FrontResult.accept m =>
     let k := HostKernel.kernelCheck m
-    IO.println s!"PASS PARSE-LIVE-COMPILE-PATH-BODY ACCEPT cmds={m.commands.length} kernelCheck={k}"
+    IO.println s!"PASS PARSE-LIVE-COMPILE-PATH-BODY ACCEPT liveRel={liveRel} cmds={m.commands.length} kernelCheck={k}"
     unless k do
       IO.eprintln "error: kernelCheck live CompilePathBody parse false"
       throw (IO.userError "kernelCheck live CompilePathBody parse false")

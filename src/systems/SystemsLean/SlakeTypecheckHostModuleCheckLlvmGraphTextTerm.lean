@@ -24,6 +24,7 @@
   Checkable writer: lean --run
   SlakeTypecheckHostModuleCheckLlvmGraphTextTerm.lean
   (no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveHostModuleCheckLlvmGraphTextTermSource

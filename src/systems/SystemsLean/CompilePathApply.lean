@@ -200,6 +200,19 @@ def applyFixtureCompilePathReady : Bool :=
 def applyFixtureDoesNotMeanResidualFree : Bool :=
   applyFixtureCompilePathReady && !applyFixtureResidualFreeClaimed
 
+/-- Live view: marked and minted Apply host (ConsumeToken). -/
+def applyFixtureLiveView : Option Host :=
+  lowerApplyFixtureCompose
+
+/-- Spent view: ConsumeToken consume of applyFixtureLiveView. -/
+def applyFixtureSpentView : Option Host :=
+  match applyFixtureLiveView with
+  | none => none
+  | some hcLive =>
+      match HostCompose.consume hcLive with
+      | HostCompose.ConsumeResult.ok hcSpent _ => some hcSpent
+      | HostCompose.ConsumeResult.notLive => none
+
 /-! ### COMPILE-PATH-APPLY-THEOREM (readable Apply e2e statements, then proofs)
 
   Real Lean theorems for Apply fixture compile path only. Does not flip

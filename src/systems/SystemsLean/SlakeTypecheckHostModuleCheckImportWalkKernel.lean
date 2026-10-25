@@ -23,6 +23,7 @@
   Module: SystemsLean.SlakeTypecheckHostModuleCheckImportWalkKernel
   Checkable writer: lean --run SlakeTypecheckHostModuleCheckImportWalkKernel.lean
   (no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveHostModuleCheckImportWalkKernelSource

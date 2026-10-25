@@ -3,7 +3,7 @@
   Side: classic Lean elaborator under src/systems/ (not freestanding C).
   Short role: HostFrontLiveCompleteOkSource. Not occupancy name 50. Not mill 70.
   Greppable: SYSTEMS_LEAN_HOST, PARSE-LIVE-COMPLETEOK, liveCompleteOkSource,
-  HOST-FRONT-LIVE-COMPLETEOK, UNIT_SURFACE host surface.
+  HOST-FRONT-LIVE-COMPLETEOK, UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveCompleteOkSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

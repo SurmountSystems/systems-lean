@@ -18,6 +18,7 @@
   Module: SystemsLean.SlakeTypecheckParityProgramTheorems
   Checkable writer: just slake-typecheck-parityprogramtheorems
   (lean --run; no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveParityProgramTheorems

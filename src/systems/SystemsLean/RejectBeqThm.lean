@@ -7,6 +7,7 @@
   `=` stay allowed. Does not hook KeptHitKernel until rebuild 6
   has copied that file. HostTerm.Cmd is not extended.
   slakeOwnsPackageTypecheck stays false. ASCII only.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.KeptWalk

@@ -18,7 +18,7 @@
   parseLiveLlvmComposeTextMainSource,
   kernelCheckLiveLlvmComposeTextMainSource,
   hostFrontLiveLlvmComposeTextMainReady, liveLlvmComposeTextMainSource,
-  liveRel, liveLlvmComposeTextMainRel, UNIT_SURFACE host surface,
+  liveRel, liveLlvmComposeTextMainRel, UNIT_SURFACE host surface, MULT-0,
   PARSE-LIVE-LLVM-COMPOSE-TEXT-MAIN,
   HOST-FRONT-LIVE-LLVM-COMPOSE-TEXT-MAIN,
   SLAKE_HOST_FRONT_LIVE_LLVM_COMPOSE_TEXT_MAIN_V0.

@@ -18,7 +18,7 @@
   parseLiveRuntimeBenchLeanMainSource,
   kernelCheckLiveRuntimeBenchLeanMainSource,
   hostFrontLiveRuntimeBenchLeanMainReady, liveRuntimeBenchLeanMainSource,
-  liveRel, liveRuntimeBenchLeanMainRel, UNIT_SURFACE host surface,
+  liveRel, liveRuntimeBenchLeanMainRel, UNIT_SURFACE host surface, MULT-0,
   PARSE-LIVE-RUNTIME-BENCH-LEAN-MAIN,
   HOST-FRONT-LIVE-RUNTIME-BENCH-LEAN-MAIN,
   SLAKE_HOST_FRONT_LIVE_RUNTIME_BENCH_LEAN_MAIN_V0.

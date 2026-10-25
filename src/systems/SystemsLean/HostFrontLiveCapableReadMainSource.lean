@@ -15,7 +15,7 @@
   HOST-FRONT-LIVE-CAPABLE-READ-MAIN
   CAPABLE-READ-MAIN
   Greppable: SYSTEMS_LEAN_HOST, liveCapableReadMainSource,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveCapableReadMainSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

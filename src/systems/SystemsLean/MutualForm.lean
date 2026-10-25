@@ -10,6 +10,7 @@
   Returns none on every other shape.
   Selects by imports, namespace, and forms.
   Module must stay ASCII.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostTerm

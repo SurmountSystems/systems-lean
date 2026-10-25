@@ -6,7 +6,9 @@
   Definitions are in namespace SystemsLean.CapableWriteHc. No main.
   Does not import FreestandingEmit.
   Stage id: SLAKE_SELF_HOST_PRODUCT_PATH_FREESTANDING_CAPABLE_WRITE_HC_V0.
-  Not PROVABLY. No garbage collector in this file.
+  Not freestanding emit residual free. Not residual free. not PROVABLY.
+  No garbage collector in this file.
+  UNIT_SURFACE host surface.
 -/
 
 import SystemsLean.EmitBanner

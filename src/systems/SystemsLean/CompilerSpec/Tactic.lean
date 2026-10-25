@@ -4,6 +4,7 @@
   The HostKernel toy grammar checks def bodies as terms. It has no tactic proof.
   Host Lean contract. Not an input the toy checker must parse.
   Module: SystemsLean.CompilerSpec.Tactic
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 namespace SystemsLean.CompilerSpec.Tactic

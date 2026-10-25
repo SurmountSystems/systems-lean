@@ -35,6 +35,7 @@
   where helper. Not skipIdent of the current cons cell.
   The or matcher is whole-identifier `or`, not a substring
   of `for`.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.KeptWalk

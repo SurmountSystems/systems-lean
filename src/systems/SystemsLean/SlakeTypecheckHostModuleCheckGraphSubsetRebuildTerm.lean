@@ -23,6 +23,7 @@
   Module: SystemsLean.SlakeTypecheckHostModuleCheckGraphSubsetRebuildTerm
   Checkable writer: lean --run SlakeTypecheckHostModuleCheckGraphSubsetRebuildTerm.lean
   (no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveHostModuleCheckGraphSubsetRebuildTermSource

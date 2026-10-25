@@ -19,7 +19,7 @@
   parseLivePackageTypecheckSource,
   kernelCheckLivePackageTypecheckSource,
   hostFrontLivePackageTypecheckReady, livePackageTypecheckSource,
-  liveRel, livePackageTypecheckRel, UNIT_SURFACE host surface,
+  liveRel, livePackageTypecheckRel, UNIT_SURFACE host surface, MULT-0,
   PARSE-LIVE-PACKAGE-TYPECHECK,
   HOST-FRONT-LIVE-PACKAGE-TYPECHECK,
   SLAKE_HOST_FRONT_LIVE_PACKAGE_TYPECHECK_V0.

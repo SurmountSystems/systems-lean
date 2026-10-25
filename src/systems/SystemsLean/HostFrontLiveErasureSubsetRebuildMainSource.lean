@@ -29,7 +29,7 @@
   ERASURE-SUBSET-REBUILD
   SLAKE_ERASURE_SUBSET_REBUILD
   Greppable: SYSTEMS_LEAN_HOST, liveErasureSubsetRebuildMainSource,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveErasureSubsetRebuildMainSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

@@ -9,6 +9,7 @@
   HOST-HOST-TOOL-MEASURE-GREEN, printSelfHostCompleteMeasure, FullHost stays false,
   occupancy 49, Mill stays 69 of 69, not mill leanc.
   Module: SystemsLean.SlakeHostToolElfMeasureGreen
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 namespace SystemsLean.SlakeHostToolElfMeasureGreen

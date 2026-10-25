@@ -7,6 +7,7 @@
   Missing means the Option is none, not an empty name.
   This module is unwired. It imports nothing.
   ASCII only.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 namespace SystemsLean.KeptForm

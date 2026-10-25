@@ -18,6 +18,7 @@
   Module: SystemsLean.SlakeTypecheckMultFsDeepen
   Checkable writer: lean --run of this driver
   (no mill; no lake). Build dir build/slake-typecheck-multfsdeepen.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveMultFsDeepen

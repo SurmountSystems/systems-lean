@@ -8,7 +8,7 @@
   liveRel is the bare name LlvmTypesTextMain.lean. Do not redefine it
   in the parser.
   Greppable: SYSTEMS_LEAN_HOST, liveLlvmTypesTextMainSource, liveRel,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveLlvmTypesTextMainSource
   Not FullHost. Not FullBackend. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

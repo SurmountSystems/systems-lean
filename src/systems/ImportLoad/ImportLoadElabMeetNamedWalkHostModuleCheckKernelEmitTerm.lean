@@ -1,3 +1,4 @@
+-- Module must stay ASCII. Not freestanding residual free. Not PROVABLY. SKELETON.
 import SystemsLean.ElabMeetNamedWalkHostModuleCheckKernelEmitTerm
 
 def kernelFuel : Nat := 64

@@ -8,7 +8,7 @@
   It is not SlakeHostToolElfMeasureFieldsX86.lean.
   Greppable: SYSTEMS_LEAN_HOST, liveSlakeHostToolElfMeasureRelocSource,
   HOST-FRONT-LIVE-SLAKE-HOST-TOOL-ELF-MEASURE-RELOC, liveRel,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveSlakeHostToolElfMeasureRelocSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Not a backend. FullBackend stays false in the wrap.

@@ -45,6 +45,7 @@
   HOST-FRONT-SMOKE, HOST-FRONT-THEOREM, HostFrontTheorems, hostFrontReady_true,
   slake-host-front, just host-front, goldens/host-front, parseSource,
   walkKept, keptHitModule, KEPT-FORM-DROPPED, KeptWalk, KeptDrop,
+  parseHonestyKeep, parseSourceHonestyKeep,
   EMPTY-MODULE-FAIL-CLOSED, LINE-SHAPE, UNKNOWN-CMD, NOT-WELL-FORMED,
   ZERO-CTOR-INDUCTIVE, PARSE-FAIL, multFixtureModule, goodG3Text, goodG4Text,
   goodG5Text, goodG6Text, goodG7Text, LINEAR-EXACT-ONCE, shareNat, polyId,
@@ -58,6 +59,7 @@
   parseSource calls the reader chain when that dialect rejects.
   walkKept runs when the reader chain returns none (KeptHit keep, not Cmd theorems).
   parseUseCheck runs when the reader chain and walkKept return none.
+  parseHonestyKeep runs when those return none (String / Bool-true package defs).
   Hollow reader-chain finish (namespace and end) is drop-fail (KEPT-FORM-DROPPED).
   The mutual-form scanner stays last in that reader chain.
   Long-file peel: HOST-FRONT-THEOREM + HOST-FRONT-SMOKE in
@@ -216,11 +218,142 @@ def keptHitModule (h : SystemsLean.KeptWalk.KeptHit) : Module :=
       , Cmd.def_ (n df.defName) none (Term.litNat 2)
       , Cmd.endNamespace ns ] }
 
+/-- Strip line comments and non-nested block comments. Strings stay.
+    HonestyFront sits later in the bootstrap module tree, so this keep
+    lives here and does not import it. -/
+inductive HkS where
+  | code
+  | line
+  | blk (dash : Bool)
+  | str
+  | esc
+
+def hkStrip : List Char -> HkS -> List Char -> Option (List Char)
+  | [], HkS.code, out => some out.reverse
+  | [], HkS.line, out => some out.reverse
+  | [], HkS.blk _, _ => none
+  | [], HkS.str, _ => none
+  | [], HkS.esc, _ => none
+  | '\n' :: rest, HkS.line, out =>
+    hkStrip rest HkS.code ('\n' :: out)
+  | _ :: rest, HkS.line, out =>
+    hkStrip rest HkS.line out
+  | '/' :: rest, HkS.blk true, out =>
+    hkStrip rest HkS.code out
+  | '-' :: rest, HkS.blk true, out =>
+    hkStrip rest (HkS.blk true) out
+  | _ :: rest, HkS.blk true, out =>
+    hkStrip rest (HkS.blk false) out
+  | '-' :: rest, HkS.blk false, out =>
+    hkStrip rest (HkS.blk true) out
+  | _ :: rest, HkS.blk false, out =>
+    hkStrip rest (HkS.blk false) out
+  | c :: rest, HkS.esc, out =>
+    hkStrip rest HkS.str (c :: '\\' :: out)
+  | '\\' :: rest, HkS.str, out =>
+    hkStrip rest HkS.esc out
+  | '"' :: rest, HkS.str, out =>
+    hkStrip rest HkS.code ('"' :: out)
+  | c :: rest, HkS.str, out =>
+    hkStrip rest HkS.str (c :: out)
+  | '-' :: '-' :: rest, HkS.code, out =>
+    hkStrip rest HkS.line out
+  | '/' :: '-' :: rest, HkS.code, out =>
+    hkStrip rest (HkS.blk false) out
+  | '"' :: rest, HkS.code, out =>
+    hkStrip rest HkS.str ('"' :: out)
+  | c :: rest, HkS.code, out =>
+    hkStrip rest HkS.code (c :: out)
+
+/-- True when the line is a skip-fold continuation, not a new command. -/
+def hkCont (toks : List String) : Bool :=
+  match toks with
+  | "def" :: _ => false
+  | "end" :: _ => false
+  | "namespace" :: _ => false
+  | "theorem" :: _ => true
+  | _ => true
+
+/-- hkFold String literal arm. def, a name, colon, String, colon-equals, one literal.
+    Bool true does not match. A body that is not one double-quoted
+    literal does not match. The namespace guard stays in hkFold. -/
+def hkStringLitDef (toks : List String) : Bool :=
+  match toks with
+  | "def" :: name :: ":" :: "String" :: ":=" :: lit :: [] =>
+    isIdent name && isStringLit lit
+  | _ => false
+
+/-- Fold stripped package lines. Keep String lits and Bool true.
+    Skip-fold un-kernelable Bool bodies (`==` / `&&`).
+    A theorem line is not submitted from this fold.
+    OriginalDeclaration submits matrixSurfaceOk_true. -/
+def hkFold (ns : Option String) (cmds : List Cmd) (skip : Bool) :
+    List String -> Option Module
+  | [] => none
+  | line :: rest =>
+    let toks := lineTokens line
+    if toks.isEmpty then hkFold ns cmds skip rest
+    else if skip && hkCont toks then hkFold ns cmds true rest
+    else
+      match toks with
+      | "namespace" :: name :: [] =>
+        if ns.isSome || !isIdent name then none
+        else hkFold (some name) cmds false rest
+      | "end" :: name :: [] =>
+        match ns with
+        | none => none
+        | some n0 =>
+          if !(n0 == name) then none
+          else if cmds.isEmpty then none
+          else if rest.any (fun l => !(lineTokens l).isEmpty) then none
+          else
+            let m : Module :=
+              { name := n n0
+                commands :=
+                  Cmd.namespace (n n0) :: cmds
+                    ++ [Cmd.endNamespace (n n0)] }
+            if isWellFormed m then some m else none
+      | "def" :: name :: ":" :: "String" :: ":=" :: lit :: [] =>
+        if ns.isNone || !hkStringLitDef toks then none
+        else
+          let c :=
+            Cmd.def_ (n name) (some HostType.string)
+              (Term.litString (stripStringLit lit))
+          hkFold ns (cmds ++ [c]) false rest
+      | "def" :: name :: ":" :: "Bool" :: ":=" :: "true" :: [] =>
+        if ns.isNone || !isIdent name then none
+        else
+          let c :=
+            Cmd.def_ (n name) (some HostType.bool) (Term.litBool true)
+          hkFold ns (cmds ++ [c]) false rest
+      | "def" :: name :: ":" :: "Bool" :: ":=" :: _ =>
+        if ns.isNone || !isIdent name then none
+        else hkFold ns cmds true rest
+      | "theorem" :: name :: _ =>
+        if ns.isNone || !isIdent name then none
+        else hkFold ns cmds true rest
+      | "import" :: _ =>
+        hkFold ns cmds true rest
+      | "open" :: _ =>
+        hkFold ns cmds true rest
+      | "private" :: _ => hkFold ns cmds true rest
+      | "example" :: _ => hkFold ns cmds true rest
+      | _ => none
+
+/-- Package-source keep: namespace of String and Bool-true defs.
+    Greppable: parseHonestyKeep. Does not add a Cmd constructor. -/
+def parseHonestyKeep (src : String) : Option Module :=
+  match hkStrip src.toList HkS.code [] with
+  | none => none
+  | some cs =>
+    hkFold none [] false ((String.ofList cs).splitOn "\n")
+
 /-- Parse full source text (newline-separated). Greppable: parseSource.
     The one-line dialect stays first. ReaderChain runs only when that
     dialect rejects. walkKept runs when the reader chain returns none. Hollow
     namespace and end is drop-fail. The mutual-form scanner is last in
-    that reader chain. parseUseCheck runs when those return none. -/
+    that reader chain. parseUseCheck runs when those return none.
+    parseHonestyKeep runs when parseUseCheck returns none. -/
 def parseSource (src : String) : FrontResult :=
   let folded : FrontResult := foldLines (src.splitOn "\n")
   match folded with
@@ -243,7 +376,10 @@ def parseSource (src : String) : FrontResult :=
       | none =>
         match SystemsLean.Walker.parseUseCheck src with
         | some m => FrontResult.accept m
-        | none => FrontResult.reject r
+        | none =>
+          match parseHonestyKeep src with
+          | some m => FrontResult.accept m
+          | none => FrontResult.reject r
 
 /-- Accept path: isWellFormed true on accepted module. -/
 def acceptOk (r : FrontResult) : Bool :=
@@ -283,6 +419,21 @@ def hasLitStringDef (m : Module) (name val : String) : Bool :=
             | Term.litString s => s == val
             | _ => false)
     | _ => false
+
+/-- parseSource keeps a namespace of String and Bool-true defs.
+    Un-kernelable `==` / `&&` Bool bodies skip-fold.
+    Greppable: parseSourceHonestyKeep. -/
+def parseSourceHonestyKeep : Bool :=
+  match parseSource
+    ("namespace N\n"
+      ++ "def a : String := \"A\"\n"
+      ++ "def b : Bool := true\n"
+      ++ "def ok : Bool := (a == \"A\") && b\n"
+      ++ "end N\n") with
+  | FrontResult.accept m =>
+    isWellFormed m && hasLitStringDef m "a" "A" && hasDefNamed m "b"
+      && !hasDefNamed m "ok"
+  | FrontResult.reject _ => false
 
 /-- G1 parse accept + well-formed + Mult inductive present.
     Greppable: hostFrontGoodG1. -/
@@ -447,6 +598,7 @@ def hostFrontReady : Bool :=
     && !hostFrontProofCompleteClaimed
     && !hostFrontLlvmUnlocked
     && !hostFrontProvablyUnlocked
+    && parseSourceHonestyKeep
 
 /-- Ready does not claim peer elaborator green.
     Greppable: hostFrontDoesNotClaimPeer. -/

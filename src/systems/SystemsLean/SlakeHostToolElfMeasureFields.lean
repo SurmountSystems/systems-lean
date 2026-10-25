@@ -9,6 +9,7 @@
   HOST-HOST-TOOL-MEASURE-FIELDS, printSelfHostCompleteMeasure, remainingLines,
   not mill leanc.
   Module: SystemsLean.SlakeHostToolElfMeasureFields
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 namespace SystemsLean.SlakeHostToolElfMeasureFields

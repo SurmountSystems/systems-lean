@@ -2,8 +2,8 @@
 # Living-row honesty flags for the remaining-distance meter.
 # Occupancy 49. FullHost false. Rebuild 23 GREEN. Current
 # independently reviewed ELF
-# /nix/store/97p32bdbdw6v79yxydi1y4s4s39ksp8j-slake-bootstrap
-# (149467016 bytes). That path is not
+# /nix/store/n7xg5dkxr2jkjmlqyzmj8y1gm6rc9nzm-slake-bootstrap
+# (149599304 bytes). That path is not
 # /nix/store/4s8fq7rcyq65nfl0qgj1pdx6kk7jpf5k-slake-bootstrap
 # (149447232 bytes). /nix/store/4s8fq7rcyq65nfl0qgj1pdx6kk7jpf5k-slake-bootstrap
 # (149447232 bytes) is no longer current.

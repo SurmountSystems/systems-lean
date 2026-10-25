@@ -12,6 +12,7 @@
   slakeOwnsPackageTypecheck stays false.
   Module: SystemsLean.EqSomeBinder
   Module must stay ASCII.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 namespace SystemsLean.EqSomeBinder

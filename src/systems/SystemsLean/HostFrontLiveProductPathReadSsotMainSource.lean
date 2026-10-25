@@ -26,7 +26,7 @@
   readDualSsotAtRoot
   SKELETON
   Greppable: SYSTEMS_LEAN_HOST, liveProductPathReadSsotMainSource,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveProductPathReadSsotMainSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

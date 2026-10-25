@@ -24,6 +24,7 @@
   Checkable writer: lean --run
   SlakeTypecheckHostModuleCheckPackageEnvFixturesS5.lean
   (no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveHostModuleCheckPackageEnvFixturesS5Source

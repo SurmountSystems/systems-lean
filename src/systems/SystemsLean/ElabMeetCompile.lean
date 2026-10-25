@@ -153,6 +153,11 @@ def tryElabOnDiskImportFiles (libInput : String) (libMod : Name)
 unsafe def tryCompileOnDiskModuleIO (srcPath : System.FilePath)
     (libMod : Name) (dir : System.FilePath) : IO Bool := do
   enableInitializersExecution
+  let eprintLog (msgs : Lean.MessageLog) : IO Unit := do
+    for msg in msgs.unreported.toList do
+      IO.eprintln (<- msg.data.toString)
+    for msg in msgs.reported.toList do
+      IO.eprintln (<- msg.data.toString)
   let input <-
     try
       IO.FS.readFile srcPath
@@ -163,21 +168,25 @@ unsafe def tryCompileOnDiskModuleIO (srcPath : System.FilePath)
   let inputCtx := Parser.mkInputContext input fileName
   let (header, parserState, messages) <- Parser.parseHeader inputCtx
   if messages.hasErrors then
+    eprintLog messages
     return false
   -- Multi-module on-disk compiles must not leak environments.
   let (env, messages) <-
     Lean.Elab.processHeader header {} messages inputCtx
       (leakEnv := false) (mainModule := libMod)
   if messages.hasErrors then
+    eprintLog messages
     return false
   let commandState := Command.mkState env messages {}
   let s <- Lean.Elab.IO.processCommands inputCtx parserState commandState
   if s.commandState.messages.hasErrors then
+    eprintLog s.commandState.messages
     return false
   try
     writeModule s.commandState.env oleanPath (writeIR := false)
     pure true
-  catch _ =>
+  catch e =>
+    IO.eprintln e.toString
     pure false
 
 @[implemented_by tryCompileOnDiskModuleIO]

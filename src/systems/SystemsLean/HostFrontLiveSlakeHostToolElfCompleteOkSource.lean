@@ -7,6 +7,7 @@
   Not Lake-gone. slakeOwnsPackageTypecheck stays false.
   The live file imports SystemsLean.CompleteOk.
   Module must stay ASCII.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 namespace SystemsLean.HostFrontLiveSlakeHostToolElfCompleteOk

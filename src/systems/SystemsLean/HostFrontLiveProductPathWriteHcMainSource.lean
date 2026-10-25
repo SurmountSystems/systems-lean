@@ -22,7 +22,7 @@
   SelfApplyFs
   writeFreestandingHcAtRoot
   Greppable: SYSTEMS_LEAN_HOST, liveProductPathWriteHcMainSource,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveProductPathWriteHcMainSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

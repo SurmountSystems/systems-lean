@@ -21,7 +21,7 @@ Lean 4 half of the meet-in-the-middle correspondence (kernel, elaborator, proof 
 | `examples/TRUST.md` | Trusted computing base notes for the examples |
 | `JOIN.md` | Greppable join points for the coordinator |
 | `lakefile.toml` | Minimal Lake package (no remote deps) for classic elaborator |
-| `lean-toolchain` | Pin matching installed elan (currently v4.34.1) |
+| `lean-toolchain` | Pin matching installed elan (currently v4.35.0) |
 | `lake-manifest.json` | Offline empty-deps snapshot (no remote packages) |
 
 ## Language

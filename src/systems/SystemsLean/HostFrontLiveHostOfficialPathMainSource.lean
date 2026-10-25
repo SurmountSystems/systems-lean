@@ -23,7 +23,7 @@
   import SystemsLean.OfficialPath
   productPathFreestandingPerformOfficialPath
   Greppable: SYSTEMS_LEAN_HOST, liveHostOfficialPathMainSource,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveHostOfficialPathMainSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

@@ -2,6 +2,7 @@
   Import-loading check for SystemsLean.DualEqWriteParityMain.
   That module declares root main, so this file does not declare another.
   Lean 4.32 loads the module from its olean. kernelFuel stays 64.
+  Module must stay ASCII. Not freestanding residual free. Not PROVABLY. SKELETON.
 -/
 
 import SystemsLean.DualEqWriteParityMain

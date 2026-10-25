@@ -14,6 +14,7 @@
   Does not call Lean.Elab.processCommands.
   slakeOwnsPackageTypecheck stays false.
   Module must stay ASCII.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HonestyDecide

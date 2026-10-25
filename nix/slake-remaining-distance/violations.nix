@@ -1,8 +1,8 @@
 # SPDX-License-Identifier: Unlicense
 # Violation list for the remaining-distance meter. Occupancy 49.
 # FullHost false. Rebuild 23 GREEN. Current independently reviewed
-# ELF /nix/store/97p32bdbdw6v79yxydi1y4s4s39ksp8j-slake-bootstrap
-# (149467016 bytes). That path is not
+# ELF /nix/store/n7xg5dkxr2jkjmlqyzmj8y1gm6rc9nzm-slake-bootstrap
+# (149599304 bytes). That path is not
 # /nix/store/4s8fq7rcyq65nfl0qgj1pdx6kk7jpf5k-slake-bootstrap
 # (149447232 bytes). /nix/store/4s8fq7rcyq65nfl0qgj1pdx6kk7jpf5k-slake-bootstrap
 # (149447232 bytes) is no longer current.
@@ -179,7 +179,7 @@ in
   ++ flag rebuild9StaleInFlight
     "living summary still says rebuild 9 in flight (rebuild 9 GREEN on w9775kbs)"
   ++ flag currentLacksS0sjpz1
-    "living rebuild rows omit the current independently reviewed ELF store hash / 149467016 bytes"
+    "living rebuild rows omit the current independently reviewed ELF store hash / 149599304 bytes"
   ++ flag staleCurrentWpc482yn
     "living summary still names wpc482yn as current (wpc482yn is no longer current; the current produced slake-bootstrap ELF)"
   ++ flag lacksNoLongerCurrentWpc
@@ -661,7 +661,7 @@ in
   ++ flag staleIndependentlyReviewedWpc
     "living summary still names current independently reviewed ELF /nix/store/wpc482ynsqa9ambfszvjabmfrsdj2408-slake-bootstrap (wpc482yn is no longer current; leftover is ${specs.strictAndLeftoverNeedle})"
   ++ flag lacksIndependentlyReviewedS0
-    "living summary omits current independently reviewed ELF /nix/store/97p32bdbdw6v79yxydi1y4s4s39ksp8j-slake-bootstrap"
+    "living summary omits current independently reviewed ELF /nix/store/n7xg5dkxr2jkjmlqyzmj8y1gm6rc9nzm-slake-bootstrap"
   ++ flag staleIndependentlyReviewed4s8
     "living summary still names current independently reviewed ELF /nix/store/4s8fq7rcyq65nfl0qgj1pdx6kk7jpf5k-slake-bootstrap (that ELF is no longer current; leftover is ${specs.strictAndLeftoverNeedle})"
   ++ flag staleCurrent4s8

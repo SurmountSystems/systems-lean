@@ -1,21 +1,29 @@
 /-
   SYSTEMS_LEAN_HOST partial -- parse live src/systems/SystemsLean/CompilePath.lean.
   Side: classic Lean elaborator under src/systems/ (not freestanding C).
-  Short role: HostFrontLiveCompilePath. Reuses HostFrontLiveHostTerm skip-un-kernelable
-  fold. Tokenizer-dropped ++, string-safe -- strip via HostFrontLiveMult.stripComments,
-  termNoAppN as needed. Not HostFront G1. Not HostTerm.multFixtureModule.
+  Short role: HostFrontLiveCompilePath. parseSource keep of
+  CompilePath.lean, module name SystemsLean.CompilePath.
+  Not HostFront G1. Not HostTerm.multFixtureModule.
   Not parseLiveHostTermSource on CompilePath text. Not occupancy CompilePathTerm.
   Not HostModuleCheckCompilePathTerm.
 
   Spec (readable):
-  - parseLiveCompilePathSource turns live CompilePath.lean text into HostTerm.Module.
+  - parseLiveCompilePathSource is HostFront.parseSource of live
+    CompilePath.lean text, then keep/register the module name
+    SystemsLean.CompilePath. parseSource is what --slake-check
+    reads (walkKept keep, not a skip-fold of this module).
+  - Graph-shape sequential keep on this on-disk module:
+    compilePathFixtureMintId (Nat 4), lowerCompilePathFixtureCompose,
+    compilePathFixtureLiveView, compilePathFixtureSpentView,
+    keep lowerCompilePathFixtureCompose_isSome with decide.
+    --slake-check reads acceptKeptCompilePath on these forms.
   - Module name is SystemsLean.CompilePath even without a module line.
   - kernelCheckLiveCompilePathSource is HostKernel.kernelCheck of that parse
     (not a constant true, and not kernelCheckN with a local import seed).
-  - Skip theorems, examples, set_option, private, un-kernelable match/let/app
-    bodies. Keep kernelable string/Nat/Bool defs, imports, namespace, end.
-  - gradeSurfaceOk and match-based fixture helpers skip; toksHaveDefNamed still
-    sees stageId, hostCompilePathId, and skipped gradeSurfaceOk.
+  - hostFrontParseSourceCompilePath is parseSource keep of the
+    frozen bytes, renamed to SystemsLean.CompilePath.
+  - Do not skip-fold CompilePath away from --slake-check.
+  - toksHaveDefNamed still sees stageId, hostCompilePathId, gradeSurfaceOk.
 
   Intentional non-claims:
   - Not full Lean 4. Not FullHost. Not live HostTerm.lean / HostFront.lean.
@@ -27,6 +35,9 @@
   SLAKE_HOST_FRONT_LIVE_COMPILEPATH_V0,
   PARSE-LIVE-COMPILEPATH, parseLiveCompilePathSource, kernelCheckLiveCompilePathSource,
   hostFrontLiveCompilePathReady, liveCompilePathSource, liveCompilePathRel,
+  hostFrontParseSourceCompilePath, compilePathFixtureMintId,
+  compilePathFixtureLiveView, compilePathFixtureSpentView,
+  lowerCompilePathFixtureCompose, lowerCompilePathFixtureCompose_isSome,
   UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveCompilePath
   Red/green: just slake-typecheck-compilepath; just systems-host dest rows;
@@ -38,6 +49,7 @@
 import SystemsLean.HostFrontLiveHostTerm
 import SystemsLean.HostFrontLiveCompilePathSource
 import SystemsLean.HostKernel
+import SystemsLean.HostCompose
 
 namespace SystemsLean.HostFrontLiveCompilePath
 
@@ -47,6 +59,7 @@ open SystemsLean.HostKernel
 open SystemsLean.HostFrontLiveMult
 open SystemsLean.HostFrontLiveExtract
 open SystemsLean.HostFrontLiveHostTerm
+open SystemsLean.HostCompose (Host)
 
 /-- Greppable primary stage id. -/
 def stageId : String := "SLAKE_HOST_FRONT_LIVE_COMPILEPATH_V0"
@@ -63,6 +76,14 @@ def liveRel : String := "CompilePath.lean"
 /-- Live file relative to repo root. Dual-pin path. -/
 def liveCompilePathRel : String := "src/systems/SystemsLean/CompilePath.lean"
 
+/-- HostFront.parseSource is what --slake-check reads (walkKept keep).
+    Not a skip-fold of CompilePath. Name register is
+    parseLiveCompilePathSource (SystemsLean.CompilePath). -/
+def hostFrontParseSourceCompilePath : Bool :=
+  match parseSource liveCompilePathSource with
+  | FrontResult.accept m => isWellFormed m
+  | FrontResult.reject _ => false
+
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
 
@@ -75,148 +96,38 @@ def hostFrontLiveCompilePathResidualFreeClaimed : Bool := false
 /-- Honesty: not PROVABLY. -/
 def hostFrontLiveCompilePathProvablyUnlocked : Bool := false
 
-/-- Parse fuel (command fold). -/
-def liveCompilePathParseFuel : Nat := 256
+/-- Fixed CompilePath fixture mint id (nonzero; matches COMPILE-PATH-SMOKE mint 4). -/
+def compilePathFixtureMintId : Nat := 4
 
-/-- Skip fuel for theorem / example / un-kernelable tails and open leftovers. -/
+/-- CompilePath fixture host ready for unit compile path.
+    mint MULT-1 live token on empty compose. FAIL-CLOSED: none if mint fails.
+    Greppable: lowerCompilePathFixtureCompose, HOST-COMPOSE. -/
+def lowerCompilePathFixtureCompose : Option Host :=
+  match HostCompose.mint HostCompose.empty compilePathFixtureMintId with
+  | HostCompose.MintResult.ok hc' => some hc'
+  | _ => none
+
+/-- Live view: minted MULT-1 host (ConsumeToken). -/
+def compilePathFixtureLiveView : Option Host :=
+  lowerCompilePathFixtureCompose
+
+/-- Spent view: ConsumeToken consume of compilePathFixtureLiveView. -/
+def compilePathFixtureSpentView : Option Host :=
+  match compilePathFixtureLiveView with
+  | none => none
+  | some hcLive =>
+      match HostCompose.consume hcLive with
+      | HostCompose.ConsumeResult.ok hcSpent _ => some hcSpent
+      | HostCompose.ConsumeResult.notLive => none
+
+/-- lowerCompilePathFixtureCompose is some (mint path).
+    Greppable: lowerCompilePathFixtureCompose_isSome. -/
+theorem lowerCompilePathFixtureCompose_isSome : lowerCompilePathFixtureCompose.isSome = true := by decide
+
+/-- Fuel for token walks (def names in live text). -/
 def liveCompilePathSkipFuel : Nat := 8192
 
-/-- Seed names from SystemsLean.Mult import. -/
-def seedMult : List String :=
-  ["mult0", "mult1", "multOmega", "isValidTag", "isValid", "name", "ofNat?"]
-
-/-- Seed names from SystemsLean.Types import. -/
-def seedTypes : List String :=
-  ["mkNode?", "IrNode", "NodeKind", "erased", "linear", "value", "typeTagInit"]
-
-/-- Seed names from SystemsLean.IrProgram import. -/
-def seedIrProgram : List String :=
-  ["empty", "push", "PushResult", "ok", "Program", "isWellTyped", "foldWellTyped"]
-
-/-- Seed names from SystemsLean.IrGraph import. Not an IrGraph parser. -/
-def seedIrGraph : List String :=
-  ["Graph", "empty"]
-
-/-- Seed names from SystemsLean.Erasure import. Not an Erasure parser. -/
-def seedErasure : List String :=
-  ["unmarked", "mark", "Erased"]
-
-/-- Seed names from SystemsLean.HostCompose import. Not a Compose parser. -/
-def seedHostCompose : List String :=
-  ["Host", "empty", "checkFailClosed", "extractOkFs", "extractOk", "pushHostNode"]
-
-/-- Seed names from SystemsLean.Extract import. -/
-def seedExtract : List String :=
-  ["RuntimeClaim", "runtimeFs", "runtimeClassic", "edgeRuntime"]
-
-/-- If rest is not a command start, skip to the next command. -/
-def skipNonCmd (fuel : Nat) (rest : List String) : List String :=
-  match rest with
-  | t :: _ =>
-    if isCmdKw t then rest else skipUntilCmd fuel rest
-  | [] => rest
-
-/-- Reject field proj the kernel cannot type (keep isEmpty / isSome / length). -/
-def termNoBadProjN : Nat -> Term -> Bool
-  | 0, _ => false
-  | Nat.succ _, Term.var _ => true
-  | Nat.succ _, Term.litNat _ => true
-  | Nat.succ _, Term.litString _ => true
-  | Nat.succ _, Term.litBool _ => true
-  | Nat.succ _, Term.none_ => true
-  | Nat.succ _, Term.const _ => true
-  | Nat.succ n, Term.app f a => termNoBadProjN n f && termNoBadProjN n a
-  | Nat.succ n, Term.some_ t => termNoBadProjN n t
-  | Nat.succ n, Term.ite c t e =>
-      termNoBadProjN n c && termNoBadProjN n t && termNoBadProjN n e
-  | Nat.succ n, Term.decideEq a b =>
-      termNoBadProjN n a && termNoBadProjN n b
-  | Nat.succ n, Term.proj o f =>
-      (f.raw == "isEmpty" || f.raw == "isSome" || f.raw == "length")
-        && termNoBadProjN n o
-  | Nat.succ n, Term.structLit fs =>
-      fs.all (fun p => termNoBadProjN n p.snd)
-  | Nat.succ _, Term.match_ _ _ => false
-
-/-- Tokenizer drops `++`, so `"a" ++ "b"` becomes app of two string lits.
-    Kernel cannot apply String. Skip any Term.app (keep lits / const / ite). -/
-def termNoAppN : Nat -> Term -> Bool
-  | 0, _ => false
-  | Nat.succ _, Term.var _ => true
-  | Nat.succ _, Term.litNat _ => true
-  | Nat.succ _, Term.litString _ => true
-  | Nat.succ _, Term.litBool _ => true
-  | Nat.succ _, Term.none_ => true
-  | Nat.succ _, Term.const _ => true
-  | Nat.succ _, Term.app _ _ => false
-  | Nat.succ n, Term.some_ t => termNoAppN n t
-  | Nat.succ n, Term.ite c t e =>
-      termNoAppN n c && termNoAppN n t && termNoAppN n e
-  | Nat.succ n, Term.decideEq a b =>
-      termNoAppN n a && termNoAppN n b
-  | Nat.succ n, Term.proj o _ => termNoAppN n o
-  | Nat.succ n, Term.structLit fs =>
-      fs.all (fun p => termNoAppN n p.snd)
-  | Nat.succ _, Term.match_ _ _ => false
-
-/-- Names a command adds to the known-const set (import seeds). -/
-def cmdAddsCompilePath (c : Cmd) : List String :=
-  match c with
-  | Cmd.importModule x =>
-    let s := lastSeg x.raw
-    if s == "Mult" then seedMult
-    else if s == "Types" then seedTypes
-    else if s == "IrProgram" then seedIrProgram
-    else if s == "IrGraph" then seedIrGraph
-    else if s == "Erasure" then seedErasure
-    else if s == "HostCompose" then seedHostCompose
-    else if s == "Extract" then seedExtract
-    else []
-  | Cmd.inductive_ _ ctors _ => ctors.map (fun d => d.name.raw)
-  | Cmd.def_ x _ _ => [x.raw]
-  | Cmd.defBind x _ _ _ => [x.raw]
-  | _ => []
-
-/-- Body is kernel-known, no untyped proj, no string-concat Term.app. -/
-def cmdBodyKnownCompilePath (kn : List String) : Cmd -> Bool
-  | Cmd.def_ _ _ body =>
-      termKnownN liveHostTermParseFuel kn body
-        && termNoBadProjN liveCompilePathParseFuel body
-        && termNoAppN liveCompilePathParseFuel body
-  | Cmd.defBind _ _ _ body =>
-      termKnownN liveHostTermParseFuel kn body
-        && termNoBadProjN liveCompilePathParseFuel body
-        && termNoAppN liveCompilePathParseFuel body
-  | _ => true
-
-/-- Fold commands. Skip theorem / example / set_option / private / un-kernelable. -/
-def parseCmdsCompilePath : Nat -> List String -> List String -> List Cmd ->
-    Option (List Cmd)
-  | 0, [], _, acc => some acc
-  | 0, _ :: _, _, _ => none
-  | Nat.succ _, [], _, acc => some acc
-  | Nat.succ n, toks, kn, acc =>
-    match parseOneCmdHt liveHostTermParseFuel toks with
-    | some (c, rest) =>
-      let rest2 := skipNonCmd liveCompilePathSkipFuel rest
-      if cmdBodyKnownCompilePath kn c then
-        parseCmdsCompilePath n rest2 (kn ++ cmdAddsCompilePath c) (acc ++ [c])
-      else
-        parseCmdsCompilePath n rest2 kn acc
-    | none =>
-      match toks with
-      | "private" :: rest =>
-        parseCmdsCompilePath n rest kn acc
-      | t :: rest =>
-        if isCmdKw t then
-          let rest2 := skipUntilCmd liveCompilePathSkipFuel rest
-          if rest2.length < toks.length then
-            parseCmdsCompilePath n rest2 kn acc
-          else none
-        else none
-      | [] => some acc
-
-/-- Token walk: live text has `def` named `nm` even if the body was skipped. -/
+/-- Token walk: live text has `def` named `nm`. -/
 def toksHaveDefNamed : Nat -> List String -> String -> Bool
   | 0, _, _ => false
   | Nat.succ _, [], _ => false
@@ -227,20 +138,20 @@ def toksHaveDefNamed : Nat -> List String -> String -> Bool
   | Nat.succ n, _ :: rest, nm => toksHaveDefNamed n rest nm
 
 /-- Parse live CompilePath.lean text.
+    HostFront.parseSource is the keep path --slake-check reads.
+    Keep/register names SystemsLean.CompilePath.
     Greppable: parseLiveCompilePathSource, PARSE-LIVE-COMPILEPATH. -/
 def parseLiveCompilePathSource (src : String) : FrontResult :=
-  let toks := tokenizeHostTerm (stripComments src)
-  if toks.isEmpty then FrontResult.reject reasonEmptyModule
+  if src.isEmpty then FrontResult.reject reasonEmptyModule
   else
-    match parseCmdsCompilePath liveCompilePathParseFuel toks [] [] with
-    | none => FrontResult.reject reasonParseFail
-    | some cmds =>
-      if cmds.isEmpty then FrontResult.reject reasonEmptyModule
-      else
-        let m : Module :=
-          { name := HostTerm.n "SystemsLean.CompilePath", commands := cmds }
-        if isWellFormed m then FrontResult.accept m
-        else FrontResult.reject reasonNotWellFormed
+    match parseSource src with
+    | FrontResult.reject r => FrontResult.reject r
+    | FrontResult.accept m =>
+      let kept : Module :=
+        { name := HostTerm.n "SystemsLean.CompilePath"
+          commands := m.commands }
+      if isWellFormed kept then FrontResult.accept kept
+      else FrontResult.reject reasonNotWellFormed
 
 /-- Kernel-check live CompilePath parse.
     Greppable: kernelCheckLiveCompilePathSource, PARSE-LIVE-COMPILEPATH. -/
@@ -266,7 +177,7 @@ def liveParseHasNoCheckCmd : Bool :=
       | _ => false)
 
 /-- Live parse command count (import / namespace / open / typed defs / end).
-    Real lower bound, not hardcoded true. Un-kernelable defs are skipped. -/
+    Real lower bound from this parse, not hardcoded true. -/
 def liveParseCmdCountOk : Bool :=
   match liveCompilePathParsed? with
   | some m => m.commands.length >= 8
@@ -317,6 +228,7 @@ def hostFrontLiveCompilePathReady : Bool :=
     && (hostId == "HOST-FRONT-LIVE-COMPILEPATH")
     && (parseId == "PARSE-LIVE-COMPILEPATH")
     && (liveCompilePathRel == "src/systems/SystemsLean/CompilePath.lean")
+    && hostFrontParseSourceCompilePath
     && liveParseDoesNotUseMultFixture
     && !hostFrontLiveCompilePathFullHost
     && !hostFrontLiveCompilePathResidualFreeClaimed

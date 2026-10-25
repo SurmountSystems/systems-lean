@@ -7,6 +7,7 @@
   Tokens after a finished type stay in the remainder.
   No parentheses, named types, or products.
   Recursion is on a token-list tail bound by match.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostTerm

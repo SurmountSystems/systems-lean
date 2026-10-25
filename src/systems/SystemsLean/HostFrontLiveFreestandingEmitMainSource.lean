@@ -13,7 +13,7 @@
   HOST-FRONT-LIVE-FREESTANDING-EMIT-MAIN
   FREESTANDING-EMIT-MAIN
   Greppable: SYSTEMS_LEAN_HOST, liveFreestandingEmitMainSource,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveFreestandingEmitMainSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

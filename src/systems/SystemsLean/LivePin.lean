@@ -21,6 +21,7 @@
   Does not call Lean.Elab.processCommands.
   Returns none on every other shape.
   slakeOwnsPackageTypecheck stays false. ASCII only.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostTerm

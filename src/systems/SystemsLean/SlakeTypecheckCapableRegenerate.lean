@@ -19,6 +19,7 @@
   Module: SystemsLean.SlakeTypecheckCapableRegenerate
   Checkable writer: just slake-typecheck-capableregenerate
   (lean --run; no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveCapableRegenerate

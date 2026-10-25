@@ -58,7 +58,7 @@
   parseLiveEmitGraphScaffoldSource,
   kernelCheckLiveEmitGraphScaffoldSource,
   hostFrontLiveEmitGraphScaffoldReady, liveEmitGraphScaffoldSource,
-  liveRel, liveEmitGraphScaffoldRel, UNIT_SURFACE host surface,
+  liveRel, liveEmitGraphScaffoldRel, UNIT_SURFACE host surface, MULT-0,
   liveParseDoesNotUseMultFixture, EMIT-GRAPH-SCAFFOLD.
   Module: SystemsLean.HostFrontLiveEmitGraphScaffold
   Red/green: dest-missing until barrel; lake build

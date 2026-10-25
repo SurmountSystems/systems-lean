@@ -13,7 +13,7 @@
   HOST-FRONT-LIVE-SLAKE-PRODUCED-ELF
   SLAKE-PRODUCED-ELF
   Greppable: SYSTEMS_LEAN_HOST, liveSlakeProducedElfSource,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveSlakeProducedElfSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

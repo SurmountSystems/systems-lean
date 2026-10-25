@@ -12,6 +12,7 @@
   ET_EXEC, R_X86_64_PC32, SystemsLean.SelfHostComplete.main,
   self-host-complete-callee.o, slake-freestanding-self-host-complete.
   Module: SystemsLean.SlakeHostToolElfLink
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 namespace SystemsLean.SlakeHostToolElfLink

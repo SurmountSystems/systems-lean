@@ -19,6 +19,7 @@
   PARSE-LIVE-LLVM-GRAPH-TEXT.
   Module: SystemsLean.SlakeTypecheckLlvmGraphText
   Checkable writer: lean --run on this file (no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveLlvmGraphText

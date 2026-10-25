@@ -21,6 +21,7 @@
   This wrap is not an LLVM backend. FullBackend stays false.
   Not LlvmLinearSsa. Not IrGraph. Not Linear.lean. Not ComposeSubsetEmit.lean.
   Module must stay ASCII. Not freestanding residual free. Not PROVABLY.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveLlvmMultSsa

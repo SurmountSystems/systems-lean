@@ -9,6 +9,7 @@
   Does not call Lean.Elab.processCommands.
   slakeOwnsPackageTypecheck stays false.
   Module must stay ASCII.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostTerm
@@ -68,7 +69,7 @@ def blocks (spec : String) : Term -> Bool
       && isContent leaf
   | _ => false
 
-/-- IO String only for the stored read spine.
+/-- IO String only for the stored read body.
     The empty-content arm is an error. The leaf is content. -/
 def readType (t : Term) : Option HostType :=
   match t with

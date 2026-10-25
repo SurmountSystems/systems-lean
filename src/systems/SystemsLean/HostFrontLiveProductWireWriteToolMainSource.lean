@@ -18,7 +18,7 @@
   parseLiveProductWireWriteToolMainSource,
   kernelCheckLiveProductWireWriteToolMainSource,
   hostFrontLiveProductWireWriteToolMainReady, liveProductWireWriteToolMainSource,
-  liveRel, liveProductWireWriteToolMainRel, UNIT_SURFACE host surface,
+  liveRel, liveProductWireWriteToolMainRel, UNIT_SURFACE host surface, MULT-0,
   PARSE-LIVE-PRODUCT-WIRE-WRITE-TOOL-MAIN,
   HOST-FRONT-LIVE-PRODUCT-WIRE-WRITE-TOOL-MAIN,
   SLAKE_HOST_FRONT_LIVE_PRODUCT_WIRE_WRITE_TOOL_MAIN_V0.

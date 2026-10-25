@@ -163,6 +163,19 @@ def erasureFixtureCompilePathReady : Bool :=
 def erasureFixtureDoesNotMeanResidualFree : Bool :=
   erasureFixtureCompilePathReady && !erasureFixtureResidualFreeClaimed
 
+/-- Live view: marked MULT-0 erased host (ConsumeToken). -/
+def erasureFixtureLiveView : Option Host :=
+  lowerErasureFixtureCompose
+
+/-- Spent view: ConsumeToken consume of erasureFixtureLiveView. -/
+def erasureFixtureSpentView : Option Host :=
+  match erasureFixtureLiveView with
+  | none => none
+  | some hcLive =>
+      match HostCompose.consume hcLive with
+      | HostCompose.ConsumeResult.ok hcSpent _ => some hcSpent
+      | HostCompose.ConsumeResult.notLive => none
+
 /-! ### COMPILE-PATH-ERASURE-THEOREM (readable Erasure e2e statements, then proofs)
 
   Real Lean theorems for Erasure fixture compile path only. Does not flip

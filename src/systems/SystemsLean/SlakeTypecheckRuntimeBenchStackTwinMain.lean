@@ -19,6 +19,7 @@
   Module: SystemsLean.SlakeTypecheckRuntimeBenchStackTwinMain
   Checkable writer: just slake-typecheck-runtimebenchstacktwinmain
   (lean --run; no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveRuntimeBenchStackTwinMainParse

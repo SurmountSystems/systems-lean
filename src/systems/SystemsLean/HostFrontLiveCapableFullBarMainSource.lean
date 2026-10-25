@@ -15,7 +15,7 @@
   HOST-FRONT-LIVE-CAPABLE-FULL-BAR-MAIN
   CAPABLE-FULL-BAR-MAIN
   Greppable: SYSTEMS_LEAN_HOST, liveCapableFullBarMainSource,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveCapableFullBarMainSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

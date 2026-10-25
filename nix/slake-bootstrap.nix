@@ -386,8 +386,39 @@ let
     "ImportNs"
     "HonestyEmitApplyFront"
     "HonestyEmitScafFront"
+    # OriginalDeclaration before SlakeCheckSource. SlakeCheckSource
+    # imports it, and the compiler looks for that object in the
+    # previous module tree.
+    "OriginalDeclaration"
     "SlakeCheckSource"
     "WalkRoot"
+    # Types/IrProgram/IrGraph/Erasure/Extract/HostCompose before
+    # CompilePath. CompilePath imports them, and the compiler
+    # looks for those objects in the previous module tree.
+    "Types"
+    "IrProgram"
+    "IrGraph"
+    "Erasure"
+    "Extract"
+    "HostCompose"
+    "CompilePath"
+    # EmitTypesScaffold before EmitTypes. EmitTypes imports it.
+    # EmitTypes before CompilePathTypes. CompilePathTypes imports it.
+    "EmitTypesScaffold"
+    "EmitTypes"
+    "CompilePathTypes"
+    # EmitProgramScaffold before EmitProgram. EmitProgram imports it.
+    # EmitProgram before CompilePathProgram. CompilePathProgram imports it.
+    "EmitProgramScaffold"
+    "EmitProgram"
+    "CompilePathProgram"
+    # EmitApplyScaffold before EmitApply. EmitApply imports it.
+    # EmitApply before CompilePathApply. CompilePathApply imports it.
+    # CompilePathApply is a sibling keep, not imported by CompilePath,
+    # CompilePathTypes, or CompilePathProgram.
+    "EmitApplyScaffold"
+    "EmitApply"
+    "CompilePathApply"
   ];
 
   closureFiles = map (mod: "SystemsLean/${mod}.lean") (closureMods ++ [ "PackageTypecheck" ]);

@@ -2,6 +2,7 @@
   Import-loading check for SystemsLean.BootstrapHonestyTheorems.
   A real Lean import loads that module and SystemsLean.BootstrapHonesty.
   kernelFuel stays 64. This driver does not parse text and does not edit HostKernel.
+  Module must stay ASCII. Not freestanding residual free. Not PROVABLY. SKELETON.
 -/
 
 import SystemsLean.BootstrapHonestyTheorems

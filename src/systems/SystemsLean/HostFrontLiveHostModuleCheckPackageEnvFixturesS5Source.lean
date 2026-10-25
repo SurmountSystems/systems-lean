@@ -7,7 +7,7 @@
   Not an LLVM backend. Not Lake-gone. Not PROVABLY.
   Greppable: SYSTEMS_LEAN_HOST, PARSE-LIVE-HOSTMODULECHECKPACKAGEENVFIXTURESS5,
   liveHostModuleCheckPackageEnvFixturesS5Source, liveRel,
-  HOST-FRONT-LIVE-HOSTMODULECHECKPACKAGEENVFIXTURESS5, UNIT_SURFACE host surface.
+  HOST-FRONT-LIVE-HOSTMODULECHECKPACKAGEENVFIXTURESS5, UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveHostModuleCheckPackageEnvFixturesS5Source
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

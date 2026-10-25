@@ -17,6 +17,7 @@
   on the remaining character list. Consecutive `!` then `=`
   recurses on rest. skipIdent is a where helper after an
   identStart cons. Not skipIdent of the current cons cell.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.KeptWalk

@@ -15,7 +15,7 @@
   HOST-FRONT-LIVE-FRONT-MULT-PACKAGE-MAIN
   FRONT-MULT-PACKAGE-MAIN
   Greppable: SYSTEMS_LEAN_HOST, liveFrontMultPackageMainSource,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveFrontMultPackageMainSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

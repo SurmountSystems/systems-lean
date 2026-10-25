@@ -9,6 +9,7 @@
   No IO. No Lake. Does not call Lean.Elab.processCommands.
   HostFront maps none to reject. This module does not import HostFront.
   ASCII only. Flag stays false.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.KeptForm

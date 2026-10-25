@@ -10,7 +10,7 @@
   Greppable: SYSTEMS_LEAN_HOST,
   liveHostModuleCheckRequiredDeclsLaterSource1,
   HOST-FRONT-LIVE-HOSTMODULECHECKREQUIREDDECLSLATER, liveRel,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveHostModuleCheckRequiredDeclsLaterSource01
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   FullBackend stays false in the wrap.

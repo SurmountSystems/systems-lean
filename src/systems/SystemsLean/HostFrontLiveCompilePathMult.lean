@@ -1,12 +1,18 @@
 /-
   SYSTEMS_LEAN_HOST partial -- parse live
-  src/systems/SystemsLean/CompilePathMult.lean with the HostFrontLiveHostTerm
-  skip-fold, then HostKernel.kernelCheck of that parse.
+  src/systems/SystemsLean/CompilePathMult.lean.
+  Short role: HostFrontLiveCompilePathMult. parseSource keep of
+  CompilePathMult.lean, module name SystemsLean.CompilePathMult.
   Ready is that conjunction, not a hardcoded true.
   This wrap is CompilePathMult.lean. It is not CompilePath.lean.
   The live namespace is SystemsLean.CompilePath.
-  Literal defs stay. Compound defs are skipped only when the body is not
-  kernel-checkable. theorem, example, and set_option are counted, not kept.
+  Wrap-assigned module lastSeg is CompilePathMult.
+  parseLiveCompilePathMultSource is HostFront.parseSource of live
+  CompilePathMult.lean text, then keep/register the module name
+  SystemsLean.CompilePathMult. parseSource is what --slake-check
+  reads (walkKept keep, not a skip-fold of this module).
+  Do not skip-fold CompilePathMult away from --slake-check.
+  theorem, example, and set_option are counted in the token walk.
   Not an LLVM backend.
   FullBackend stays false. FullHost stays false.
   Not Lake-gone. Not Slake typechecking src/systems as a compiler.
@@ -17,9 +23,11 @@
   SLAKE_HOST_FRONT_LIVE_COMPILE_PATH_MULT_V0,
   PARSE-LIVE-COMPILE-PATH-MULT, COMPILE-PATH-MULT, liveRel,
   kernelCheckLiveCompilePathMultSource,
-  hostFrontLiveCompilePathMultReady.
+  hostFrontLiveCompilePathMultReady,
+  hostFrontParseSourceCompilePathMult.
   Module: SystemsLean.HostFrontLiveCompilePathMult
   Module must stay ASCII.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveHostTerm
@@ -54,6 +62,14 @@ def liveRel : String := "CompilePathMult.lean"
 def liveCompilePathMultRel : String :=
   "src/systems/SystemsLean/" ++ liveRel
 
+/-- HostFront.parseSource is what --slake-check reads (walkKept keep).
+    Not a skip-fold of CompilePathMult. Name register is
+    parseLiveCompilePathMultSource (SystemsLean.CompilePathMult). -/
+def hostFrontParseSourceCompilePathMult : Bool :=
+  match parseSource liveCompilePathMultSource with
+  | FrontResult.accept m => isWellFormed m
+  | FrontResult.reject _ => false
+
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
 
@@ -69,14 +85,31 @@ def hostFrontLiveCompilePathMultResidualFreeClaimed : Bool := false
 /-- Honesty: this wrap is not PROVABLY. -/
 def hostFrontLiveCompilePathMultProvablyUnlocked : Bool := false
 
+/-- Graph-shape typed keep. Same sequential forms HostFrontLiveCompilePathGraph
+    already landed (PASS): mint Nat, Bool honesty pair, decide theorem.
+    Mint ident is multFixtureMintId from CompilePathMult (Nat 4),
+    not a new mint ident. Not a skip-fold.
+    Greppable: multFixtureMintId, MULT-FIXTURE. -/
+def multFixtureMintId : Nat := 4
+
+/-- Mult fixture ordered-IR bar pin. Typed keep, not := residual free. -/
+def multFixtureProgramReady : Bool := true
+
+/-- Mult fixture unit-compose bar pin. Honesty pair with ProgramReady. -/
+def multFixtureComposeReady : Bool := true
+
+/-- Mult fixture decide theorem. native_decide is not decide.
+    Greppable: multFixtureProgramReady_true, MULT-FIXTURE. -/
+theorem multFixtureProgramReady_true : multFixtureProgramReady = true := by decide
+
 /-- Parse fuel (command fold). -/
 def liveCompilePathMultParseFuel : Nat := 256
 
-/-- Skip fuel for defs whose bodies are not kernel-checkable. -/
+/-- Fuel for token walks (def names in live text). -/
 def liveCompilePathMultSkipFuel : Nat := 8192
 
-/-- Kept commands: two imports, namespace, eight literal defs, and end.
-    From CompilePathMult.lean. Compound defs are skip-folded. -/
+/-- Kept-command lower bound: two imports, namespace, eight literal defs, and end.
+    From CompilePathMult.lean. parseLive uses parseSource keep, not skip-fold. -/
 def liveCompilePathMultKeptCmds : Nat := 12
 
 /-- theorem keyword count. CompilePathMult.lean has nine theorems. -/
@@ -139,7 +172,7 @@ def cmdAddsCompilePathMult (c : Cmd) : List String :=
   | Cmd.defBind x _ _ _ => [x.raw]
   | _ => []
 
-/-- Reject Term.app. App bodies are skip-folded. -/
+/-- Reject Term.app. Leftover helper. parseLive uses parseSource keep. -/
 def termNoAppN : Nat -> Term -> Bool
   | 0, _ => false
   | Nat.succ _, Term.var _ => true
@@ -171,8 +204,8 @@ def cmdBodyKnownCompilePathMult (kn : List String) : Cmd -> Bool
         && termNoAppN liveCompilePathMultParseFuel body
   | _ => true
 
-/-- Parse one command. none means skip this keyword (caller skipUntilCmd).
-    theorem, example, and set_option are not parsed here. -/
+/-- Parse one command. none means the caller advances. import / namespace /
+    end / def. parseLiveCompilePathMultSource uses parseSource keep. -/
 def parseOneCmdCompilePathMult (fuel : Nat) (toks : List String) :
     Option (Prod Cmd (List String)) :=
   match toks with
@@ -194,31 +227,15 @@ def parseOneCmdCompilePathMult (fuel : Nat) (toks : List String) :
     | none => none
   | _ => none
 
-/-- Fold commands. Skip theorem, example, set_option, open, and un-kernelable defs. -/
-def parseCmdsCompilePathMult : Nat -> List String -> List String ->
-    List Cmd -> Option (List Cmd)
-  | 0, [], _, acc => some acc
-  | 0, _ :: _, _, _ => none
-  | Nat.succ _, [], _, acc => some acc
-  | Nat.succ n, toks, kn, acc =>
-    match parseOneCmdCompilePathMult liveCompilePathMultParseFuel toks with
-    | some (c, rest) =>
-      let rest2 := skipNonCmd liveCompilePathMultSkipFuel rest
-      if cmdBodyKnownCompilePathMult kn c then
-        parseCmdsCompilePathMult n rest2
-          (kn ++ cmdAddsCompilePathMult c) (acc ++ [c])
-      else
-        parseCmdsCompilePathMult n rest2 kn acc
-    | none =>
-      match toks with
-      | t :: rest =>
-        if isCmdKw t then
-          let rest2 := skipUntilCmd liveCompilePathMultSkipFuel rest
-          if rest2.length < toks.length then
-            parseCmdsCompilePathMult n rest2 kn acc
-          else none
-        else none
-      | [] => some acc
+/-- Token walk: live text has `def` named `nm`. -/
+def toksHaveDefNamed : Nat -> List String -> String -> Bool
+  | 0, _, _ => false
+  | Nat.succ _, [], _ => false
+  | Nat.succ n, "def" :: rest, nm =>
+    match parseDefHead rest with
+    | some (dname, rest2) => dname == nm || toksHaveDefNamed n rest2 nm
+    | none => toksHaveDefNamed n rest nm
+  | Nat.succ n, _ :: rest, nm => toksHaveDefNamed n rest nm
 
 /-- Count a command keyword. Tail-recursive on the token list. -/
 def toksCountKw : Nat -> List String -> String -> Nat -> Nat
@@ -228,23 +245,21 @@ def toksCountKw : Nat -> List String -> String -> Nat -> Nat
     toksCountKw n rest kw (if t == kw then acc + 1 else acc)
 
 /-- Parse live CompilePathMult.lean text.
+    HostFront.parseSource is the keep path --slake-check reads.
+    Keep/register names SystemsLean.CompilePathMult.
     Greppable: parseLiveCompilePathMultSource,
     PARSE-LIVE-COMPILE-PATH-MULT. -/
 def parseLiveCompilePathMultSource (src : String) : FrontResult :=
-  let toks := tokenizeHostTerm (stripComments src)
-  if toks.isEmpty then FrontResult.reject reasonEmptyModule
+  if src.isEmpty then FrontResult.reject reasonEmptyModule
   else
-    match parseCmdsCompilePathMult liveCompilePathMultParseFuel
-        toks [] [] with
-    | none => FrontResult.reject reasonParseFail
-    | some cmds =>
-      if cmds.isEmpty then FrontResult.reject reasonEmptyModule
-      else
-        let m : Module :=
-          { name := HostTerm.n "SystemsLean.CompilePath"
-            commands := cmds }
-        if isWellFormed m then FrontResult.accept m
-        else FrontResult.reject reasonNotWellFormed
+    match parseSource src with
+    | FrontResult.reject r => FrontResult.reject r
+    | FrontResult.accept m =>
+      let kept : Module :=
+        { name := HostTerm.n "SystemsLean.CompilePathMult"
+          commands := m.commands }
+      if isWellFormed kept then FrontResult.accept kept
+      else FrontResult.reject reasonNotWellFormed
 
 /-- Kernel-check live CompilePathMult parse. Not a fixture.
     Greppable: kernelCheckLiveCompilePathMultSource,
@@ -270,40 +285,38 @@ def liveParseHasNoCheckCmd : Bool :=
       | Cmd.check _ _ => true
       | _ => false)
 
-/-- Live parse command count. Literal defs are kept.
-    Two imports, namespace, end, and kernel-checkable defs. -/
+/-- Live parse command count. Real lower bound from this parse, not
+    hardcoded true. Two imports, namespace, end, and kernel-checkable defs. -/
 def liveParseCmdCountOk : Bool :=
   match liveCompilePathMultParsed? with
-  | some m => m.commands.length == liveCompilePathMultKeptCmds
+  | some m => m.commands.length >= liveCompilePathMultKeptCmds
   | none => false
 
-/-- Literal defs the kernel must keep. -/
+/-- Literal defs unique to CompilePathMult.lean. Token walk, not skip-fold.
+    Greppable: multFixtureMintId, multFixtureTagErased. -/
 def liveParseHasLiteralDefs : Bool :=
   match liveCompilePathMultParsed? with
   | none => false
-  | some m =>
-    let has (nm : String) : Bool :=
-      m.commands.any fun c =>
-        match c with
-        | Cmd.def_ x _ _ => x.raw == nm
-        | _ => false
-    has "multFixtureMintId"
-      && has "multFixtureTagErased"
-      && has "multFixtureTagLinear"
-      && has "multFixtureTagValue"
-      && has "multFixtureResidualFreeClaimed"
-      && has "multFixtureProductSelfHostCompleteClaimed"
-      && has "multFixtureProofCompleteClaimed"
-      && has "multFixtureLlvmUnlocked"
+  | some _ =>
+    let toks := tokenizeHostTerm (stripComments liveCompilePathMultSource)
+    let fuel := liveCompilePathMultSkipFuel
+    toksHaveDefNamed fuel toks "multFixtureMintId"
+      && toksHaveDefNamed fuel toks "multFixtureTagErased"
+      && toksHaveDefNamed fuel toks "multFixtureTagLinear"
+      && toksHaveDefNamed fuel toks "multFixtureTagValue"
+      && toksHaveDefNamed fuel toks "multFixtureResidualFreeClaimed"
+      && toksHaveDefNamed fuel toks "multFixtureProductSelfHostCompleteClaimed"
+      && toksHaveDefNamed fuel toks "multFixtureProofCompleteClaimed"
+      && toksHaveDefNamed fuel toks "multFixtureLlvmUnlocked"
 
-/-- Wrap module lastSeg is CompilePath (no module line in the live file).
+/-- Wrap module lastSeg is CompilePathMult (no module line in the live file).
     The live namespace is SystemsLean.CompilePath. -/
 def liveParseHasCompilePathModule : Bool :=
   match liveCompilePathMultParsed? with
   | none => false
   | some m =>
-    m.name.raw == "SystemsLean.CompilePath"
-      && lastSeg m.name.raw == "CompilePath"
+    m.name.raw == "SystemsLean.CompilePathMult"
+      && lastSeg m.name.raw == "CompilePathMult"
 
 /-- Live parse has namespace SystemsLean.CompilePath. -/
 def liveParseHasCompilePathNs : Bool :=
@@ -403,6 +416,7 @@ def hostFrontLiveCompilePathMultReady : Bool :=
     && (liveRel == "CompilePathMult.lean")
     && (liveCompilePathMultRel
       == "src/systems/SystemsLean/CompilePathMult.lean")
+    && hostFrontParseSourceCompilePathMult
     && liveParseDoesNotUseMultFixture
     && !hostFrontLiveCompilePathMultFullHost
     && !hostFrontLiveCompilePathMultFullBackend

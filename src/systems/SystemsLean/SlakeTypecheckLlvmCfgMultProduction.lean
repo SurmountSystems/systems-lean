@@ -18,6 +18,7 @@
   PARSE-LIVE-LLVM-CFG-MULT-PRODUCTION, LLVM-CFG-MULT-PRODUCTION.
   Module: SystemsLean.SlakeTypecheckLlvmCfgMultProduction
   Checkable writer: lean --run of this driver (no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveLlvmCfgMultProduction

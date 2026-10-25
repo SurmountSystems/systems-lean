@@ -23,6 +23,7 @@
   Module: SystemsLean.SlakeTypecheckHostModuleCheckHostCheckTerm
   Checkable writer: lean --run SlakeTypecheckHostModuleCheckHostCheckTerm.lean
   (no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveHostModuleCheckHostCheckTermSource

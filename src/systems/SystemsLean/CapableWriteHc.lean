@@ -10,6 +10,9 @@
   true, proved here by decide. This file does not run Lake. Load, assemble,
   and dialect helpers are not defined in this file.
   ASCII only.
+  Greppable: SYSTEMS_LEAN_HOST, RUNTIME-FS, UNIT_SURFACE host surface, dualSsotBlockEqual.
+  Module: SystemsLean.CapableWriteHc
+  Not freestanding emit residual free. Not residual free. Not PROVABLY.
 -/
 
 import SystemsLean.CapableWriteHcLoad

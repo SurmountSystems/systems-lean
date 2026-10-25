@@ -24,6 +24,7 @@
   Module: SystemsLean.SlakeTypecheckLlvmMultSsa
   Checkable writer: just slake-typecheck-llvmmultssa
   (lean --run; no mill; no lake). Dests skipped this slice.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveLlvmMultSsa

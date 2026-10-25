@@ -7,6 +7,7 @@
   mention a sibling.
   Host Lean contract. Not an input the toy checker must parse.
   Module: SystemsLean.CompilerSpec.Mutual
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 namespace SystemsLean.CompilerSpec.Mutual

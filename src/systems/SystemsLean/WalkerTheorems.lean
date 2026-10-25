@@ -17,6 +17,7 @@
   allTypesUseCheckDone stays false.
   No new UseTerm constructor. Split only.
   Module must stay ASCII.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.Walker

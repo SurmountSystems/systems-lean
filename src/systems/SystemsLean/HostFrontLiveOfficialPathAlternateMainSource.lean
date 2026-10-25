@@ -9,7 +9,7 @@
   Not a package typecheck.
   liveRel is the bare basename OfficialPathAlternateMain.lean.
   Greppable: SYSTEMS_LEAN_HOST, liveOfficialPathAlternateMainSource,
-  HOST-FRONT-LIVE-OFFICIAL-PATH-ALTERNATE-MAIN, liveRel, UNIT_SURFACE host surface.
+  HOST-FRONT-LIVE-OFFICIAL-PATH-ALTERNATE-MAIN, liveRel, UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveOfficialPathAlternateMainSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Not a backend. FullBackend stays false in the wrap.

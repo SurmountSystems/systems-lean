@@ -6,7 +6,7 @@
   Not an LLVM backend. Not Lake-gone. Not PROVABLY.
   Greppable: SYSTEMS_LEAN_HOST, PARSE-LIVE-LOADOK,
   liveHostModuleCheckLoadOkSource, liveRel,
-  HOST-FRONT-LIVE-LOADOK, UNIT_SURFACE host surface.
+  HOST-FRONT-LIVE-LOADOK, UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveHostModuleCheckLoadOkSourceB
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

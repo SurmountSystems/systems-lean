@@ -1,7 +1,9 @@
 # SPDX-License-Identifier: Unlicense
-# Pure Nix Lean-side dual presence: required files, honesty tokens, and
-# banned-jargon walk under src/lean4/examples/*.lean. Fail-closed on missing
-# paths, missing tokens, or forbidden jargon. No bash, no ripgrep, no Python.
+# Pure Nix Lean-side dual presence: required files, honesty tokens,
+# leanprover/lean4:v4.35.0 in src/lean4/lean-toolchain and
+# src/systems/lean-toolchain, and banned-jargon walk under
+# src/lean4/examples/*.lean. Fail-closed on missing paths, missing tokens,
+# missing toolchain pin, or forbidden jargon. No bash, no ripgrep, no Python.
 #
 #   import ./lean-side-presence { inherit lib; root = novelSourceOrRepo; }
 #   -> { ok, violations, summary }

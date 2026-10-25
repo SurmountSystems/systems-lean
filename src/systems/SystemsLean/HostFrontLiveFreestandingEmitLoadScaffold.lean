@@ -21,6 +21,7 @@
   hostFrontLiveFreestandingEmitLoadScaffoldReady.
   Module: SystemsLean.HostFrontLiveFreestandingEmitLoadScaffold
   Module must stay ASCII.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveHostTerm

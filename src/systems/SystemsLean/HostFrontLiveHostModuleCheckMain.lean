@@ -19,7 +19,7 @@
   parseLiveHostModuleCheckMainSource,
   kernelCheckLiveHostModuleCheckMainSource,
   hostFrontLiveHostModuleCheckMainReady, liveHostModuleCheckMainSource,
-  liveRel, liveHostModuleCheckMainRel, UNIT_SURFACE host surface,
+  liveRel, liveHostModuleCheckMainRel, UNIT_SURFACE host surface, MULT-0,
   PARSE-LIVE-HOST-MODULE-CHECK-MAIN,
   HOST-FRONT-LIVE-HOST-MODULE-CHECK-MAIN,
   SLAKE_HOST_FRONT_LIVE_HOST_MODULE_CHECK_MAIN_V0.

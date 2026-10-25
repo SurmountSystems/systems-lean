@@ -18,6 +18,7 @@
   PARSE-LIVE-ERASURE-SUBSET-REBUILD.
   Module: SystemsLean.SlakeTypecheckErasureSubsetRebuild
   Checkable writer: lean --run on this file (no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveErasureSubsetRebuild

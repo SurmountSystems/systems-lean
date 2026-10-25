@@ -12,6 +12,7 @@
   PARSE-LIVE-HOST-GRAPH.
   Module: SystemsLean.SlakeTypecheckHostGraph
   Checkable writer: lean --run SlakeTypecheckHostGraph (no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveHostGraph

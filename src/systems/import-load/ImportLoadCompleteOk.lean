@@ -1,3 +1,4 @@
+-- Module must stay ASCII. Not freestanding residual free. Not PROVABLY. SKELETON.
 import SystemsLean.CompleteOk
 
 /-- Column-0 import: exact `import`, or a prefix the package walker counts. -/
@@ -14,7 +15,7 @@ def countCol0Imports (text : String) : Nat :=
 
 def main : IO UInt32 := do
   let stage : String := SystemsLean.CompleteOk.stageId
-  let text ← IO.FS.readFile
+  let text <- IO.FS.readFile
     "/home/hunter/Projects/ai/iso/src/systems/SystemsLean/CompleteOk.lean"
   let n := countCol0Imports text
   IO.println "liveRel=CompleteOk.lean"

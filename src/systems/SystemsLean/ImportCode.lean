@@ -10,6 +10,7 @@
   Does not call Lean.Elab.processCommands.
   Does not store the module file name.
   slakeOwnsPackageTypecheck stays false. ASCII only.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostTerm

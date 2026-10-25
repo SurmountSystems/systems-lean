@@ -27,6 +27,7 @@
   Checkable writer: lean --run
   SlakeTypecheckHostModuleCheckRequiredDeclsLater.lean
   (no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveHostModuleCheckRequiredDeclsLater

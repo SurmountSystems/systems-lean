@@ -7,6 +7,7 @@
   Does not call Lean.Elab.processCommands.
   No SystemsLean import. slakeOwnsPackageTypecheck stays false.
   Module must stay ASCII.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 namespace SystemsLean.WalkRoot

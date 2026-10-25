@@ -41,7 +41,7 @@
   kernelCheckLiveSpecProofTheoremsSource,
   hostFrontLiveSpecProofTheoremsReady, liveSpecProofTheoremsSource,
   liveRel, liveSpecProofTheoremsRel, SPEC-PROOF-THEOREM,
-  SPEC-PROOF-SMOKE, UNIT_SURFACE host surface.
+  SPEC-PROOF-SMOKE, UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveSpecProofTheorems
   Red/green: just slake-typecheck-specprooftheorems (lean --run; no mill;
   no lake). Not package typecheck GREEN. Not FullHost. Not Lake-gone.

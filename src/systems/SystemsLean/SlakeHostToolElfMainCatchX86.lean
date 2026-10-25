@@ -15,6 +15,7 @@
   X64I, CatchInsn.x86_64Code, CatchInsn.encodeX86_64, writeCatchX86,
   self-host-complete-main-catch.x86-64.bin.
   Module: SystemsLean.SlakeHostToolElfMainCatchX86
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.SlakeHostToolElfMainCatch

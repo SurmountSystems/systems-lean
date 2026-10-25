@@ -34,33 +34,58 @@ the work description; "human-directed product residual" without a Name.
 
 ## Open (living queue. Drives implement.)
 
-### Rename identifier helper
+### Lean 4.35 leftover
 
 **Status:** open
 
-**Goal:** Rename `RejectBneIdent.lean` to `RejectBoolBne.lean` with namespace
-`SystemsLean.RejectBoolBne` and findWord "bne". Token `!=` stays in
-`RejectBne.lean`.
+**Goal:** Keep Lean 4.35, linear types, Idris 2, Slake compiling Slake, and a
+later Mathlib test (OBJECTIVE spelling Matlib) as leftover-not-done. Do not
+claim Slake-from-Slake done. Do not mint a dest.
 
-**Done when:** living dest is `RejectBoolBne.lean`; no product module named
-RejectBneIdent; `WATCHER.md` remains absent.
+**Done when:** not this turn. This Name stays leftover-not-done.
 
-**Out of scope:** AGENTS.md shrink; remaining-distance Nix; HostKernel.lean;
-SSH; mill; Lean compile; flipping slakeOwnsPackageTypecheck or FullHost;
-occupancy 49; mills 55 through 69; 2136-name refill.
+**Out of scope:** claiming Slake-from-Slake done; minting a dest; Ident-suffix
+names; flipping slakeOwnsPackageTypecheck or FullHost; occupancy 49; mills 55
+through 69; 2136-name refill; writing `WATCHER.md`; exclusive Nix eval of
+`nix/lean-string-slice-copy`.
 
-**Primary paths:** `src/systems/SystemsLean/RejectBoolBne.lean` (dest; this
-docs job does not edit Lean). Residual and handoff are this cleanup.
+**Primary paths:** `RESIDUAL-systems.md` Open; `doc/SESSION-HANDOFF.md`;
+`/home/hunter/.agents/reports/remaining-2026-10-17-prove-honesty.md`.
 
 **Living tip:** Independently reviewed ELF
-`/nix/store/s0sjpz1gz8vq50cm9fsks6ccs8yhvmk3-slake-bootstrap`
-(149297912 bytes). Rebuild 24 BLOCKED on
-`/nix/store/vnaf6g728b5pph6pgkjj2idmy7jk9sf2-slake-bootstrap-Mult-place.drv`
-signal 9. No NEW ELF. Do not loop Nix on that copy set. HostKernel.lean 779
-closed. UseCheck 177 of 356. Walker.lean 367.
+`/nix/store/97p32bdbdw6v79yxydi1y4s4s39ksp8j-slake-bootstrap`
+(149467016 bytes). slakeOwnsPackageTypecheck stays false. FullHost stays
+false. Occupancy stays 49. Mills 55 through 69 stay built. HostKernel.lean
+779 closed. The gate `nix/lean-string-slice-copy` exists and still fail-closes
+a Slice-without-`.copy` miss. Edmonton owns that eval. Do not re-eval.
 
-**Hunter beat:** lockstep novels hid the living leftover. Repeated miss:
-append instead of replace. Do not start the lockstep treadmill again.
+**Lean 4.35.0 quotes** from
+https://lean-lang.org/doc/reference/latest/releases/v4.35.0/
+(accessed: 2026-10-21). The changelog page has no `String.drop` /
+`String.Slice` match. Quote 1 is from the live Lean 4.35 Strings API
+https://lean-lang.org/doc/reference/latest/Basic-Types/Strings/
+(accessed: 2026-10-21): "`String.drop (s : String) (n : Nat) : String.Slice`"
+and "To convert the result into a string, use `String.Slice.copy`." Quote 2:
+"`Decidable` has a new definition based on `Bool`, which makes many more
+equations hold by `rfl`." Surrounding: "[#8309] changes the definition of
+`Decidable`: instead of an inductive type with the constructors `isTrue` and
+`isFalse`, it is now a structure that stores a `Bool` together with a proof
+that this `Bool` reflects the proposition." Quote 3: "[#14953] removes
+`Lean.reduceBool`, `Lean.reduceNat` and the `Lean.trustCompiler` axiom, which
+had been deprecated since February." Quote 4: "[#15052] adds `markLinear` for
+`String`, `ByteArray`, `FloatArray` and `Array` ... After `markLinear`, every
+write to the value must happen while it is not shared; if the environment
+variable `LEAN_ABORT_ON_NONLINEAR` is set, the program aborts at the first
+write that does not." Quote 5: "It also adds `lake check` and `lake
+comparator`, which check a project with Lean's kernel and, if requested, with
+several independent kernels that now come with the toolchain." Surrounding:
+"The release toolchain now also includes the external checkers `lean4lean`,
+`nanoda`, `con-leche` and `con-ron` ... With `--paranoid`, both commands run
+all of these checkers in addition to Lean's own kernel."
+
+**Clocks:** Dual clocks stay unadded. Specimen keep is one clock. The standing
+Lean 4 guess is 10.0 days / 40.0m. The standing mathlib guess is 5.0 days /
+20.0m. Do not add those clocks.
 
 Pointer: `/home/hunter/.agents/reports/remaining-2026-10-17-prove-honesty.md`.
 Do not write `WATCHER.md`. Do not emit a next implement prompt.

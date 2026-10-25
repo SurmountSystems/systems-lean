@@ -18,6 +18,7 @@
   Module: SystemsLean.SlakeTypecheckLinear
   Checkable writer: lean --run SlakeTypecheckLinear.lean
   (no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveLinear

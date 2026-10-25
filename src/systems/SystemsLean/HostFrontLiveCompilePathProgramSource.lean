@@ -25,8 +25,10 @@ namespace SystemsLean.HostFrontLiveCompilePathProgram
 def liveCompilePathProgramSource : String := r#"/-
   SYSTEMS_LEAN_HOST partial -- Program unit compile-path fixture (COMPILE-PATH-PROGRAM).
   Side: classic Lean elaborator under src/systems/ (not freestanding C).
-  Owns Program end-to-end compile-path fixture only: multi-node ordered IR +
-  foldWellTyped -> host mark+mint -> unitCompileReady + HOST-EMIT-PROGRAM.
+  Owns Program end-to-end compile-path fixture only: multi-node ordered IR
+  and a foldWellTyped count, then host mark+mint (unitCompileReady on that
+  live host). HOST-EMIT-PROGRAM is product-text honesty beside that path,
+  not a result of mark and mint.
   Core compile bars and shared fixture helpers live in SystemsLean.CompilePath.
   Does NOT claim residual free / product self-host complete / proof complete /
   llvm unlock / full Slake compiler.
@@ -52,10 +54,12 @@ open SystemsLean.HostCompose (Host)
 /-! ### COMPILE-PATH-PROGRAM / PROGRAM-FIXTURE (Track 2 Program unit end-to-end)
 
   Named Program fixture: multi-node well-typed ordered IR (3-node
-  ERASED/LINEAR/VALUE) -> programCompileReady + foldWellTyped count -> host
-  compose (mark MULT-0 + mint MULT-1) -> unitCompileReady + HOST-EMIT-PROGRAM
-  product text honesty. Same kind/mult pairing as KernelProgram IR fixture; e2e
-  bar lives here (KernelProgram imports CompilePath -- no import cycle).
+  ERASED/LINEAR/VALUE), programCompileReady, and foldWellTyped count 3.
+  Host compose marks MULT-0 and mints MULT-1. That live host meets
+  unitCompileReady. HOST-EMIT-PROGRAM product text honesty is beside that
+  path, not a result of mark and mint. Same kind/mult pairing as KernelProgram
+  IR fixture; e2e bar lives here (KernelProgram imports CompilePath -- no
+  import cycle).
   Does NOT claim residual free / product self-host complete / proof complete /
   llvm unlock / CFG/SSA completeness / full Slake compiler.
 -/
@@ -203,6 +207,24 @@ def programFixtureCompilePathReady : Bool :=
     Greppable: programFixtureDoesNotMeanResidualFree, COMPILE-PATH-PROGRAM. -/
 def programFixtureDoesNotMeanResidualFree : Bool :=
   programFixtureCompilePathReady && !programFixtureResidualFreeClaimed
+
+/-- Live and spent views of the Program fixture (not a new resource).
+    Live is the marked and minted host of the multi-node Program fixture.
+    Spent is that host after ConsumeToken consume. Non-recursive. -/
+mutual
+  /-- Live view: marked and minted Program host (ConsumeToken). -/
+  def programFixtureLiveView : Option Host :=
+    lowerProgramFixtureCompose
+
+  /-- Spent view: ConsumeToken consume of programFixtureLiveView. -/
+  def programFixtureSpentView : Option Host :=
+    match programFixtureLiveView with
+    | none => none
+    | some hcLive =>
+        match HostCompose.consume hcLive with
+        | HostCompose.ConsumeResult.ok hcSpent _ => some hcSpent
+        | HostCompose.ConsumeResult.notLive => none
+end
 
 /-! ### COMPILE-PATH-PROGRAM-THEOREM (readable Program e2e statements, then proofs)
 

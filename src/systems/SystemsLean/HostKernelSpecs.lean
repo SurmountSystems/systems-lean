@@ -9,6 +9,7 @@
   Does not call Lean.Elab.processCommands.
   slakeOwnsPackageTypecheck stays false.
   Module must stay ASCII.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostTerm
@@ -49,13 +50,13 @@ def tailOk : Term -> Bool
   | _ => false
 
 /-- At least one cons. A bare nil is not this list. -/
-def listSpine : Term -> Bool
+def listOk : Term -> Bool
   | Term.app (Term.app (Term.const c) h) t =>
     c.raw == "List.cons" && specOk h && tailOk t
   | _ => false
 
 def specsType (t : Term) : Option HostType :=
-  if listSpine t then some listTy else none
+  if listOk t then some listTy else none
 
 /-- requireFile first. The five-field list only after that misses.
     A four-field DualSsotSpec list only after the five-field list misses. -/

@@ -25,7 +25,7 @@
   DualEqWriteParity
   productPathFreestandingPerformDualEqualityWriteParity
   Greppable: SYSTEMS_LEAN_HOST, liveDualEqWriteParityMainSource,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveDualEqWriteParityMainSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

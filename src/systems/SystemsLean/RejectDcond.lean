@@ -32,6 +32,7 @@
   failed whole-word match. skipIdent is a where helper. Not
   skipIdent of the current cons cell. The dcond matcher is
   whole-identifier `dcond`, not the cond matcher.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.KeptWalk

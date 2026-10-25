@@ -13,6 +13,7 @@
   NativeInsn.x86_64Code, NativeInsn.encodeX86_64, writeMeasureX86,
   self-host-complete-measure.x86-64.bin.
   Module: SystemsLean.SlakeHostToolElfMeasureX86
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.SlakeHostToolElfMeasure

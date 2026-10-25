@@ -158,6 +158,19 @@ def multFixtureCompilePathReady : Bool :=
 def multFixtureDoesNotMeanResidualFree : Bool :=
   multFixtureCompilePathReady && !multFixtureResidualFreeClaimed
 
+/-- Live view: marked and minted Mult host (ConsumeToken). -/
+def multFixtureLiveView : Option Host :=
+  lowerMultFixtureCompose
+
+/-- Spent view: ConsumeToken consume of multFixtureLiveView. -/
+def multFixtureSpentView : Option Host :=
+  match multFixtureLiveView with
+  | none => none
+  | some hcLive =>
+      match HostCompose.consume hcLive with
+      | HostCompose.ConsumeResult.ok hcSpent _ => some hcSpent
+      | HostCompose.ConsumeResult.notLive => none
+
 /-! ### COMPILE-PATH-MULT-THEOREM (readable Mult e2e statements, then proofs)
 
   Real Lean theorems for Mult fixture compile path only. Does not flip

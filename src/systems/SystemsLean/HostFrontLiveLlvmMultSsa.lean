@@ -53,6 +53,7 @@
   Module: SystemsLean.HostFrontLiveLlvmMultSsa
   Not package typecheck GREEN. Not FullHost. Not Lake-gone. Not FullBackend.
   Module must stay ASCII.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveHostTerm

@@ -23,6 +23,7 @@
   Module: SystemsLean.SlakeTypecheckHostModuleCheckGraphTheoremsKernel
   Checkable writer: lean --run SlakeTypecheckHostModuleCheckGraphTheoremsKernel.lean
   (no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveHostModuleCheckGraphTheoremsKernelSource

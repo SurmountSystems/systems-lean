@@ -12,6 +12,7 @@
   Does not call Lean.Elab.processCommands.
   slakeOwnsPackageTypecheck stays false.
   Module must stay ASCII.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostTerm
@@ -51,13 +52,13 @@ def tailOk : Term -> Bool
   | _ => false
 
 /-- At least one cons. A bare nil is not this list. -/
-def listSpine : Term -> Bool
+def listOk : Term -> Bool
   | Term.app (Term.app (Term.const c) h) t =>
     c.raw == "List.cons" && specOk h && tailOk t
   | _ => false
 
 def dualListType (t : Term) : Option HostType :=
-  if listSpine t then some listTy else none
+  if listOk t then some listTy else none
 
 def isUserErr : Term -> Bool
   | Term.app (Term.const c) (Term.litString s) =>
@@ -101,7 +102,7 @@ def blocks (spec : String) : Term -> Bool
       && isOk leaf
   | _ => false
 
-/-- IO Unit only for the stored read spine with an ok leaf.
+/-- IO Unit only for the stored read body with an ok leaf.
     The empty-content arm is an error. Bool true is none. -/
 def dualUnitRead (t : Term) : Option HostType :=
   match t with

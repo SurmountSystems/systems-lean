@@ -19,6 +19,7 @@
   PARSE-LIVE-DUAL-EQ-WRITE-PARITY-THEOREMS.
   Module: SystemsLean.SlakeTypecheckDualEqWriteParityTheorems
   Checkable writer: lean --run on this file (no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveDualEqWriteParityTheorems

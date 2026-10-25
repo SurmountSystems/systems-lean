@@ -7,8 +7,11 @@
 # SystemsLean.FreestandingEmit
 # Product freestanding wire: regenerate emit + out/freestanding-c.
 # M4 Name C (official without-Lake hot path): prefer Name B Lean-native freestanding
-# writer (product-wire-freestanding-write; P1 no host-cc C print from Lean), else
-# Name A prebuilt regenerate (freestanding-capable-regenerate-without-lake).
+# writer (product-wire-freestanding-write; P1 no host-cc C print from Lean) only when
+# that writer's compiled linearHeaderFragment is not behind living source
+# (slake_linear_cell_alloc). Else Name A lake-free regenerate
+# (freestanding-capable-regenerate-without-lake). A stale 2026-08-12
+# CapableRegenerate ELF must not win dual-eq.
 # B38 dual-eq WRITE authority remains (Capable* / freestandingCapableWriteFreestandingHc
 # substrate; freestanding-capable-regenerate Lake path stays diagnostic).
 # NOT FreestandingEmit / slake-emit-freestanding-c as official writer.
@@ -55,21 +58,36 @@ build:
       echo "error: Capable dual-eq WRITE module missing under $systems_dir" >&2
       exit 1
     fi
-    # M4 Name C: prefer Name B Lean-native product-wire writer (P1; no host-cc C
-    # print); fall back to Name A prebuilt freestanding-capable-regenerate.
-    if [[ -f "$tool_mod" ]] && { [[ -x "$prebuilt" ]] || [[ -x "$tool_prebuilt" ]] || command -v lake >/dev/null 2>&1; }; then
-      echo "  hot path: product-wire-freestanding-write (Name B Lean-native P1)"
+    # M4 Name C: prefer Name B only when a prebuilt writer's compiled
+    # linearHeaderFragment contains living slake_linear_cell_alloc. A stale
+    # CapableRegenerate ELF must not win. Lake bootstrap is only when no
+    # prebuilt exists at all. Otherwise Name A lake-free regenerate.
+    prebuilt_current=0
+    tool_current=0
+    if [[ -x "$prebuilt" ]] && grep -aF -q 'slake_linear_cell_alloc' "$prebuilt"; then
+      prebuilt_current=1
+    fi
+    if [[ -x "$tool_prebuilt" ]] && grep -aF -q 'slake_linear_cell_alloc' "$tool_prebuilt"; then
+      tool_current=1
+    fi
+    if [[ -f "$tool_mod" ]] && { [[ "$prebuilt_current" -eq 1 ]] || [[ "$tool_current" -eq 1 ]]; }; then
+      echo "  hot path: product-wire-freestanding-write (Name B Lean-native P1; writer fragment current)"
       just product-wire-freestanding-write
       echo "build: product-wire-freestanding-write (M4 Name B/C dual-eq WRITE+INSTALL) done"
-    elif [[ -x "$prebuilt" ]]; then
-      echo "  hot path: freestanding-capable-regenerate-without-lake (Name A prebuilt; no lake)"
+    elif [[ -f "$tool_mod" ]] && command -v lake >/dev/null 2>&1 && [[ ! -x "$prebuilt" ]] && [[ ! -x "$tool_prebuilt" ]]; then
+      echo "  hot path: product-wire-freestanding-write (Name B lake bootstrap; no prebuilt ELF)"
+      just product-wire-freestanding-write
+      echo "build: product-wire-freestanding-write (M4 Name B/C dual-eq WRITE+INSTALL) done"
+    elif [[ -f "$systems_dir/SystemsLean/CapableRegenerate.lean" ]]; then
+      echo "  skip: prebuilt writer ELF compiled linearHeaderFragment behind living source"
+      echo "  hot path: freestanding-capable-regenerate-without-lake (Name A lake-free; no lake)"
       just freestanding-capable-regenerate-without-lake
-      echo "build: freestanding-capable-regenerate-without-lake (M4 Name A/C dual-eq WRITE) done"
+      echo "build: freestanding-capable-regenerate-without-lake (M4 Name A/C source-backed WRITE) done"
     else
       echo "error: official without-Lake product wire missing both measured writers" >&2
-      echo "  Name B: need ProductWireWriteTool + prebuilt CapableRegenerate or lake" >&2
+      echo "  Name B: need ProductWireWriteTool + current prebuilt CapableRegenerate or lake" >&2
       echo "    bootstrap once: (cd $systems_dir && lake build slake-product-wire-fs-write-tool && lake exe slake-product-wire-fs-write-tool -- $root)" >&2
-      echo "  Name A: need executable prebuilt $prebuilt" >&2
+      echo "  Name A: need SystemsLean.CapableRegenerate" >&2
       echo "    bootstrap once: (cd $systems_dir && lake build slake-freestanding-capable-regenerate)" >&2
       echo "  then re-run: just build" >&2
       exit 1
@@ -85,7 +103,7 @@ build:
         exit 1
       fi
     done
-    for tok in SLAKE_EMIT_FREESTANDING_C_V0 HOST-EMIT-MULT HOST-EMIT-LINEAR HOST-EMIT-SSOT; do
+    for tok in SLAKE_EMIT_FREESTANDING_C_V0 HOST-EMIT-MULT HOST-EMIT-LINEAR HOST-EMIT-SSOT slake_linear_cell_alloc; do
       for path in "$out_h" "$out_c" "$install_h" "$install_c"; do
         if ! grep -qF "$tok" "$path"; then
           echo "error: $path missing greppable token $tok after without-Lake build" >&2

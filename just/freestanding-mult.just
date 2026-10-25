@@ -178,9 +178,13 @@ mult-subset-freestanding-write:
 # Living: freestandingCapableWriteFreestandingHc + freestandingCapableInstallFreestandingOut
 # via ProductWireWriteTool (IO.FS.writeFile). Does NOT print full host-cc C tool
 # sources from Lean (Path A C-print retired). Measured path prefer order:
-#   1) prebuilt CapableRegenerate without lake (WRITE+INSTALL dual-eq)
-#   2) prebuilt slake-product-wire-fs-write-tool without lake
-#   3) lake exe slake-product-wire-fs-write-tool (bootstrap)
+#   1) prebuilt CapableRegenerate without lake, only if compiled
+#      linearHeaderFragment is not behind living source (must contain
+#      slake_linear_cell_alloc). A newer-than-source-stale ELF must not win.
+#   2) prebuilt slake-product-wire-fs-write-tool without lake, same fragment gate
+#   3) lake-free regenerate (Name A / WRITE-HC B28) when a prebuilt exists but
+#      its compiled fragment is behind living LINEAR_C_HEADER
+#   4) lake exe slake-product-wire-fs-write-tool (bootstrap when no prebuilt)
 # Retired greppable Path A names stay in Lean pins only.
 # Product StillUsesLake / DependsOnLake stay true until S4 / M6.
 # freestandingDriverComplete stays Mult-orthogonal (separate productWireFsWriterFinishedClaimed).
@@ -254,20 +258,64 @@ product-wire-freestanding-write:
       echo "error: productWireFsWriterPrintsFullHelperC must be false (no C-in-Lean helper)" >&2
       exit 1
     fi
-    # Living product-wire WRITE+INSTALL: Lean dual-eq Capable path. Prefer prebuilt
-    # without lake invoke; fall back to lake exe ProductWireWriteTool. Never
-    # host-cc of Lean-printed full tool C (P1 retired).
-    if [[ -x "$lake_regen_bin" ]]; then
-      echo "  hot path: prebuilt CapableRegenerate (no lake invoke; dual-eq WRITE+INSTALL)"
+    # Living product-wire WRITE+INSTALL. Prefer a prebuilt whose compiled
+    # linearHeaderFragment is not behind living HOST-EMIT-LINEAR source.
+    # Existence of a 2026-08-12 CapableRegenerate ELF must not dual-eq against
+    # that stale fragment. requireDualSsotEqual stays; this gate only skips
+    # a compiled fragment that lacks slake_linear_cell_alloc. Never host-cc
+    # of Lean-printed full tool C (P1 retired).
+    linear_ssot="$emit_dir/host_emit_linear.ssot.txt"
+    linear_lean="$lean_dir/EmitLinearScaffold.lean"
+    if [[ ! -f "$linear_ssot" ]]; then
+      echo "error: missing living LINEAR_C_HEADER SSOT: $linear_ssot" >&2
+      exit 1
+    fi
+    if [[ ! -f "$linear_lean" ]]; then
+      echo "error: missing living linearHeaderFragment: $linear_lean" >&2
+      exit 1
+    fi
+    if ! grep -qF 'LINEAR_C_HEADER' "$linear_ssot"; then
+      echo "error: $linear_ssot missing LINEAR_C_HEADER" >&2
+      exit 1
+    fi
+    if ! grep -qF 'def linearHeaderFragment' "$linear_lean"; then
+      echo "error: $linear_lean missing def linearHeaderFragment" >&2
+      exit 1
+    fi
+    if ! grep -qF 'slake_linear_cell_alloc' "$linear_ssot"; then
+      echo "error: living LINEAR_C_HEADER missing slake_linear_cell_alloc: $linear_ssot" >&2
+      exit 1
+    fi
+    if ! grep -qF 'slake_linear_cell_alloc' "$linear_lean"; then
+      echo "error: living linearHeaderFragment missing slake_linear_cell_alloc: $linear_lean" >&2
+      exit 1
+    fi
+    echo "  source dual-eq: HOST-EMIT-LINEAR HEADER SSOT + Lean fragment both name slake_linear_cell_alloc"
+    regen_current=0
+    tool_current=0
+    if [[ -x "$lake_regen_bin" ]] && grep -aF -q 'slake_linear_cell_alloc' "$lake_regen_bin"; then
+      regen_current=1
+    fi
+    if [[ -x "$tool_write_bin" ]] && grep -aF -q 'slake_linear_cell_alloc' "$tool_write_bin"; then
+      tool_current=1
+    fi
+    if [[ "$regen_current" -eq 1 ]]; then
+      echo "  hot path: prebuilt CapableRegenerate (no lake invoke; dual-eq WRITE+INSTALL; fragment current)"
       "$lake_regen_bin" "$root"
-    elif [[ -x "$tool_write_bin" ]]; then
-      echo "  hot path: prebuilt ProductWireWriteTool (no lake invoke; Lean-native WRITE+INSTALL)"
+    elif [[ "$tool_current" -eq 1 ]]; then
+      echo "  hot path: prebuilt ProductWireWriteTool (no lake invoke; Lean-native WRITE+INSTALL; fragment current)"
       "$tool_write_bin" "$root"
+    elif [[ -x "$lake_regen_bin" ]] || [[ -x "$tool_write_bin" ]]; then
+      echo "  skip: prebuilt writer ELF compiled linearHeaderFragment behind living source (no slake_linear_cell_alloc)"
+      echo "  hot path: freestanding-capable-write-hc-lake-free + freestanding-capable-regenerate-without-lake (source-backed; no lake)"
+      just freestanding-capable-write-hc-lake-free
+      just freestanding-capable-regenerate-without-lake
+      just install-freestanding-c-out
     elif command -v lake >/dev/null 2>&1; then
       echo "  bootstrap path: lake exe slake-product-wire-fs-write-tool (Lean-native WRITE+INSTALL)"
       (cd "$systems_dir" && lake build slake-product-wire-fs-write-tool && lake exe slake-product-wire-fs-write-tool -- "$root")
     else
-      echo "error: product-wire writer missing (need prebuilt CapableRegenerate or lake)" >&2
+      echo "error: product-wire writer missing (need current prebuilt CapableRegenerate or lake)" >&2
       echo "  bootstrap: (cd src/systems && lake build slake-product-wire-fs-write-tool && lake exe slake-product-wire-fs-write-tool -- $root)" >&2
       echo "  or: (cd src/systems && lake build slake-freestanding-capable-regenerate)" >&2
       exit 1
@@ -288,7 +336,7 @@ product-wire-freestanding-write:
       echo "error: missing Out install source after product-wire write: $install_c" >&2
       exit 1
     fi
-    for tok in SLAKE_EMIT_FREESTANDING_C_V0 HOST-EMIT-MULT HOST-EMIT-LINEAR HOST-EMIT-SSOT; do
+    for tok in SLAKE_EMIT_FREESTANDING_C_V0 HOST-EMIT-MULT HOST-EMIT-LINEAR HOST-EMIT-SSOT slake_linear_cell_alloc; do
       if ! grep -qF "$tok" "$out_h"; then
         echo "error: $out_h missing greppable token $tok after write" >&2
         exit 1

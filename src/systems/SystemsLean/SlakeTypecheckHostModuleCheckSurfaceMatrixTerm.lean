@@ -23,6 +23,7 @@
   Module: SystemsLean.SlakeTypecheckHostModuleCheckSurfaceMatrixTerm
   Checkable writer: lean --run SlakeTypecheckHostModuleCheckSurfaceMatrixTerm.lean
   (no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveHostModuleCheckSurfaceMatrixTermSource

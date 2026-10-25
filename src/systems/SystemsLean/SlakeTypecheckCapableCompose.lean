@@ -18,6 +18,7 @@
   Module: SystemsLean.SlakeTypecheckCapableCompose
   Checkable writer: just slake-typecheck-capablecompose
   (lean --run; no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveCapableCompose

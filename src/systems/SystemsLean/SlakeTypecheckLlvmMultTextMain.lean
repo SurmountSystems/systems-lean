@@ -19,6 +19,7 @@
   Module: SystemsLean.SlakeTypecheckLlvmMultTextMain
   Checkable writer: just slake-typecheck-lvmmulttextmain
   (lean --run; no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveLlvmMultTextMainSource

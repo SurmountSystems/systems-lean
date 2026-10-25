@@ -14,6 +14,7 @@
   HOST-HOST-TOOL-CATCH, extraArgvCatch, destCatchEprint, destCatchReturn1,
   CatchInsn.x86_64Code.
   Module: SystemsLean.SlakeHostToolElfMainCatchDest
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.SlakeHostToolElfMainCatchX86

@@ -18,6 +18,7 @@
   Module: SystemsLean.SlakeTypecheckParityMult
   Checkable writer: just slake-typecheck-paritymult
   (lean --run; no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveParityMult

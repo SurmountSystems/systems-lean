@@ -26,7 +26,7 @@
   SLAKE_ERASURE_SUBSET_EMIT
   erasureSubsetEmitReady
   Greppable: SYSTEMS_LEAN_HOST, liveErasureSubsetEmitMainSource,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveErasureSubsetEmitMainSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

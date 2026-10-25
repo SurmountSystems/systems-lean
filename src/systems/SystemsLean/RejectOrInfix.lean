@@ -20,6 +20,7 @@
   Scanner is structurally recursive on the remaining
   character list. Consecutive `'|'` then `'|'`. Recurse
   on rest after a non-match.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.KeptWalk

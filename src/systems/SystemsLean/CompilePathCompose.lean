@@ -239,6 +239,19 @@ def composeFixtureCompilePathReady : Bool :=
 def composeFixtureDoesNotMeanResidualFree : Bool :=
   composeFixtureCompilePathReady && !composeFixtureResidualFreeClaimed
 
+/-- Live view: marked and minted Compose host (ConsumeToken). -/
+def composeFixtureLiveView : Option Host :=
+  lowerComposeFixtureCompose
+
+/-- Spent view: ConsumeToken consume of composeFixtureLiveView. -/
+def composeFixtureSpentView : Option Host :=
+  match composeFixtureLiveView with
+  | none => none
+  | some hcLive =>
+      match HostCompose.consume hcLive with
+      | HostCompose.ConsumeResult.ok hcSpent _ => some hcSpent
+      | HostCompose.ConsumeResult.notLive => none
+
 /-! ### COMPILE-PATH-COMPOSE-THEOREM (readable Compose e2e statements, then proofs)
 
   Real Lean theorems for Compose fixture compile path only. Does not flip

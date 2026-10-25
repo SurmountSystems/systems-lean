@@ -8,7 +8,7 @@
   No new C.
   liveRel is the bare basename CapableComposeMain.lean.
   Greppable: SYSTEMS_LEAN_HOST, liveCapableComposeMainSource,
-  HOST-FRONT-LIVE-CAPABLE-COMPOSE-MAIN, liveRel, UNIT_SURFACE host surface.
+  HOST-FRONT-LIVE-CAPABLE-COMPOSE-MAIN, liveRel, UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveCapableComposeMainSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Not a backend. FullBackend stays false in the wrap.

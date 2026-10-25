@@ -8,7 +8,7 @@
   No new C.
   liveRel is the bare basename ComposeSubsetRebuildMain.lean.
   Greppable: SYSTEMS_LEAN_HOST, liveComposeSubsetRebuildMainSource,
-  HOST-FRONT-LIVE-COMPOSE-SUBSET-REBUILD-MAIN, liveRel, UNIT_SURFACE host surface.
+  HOST-FRONT-LIVE-COMPOSE-SUBSET-REBUILD-MAIN, liveRel, UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveComposeSubsetRebuildMainSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Not a backend. FullBackend stays false in the wrap.

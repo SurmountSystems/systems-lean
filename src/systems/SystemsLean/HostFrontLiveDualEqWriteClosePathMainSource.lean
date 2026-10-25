@@ -26,7 +26,7 @@
   SKELETON
   SYSTEMS_LEAN_HOST
   Greppable: SYSTEMS_LEAN_HOST, liveDualEqWriteClosePathMainSource,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveDualEqWriteClosePathMainSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

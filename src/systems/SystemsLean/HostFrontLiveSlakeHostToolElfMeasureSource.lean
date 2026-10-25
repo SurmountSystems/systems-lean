@@ -7,6 +7,7 @@
   Not Lake-gone. slakeOwnsPackageTypecheck stays false.
   Not an LLVM backend. FullBackend stays false.
   Module must stay ASCII.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 namespace SystemsLean.HostFrontLiveSlakeHostToolElfMeasure

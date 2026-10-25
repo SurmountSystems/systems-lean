@@ -26,7 +26,7 @@
   TYPES-SUBSET-EMIT
   SLAKE_TYPES_SUBSET_EMIT
   Greppable: SYSTEMS_LEAN_HOST, liveTypesSubsetEmitMainSource,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveTypesSubsetEmitMainSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

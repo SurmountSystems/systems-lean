@@ -18,7 +18,7 @@
   parseLiveLlvmLinearTextMainSource,
   kernelCheckLiveLlvmLinearTextMainSource,
   hostFrontLiveLlvmLinearTextMainReady, liveLlvmLinearTextMainSource,
-  liveRel, liveLlvmLinearTextMainRel, UNIT_SURFACE host surface,
+  liveRel, liveLlvmLinearTextMainRel, UNIT_SURFACE host surface, MULT-0,
   PARSE-LIVE-LLVM-LINEAR-TEXT-MAIN,
   HOST-FRONT-LIVE-LLVM-LINEAR-TEXT-MAIN,
   SLAKE_HOST_FRONT_LIVE_LLVM_LINEAR_TEXT_MAIN_V0.

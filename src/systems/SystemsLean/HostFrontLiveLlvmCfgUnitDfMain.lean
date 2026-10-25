@@ -15,6 +15,7 @@
   Occupancy stays 49. Mill stays 69 of 69.
   slakeOwnsPackageTypecheck stays false.
   Module must stay ASCII.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveLlvmCfgUnitDf

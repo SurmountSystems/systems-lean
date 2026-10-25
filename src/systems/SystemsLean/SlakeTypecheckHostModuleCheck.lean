@@ -21,6 +21,7 @@
   Module: SystemsLean.SlakeTypecheckHostModuleCheck
   Checkable writer: just slake-typecheck-hostmodulecheck
   (lean --run; no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveHostModuleCheck

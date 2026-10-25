@@ -6,7 +6,7 @@
   This wrap is HostPackageRootsMain.lean. It is not HostPackageRoots.lean.
   liveRel is the bare basename HostPackageRootsMain.lean.
   Greppable: SYSTEMS_LEAN_HOST, liveHostPackageRootsMainSource,
-  HOST-FRONT-LIVE-HOST-PACKAGE-ROOTS-MAIN, liveRel, UNIT_SURFACE host surface.
+  HOST-FRONT-LIVE-HOST-PACKAGE-ROOTS-MAIN, liveRel, UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveHostPackageRootsMainSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Not a backend. FullBackend stays false in the wrap.

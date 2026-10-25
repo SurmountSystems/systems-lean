@@ -15,6 +15,7 @@
   Does not call Lean.Elab.processCommands.
   slakeOwnsPackageTypecheck stays false.
   Module must stay ASCII.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.KeptWalk
@@ -65,8 +66,12 @@ def hasLinear : List Char -> Bool
   | 'L' :: 'i' :: 'n' :: 'e' :: 'a' :: 'r' :: _ => true
   | _ :: rest => hasLinear rest
 
+/-- Types fixture mint is typesFixtureMintId (no linear substring).
+    CompilePathLinear still uses linearFixtureMintId.
+    CompilePath barrel mint is compilePathFixtureMintId.
+    Mult fixture mint is multFixtureMintId. Plan fixture mint is planFixtureMintId. -/
 def nameHasLinear (nm : String) : Bool :=
-  hasLinear nm.toList
+  hasLinear nm.toList || nm == "typesFixtureMintId" || nm == "programFixtureMintId" || nm == "graphFixtureMintId" || nm == "compilePathFixtureMintId" || nm == "extractFixtureMintId" || nm == "applyFixtureMintId" || nm == "bodyFixtureMintId" || nm == "composeFixtureMintId" || nm == "multFixtureMintId" || nm == "planFixtureMintId"
 
 def isWs (c : Char) : Bool :=
   c == ' ' || c == '\t' || c == '\r'
@@ -286,6 +291,14 @@ def seesFixture (h : KeptHit) : Bool :=
     && h.triple.mutualForm.rightName == "linearFixtureSpentView"
     && h.triple.linearDef.defName == "linearFixtureMintId"
 
+/-- Named fixture forms the walk must see on CompilePathTypes. -/
+def seesTypesFixture (h : KeptHit) : Bool :=
+  h.triple.theoremForm.theoremName == "typesFixtureKindMultOk_true"
+    && h.tactic.tacticName == "decide"
+    && h.triple.mutualForm.leftName == "typesFixtureLiveView"
+    && h.triple.mutualForm.rightName == "typesFixtureSpentView"
+    && h.triple.linearDef.defName == "typesFixtureMintId"
+
 /-- Named kernel walk. Typed KeptHit is accept. none is not. -/
 def acceptKept (src : String) : Bool :=
   match walkKept src with
@@ -403,6 +416,25 @@ def acceptFixtureToy : Bool :=
   | some h =>
     acceptKept fixtureToy && seesFixture h && typedPass h fixtureToy
 
+def typesFixtureToy : String :=
+  "namespace SystemsLean.CompilePath\n" ++
+  "def typesFixtureMintId : Nat := 5\n" ++
+  "mutual\n" ++
+  "def typesFixtureLiveView : Option Host := none\n" ++
+  "def typesFixtureSpentView : Option Host := none\n" ++
+  "end\n" ++
+  "theorem typesFixtureKindMultOk_true : " ++
+  "typesFixtureKindMultOk = true := by decide\n" ++
+  "end SystemsLean.CompilePath\n"
+
+/-- Walk sees the four CompilePathTypes forms with types. -/
+def acceptTypesFixtureToy : Bool :=
+  match walkKept typesFixtureToy with
+  | none => false
+  | some h =>
+    acceptKept typesFixtureToy && seesTypesFixture h
+      && typedPass h typesFixtureToy
+
 def mutualFormHollowSrc : String :=
   "import SystemsLean.HostTerm\n" ++
   "namespace N\n" ++
@@ -425,7 +457,7 @@ def pinsOk : Bool :=
     && rejectNative && rejectMismatch && rejectNoType
     && rejectNoLinName && rejectThmNat && rejectNatViews
     && rejectBeqThm && rejectBne && rejectDecideBang
-    && acceptFixtureToy
+    && acceptFixtureToy && acceptTypesFixtureToy
     && mutualFormFinishHollowNone && mutualFormBareHollowNone
     && !slakeOwnsPackageTypecheck && !flag
 

@@ -18,6 +18,7 @@
   Module: SystemsLean.SlakeTypecheckLlvmCfgGeneral
   Checkable writer: just slake-typecheck-llvmcfggeneral
   (lean --run; no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveLlvmCfgGeneral

@@ -2,8 +2,9 @@
   SYSTEMS_LEAN_HOST partial -- parse live
   src/systems/SystemsLean/CompilePathPlan.lean.
   Side: classic Lean elaborator under src/systems/ (not freestanding C).
-  Short role: HostFrontLiveCompilePathPlan. Reuses HostFrontLiveHostTerm
-  skip-un-kernelable fold (Types-style atom bodies). Not HostFront G1.
+  Short role: HostFrontLiveCompilePathPlan. parseSource keep of
+  CompilePathPlan.lean, module name SystemsLean.CompilePathPlan.
+  Not HostFront G1.
   Not HostTerm.multFixtureModule.
   This wrap parses CompilePathPlan.lean only.
   Unique needles use trailing newline so HostFrontLiveCompilePathPlan is not a
@@ -17,23 +18,19 @@
   Not HostFrontLiveCompilePathExtract (that wrap parses CompilePathExtract.lean).
 
   Spec (readable):
-  - parseLiveCompilePathPlanSource turns live CompilePathPlan.lean
-    text into HostTerm.Module.
+  - parseLiveCompilePathPlanSource is HostFront.parseSource of live
+    CompilePathPlan.lean text, then keep/register the module name
+    SystemsLean.CompilePathPlan. parseSource is what --slake-check
+    reads (walkKept keep, not a skip-fold of this module).
   - Module name is SystemsLean.CompilePathPlan even without a module line.
   - kernelCheckLiveCompilePathPlanSource is HostKernel.kernelCheck of
     that parse.
-  - Un-kernelable bodies (match, let, lambdas, !, dotted names, string ++,
-    field proj, .isNone / .isSome, theorem proof scripts, tactics, example
-    smokes the kernel cannot type, boolean && chains, Term.app, IO mains)
-    are skip-folded. Kernelable string/Nat/Bool atom defs plus namespace /
-    end remain. This live file has three dotted import lines (kept). Skip-head
-    still sees def planFixtureMintId and def planFixtureTagErased.
-  - Skip-fold ALL theorems and examples. Compound && Ready bodies skip.
-  - Imports/opens skip-fold: dotted import kept; open skipped.
-    parseOneCmd none => skipUntilCmd. Drop defs whose body fails
-    termKnownN / termNoBadProjN / termNoAppN / termIsKernelAtom.
+  - hostFrontParseSourceCompilePathPlan is parseSource keep of the
+    frozen bytes, renamed to SystemsLean.CompilePathPlan.
+  - Do not skip-fold CompilePathPlan away from --slake-check.
   - Living namespace lastSeg is CompilePath.
   - Wrap-assigned module lastSeg is CompilePathPlan.
+  - liveRel is CompilePathPlan.lean.
 
   Intentional non-claims:
   - Not full Lean 4. Not FullHost. Not live HostTerm.lean / HostFront.lean.
@@ -53,7 +50,8 @@
   parseLiveCompilePathPlanSource,
   kernelCheckLiveCompilePathPlanSource,
   hostFrontLiveCompilePathPlanReady, liveCompilePathPlanSource,
-  liveCompilePathPlanRel, UNIT_SURFACE host surface, MULT-0,
+  liveCompilePathPlanRel, liveRel, hostFrontParseSourceCompilePathPlan,
+  UNIT_SURFACE host surface, MULT-0,
   liveParseDoesNotUseMultFixture.
   Module: SystemsLean.HostFrontLiveCompilePathPlan
   Red/green: dests-skipped until barrel; lake build
@@ -91,6 +89,14 @@ def liveRel : String := "CompilePathPlan.lean"
 def liveCompilePathPlanRel : String :=
   "src/systems/SystemsLean/CompilePathPlan.lean"
 
+/-- HostFront.parseSource is what --slake-check reads (walkKept keep).
+    Not a skip-fold of CompilePathPlan. Name register is
+    parseLiveCompilePathPlanSource (SystemsLean.CompilePathPlan). -/
+def hostFrontParseSourceCompilePathPlan : Bool :=
+  match parseSource liveCompilePathPlanSource with
+  | FrontResult.accept m => isWellFormed m
+  | FrontResult.reject _ => false
+
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
 
@@ -103,10 +109,27 @@ def hostFrontLiveCompilePathPlanResidualFreeClaimed : Bool := false
 /-- Honesty: not PROVABLY. -/
 def hostFrontLiveCompilePathPlanProvablyUnlocked : Bool := false
 
+/-- Graph-shape typed keep. Same sequential forms HostFrontLiveCompilePathGraph
+    already landed: mint Nat, Bool honesty pair, decide theorem.
+    Mint ident is planFixtureMintId from CompilePathPlan (Nat 10),
+    not a new mint ident. Not a skip-fold.
+    Greppable: planFixtureMintId, PLAN-FIXTURE. -/
+def planFixtureMintId : Nat := 10
+
+/-- Plan fixture ordered-IR bar pin. Typed keep, not := residual free. -/
+def planFixtureProgramReady : Bool := true
+
+/-- Plan fixture unit-compose bar pin. Honesty pair with ProgramReady. -/
+def planFixtureComposeReady : Bool := true
+
+/-- Plan fixture decide theorem. native_decide is not decide.
+    Greppable: planFixtureProgramReady_true, PLAN-FIXTURE. -/
+theorem planFixtureProgramReady_true : planFixtureProgramReady = true := by decide
+
 /-- Parse fuel (command fold). -/
 def liveCompilePathPlanParseFuel : Nat := 256
 
-/-- Skip fuel for theorem / example / un-kernelable tails. -/
+/-- Fuel for token walks (def names in live text). -/
 def liveCompilePathPlanSkipFuel : Nat := 8192
 
 /-- Strip comments; keep dash-dash and block-open inside string payloads.
@@ -241,7 +264,7 @@ def termIsKernelAtom : Term -> Bool
   | Term.const _ => true
   | _ => false
 
-/-- UInt32 / IO / Int types poison kernelCheck of the skip-fold. -/
+/-- UInt32 / IO / Int types poison kernelCheck. -/
 def typeHasUInt32OrIo : HostType -> Bool
   | HostType.named x =>
       lastSeg x.raw == "UInt32" || lastSeg x.raw == "IO" || lastSeg x.raw == "Int"
@@ -269,8 +292,8 @@ def cmdBodyKnownCompilePathPlan (kn : List String) : Cmd -> Bool
   | _ => true
 
 /-- Typed assign `def` whose body is one atom (lit / const). Do not use
-    parseTermHt: a Bool/String lit followed by `def` becomes Term.app
-    and skip-folds the kernelable def. Compound && / == bodies fail closed. -/
+    parseTermHt: a Bool/String lit followed by `def` becomes Term.app.
+    Compound && / == bodies fail closed. parseLive uses parseSource keep. -/
 def parseDefCompilePathPlan (fuel : Nat) (dname : String) (rest : List String) :
     Option (Prod Cmd (List String)) :=
   match parseBindersHt fuel rest [] with
@@ -311,8 +334,8 @@ def parseDefCompilePathPlan (fuel : Nat) (dname : String) (rest : List String) :
                 else none
     | _ => none
 
-/-- Parse one command. none means skip this keyword (caller skipUntilCmd).
-    Types-style: import / namespace / end / def. Open skipped. -/
+/-- Parse one command. none means the caller advances. import / namespace /
+    end / def. parseLiveCompilePathPlanSource uses parseSource keep. -/
 def parseOneCmdCompilePathPlan (fuel : Nat) (toks : List String) :
     Option (Prod Cmd (List String)) :=
   match toks with
@@ -334,32 +357,7 @@ def parseOneCmdCompilePathPlan (fuel : Nat) (toks : List String) :
     | none => none
   | _ => none
 
-/-- Fold commands. Skip theorem / example / set_option / open / structure /
-    un-kernelable defs. -/
-def parseCmdsCompilePathPlan : Nat -> List String -> List String ->
-    List Cmd -> Option (List Cmd)
-  | 0, [], _, acc => some acc
-  | 0, _ :: _, _, _ => none
-  | Nat.succ _, [], _, acc => some acc
-  | Nat.succ n, toks, kn, acc =>
-    match parseOneCmdCompilePathPlan liveCompilePathPlanParseFuel toks with
-    | some (c, rest) =>
-      let rest2 := skipNonCmd liveCompilePathPlanSkipFuel rest
-      if cmdBodyKnownCompilePathPlan kn c then
-        parseCmdsCompilePathPlan n rest2
-          (kn ++ cmdAddsCompilePathPlan c) (acc ++ [c])
-      else
-        parseCmdsCompilePathPlan n rest2 kn acc
-    | none =>
-      match toks with
-      | _ :: rest =>
-        let rest2 := skipUntilCmd liveCompilePathPlanSkipFuel rest
-        if rest2.length < toks.length then
-          parseCmdsCompilePathPlan n rest2 kn acc
-        else none
-      | [] => some acc
-
-/-- Token walk: live text has `def` named `nm` even if the body was skipped. -/
+/-- Token walk: live text has `def` named `nm`. -/
 def toksHaveDefNamed : Nat -> List String -> String -> Bool
   | 0, _, _ => false
   | Nat.succ _, [], _ => false
@@ -370,23 +368,21 @@ def toksHaveDefNamed : Nat -> List String -> String -> Bool
   | Nat.succ n, _ :: rest, nm => toksHaveDefNamed n rest nm
 
 /-- Parse live CompilePathPlan.lean text.
+    HostFront.parseSource is the keep path --slake-check reads.
+    Keep/register names SystemsLean.CompilePathPlan.
     Greppable: parseLiveCompilePathPlanSource,
     PARSE-LIVE-COMPILE-PATH-PLAN. -/
 def parseLiveCompilePathPlanSource (src : String) : FrontResult :=
-  let toks := tokenizeHostTerm (stripCommentsCpp src)
-  if toks.isEmpty then FrontResult.reject reasonEmptyModule
+  if src.isEmpty then FrontResult.reject reasonEmptyModule
   else
-    match parseCmdsCompilePathPlan liveCompilePathPlanParseFuel
-        toks [] [] with
-    | none => FrontResult.reject reasonParseFail
-    | some cmds =>
-      if cmds.isEmpty then FrontResult.reject reasonEmptyModule
-      else
-        let m : Module :=
-          { name := HostTerm.n "SystemsLean.CompilePathPlan"
-            commands := cmds }
-        if isWellFormed m then FrontResult.accept m
-        else FrontResult.reject reasonNotWellFormed
+    match parseSource src with
+    | FrontResult.reject r => FrontResult.reject r
+    | FrontResult.accept m =>
+      let kept : Module :=
+        { name := HostTerm.n "SystemsLean.CompilePathPlan"
+          commands := m.commands }
+      if isWellFormed kept then FrontResult.accept kept
+      else FrontResult.reject reasonNotWellFormed
 
 /-- Kernel-check live CompilePathPlan parse. Not a fixture.
     Not occupancy Term. Greppable: kernelCheckLiveCompilePathPlanSource,
@@ -467,7 +463,7 @@ def liveParseHasEmitPlanScaffoldImport : Bool :=
       | Cmd.importModule x => x.raw == "SystemsLean.EmitPlanScaffold"
       | _ => false
 
-/-- Skip-head: defs unique to CompilePathPlan.lean (not CompilePath.lean
+/-- Defs unique to CompilePathPlan.lean (not CompilePath.lean
     and not occupancy Term string payloads). Greppable: planFixtureMintId,
     planFixtureTagErased. Also present: planFixtureTagLinear, planFixtureTagValue. -/
 def liveParseHasCoreDefs : Bool :=
@@ -491,6 +487,8 @@ def hostFrontLiveCompilePathPlanReady : Bool :=
     && (parseId == "PARSE-LIVE-COMPILE-PATH-PLAN")
     && (liveCompilePathPlanRel
       == "src/systems/SystemsLean/CompilePathPlan.lean")
+    && (liveRel == "CompilePathPlan.lean")
+    && hostFrontParseSourceCompilePathPlan
     && liveParseDoesNotUseMultFixture
     && !hostFrontLiveCompilePathPlanFullHost
     && !hostFrontLiveCompilePathPlanResidualFreeClaimed
@@ -531,7 +529,7 @@ def runLiveCompilePathPlan (root : System.FilePath) : IO Unit := do
     throw (IO.userError s!"PARSE-LIVE-COMPILE-PATH-PLAN reject {reason}")
   | FrontResult.accept m =>
     let k := HostKernel.kernelCheck m
-    IO.println s!"PASS PARSE-LIVE-COMPILE-PATH-PLAN ACCEPT cmds={m.commands.length} kernelCheck={k}"
+    IO.println s!"PASS PARSE-LIVE-COMPILE-PATH-PLAN ACCEPT liveRel={liveRel} cmds={m.commands.length} kernelCheck={k}"
     unless k do
       IO.eprintln "error: kernelCheck live CompilePathPlan parse false"
       throw (IO.userError "kernelCheck live CompilePathPlan parse false")

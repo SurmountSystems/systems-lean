@@ -18,6 +18,7 @@
   PARSE-LIVE-EXTRACT-SUBSET-REBUILD, EXTRACT-SUBSET-REBUILD.
   Module: SystemsLean.SlakeTypecheckExtractSubsetRebuild
   Checkable writer: lean --run of this driver (no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveExtractSubsetRebuild

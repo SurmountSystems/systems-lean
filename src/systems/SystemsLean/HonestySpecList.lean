@@ -16,6 +16,7 @@
   Does not infer a type for the list.
   slakeOwnsPackageTypecheck stays false.
   Module must stay ASCII.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostTerm
@@ -333,7 +334,7 @@ def tailOk : Term -> Bool
   | _ => false
 
 /-- At least one cons. A bare nil is not this list. -/
-def listSpine : Term -> Bool
+def listOk : Term -> Bool
   | Term.app (Term.app (Term.const c) h) t =>
     c.raw == "List.cons" && specOk h && tailOk t
   | _ => false
@@ -343,7 +344,7 @@ def specsCmdOk (cmd : Cmd) : Bool :=
   | Cmd.def_ name (some (HostType.named ty)) body =>
     name.raw == "planApplyBodySpecs"
       && ty.raw == "List ComposeSsotSpec"
-      && listSpine body
+      && listOk body
   | _ => false
 
 /-- The three plan/apply/body specs. The next token is def. -/

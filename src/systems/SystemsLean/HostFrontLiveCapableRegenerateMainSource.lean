@@ -15,7 +15,7 @@
   HOST-FRONT-LIVE-CAPABLE-REGENERATE-MAIN
   CAPABLE-REGENERATE-MAIN
   Greppable: SYSTEMS_LEAN_HOST, liveCapableRegenerateMainSource,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveCapableRegenerateMainSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

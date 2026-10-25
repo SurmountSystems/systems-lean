@@ -9,6 +9,7 @@
   Module: SystemsLean.HostModuleCheckPackageEnvLaterTerms
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostModuleCheckCompilePathTerm

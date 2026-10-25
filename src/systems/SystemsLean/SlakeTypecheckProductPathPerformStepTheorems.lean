@@ -24,6 +24,7 @@
   Module: SystemsLean.SlakeTypecheckProductPathPerformStepTheorems
   Checkable writer: just slake-typecheck-productpathperformsteptheorems
   (lean --run; no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveProductPathPerformStepTheorems

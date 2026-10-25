@@ -19,6 +19,7 @@
   Module: SystemsLean.SlakeTypecheckCapableStepContract
   Checkable writer: just slake-typecheck-capablestepcontract
   (lean --run; no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveCapableStepContract

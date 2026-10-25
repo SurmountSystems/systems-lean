@@ -14,6 +14,7 @@
   SELF-HOST-FREESTANDING-PRODUCT-COMPLETE, FullHost stays false, occupancy 49,
   Mill stays 69 of 69, not mill leanc.
   Module: SystemsLean.CompleteOk
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 namespace SystemsLean.CompleteOk

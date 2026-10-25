@@ -4,8 +4,11 @@
 # Does not mix specimen keep with Lean 4 / mathlib clocks. Does not mill.
 # Remote ELF proof is out of this gate. Occupancy 49. FullHost false.
 # Rebuild 23 GREEN. Current independently reviewed ELF
+# /nix/store/n7xg5dkxr2jkjmlqyzmj8y1gm6rc9nzm-slake-bootstrap
+# (149599304 bytes). That path is not
 # /nix/store/97p32bdbdw6v79yxydi1y4s4s39ksp8j-slake-bootstrap
-# (149467016 bytes). That path is not
+# (149467016 bytes). /nix/store/97p32bdbdw6v79yxydi1y4s4s39ksp8j-slake-bootstrap
+# (149467016 bytes) is no longer current.
 # /nix/store/4s8fq7rcyq65nfl0qgj1pdx6kk7jpf5k-slake-bootstrap
 # (149447232 bytes). /nix/store/4s8fq7rcyq65nfl0qgj1pdx6kk7jpf5k-slake-bootstrap
 # (149447232 bytes) is no longer current.
@@ -25,6 +28,14 @@
 # infix ^^ toy CHECK_EXIT 1 kept reject on the current independently reviewed ELF.
 # infix Boolean tokens || && ^^ are dest-and-hook done on this ELF.
 # CompilePathLinear CHECK_EXIT 0. RejectOrInfix.lean EXISTS (done dest).
+# Source keep of CompilePathTypes and CompilePathProgram landed this wave.
+# Independently reviewed ELF is
+# /nix/store/n7xg5dkxr2jkjmlqyzmj8y1gm6rc9nzm-slake-bootstrap
+# (149599304 bytes). Predecessor
+# /nix/store/f26yaj9jw123hwmjfs2p3gv3wakv6s94-slake-bootstrap
+# (149579048 bytes) is no longer current. Remote accept not sampled. Flag stays false.
+# Do not claim package ownership from CompilePathLinear CHECK_EXIT 0
+# or from source keep of Types/Program.
 # RejectAndInfix.lean EXISTS (done dest). Do not reopen RejectAndInfix.lean as remaining.
 # RejectXorInfix.lean EXISTS (done dest). Do not reopen RejectXorInfix.lean as remaining.
 # Do not reopen RejectNotPrefix.lean as remaining.

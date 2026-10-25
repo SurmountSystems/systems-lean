@@ -8,6 +8,7 @@
   Do not import SystemsLean.SelfHostComplete.
   Not SlakeHostToolElfMeasureGreen. Not SlakeHostToolElfMeasureFields.
   Module must stay ASCII.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 namespace SystemsLean.HostFrontLiveSlakeHostToolElfMeasureX86

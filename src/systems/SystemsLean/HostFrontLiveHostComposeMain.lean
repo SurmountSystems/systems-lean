@@ -16,6 +16,7 @@
   slakeOwnsPackageTypecheck stays false.
   This wrap is HostCompose.lean. It is not HostComposeTheorems.lean.
   Module must stay ASCII.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveHostCompose

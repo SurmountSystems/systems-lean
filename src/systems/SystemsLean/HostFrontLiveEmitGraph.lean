@@ -38,7 +38,7 @@
   parseLiveEmitGraphSource,
   kernelCheckLiveEmitGraphSource,
   hostFrontLiveEmitGraphReady, liveEmitGraphSource,
-  liveRel, UNIT_SURFACE host surface,
+  liveRel, UNIT_SURFACE host surface, MULT-0,
   liveParseDoesNotUseMultFixture.
   Module: SystemsLean.HostFrontLiveEmitGraph
   Red/green: closed lean --run on horizon.

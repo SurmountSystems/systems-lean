@@ -1,5 +1,6 @@
 /-
   Thin main. Forwards argv to SystemsLean.CapableRegenerate.main.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.CapableRegenerate

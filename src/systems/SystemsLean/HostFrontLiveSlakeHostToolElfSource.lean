@@ -4,7 +4,7 @@
   Short role: HostFrontLiveSlakeHostToolElfSource. Not occupancy name 50. Not mill 70.
   Occupancy stays 49. Mill stays 69 of 69. Not mill remill. Not occupancy Term.
   Greppable: SYSTEMS_LEAN_HOST, PARSE-LIVE-SLAKE-HOST-TOOL-ELF, liveSlakeHostToolElfSource,
-  HOST-FRONT-LIVE-SLAKE-HOST-TOOL-ELF, UNIT_SURFACE host surface.
+  HOST-FRONT-LIVE-SLAKE-HOST-TOOL-ELF, UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveSlakeHostToolElfSource
   Not FullHost. Not freestanding residual free. Not PROVABLY. Not Lake-gone.
   Module must stay ASCII.

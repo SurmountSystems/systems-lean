@@ -7,6 +7,7 @@
   slakeOwnsPackageTypecheck stays false.
   The scan treats a character literal, a nested block comment, and a
   raw string as themselves, so this binder does not rewrite the source.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.Scan

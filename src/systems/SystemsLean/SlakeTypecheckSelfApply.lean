@@ -19,6 +19,7 @@
   Module: SystemsLean.SlakeTypecheckSelfApply
   Checkable writer: just slake-typecheck-selfapply
   (lean --run; no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveSelfApply

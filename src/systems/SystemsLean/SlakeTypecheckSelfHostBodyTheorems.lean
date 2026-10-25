@@ -18,6 +18,7 @@
   Module: SystemsLean.SlakeTypecheckSelfHostBodyTheorems
   Checkable writer: just slake-typecheck-selfhostbodytheorems
   (lean --run; no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveSelfHostBodyTheorems

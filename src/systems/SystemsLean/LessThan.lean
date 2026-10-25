@@ -9,6 +9,7 @@
   slakeOwnsPackageTypecheck stays false.
   Module: SystemsLean.LessThan
   Module must stay ASCII.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 namespace SystemsLean.LessThan

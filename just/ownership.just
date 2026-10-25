@@ -62,6 +62,8 @@ ownership-regenerate-install-only:
 # dualSsotSpecs in src/systems/SystemsLean/ProductPathReadSsot.lean (and freestanding-
 # capable READ surface). Keep this pairs= array in lockstep when Mult..Out SSOT grows;
 # pure Nix systems-emit-wire also walks the same 12 dual SSOT files independently.
+# Lake-free: no lake build/exe; dual SSOT presence+token only
+# ProductPathReadSsot.dualSsotSpecs
 # Greppable: ownership-regenerate-read-only, productPathOwnershipRegenerateReadLakeFree,
 # OWNERSHIP-REGENERATE-READ-LAKE-FREE, SELF-HOST-PRODUCT-PATH-OWNERSHIP-REGENERATE
 _ownership_regenerate_read_only := '''
@@ -84,6 +86,8 @@ ownership-regenerate-read-only:
 # planApplyBodySpecs in src/systems/SystemsLean/ProductPathComposePlan.lean (and
 # freestanding-capable COMPOSE surface). Keep this pairs= array in lockstep when
 # plan/apply/body SSOT grows; pure Nix systems-emit-wire also walks the same 3 files.
+# Lake-free: no lake build/exe; plan/apply/body dual SSOT presence+token only
+# ProductPathComposePlan.planApplyBodySpecs
 # Greppable: ownership-regenerate-compose-only,
 # productPathOwnershipRegenerateComposeLakeFree,
 # OWNERSHIP-REGENERATE-COMPOSE-LAKE-FREE, SELF-HOST-PRODUCT-PATH-OWNERSHIP-REGENERATE
@@ -108,6 +112,8 @@ ownership-regenerate-compose-only:
 # emitSourceBase in src/systems/SystemsLean/ProductPathWriteHc.lean (and freestanding-
 # capable WRITE-HC surface). Keep this pairs= array in lockstep when emit wire basenames
 # change; pure Nix systems-emit-wire also walks the same 2 files independently.
+# Lake-free: no lake build/exe; freestanding .h/.c presence+token only
+# ProductPathWriteHc.emitHeaderBase
 # Greppable: ownership-regenerate-write-hc-only,
 # productPathOwnershipRegenerateWriteHcLakeFree,
 # OWNERSHIP-REGENERATE-WRITE-HC-LAKE-FREE, SELF-HOST-PRODUCT-PATH-OWNERSHIP-REGENERATE

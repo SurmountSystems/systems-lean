@@ -5,6 +5,7 @@
   Fold, parseSource, pins, and the driver stay in SystemsLean.HostFront.
   Does not call Lean.Elab.processCommands.
   Not elaborator parity. Not freestanding residual free. Not PROVABLY.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostTerm

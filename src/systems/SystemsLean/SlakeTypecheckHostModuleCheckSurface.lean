@@ -4,6 +4,7 @@
   Not a constant true. Not Lake. Not mill. FullHost stays false.
   Occupancy stays 49. Host tools stay 69 of 69.
   Build dir build/slake-typecheck-HostModuleCheckSurface.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveHostModuleCheckSurface

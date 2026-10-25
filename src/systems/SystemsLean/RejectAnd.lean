@@ -38,6 +38,7 @@
   where helper. Not skipIdent of the current cons cell.
   The and matcher is whole-identifier `and`, not a
   substring of `land` or `standard`.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.KeptWalk

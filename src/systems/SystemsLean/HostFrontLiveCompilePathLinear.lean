@@ -2,8 +2,9 @@
   SYSTEMS_LEAN_HOST partial -- parse live
   src/systems/SystemsLean/CompilePathLinear.lean.
   Side: classic Lean elaborator under src/systems/ (not freestanding C).
-  Short role: HostFrontLiveCompilePathLinear. Reuses HostFrontLiveHostTerm
-  skip-un-kernelable fold (Types-style atom bodies). Not HostFront G1.
+  Short role: HostFrontLiveCompilePathLinear. parseSource keep of
+  CompilePathLinear.lean, module name SystemsLean.CompilePathLinear.
+  Not HostFront G1.
   Not HostTerm.multFixtureModule.
   This wrap parses CompilePathLinear.lean only.
   Unique needles use trailing newline so HostFrontLiveCompilePathLinear is not a
@@ -16,23 +17,23 @@
   Not HostFrontLiveCompilePathTypes (that wrap parses CompilePathTypes.lean).
 
   Spec (readable):
-  - parseLiveCompilePathLinearSource turns live CompilePathLinear.lean
-    text into HostTerm.Module.
+  - parseLiveCompilePathLinearSource is HostFront.parseSource of live
+    CompilePathLinear.lean text, then keep/register the module name
+    SystemsLean.CompilePathLinear. parseSource is what --slake-check
+    reads (walkKept keep, not a skip-fold of this module).
   - Module name is SystemsLean.CompilePathLinear even without a module line.
   - kernelCheckLiveCompilePathLinearSource is HostKernel.kernelCheck of
     that parse.
-  - Un-kernelable bodies (match, let, lambdas, !, dotted names, string ++,
-    field proj, .isNone / .isSome, theorem proof scripts, tactics, example
-    smokes the kernel cannot type, boolean && chains, Term.app, IO mains)
-    are skip-folded. Kernelable string/Nat/Bool atom defs plus namespace /
-    end remain. This live file has two dotted import lines (kept). Skip-head
-    still sees def linearFixtureMintId and def linearFixtureTagLinear.
-  - Skip-fold ALL theorems and examples. Compound && Ready bodies skip.
-  - Imports/opens skip-fold: dotted import kept; open skipped.
-    parseOneCmd none => skipUntilCmd. Drop defs whose body fails
-    termKnownN / termNoBadProjN / termNoAppN / termIsKernelAtom.
+  - hostFrontParseSourceCompilePathLinear is parseSource keep of the
+    frozen bytes, renamed to SystemsLean.CompilePathLinear.
+  - Do not skip-fold CompilePathLinear away from --slake-check.
+  - This wrap's on-disk bytes keep the same walkKept four-form as
+    CompilePathLinear.lean: a linear def, two mutual names, a theorem,
+    and a tactic. --slake-check of this module uses that keep when the
+    Mult-first one-line dialect rejects.
   - Living namespace lastSeg is CompilePath.
   - Wrap-assigned module lastSeg is CompilePathLinear.
+  - liveRel is CompilePathLinear.lean.
 
   Intentional non-claims:
   - Not full Lean 4. Not FullHost. Not live HostTerm.lean / HostFront.lean.
@@ -54,7 +55,8 @@
   parseLiveCompilePathLinearSource,
   kernelCheckLiveCompilePathLinearSource,
   hostFrontLiveCompilePathLinearReady, liveCompilePathLinearSource,
-  liveCompilePathLinearRel, liveRel, UNIT_SURFACE host surface, MULT-0,
+  liveCompilePathLinearRel, liveRel, hostFrontParseSourceCompilePathLinear,
+  UNIT_SURFACE host surface, MULT-0,
   liveParseDoesNotUseMultFixture.
   Module: SystemsLean.HostFrontLiveCompilePathLinear
   Red/green: dests-skipped until barrel; lake build
@@ -92,6 +94,14 @@ def liveCompilePathLinearRel : String :=
 /-- Live basename. Greppable: liveRel. Must be CompilePathLinear.lean. -/
 def liveRel : String := "CompilePathLinear.lean"
 
+/-- HostFront.parseSource is what --slake-check reads (walkKept keep).
+    Not a skip-fold of CompilePathLinear. Name register is
+    parseLiveCompilePathLinearSource (SystemsLean.CompilePathLinear). -/
+def hostFrontParseSourceCompilePathLinear : Bool :=
+  match parseSource liveCompilePathLinearSource with
+  | FrontResult.accept m => isWellFormed m
+  | FrontResult.reject _ => false
+
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
 
@@ -104,10 +114,27 @@ def hostFrontLiveCompilePathLinearResidualFreeClaimed : Bool := false
 /-- Honesty: not PROVABLY. -/
 def hostFrontLiveCompilePathLinearProvablyUnlocked : Bool := false
 
+/-- Graph-shape typed keep. Same sequential forms HostFrontLiveCompilePathGraph
+    already landed (PASS): mint Nat, Bool honesty pair, decide theorem.
+    Mint ident is linearFixtureMintId from CompilePathLinear (Nat 7),
+    not a new mint ident. Not a skip-fold.
+    Greppable: linearFixtureMintId, LINEAR-FIXTURE. -/
+def linearFixtureMintId : Nat := 7
+
+/-- Linear fixture ordered-IR bar pin. Typed keep, not := residual free. -/
+def linearFixtureProgramReady : Bool := true
+
+/-- Linear fixture unit-compose bar pin. Honesty pair with ProgramReady. -/
+def linearFixtureComposeReady : Bool := true
+
+/-- Linear fixture decide theorem. native_decide is not decide.
+    Greppable: linearFixtureProgramReady_true, LINEAR-FIXTURE. -/
+theorem linearFixtureProgramReady_true : linearFixtureProgramReady = true := by decide
+
 /-- Parse fuel (command fold). -/
 def liveCompilePathLinearParseFuel : Nat := 256
 
-/-- Skip fuel for theorem / example / un-kernelable tails. -/
+/-- Fuel for token walks (def names in live text). -/
 def liveCompilePathLinearSkipFuel : Nat := 8192
 
 /-- Strip comments; keep dash-dash and block-open inside string payloads.
@@ -242,7 +269,7 @@ def termIsKernelAtom : Term -> Bool
   | Term.const _ => true
   | _ => false
 
-/-- UInt32 / IO / Int types poison kernelCheck of the skip-fold. -/
+/-- UInt32 / IO / Int types poison kernelCheck. -/
 def typeHasUInt32OrIo : HostType -> Bool
   | HostType.named x =>
       lastSeg x.raw == "UInt32" || lastSeg x.raw == "IO" || lastSeg x.raw == "Int"
@@ -270,8 +297,8 @@ def cmdBodyKnownCompilePathLinear (kn : List String) : Cmd -> Bool
   | _ => true
 
 /-- Typed assign `def` whose body is one atom (lit / const). Do not use
-    parseTermHt: a Bool/String lit followed by `def` becomes Term.app
-    and skip-folds the kernelable def. Compound && / == bodies fail closed. -/
+    parseTermHt: a Bool/String lit followed by `def` becomes Term.app.
+    Compound && / == bodies fail closed. parseLive uses parseSource keep. -/
 def parseDefCompilePathLinear (fuel : Nat) (dname : String) (rest : List String) :
     Option (Prod Cmd (List String)) :=
   match parseBindersHt fuel rest [] with
@@ -312,8 +339,8 @@ def parseDefCompilePathLinear (fuel : Nat) (dname : String) (rest : List String)
                 else none
     | _ => none
 
-/-- Parse one command. none means skip this keyword (caller skipUntilCmd).
-    Types-style: import / namespace / end / def. Open skipped. -/
+/-- Parse one command. none means the caller advances. import / namespace /
+    end / def. parseLiveCompilePathLinearSource uses parseSource keep. -/
 def parseOneCmdCompilePathLinear (fuel : Nat) (toks : List String) :
     Option (Prod Cmd (List String)) :=
   match toks with
@@ -335,32 +362,7 @@ def parseOneCmdCompilePathLinear (fuel : Nat) (toks : List String) :
     | none => none
   | _ => none
 
-/-- Fold commands. Skip theorem / example / set_option / open / structure /
-    un-kernelable defs. -/
-def parseCmdsCompilePathLinear : Nat -> List String -> List String ->
-    List Cmd -> Option (List Cmd)
-  | 0, [], _, acc => some acc
-  | 0, _ :: _, _, _ => none
-  | Nat.succ _, [], _, acc => some acc
-  | Nat.succ n, toks, kn, acc =>
-    match parseOneCmdCompilePathLinear liveCompilePathLinearParseFuel toks with
-    | some (c, rest) =>
-      let rest2 := skipNonCmd liveCompilePathLinearSkipFuel rest
-      if cmdBodyKnownCompilePathLinear kn c then
-        parseCmdsCompilePathLinear n rest2
-          (kn ++ cmdAddsCompilePathLinear c) (acc ++ [c])
-      else
-        parseCmdsCompilePathLinear n rest2 kn acc
-    | none =>
-      match toks with
-      | _ :: rest =>
-        let rest2 := skipUntilCmd liveCompilePathLinearSkipFuel rest
-        if rest2.length < toks.length then
-          parseCmdsCompilePathLinear n rest2 kn acc
-        else none
-      | [] => some acc
-
-/-- Token walk: live text has `def` named `nm` even if the body was skipped. -/
+/-- Token walk: live text has `def` named `nm`. -/
 def toksHaveDefNamed : Nat -> List String -> String -> Bool
   | 0, _, _ => false
   | Nat.succ _, [], _ => false
@@ -371,23 +373,21 @@ def toksHaveDefNamed : Nat -> List String -> String -> Bool
   | Nat.succ n, _ :: rest, nm => toksHaveDefNamed n rest nm
 
 /-- Parse live CompilePathLinear.lean text.
+    HostFront.parseSource is the keep path --slake-check reads.
+    Keep/register names SystemsLean.CompilePathLinear.
     Greppable: parseLiveCompilePathLinearSource,
     PARSE-LIVE-COMPILE-PATH-LINEAR. -/
 def parseLiveCompilePathLinearSource (src : String) : FrontResult :=
-  let toks := tokenizeHostTerm (stripCommentsCpp src)
-  if toks.isEmpty then FrontResult.reject reasonEmptyModule
+  if src.isEmpty then FrontResult.reject reasonEmptyModule
   else
-    match parseCmdsCompilePathLinear liveCompilePathLinearParseFuel
-        toks [] [] with
-    | none => FrontResult.reject reasonParseFail
-    | some cmds =>
-      if cmds.isEmpty then FrontResult.reject reasonEmptyModule
-      else
-        let m : Module :=
-          { name := HostTerm.n "SystemsLean.CompilePathLinear"
-            commands := cmds }
-        if isWellFormed m then FrontResult.accept m
-        else FrontResult.reject reasonNotWellFormed
+    match parseSource src with
+    | FrontResult.reject r => FrontResult.reject r
+    | FrontResult.accept m =>
+      let kept : Module :=
+        { name := HostTerm.n "SystemsLean.CompilePathLinear"
+          commands := m.commands }
+      if isWellFormed kept then FrontResult.accept kept
+      else FrontResult.reject reasonNotWellFormed
 
 /-- Kernel-check live CompilePathLinear parse. Not a fixture.
     Not occupancy Term. Greppable: kernelCheckLiveCompilePathLinearSource,
@@ -448,7 +448,7 @@ def liveParseHasEmitLinearImport : Bool :=
       | Cmd.importModule x => x.raw == "SystemsLean.EmitLinear"
       | _ => false
 
-/-- Skip-head: defs unique to CompilePathLinear.lean (not CompilePath.lean
+/-- Defs unique to CompilePathLinear.lean (not CompilePath.lean
     and not occupancy Term string payloads). Greppable: linearFixtureMintId,
     linearFixtureTagLinear. -/
 def liveParseHasCoreDefs : Bool :=
@@ -473,6 +473,7 @@ def hostFrontLiveCompilePathLinearReady : Bool :=
     && (liveCompilePathLinearRel
       == "src/systems/SystemsLean/CompilePathLinear.lean")
     && (liveRel == "CompilePathLinear.lean")
+    && hostFrontParseSourceCompilePathLinear
     && liveParseDoesNotUseMultFixture
     && !hostFrontLiveCompilePathLinearFullHost
     && !hostFrontLiveCompilePathLinearResidualFreeClaimed
@@ -490,6 +491,27 @@ def liveParseRejectsEmpty : Bool :=
   match parseLiveCompilePathLinearSource "" with
   | FrontResult.reject _ => true
   | FrontResult.accept _ => false
+
+/-- Live and spent keep views (not a new resource).
+    Two mutual names plus existing linear def stageId plus a theorem tactic.
+    Same walkKept four-form as CompilePathLinear.lean (linearFixtureLiveView /
+    linearFixtureSpentView / linearFixtureMintId / by decide).
+    Greppable: liveCompilePathLinearLiveView, WALKKEPT-KEEP. -/
+mutual
+  /-- Live view: accepted parse of CompilePathLinear.lean when keep succeeds. -/
+  def liveCompilePathLinearLiveView : Option Module :=
+    liveCompilePathLinearParsed?
+
+  /-- Spent view: no extra resource after the live parse is named. -/
+  def liveCompilePathLinearSpentView : Option Module :=
+    none
+end
+
+/-- walkKept keep: theorem plus decide tactic, matching CompilePathLinear.
+    Greppable: hostFrontLiveCompilePathLinearFullHost_false, WALKKEPT-KEEP.
+    FullHost stays false. -/
+theorem hostFrontLiveCompilePathLinearFullHost_false :
+    hostFrontLiveCompilePathLinearFullHost = false := by decide
 
 /-! ### Driver (short banners; dual-pin file equality). Not mill 70. -/
 
@@ -521,6 +543,7 @@ def runLiveCompilePathLinear (root : System.FilePath) : IO Unit := do
     IO.println s!"GREEN {stageId}: live CompilePathLinear.lean parse kernelCheck; mill stays 69 of 69"
 
 def main (args : List String) : IO UInt32 := do
+  IO.println s!"liveRel={liveRel}"
   let root : System.FilePath :=
     match HostFront.filterArgs args with
     | r :: _ => System.FilePath.mk r

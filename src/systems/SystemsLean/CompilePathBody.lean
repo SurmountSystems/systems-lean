@@ -212,6 +212,19 @@ def bodyFixtureCompilePathReady : Bool :=
 def bodyFixtureDoesNotMeanResidualFree : Bool :=
   bodyFixtureCompilePathReady && !bodyFixtureResidualFreeClaimed
 
+/-- Live view: marked and minted Body host (ConsumeToken). -/
+def bodyFixtureLiveView : Option Host :=
+  lowerBodyFixtureCompose
+
+/-- Spent view: ConsumeToken consume of bodyFixtureLiveView. -/
+def bodyFixtureSpentView : Option Host :=
+  match bodyFixtureLiveView with
+  | none => none
+  | some hcLive =>
+      match HostCompose.consume hcLive with
+      | HostCompose.ConsumeResult.ok hcSpent _ => some hcSpent
+      | HostCompose.ConsumeResult.notLive => none
+
 /-! ### COMPILE-PATH-BODY-THEOREM (readable Body e2e statements, then proofs)
 
   Real Lean theorems for Body fixture compile path only. Does not flip

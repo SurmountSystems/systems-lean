@@ -259,6 +259,19 @@ def graphFixtureCompilePathReady : Bool :=
 def graphFixtureDoesNotMeanResidualFree : Bool :=
   graphFixtureCompilePathReady && !graphFixtureResidualFreeClaimed
 
+/-- Live view: marked and minted Graph host (ConsumeToken). -/
+def graphFixtureLiveView : Option Host :=
+  lowerGraphFixtureCompose
+
+/-- Spent view: ConsumeToken consume of graphFixtureLiveView. -/
+def graphFixtureSpentView : Option Host :=
+  match graphFixtureLiveView with
+  | none => none
+  | some hcLive =>
+      match HostCompose.consume hcLive with
+      | HostCompose.ConsumeResult.ok hcSpent _ => some hcSpent
+      | HostCompose.ConsumeResult.notLive => none
+
 /-! ### COMPILE-PATH-GRAPH-THEOREM (readable Graph e2e statements, then proofs)
 
   Real Lean theorems for Graph fixture compile path only. Does not flip

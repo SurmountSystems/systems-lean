@@ -18,6 +18,7 @@
   PARSE-LIVE-LLVM-CFG-UNIT-PRODUCTION, LLVM-CFG-UNIT-PRODUCTION.
   Module: SystemsLean.SlakeTypecheckLlvmCfgUnitProduction
   Checkable writer: lean --run of this driver (no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveLlvmCfgUnitProduction

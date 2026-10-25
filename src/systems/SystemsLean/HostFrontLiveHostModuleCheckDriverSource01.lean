@@ -7,7 +7,7 @@
   Do not steal a neighbor checker.
   Greppable: SYSTEMS_LEAN_HOST, PARSE-LIVE-HOSTMODULECHECKDRIVER,
   liveHostModuleCheckDriverSource1, HOST-FRONT-LIVE-HOSTMODULECHECKDRIVER,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveHostModuleCheckDriverSource01
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

@@ -18,6 +18,7 @@
   Module: SystemsLean.SlakeTypecheckEmitPlanScaffold
   Checkable writer: just slake-typecheck-emitplanscaffold
   (lean --run; no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveEmitPlanScaffold

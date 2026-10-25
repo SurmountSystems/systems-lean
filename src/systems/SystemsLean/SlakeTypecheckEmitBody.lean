@@ -18,6 +18,7 @@
   Module: SystemsLean.SlakeTypecheckEmitBody
   Checkable writer: just slake-typecheck-emitbody
   (lean --run; no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveEmitBody

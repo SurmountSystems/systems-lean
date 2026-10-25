@@ -18,6 +18,7 @@
   Module: SystemsLean.SlakeTypecheckIrGraph
   Checkable writer: lean --run SlakeTypecheckIrGraph.lean
   (no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveIrGraph

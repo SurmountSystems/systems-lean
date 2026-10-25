@@ -43,7 +43,7 @@
   kernelCheckLiveProbeWireTheoremsSource,
   hostFrontLiveProbeWireTheoremsReady, liveProbeWireTheoremsSource,
   liveRel, liveProbeWireTheoremsRel, PROBE-WIRE-THEOREM,
-  PROBE-WIRE-SMOKE, UNIT_SURFACE host surface.
+  PROBE-WIRE-SMOKE, UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveProbeWireTheorems
   Red/green: just slake-typecheck-probewiretheorems (lean --run; no mill;
   no lake). Not package typecheck GREEN. Not FullHost. Not Lake-gone.

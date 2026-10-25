@@ -12,6 +12,7 @@
   PARSE-LIVE-HOST-CHECK.
   Module: SystemsLean.SlakeTypecheckHostCheck
   Checkable writer: lean --run SlakeTypecheckHostCheck (no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveHostCheck

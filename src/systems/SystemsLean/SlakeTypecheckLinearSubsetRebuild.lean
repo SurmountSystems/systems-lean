@@ -18,6 +18,7 @@
   PARSE-LIVE-LINEAR-SUBSET-REBUILD.
   Module: SystemsLean.SlakeTypecheckLinearSubsetRebuild
   Checkable writer: lean --run on this file (no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveLinearSubsetRebuild

@@ -18,6 +18,7 @@
   Module: SystemsLean.SlakeTypecheckHostPackageRootsMain
   Checkable writer: just slake-typecheck-hostpackagerootsmain
   (lean --run; no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveHostPackageRootsMain

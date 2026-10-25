@@ -8,6 +8,7 @@
   `=` stay allowed. Boolean `==` stays on RejectBeqThm.
   HostTerm.Cmd is not extended.
   slakeOwnsPackageTypecheck stays false. ASCII only.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.KeptWalk

@@ -16,6 +16,7 @@
   Module: SystemsLean.SlakeTypecheckEmitErasure
   Checkable writer: just slake-typecheck-emiterasure
   (lean --run; no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveEmitErasure

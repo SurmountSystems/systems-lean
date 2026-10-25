@@ -25,6 +25,7 @@
   Module: SystemsLean.SlakeTypecheckProductPathOwnershipRegenerate
   Checkable writer: just slake-typecheck-productpathownershipregenerate
   (lean --run; no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveProductPathOwnershipRegenerate

@@ -38,7 +38,7 @@
   kernelCheckLiveSelfApplyFsTheoremsSource,
   hostFrontLiveSelfApplyFsTheoremsReady, liveSelfApplyFsTheoremsSource,
   liveRel, liveSelfApplyFsTheoremsRel, SELF-APPLY-FS-THEOREM,
-  SELF-APPLY-FS-SMOKE, UNIT_SURFACE host surface.
+  SELF-APPLY-FS-SMOKE, UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveSelfApplyFsTheorems
   Red/green: just slake-typecheck-selfapplyfstheorems (lean --run; no mill;
   no lake). Not package typecheck GREEN. Not FullHost. Not Lake-gone.

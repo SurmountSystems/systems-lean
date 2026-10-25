@@ -13,6 +13,7 @@
   PARSE-LIVE-HOST-GRAPH-THEOREMS.
   Module: SystemsLean.SlakeTypecheckHostGraphTheorems
   Checkable writer: lean --run SlakeTypecheckHostGraphTheorems (no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveHostGraphTheorems

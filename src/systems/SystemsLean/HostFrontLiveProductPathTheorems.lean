@@ -40,7 +40,7 @@
   kernelCheckLiveProductPathTheoremsSource,
   hostFrontLiveProductPathTheoremsReady, liveProductPathTheoremsSource,
   liveRel, liveProductPathTheoremsRel, PRODUCT-PATH-THEOREM,
-  PRODUCT-PATH-SMOKE, UNIT_SURFACE host surface.
+  PRODUCT-PATH-SMOKE, UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveProductPathTheorems
   Red/green: just slake-typecheck-productpaththeorems (lean --run; no mill;
   no lake). Not package typecheck GREEN. Not FullHost. Not Lake-gone.

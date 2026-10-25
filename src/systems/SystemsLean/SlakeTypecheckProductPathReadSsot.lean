@@ -19,6 +19,7 @@
   Module: SystemsLean.SlakeTypecheckProductPathReadSsot
   Checkable writer: just slake-typecheck-productpathreadssot
   (lean --run; no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveProductPathReadSsot

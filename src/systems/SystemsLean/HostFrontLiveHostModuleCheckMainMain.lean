@@ -10,6 +10,7 @@
   Module: SystemsLean.HostFrontLiveHostModuleCheckMainMain
   Not a remill. Mill stays 69 of 69. Not occupancy name 50. Not FullHost.
   Module must stay ASCII. Not freestanding residual free. Not PROVABLY.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveHostModuleCheckMain

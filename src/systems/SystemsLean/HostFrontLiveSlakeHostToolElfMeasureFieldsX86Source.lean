@@ -11,7 +11,7 @@
   Greppable: SYSTEMS_LEAN_HOST, liveSlakeHostToolElfMeasureFieldsX86Source,
   HOST-FRONT-LIVE-SLAKE-HOST-TOOL-ELF-MEASURE-FIELDS-X86,
   HOST-HOST-TOOL-MEASURE-FIELDS-X86, liveRel,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveSlakeHostToolElfMeasureFieldsX86Source
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Not a backend. FullBackend stays false in the wrap.

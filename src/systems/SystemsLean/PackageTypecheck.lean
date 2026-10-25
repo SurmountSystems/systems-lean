@@ -22,9 +22,12 @@
   tryCompileOnDiskModuleIO, PackageTypecheck, printMessageLog,
   SLAKE_PACKAGE_TYPECHECK, SystemsLean.PackageTypecheck,
   HOST-ELAB-MEET, SLAKE_OLEAN_DIR, SLAKE_TYPECHECK_JOBS, SKELETON.
-  --slake-check is HostKernel.slakeChecker and does not call processCommands.
-  The --compile-one path still does. slakeOwnsPackageTypecheck stays false.
-  --slake-check NAME reads that on-disk module and calls SlakeCheckSource.checkSource. It does not call processCommands. It does not claim the sources were accepted. The --compile-one path still calls processCommands. slakeOwnsPackageTypecheck stays false.
+  --slake-check NAME reads that on-disk module and calls tryCompileOnDiskModuleIO.
+  That helper calls Lean.Elab.IO.processCommands on the original file text.
+  Accept only when the elaborator message log has no error.
+  A second declaration is not a reject by itself.
+  The no-name path still checks the Mult fixture through HostKernel.slakeChecker.
+  slakeOwnsPackageTypecheck stays false.
   --walk-root DIR with --slake-check NAME resolves NAME under DIR.
   Dots become slashes, then .lean. One module per process.
   That path does not require SystemsLean/Mult.lean.
@@ -411,20 +414,20 @@ def runListCheckIO : IO UInt32 := do
     flushOut
     return 0
 
-/-- One on-disk module through SlakeCheckSource.checkSource.
+/-- One on-disk module through tryCompileOnDiskModuleIO.
     Resolves the .lean path the same way compile-one finds a source.
-    Does not call Lean.Elab.processCommands.
-    Does not read or stat an object file.
-    A missing object file is not a rejection.
-    A false result is a front or kernel reject, not package ownership. -/
-def runSlakeCheckOnDiskIO (n : String) : IO UInt32 := do
+    That helper reads the original file text and calls
+    Lean.Elab.IO.processCommands. Accept only when it returns true,
+    which is the elaborator message log having no error.
+    Does not addDecl a second time. Does not build a Lean.Expr by hand.
+    A second declaration is not a reject by itself.
+    A false result is an elaborator error, not package ownership. -/
+unsafe def runSlakeCheckOnDiskIO (n : String) : IO UInt32 := do
   IO.println s!"slake-check on-disk {n}"
-  IO.println "path is HostFront.parseSource then HostKernel.slakeChecker"
-  IO.println "does not call Lean.Elab.processCommands"
-  IO.println "a missing object file is not a rejection"
-  IO.println "this invocation does not by itself claim the source was accepted"
-  IO.println "HostFront.parseSource is a line-oriented Mult-first dialect, not full Lean 4"
-  IO.println "a real SystemsLean/*.lean file may reject; that is a front or kernel result, not package ownership"
+  IO.println "path is tryCompileOnDiskModuleIO then Lean.Elab.IO.processCommands"
+  IO.println "accept only when the elaborator message log has no error"
+  IO.println "a second declaration is not a reject by itself"
+  IO.println "this invocation does not by itself claim package ownership"
   IO.println "slakeOwnsPackageTypecheck false"
   IO.println "FullHost false"
   let srcRoot? <- findLiveSrcRoot
@@ -441,38 +444,33 @@ def runSlakeCheckOnDiskIO (n : String) : IO UInt32 := do
     if !(<- srcPath.pathExists) then
       printMiss s!"{n} missing source"
       return 1
-    let read <-
-      try
-        let text <- IO.FS.readFile srcPath
-        pure (some text)
-      catch e =>
-        printMiss s!"{n} unreadable source {e.toString}"
-        pure none
-    match read with
-    | none => return 1
-    | some text =>
-      match SystemsLean.SlakeCheckSource.rejectLayer text with
-      | none =>
+    let oleanDir <- resolveOleanDir
+    IO.FS.createDirAll oleanDir
+    let prev <- searchPathRef.get
+    searchPathRef.set (srcRoot :: oleanDir :: prev)
+    try
+      let compiled <- tryCompileOnDiskModuleIO srcPath (String.toName n) oleanDir
+      if compiled then
         IO.println s!"slake-check checker returned true for {n}"
         IO.println "slakeOwnsPackageTypecheck false"
         flushOut
         return 0
-      | some layer =>
+      else
         IO.eprintln s!"slake-check checker returned false for {n}"
-        IO.eprintln layer
+        IO.eprintln "elaborator message log has an error"
         IO.eprintln "that is not package ownership"
         IO.eprintln "slakeOwnsPackageTypecheck false"
         flushOut
         return 1
+    finally
+      searchPathRef.set prev
 
-def runSlakeCheckAtRoot (n : String) (root : System.FilePath) : IO UInt32 := do
+unsafe def runSlakeCheckAtRoot (n : String) (root : System.FilePath) : IO UInt32 := do
   IO.println s!"slake-check on-disk {n}"
-  IO.println "path is HostFront.parseSource then HostKernel.slakeChecker"
-  IO.println "does not call Lean.Elab.processCommands"
-  IO.println "a missing object file is not a rejection"
-  IO.println "this invocation does not by itself claim the source was accepted"
-  IO.println "HostFront.parseSource is a line-oriented Mult-first dialect, not full Lean 4"
-  IO.println "a real SystemsLean/*.lean file may reject; that is a front or kernel result, not package ownership"
+  IO.println "path is tryCompileOnDiskModuleIO then Lean.Elab.IO.processCommands"
+  IO.println "accept only when the elaborator message log has no error"
+  IO.println "a second declaration is not a reject by itself"
+  IO.println "this invocation does not by itself claim package ownership"
   IO.println "slakeOwnsPackageTypecheck false"
   IO.println "FullHost false"
   IO.println s!"walk-root {root}"
@@ -484,35 +482,34 @@ def runSlakeCheckAtRoot (n : String) (root : System.FilePath) : IO UInt32 := do
     if !(<- srcPath.pathExists) then
       printMiss s!"{n} missing source"
       return 1
-    let read <-
-      try
-        let text <- IO.FS.readFile srcPath
-        pure (some text)
-      catch e =>
-        printMiss s!"{n} unreadable source {e.toString}"
-        pure none
-    match read with
-    | none => return 1
-    | some text =>
-      match SystemsLean.SlakeCheckSource.rejectLayer text with
-      | none =>
+    let oleanDir <- resolveOleanDir
+    IO.FS.createDirAll oleanDir
+    let prev <- searchPathRef.get
+    searchPathRef.set (root :: oleanDir :: prev)
+    try
+      let compiled <- tryCompileOnDiskModuleIO srcPath (String.toName n) oleanDir
+      if compiled then
         IO.println s!"slake-check checker returned true for {n}"
         IO.println "slakeOwnsPackageTypecheck false"
         flushOut
         return 0
-      | some layer =>
+      else
         IO.eprintln s!"slake-check checker returned false for {n}"
-        IO.eprintln layer
+        IO.eprintln "elaborator message log has an error"
         IO.eprintln "that is not package ownership"
         IO.eprintln "slakeOwnsPackageTypecheck false"
         flushOut
         return 1
+    finally
+      searchPathRef.set prev
 
-/-- Slake's checker path. Not the Lean elaborator.
-    A module name checks that one on-disk file through checkSource.
+/-- Slake's checker path.
+    A module name checks that one on-disk file through
+    tryCompileOnDiskModuleIO (Lean.Elab.IO.processCommands).
+    Accept only when the elaborator message log has no error.
     No name checks the fixture.
-    Neither claims package ownership. -/
-def runSlakeCheckIO (args : List String) : IO UInt32 := do
+    Neither claims package ownership. slakeOwnsPackageTypecheck stays false. -/
+unsafe def runSlakeCheckIO (args : List String) : IO UInt32 := do
   match slakeCheckModuleName args with
   | some n =>
     match SystemsLean.WalkRoot.walkRootFromArgs args with

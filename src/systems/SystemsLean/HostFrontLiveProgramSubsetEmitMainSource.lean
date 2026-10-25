@@ -27,7 +27,7 @@
   PROGRAM-SUBSET-EMIT
   SLAKE_PROGRAM_SUBSET_EMIT
   Greppable: SYSTEMS_LEAN_HOST, liveProgramSubsetEmitMainSource,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveProgramSubsetEmitMainSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

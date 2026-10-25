@@ -17,6 +17,7 @@
   Module: SystemsLean.SlakeTypecheckLlvmHoldTheorems
   Checkable writer: just slake-typecheck-llvmholdtheorems
   (lean --run; no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveLlvmHoldTheorems

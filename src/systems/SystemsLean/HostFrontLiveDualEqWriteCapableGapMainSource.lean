@@ -25,7 +25,7 @@
   DualEqWriteCapableGap
   SKELETON
   Greppable: SYSTEMS_LEAN_HOST, liveDualEqWriteCapableGapMainSource,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveDualEqWriteCapableGapMainSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

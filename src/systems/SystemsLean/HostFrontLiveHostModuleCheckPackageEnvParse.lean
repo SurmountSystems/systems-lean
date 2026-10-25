@@ -8,6 +8,7 @@
   kernelFuel stays 64. Not FullHost. Occupancy stays 49.
   Module: SystemsLean.HostFrontLiveHostModuleCheckPackageEnvParse
   Module must stay ASCII.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveLlvmComposeTextMainSource

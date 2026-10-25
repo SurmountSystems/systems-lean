@@ -24,7 +24,7 @@
   COMPOSE-SUBSET-EMIT
   SLAKE_COMPOSE_SUBSET_EMIT
   Greppable: SYSTEMS_LEAN_HOST, liveComposeSubsetEmitMainSource,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveComposeSubsetEmitMainSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

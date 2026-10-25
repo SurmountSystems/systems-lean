@@ -5,34 +5,35 @@ Living leftover lives in `RESIDUAL-systems.md` Open. Do not write `WATCHER.md`.
 
 ## Status
 
-Systems Lean / Slake. Living leftover is **Rename identifier helper** in
-`RESIDUAL-systems.md`. Independently reviewed ELF
-`/nix/store/s0sjpz1gz8vq50cm9fsks6ccs8yhvmk3-slake-bootstrap`
-(149297912 bytes). Rebuild 24 BLOCKED on
-`/nix/store/vnaf6g728b5pph6pgkjj2idmy7jk9sf2-slake-bootstrap-Mult-place.drv`
-signal 9. No NEW ELF. Do not loop Nix on that copy set.
+Systems Lean / Slake. Living leftover is **Lean 4.35 leftover** in
+`RESIDUAL-systems.md` Open. Independently reviewed ELF
+`/nix/store/97p32bdbdw6v79yxydi1y4s4s39ksp8j-slake-bootstrap`
+(149467016 bytes). Lean 4.35, linear types, Idris 2, Slake compiling Slake,
+and a later Mathlib test (OBJECTIVE spelling Matlib) remain leftover-not-done.
+Do not claim Slake-from-Slake done. Do not mint a dest.
 
-Held false: slakeOwnsPackageTypecheck, FullHost, occupancy 49, mills 55
-through 69. HostKernel.lean 779 closed. UseCheck 177 of 356. Walker.lean 367.
+Held false: slakeOwnsPackageTypecheck stays false. FullHost stays false.
+Occupancy stays 49. Mills 55 through 69 stay built. HostKernel.lean 779 closed.
 
-`WATCHER.md` is absent. Do not recreate it. Lockstep novels hid the living
-leftover. Repeated miss: append instead of replace.
+The gate `nix/lean-string-slice-copy` exists and still fail-closes a
+Slice-without-`.copy` miss. Edmonton owns that eval. Do not re-eval.
+
+`WATCHER.md` is absent. Do not recreate it. Repeated miss: append instead of
+replace.
 
 ## Next
 
-Rename `RejectBneIdent.lean` to `RejectBoolBne.lean` (namespace
-`SystemsLean.RejectBoolBne`, findWord "bne"). Token `!=` stays in
-`RejectBne.lean`. That Lean rename is another L2. Point at residual Open.
+Keep the remembered destination as leftover-not-done. Point at residual Open
+and `/home/hunter/.agents/reports/remaining-2026-10-17-prove-honesty.md`.
 Do not emit a next implement prompt.
 
 ## Decisions and discovery
 
 | Decision | Status |
 |----------|--------|
-| Living dest for the identifier helper | `RejectBoolBne.lean`, not RejectBneIdent |
-| Token `!=` | stays in `RejectBne.lean` |
-| Independently reviewed ELF | full store path above, 149297912 bytes |
-| Rebuild 24 | BLOCKED, signal 9, no NEW ELF |
+| Living leftover | Lean 4.35 leftover, not done. Do not mint a dest |
+| Independently reviewed ELF | `/nix/store/97p32bdbdw6v79yxydi1y4s4s39ksp8j-slake-bootstrap` (149467016 bytes) |
+| Slice-without-copy gate | `nix/lean-string-slice-copy` exists. Edmonton owns the eval |
 | WATCHER.md | deleted. Living leftover is residual Open |
 | Dual clocks | specimen keep versus standing Lean 4 10.0 days / 40.0m and mathlib 5.0 days / 20.0m; do not add those clocks |
 | Occupancy / mills / FullHost | occupancy 49; mills 55 through 69; FullHost false |

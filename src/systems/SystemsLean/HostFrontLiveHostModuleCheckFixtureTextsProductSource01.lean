@@ -7,7 +7,7 @@
   Do not steal a neighbor checker.
   Greppable: SYSTEMS_LEAN_HOST, PARSE-LIVE-HOSTMODULECHECKFIXTURETEXTSPRODUCT,
   liveHostModuleCheckFixtureTextsProductSource1, HOST-FRONT-LIVE-HOSTMODULECHECKFIXTURETEXTSPRODUCT,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveHostModuleCheckFixtureTextsProductSource01
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

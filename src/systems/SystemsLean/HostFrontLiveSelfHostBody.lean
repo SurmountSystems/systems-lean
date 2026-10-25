@@ -42,7 +42,7 @@
   PARSE-LIVE-SELFHOSTBODY, parseLiveSelfHostBodySource,
   kernelCheckLiveSelfHostBodySource,
   hostFrontLiveSelfHostBodyReady, liveSelfHostBodySource,
-  liveRel, liveSelfHostBodyRel, UNIT_SURFACE host surface.
+  liveRel, liveSelfHostBodyRel, UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveSelfHostBody
   Red/green: just slake-typecheck-selfhostbody (lean --run; no mill;
   no lake). Not package typecheck GREEN. Not FullHost. Not Lake-gone.

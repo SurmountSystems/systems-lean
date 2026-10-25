@@ -26,7 +26,7 @@
   OfficialRetire
   SKELETON
   Greppable: SYSTEMS_LEAN_HOST, liveOfficialRetireMainSource,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveHostOfficialRetireMainSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

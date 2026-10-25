@@ -32,6 +32,7 @@
   printSelfHostCompleteMeasure, writeMeasureReloc, self-host-complete-measure.o,
   SystemsLean.SelfHostComplete.main.
   Module: SystemsLean.SlakeHostToolElfMeasureReloc
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.SlakeHostToolElfCompleteOk

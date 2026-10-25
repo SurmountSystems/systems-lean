@@ -18,6 +18,7 @@
   Module: SystemsLean.SlakeTypecheckLlvmComposeSsa
   Checkable writer: just slake-typecheck-llvmcomposessa
   (lean --run; no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveLlvmComposeSsa

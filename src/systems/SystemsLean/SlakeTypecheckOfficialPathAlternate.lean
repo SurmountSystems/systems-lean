@@ -18,6 +18,7 @@
   Module: SystemsLean.SlakeTypecheckOfficialPathAlternate
   Checkable writer: just slake-typecheck-officialpathalternate
   (lean --run; no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveOfficialPathAlternate

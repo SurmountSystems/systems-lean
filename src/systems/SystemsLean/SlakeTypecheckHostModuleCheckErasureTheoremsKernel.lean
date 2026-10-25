@@ -23,6 +23,7 @@
   Module: SystemsLean.SlakeTypecheckHostModuleCheckErasureTheoremsKernel
   Checkable writer: lean --run SlakeTypecheckHostModuleCheckErasureTheoremsKernel.lean
   (no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveHostModuleCheckErasureTheoremsKernelSource

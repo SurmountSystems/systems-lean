@@ -16,6 +16,7 @@
   writeMeasureFieldsX86, leftoverAfterFieldsX86,
   self-host-complete-measure-fields.x86-64.bin.
   Module: SystemsLean.SlakeHostToolElfMeasureFieldsX86
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.SlakeHostToolElfMeasureX86

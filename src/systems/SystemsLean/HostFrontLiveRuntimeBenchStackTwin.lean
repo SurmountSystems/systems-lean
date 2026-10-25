@@ -14,6 +14,7 @@
   hostFrontLiveRuntimeBenchStackTwinReady.
   Module: SystemsLean.HostFrontLiveRuntimeBenchStackTwin
   Module must stay ASCII.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveHostTerm

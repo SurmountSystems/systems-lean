@@ -7,7 +7,7 @@
   Not a speed claim.
   liveRel is the bare basename RuntimeBenchFailClosedShapeMain.lean.
   Greppable: SYSTEMS_LEAN_HOST, liveRuntimeBenchFailClosedShapeMainSource,
-  HOST-FRONT-LIVE-RUNTIME-BENCH-FAIL-CLOSED-SHAPE-MAIN, liveRel, UNIT_SURFACE host surface.
+  HOST-FRONT-LIVE-RUNTIME-BENCH-FAIL-CLOSED-SHAPE-MAIN, liveRel, UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveRuntimeBenchFailClosedShapeMainSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Not a backend. FullBackend stays false in the wrap.

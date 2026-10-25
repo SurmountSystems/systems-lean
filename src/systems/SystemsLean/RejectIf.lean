@@ -12,6 +12,7 @@
   `=>` stays on RejectMatch. Does not hook KeptHitKernel.
   HostTerm.Cmd is not extended. slakeOwnsPackageTypecheck stays
   false. ASCII only.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.KeptWalk

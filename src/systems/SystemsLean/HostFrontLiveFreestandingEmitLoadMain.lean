@@ -18,6 +18,7 @@
   This wrap is FreestandingEmitLoad.lean.
   It is not FreestandingEmitLoadScaffold.lean.
   Module must stay ASCII.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveFreestandingEmitLoad

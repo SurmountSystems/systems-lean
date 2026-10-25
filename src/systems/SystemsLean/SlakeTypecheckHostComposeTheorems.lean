@@ -17,6 +17,7 @@
   Module: SystemsLean.SlakeTypecheckHostComposeTheorems
   Checkable writer: just slake-typecheck-hostcomposetheorems
   (lean --run; no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveHostComposeTheorems

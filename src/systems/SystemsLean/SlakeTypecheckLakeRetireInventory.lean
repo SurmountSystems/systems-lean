@@ -19,6 +19,7 @@
   PARSE-LIVE-LAKE-RETIRE-INVENTORY.
   Module: SystemsLean.SlakeTypecheckLakeRetireInventory
   Checkable writer: lean --run (no mill; no lake; no just recipe).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveLakeRetireInventory

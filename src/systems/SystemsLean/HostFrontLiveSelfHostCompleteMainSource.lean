@@ -23,7 +23,7 @@
   SELF-HOST-FREESTANDING-PRODUCT-COMPLETE
   printSelfHostCompleteMeasure
   Greppable: SYSTEMS_LEAN_HOST, liveSelfHostCompleteMainSource,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveSelfHostCompleteMainSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

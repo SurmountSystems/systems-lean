@@ -1,6 +1,7 @@
 /-
   Import-loading check for SystemsLean.DualEqWriteCapableGap.
   Lean 4.32 loads the module from its olean. kernelFuel stays 64.
+  Module must stay ASCII. Not freestanding residual free. Not PROVABLY. SKELETON.
 -/
 
 import SystemsLean.DualEqWriteCapableGap

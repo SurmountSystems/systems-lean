@@ -22,7 +22,7 @@
   SLAKE_HOST_PACKAGE_WRITE
   hostPackageWriteReady
   Greppable: SYSTEMS_LEAN_HOST, liveHostPackageWriteMainSource,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveHostPackageWriteMainSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

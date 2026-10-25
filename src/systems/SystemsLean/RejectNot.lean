@@ -40,6 +40,7 @@
   Not skipIdent of the current cons cell. The not matcher
   is whole-identifier `not`, not a substring of `note`
   or `nothing`.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.KeptWalk

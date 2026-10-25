@@ -6,6 +6,7 @@
   Not FullHost. Occupancy stays 49. Mill stays 69 of 69. Not a remill.
   Not Lake-gone. slakeOwnsPackageTypecheck stays false.
   Module must stay ASCII.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 namespace SystemsLean.HostFrontLiveSlakeHostToolElfMeasureFields

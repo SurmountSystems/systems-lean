@@ -7,6 +7,7 @@
   kept reject. That is the fail-closed --slake-check path.
   slakeOwnsPackageTypecheck stays false.
   ASCII only.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 namespace N

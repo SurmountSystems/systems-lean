@@ -25,7 +25,7 @@
   SLAKE_MULT_SUBSET_REBUILD
   multSubsetRebuildReady
   Greppable: SYSTEMS_LEAN_HOST, liveMultSubsetRebuildMainSource,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveMultSubsetRebuildMainSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

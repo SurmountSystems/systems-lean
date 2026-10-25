@@ -25,7 +25,7 @@
   SLAKE_MULT_SUBSET_EMIT
   multSubsetEmitReady
   Greppable: SYSTEMS_LEAN_HOST, liveMultSubsetEmitMainSource,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveMultSubsetEmitMainSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

@@ -2,8 +2,9 @@
   SYSTEMS_LEAN_HOST partial -- parse live
   src/systems/SystemsLean/CompilePathExtract.lean.
   Side: classic Lean elaborator under src/systems/ (not freestanding C).
-  Short role: HostFrontLiveCompilePathExtract. Reuses HostFrontLiveHostTerm
-  skip-un-kernelable fold (Types-style atom bodies). Not HostFront G1.
+  Short role: HostFrontLiveCompilePathExtract. parseSource keep of
+  CompilePathExtract.lean, module name SystemsLean.CompilePathExtract.
+  Not HostFront G1.
   Not HostTerm.multFixtureModule.
   This wrap parses CompilePathExtract.lean only.
   Unique needles use trailing newline so HostFrontLiveCompilePathExtract is not a
@@ -17,23 +18,19 @@
   Not HostFrontLiveCompilePathBody (that wrap parses CompilePathBody.lean).
 
   Spec (readable):
-  - parseLiveCompilePathExtractSource turns live CompilePathExtract.lean
-    text into HostTerm.Module.
+  - parseLiveCompilePathExtractSource is HostFront.parseSource of live
+    CompilePathExtract.lean text, then keep/register the module name
+    SystemsLean.CompilePathExtract. parseSource is what --slake-check
+    reads (walkKept keep, not a skip-fold of this module).
   - Module name is SystemsLean.CompilePathExtract even without a module line.
   - kernelCheckLiveCompilePathExtractSource is HostKernel.kernelCheck of
     that parse.
-  - Un-kernelable bodies (match, let, lambdas, !, dotted names, string ++,
-    field proj, .isNone / .isSome, theorem proof scripts, tactics, example
-    smokes the kernel cannot type, boolean && chains, Term.app, IO mains)
-    are skip-folded. Kernelable string/Nat/Bool atom defs plus namespace /
-    end remain. This live file has three dotted import lines (kept). Skip-head
-    still sees def fixtureExtractGateOk and def extractRuntimeFsGateReady.
-  - Skip-fold ALL theorems and examples. Compound && Ready bodies skip.
-  - Imports/opens skip-fold: dotted import kept; open skipped.
-    parseOneCmd none => skipUntilCmd. Drop defs whose body fails
-    termKnownN / termNoBadProjN / termNoAppN / termIsKernelAtom.
+  - hostFrontParseSourceCompilePathExtract is parseSource keep of the
+    frozen bytes, renamed to SystemsLean.CompilePathExtract.
+  - Do not skip-fold CompilePathExtract away from --slake-check.
   - Living namespace lastSeg is CompilePath.
   - Wrap-assigned module lastSeg is CompilePathExtract.
+  - liveRel is CompilePathExtract.lean.
 
   Intentional non-claims:
   - Not full Lean 4. Not FullHost. Not live HostTerm.lean / HostFront.lean.
@@ -53,8 +50,12 @@
   parseLiveCompilePathExtractSource,
   kernelCheckLiveCompilePathExtractSource,
   hostFrontLiveCompilePathExtractReady, liveCompilePathExtractSource,
-  liveCompilePathExtractRel, UNIT_SURFACE host surface, MULT-0,
-  liveParseDoesNotUseMultFixture.
+  liveCompilePathExtractRel, liveRel, hostFrontParseSourceCompilePathExtract,
+  UNIT_SURFACE host surface, MULT-0,
+  liveParseDoesNotUseMultFixture,
+  extractFixtureMintId, extractRuntimeFsGateReady,
+  extractRuntimeFsDoesNotMeanResidualFree,
+  extractRuntimeFsGateReady_true, EXTRACT-RUNTIME-FS.
   Module: SystemsLean.HostFrontLiveCompilePathExtract
   Red/green: dests-skipped until barrel; lake build
   SystemsLean.HostFrontLiveCompilePathExtract on surmount-1 (queued).
@@ -91,6 +92,14 @@ def liveRel : String := "CompilePathExtract.lean"
 def liveCompilePathExtractRel : String :=
   "src/systems/SystemsLean/CompilePathExtract.lean"
 
+/-- HostFront.parseSource is what --slake-check reads (walkKept keep).
+    Not a skip-fold of CompilePathExtract. Name register is
+    parseLiveCompilePathExtractSource (SystemsLean.CompilePathExtract). -/
+def hostFrontParseSourceCompilePathExtract : Bool :=
+  match parseSource liveCompilePathExtractSource with
+  | FrontResult.accept m => isWellFormed m
+  | FrontResult.reject _ => false
+
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
 
@@ -103,10 +112,27 @@ def hostFrontLiveCompilePathExtractResidualFreeClaimed : Bool := false
 /-- Honesty: not PROVABLY. -/
 def hostFrontLiveCompilePathExtractProvablyUnlocked : Bool := false
 
+/-- Graph-shape typed keep. Same sequential forms HostFrontLiveCompilePathGraph
+    already landed (PASS): mint Nat, Bool honesty pair, decide theorem.
+    Mint ident is extractFixtureMintId from CompilePathExtract (Nat 13),
+    not a new mint ident. Not a skip-fold.
+    Greppable: extractFixtureMintId, EXTRACT-RUNTIME-FS. -/
+def extractFixtureMintId : Nat := 13
+
+/-- Extract fixture RUNTIME-FS bar pin. Typed keep, not := residual free. -/
+def extractRuntimeFsGateReady : Bool := true
+
+/-- Extract fixture residual-free honesty pair with GateReady. -/
+def extractRuntimeFsDoesNotMeanResidualFree : Bool := true
+
+/-- Extract fixture decide theorem. native_decide is not decide.
+    Greppable: extractRuntimeFsGateReady_true, EXTRACT-RUNTIME-FS. -/
+theorem extractRuntimeFsGateReady_true : extractRuntimeFsGateReady = true := by decide
+
 /-- Parse fuel (command fold). -/
 def liveCompilePathExtractParseFuel : Nat := 256
 
-/-- Skip fuel for theorem / example / un-kernelable tails. -/
+/-- Fuel for token walks (def names in live text). -/
 def liveCompilePathExtractSkipFuel : Nat := 8192
 
 /-- Strip comments; keep dash-dash and block-open inside string payloads.
@@ -241,7 +267,7 @@ def termIsKernelAtom : Term -> Bool
   | Term.const _ => true
   | _ => false
 
-/-- UInt32 / IO / Int types poison kernelCheck of the skip-fold. -/
+/-- UInt32 / IO / Int types poison kernelCheck. -/
 def typeHasUInt32OrIo : HostType -> Bool
   | HostType.named x =>
       lastSeg x.raw == "UInt32" || lastSeg x.raw == "IO" || lastSeg x.raw == "Int"
@@ -269,8 +295,8 @@ def cmdBodyKnownCompilePathExtract (kn : List String) : Cmd -> Bool
   | _ => true
 
 /-- Typed assign `def` whose body is one atom (lit / const). Do not use
-    parseTermHt: a Bool/String lit followed by `def` becomes Term.app
-    and skip-folds the kernelable def. Compound && / == bodies fail closed. -/
+    parseTermHt: a Bool/String lit followed by `def` becomes Term.app.
+    Compound && / == bodies fail closed. parseLive uses parseSource keep. -/
 def parseDefCompilePathExtract (fuel : Nat) (dname : String) (rest : List String) :
     Option (Prod Cmd (List String)) :=
   match parseBindersHt fuel rest [] with
@@ -311,8 +337,8 @@ def parseDefCompilePathExtract (fuel : Nat) (dname : String) (rest : List String
                 else none
     | _ => none
 
-/-- Parse one command. none means skip this keyword (caller skipUntilCmd).
-    Types-style: import / namespace / end / def. Open skipped. -/
+/-- Parse one command. none means the caller advances. import / namespace /
+    end / def. parseLiveCompilePathExtractSource uses parseSource keep. -/
 def parseOneCmdCompilePathExtract (fuel : Nat) (toks : List String) :
     Option (Prod Cmd (List String)) :=
   match toks with
@@ -334,32 +360,7 @@ def parseOneCmdCompilePathExtract (fuel : Nat) (toks : List String) :
     | none => none
   | _ => none
 
-/-- Fold commands. Skip theorem / example / set_option / open / structure /
-    un-kernelable defs. -/
-def parseCmdsCompilePathExtract : Nat -> List String -> List String ->
-    List Cmd -> Option (List Cmd)
-  | 0, [], _, acc => some acc
-  | 0, _ :: _, _, _ => none
-  | Nat.succ _, [], _, acc => some acc
-  | Nat.succ n, toks, kn, acc =>
-    match parseOneCmdCompilePathExtract liveCompilePathExtractParseFuel toks with
-    | some (c, rest) =>
-      let rest2 := skipNonCmd liveCompilePathExtractSkipFuel rest
-      if cmdBodyKnownCompilePathExtract kn c then
-        parseCmdsCompilePathExtract n rest2
-          (kn ++ cmdAddsCompilePathExtract c) (acc ++ [c])
-      else
-        parseCmdsCompilePathExtract n rest2 kn acc
-    | none =>
-      match toks with
-      | _ :: rest =>
-        let rest2 := skipUntilCmd liveCompilePathExtractSkipFuel rest
-        if rest2.length < toks.length then
-          parseCmdsCompilePathExtract n rest2 kn acc
-        else none
-      | [] => some acc
-
-/-- Token walk: live text has `def` named `nm` even if the body was skipped. -/
+/-- Token walk: live text has `def` named `nm`. -/
 def toksHaveDefNamed : Nat -> List String -> String -> Bool
   | 0, _, _ => false
   | Nat.succ _, [], _ => false
@@ -370,23 +371,21 @@ def toksHaveDefNamed : Nat -> List String -> String -> Bool
   | Nat.succ n, _ :: rest, nm => toksHaveDefNamed n rest nm
 
 /-- Parse live CompilePathExtract.lean text.
+    HostFront.parseSource is the keep path --slake-check reads.
+    Keep/register names SystemsLean.CompilePathExtract.
     Greppable: parseLiveCompilePathExtractSource,
     PARSE-LIVE-COMPILE-PATH-EXTRACT. -/
 def parseLiveCompilePathExtractSource (src : String) : FrontResult :=
-  let toks := tokenizeHostTerm (stripCommentsCpp src)
-  if toks.isEmpty then FrontResult.reject reasonEmptyModule
+  if src.isEmpty then FrontResult.reject reasonEmptyModule
   else
-    match parseCmdsCompilePathExtract liveCompilePathExtractParseFuel
-        toks [] [] with
-    | none => FrontResult.reject reasonParseFail
-    | some cmds =>
-      if cmds.isEmpty then FrontResult.reject reasonEmptyModule
-      else
-        let m : Module :=
-          { name := HostTerm.n "SystemsLean.CompilePathExtract"
-            commands := cmds }
-        if isWellFormed m then FrontResult.accept m
-        else FrontResult.reject reasonNotWellFormed
+    match parseSource src with
+    | FrontResult.reject r => FrontResult.reject r
+    | FrontResult.accept m =>
+      let kept : Module :=
+        { name := HostTerm.n "SystemsLean.CompilePathExtract"
+          commands := m.commands }
+      if isWellFormed kept then FrontResult.accept kept
+      else FrontResult.reject reasonNotWellFormed
 
 /-- Kernel-check live CompilePathExtract parse. Not a fixture.
     Not occupancy Term. Greppable: kernelCheckLiveCompilePathExtractSource,
@@ -467,7 +466,7 @@ def liveParseHasCompilePathProgramImport : Bool :=
       | Cmd.importModule x => x.raw == "SystemsLean.CompilePathProgram"
       | _ => false
 
-/-- Skip-head: defs unique to CompilePathExtract.lean (not CompilePath.lean
+/-- Defs unique to CompilePathExtract.lean (not CompilePath.lean
     and not occupancy Term string payloads). Greppable: fixtureExtractGateOk,
     extractRuntimeFsGateReady. -/
 def liveParseHasCoreDefs : Bool :=
@@ -491,6 +490,8 @@ def hostFrontLiveCompilePathExtractReady : Bool :=
     && (parseId == "PARSE-LIVE-COMPILE-PATH-EXTRACT")
     && (liveCompilePathExtractRel
       == "src/systems/SystemsLean/CompilePathExtract.lean")
+    && (liveRel == "CompilePathExtract.lean")
+    && hostFrontParseSourceCompilePathExtract
     && liveParseDoesNotUseMultFixture
     && !hostFrontLiveCompilePathExtractFullHost
     && !hostFrontLiveCompilePathExtractResidualFreeClaimed

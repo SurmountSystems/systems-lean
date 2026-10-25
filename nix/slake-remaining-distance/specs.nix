@@ -2,8 +2,11 @@
 # Data for the remaining-distance meter. Occupancy 49. FullHost false.
 # Do not mill. Dual clocks unadded. Rebuild 23 GREEN. Current
 # independently reviewed ELF
+# /nix/store/n7xg5dkxr2jkjmlqyzmj8y1gm6rc9nzm-slake-bootstrap
+# (149599304 bytes). That path is not
 # /nix/store/97p32bdbdw6v79yxydi1y4s4s39ksp8j-slake-bootstrap
-# (149467016 bytes). That path is not
+# (149467016 bytes). /nix/store/97p32bdbdw6v79yxydi1y4s4s39ksp8j-slake-bootstrap
+# (149467016 bytes) is no longer current.
 # /nix/store/4s8fq7rcyq65nfl0qgj1pdx6kk7jpf5k-slake-bootstrap
 # (149447232 bytes). /nix/store/4s8fq7rcyq65nfl0qgj1pdx6kk7jpf5k-slake-bootstrap
 # (149447232 bytes) is no longer current.
@@ -23,6 +26,14 @@
 # infix ^^ toy CHECK_EXIT 1 kept reject on the current independently reviewed ELF.
 # infix Boolean tokens || && ^^ are dest-and-hook done on this ELF.
 # CompilePathLinear CHECK_EXIT 0. RejectOrInfix.lean EXISTS (done dest).
+# Source keep of CompilePathTypes and CompilePathProgram landed this wave.
+# Independently reviewed ELF is
+# /nix/store/n7xg5dkxr2jkjmlqyzmj8y1gm6rc9nzm-slake-bootstrap
+# (149599304 bytes). Predecessor
+# /nix/store/f26yaj9jw123hwmjfs2p3gv3wakv6s94-slake-bootstrap
+# (149579048 bytes) is no longer current. Remote accept not sampled. Flag stays false.
+# Do not claim package ownership from CompilePathLinear CHECK_EXIT 0
+# or from source keep of Types/Program.
 # RejectAndInfix.lean EXISTS (done dest). Do not reopen RejectAndInfix.lean as remaining.
 # RejectXorInfix.lean EXISTS (done dest). Do not reopen RejectXorInfix.lean as remaining.
 # Do not reopen RejectNotPrefix.lean as remaining.
@@ -37,7 +48,7 @@
 # rebuild 24 prior miss: Mult-place.drv signal 9. Do not name rebuild
 # 24 GREEN. Walker.lean 367. UseCheck 177 of 356. Open stays Open.
 let
-  liveCurrent = "current independently reviewed ELF /nix/store/97p32bdbdw6v79yxydi1y4s4s39ksp8j-slake-bootstrap (149467016 bytes); the current produced slake-bootstrap ELF; /nix/store/4s8fq7rcyq65nfl0qgj1pdx6kk7jpf5k-slake-bootstrap (149447232 bytes) is no longer current; /nix/store/jzaimy5hq45h12h1905ajk1qyjgdjjia-slake-bootstrap (149423320 bytes) is no longer current; /nix/store/s7achs1g5mlxdwk92a6mqnpxwz19c0mz-slake-bootstrap (149403616 bytes) is no longer current; /nix/store/2b2yl85hy7nbcx27xm02h2xq5jcg0mnh-slake-bootstrap (149384352 bytes) is no longer current; /nix/store/vd819cjncxn614xzk47d051msvd93gr1-slake-bootstrap (149334976 bytes) is no longer current; s0sjpz1 is no longer current; wpc482yn is no longer current; ildbshq8 is no longer current; l04l55ig is no longer current; p763g8sb is no longer current; imsr2xgr is no longer current; vh2cdi00 is no longer current; xw41jhmv is no longer current; ibdxkpf7 is no longer current; l85gkygc is no longer current";
+  liveCurrent = "current independently reviewed ELF /nix/store/n7xg5dkxr2jkjmlqyzmj8y1gm6rc9nzm-slake-bootstrap (149599304 bytes); the current produced slake-bootstrap ELF; /nix/store/f26yaj9jw123hwmjfs2p3gv3wakv6s94-slake-bootstrap (149579048 bytes) is no longer current; /nix/store/97p32bdbdw6v79yxydi1y4s4s39ksp8j-slake-bootstrap (149467016 bytes) is no longer current; /nix/store/4s8fq7rcyq65nfl0qgj1pdx6kk7jpf5k-slake-bootstrap (149447232 bytes) is no longer current; /nix/store/jzaimy5hq45h12h1905ajk1qyjgdjjia-slake-bootstrap (149423320 bytes) is no longer current; /nix/store/s7achs1g5mlxdwk92a6mqnpxwz19c0mz-slake-bootstrap (149403616 bytes) is no longer current; /nix/store/2b2yl85hy7nbcx27xm02h2xq5jcg0mnh-slake-bootstrap (149384352 bytes) is no longer current; /nix/store/vd819cjncxn614xzk47d051msvd93gr1-slake-bootstrap (149334976 bytes) is no longer current; s0sjpz1 is no longer current; wpc482yn is no longer current; ildbshq8 is no longer current; l04l55ig is no longer current; p763g8sb is no longer current; imsr2xgr is no longer current; vh2cdi00 is no longer current; xw41jhmv is no longer current; ibdxkpf7 is no longer current; l85gkygc is no longer current";
   retiredOlder = "wiky18mm is no longer current; lpxw2099 is no longer current; h0j4119d is no longer current";
   liveToys = "AndToy fail-closed (CHECK_EXIT 1, banner kept reject) on ELF p763g8sb; OrToy fail-closed (CHECK_EXIT 1, banner kept reject) on ELF imsr2xgr; BifToy fail-closed (CHECK_EXIT 1, banner kept reject) on ELF vh2cdi00; DiteToy fail-closed on ELF vh2cdi00; DcondToy fail-closed on ELF vh2cdi00; notToy fail-closed (CHECK_EXIT 1, banner kept reject) on ELF l04l55ig; xorToy fail-closed (CHECK_EXIT 1, banner kept reject) on ELF ildbshq8; strictOrToy fail-closed (CHECK_EXIT 1, banner kept reject) on ELF wpc482yn; StrictAndToy fail-closed (CHECK_EXIT 1, banner kept reject) on the current produced slake-bootstrap ELF; CompilePathLinear CHECK_EXIT 0 (banner checker returned true) on the current produced slake-bootstrap ELF; CompilePathLinear CHECK_EXIT 0 (banner checker returned true) on ELF wpc482yn; Bool.beq toy CHECK_EXIT 1 kept reject on the current produced slake-bootstrap ELF; Prefix-not toy CHECK_EXIT 1 kept reject; RejectNotPrefix.lean EXISTS (done dest); infix || toy CHECK_EXIT 1 kept reject on the current independently reviewed ELF; CompilePathLinear CHECK_EXIT 0 on the current independently reviewed ELF; RejectOrInfix.lean EXISTS (done dest); infix && toy CHECK_EXIT 1 kept reject on the current independently reviewed ELF; RejectAndInfix.lean EXISTS (done dest); infix ^^ toy CHECK_EXIT 1 kept reject on the current independently reviewed ELF; RejectXorInfix.lean EXISTS (done dest); infix Boolean tokens || && ^^ are dest-and-hook done";
   liveDcond = "RejectDcond source GREEN; RejectDcond hook GREEN in source; RejectDcond fail-closed; DcondToy fail-closed on ELF vh2cdi00; RejectDcond EXISTS 366; 366 lines";
@@ -45,8 +56,8 @@ let
   liveAnd = "RejectAnd source GREEN; RejectAnd hook GREEN in source; RejectAnd fail-closed; AndToy fail-closed (CHECK_EXIT 1, banner kept reject) on ELF p763g8sb; RejectAnd EXISTS 428; 428 lines";
   liveNot = "RejectNot source GREEN hooked; RejectNot hook GREEN in source; RejectNot fail-closed; RejectNot EXISTS 466; 466 lines; notToy fail-closed (CHECK_EXIT 1, banner kept reject) on ELF l04l55ig";
   usecheck = "UseCheck 177 of 356 / 179 remaining of 356; Walker 367; leftover pin spellings BLOCKED exhausted; leftover pin BLOCKED exhausted";
-  held = "occupancy 49; allTypesUseCheckDone false; count 1; flag false; mills 55-69 stay; Dual clocks unadded";
-  nextLeft = "rebuild 24 BLOCKED: Mult-place.drv /nix/store/vnaf6g728b5pph6pgkjj2idmy7jk9sf2-slake-bootstrap-Mult-place.drv signal 9; rebuild 24 prior miss; no NEW ELF from rebuild 24; copy set already on the builder; next leftover after infix Boolean tokens || && ^^ dest-and-hook done is being named; RejectAndInfix.lean EXISTS (done dest); infix && toy CHECK_EXIT 1 kept reject; RejectXorInfix.lean EXISTS (done dest); infix ^^ toy CHECK_EXIT 1 kept reject; infix Boolean tokens || && ^^ are dest-and-hook done; RejectNotPrefix.lean EXISTS (done dest); Prefix-not toy CHECK_EXIT 1 kept reject; CompilePathLinear CHECK_EXIT 0; RejectBoolBeq.lean EXISTS (done dest); Bool.beq toy CHECK_EXIT 1 kept reject; Token == already lives in RejectBeqThm; Bool.beq lives in RejectBoolBeq; BeqIdentToy is not a product dest; An Ident-suffix name is not a dest; the later toy directory is bool-beq; RejectBoolBeq EXISTS 531; RejectBoolBne.lean EXISTS (rename GREEN); old Ident-suffix path missing; Bool.bne lives in RejectBoolBne; living RejectBne.lean EXISTS for token != only; RejectBoolBne EXISTS 528; the current produced slake-bootstrap ELF; current independently reviewed ELF /nix/store/97p32bdbdw6v79yxydi1y4s4s39ksp8j-slake-bootstrap (149467016 bytes); /nix/store/4s8fq7rcyq65nfl0qgj1pdx6kk7jpf5k-slake-bootstrap (149447232 bytes) is no longer current; /nix/store/jzaimy5hq45h12h1905ajk1qyjgdjjia-slake-bootstrap (149423320 bytes) is no longer current; /nix/store/s7achs1g5mlxdwk92a6mqnpxwz19c0mz-slake-bootstrap (149403616 bytes) is no longer current; /nix/store/2b2yl85hy7nbcx27xm02h2xq5jcg0mnh-slake-bootstrap (149384352 bytes) is no longer current; /nix/store/vd819cjncxn614xzk47d051msvd93gr1-slake-bootstrap (149334976 bytes) is no longer current; wpc482yn is no longer current; ildbshq8 is no longer current; l04l55ig is no longer current; p763g8sb is no longer current; TopScan.olean is not the living miss; StrictAndToy fail-closed (CHECK_EXIT 1, banner kept reject) on the current produced slake-bootstrap ELF; CompilePathLinear CHECK_EXIT 0 (banner checker returned true) on the current produced slake-bootstrap ELF; Bool.beq toy CHECK_EXIT 1 kept reject on the current produced slake-bootstrap ELF; Prefix-not toy CHECK_EXIT 1 kept reject; infix || toy CHECK_EXIT 1 kept reject on the current independently reviewed ELF; CompilePathLinear CHECK_EXIT 0 on the current independently reviewed ELF; RejectOrInfix.lean EXISTS (done dest); strictOrToy fail-closed (CHECK_EXIT 1, banner kept reject) on ELF wpc482yn; xorToy fail-closed on ELF ildbshq8; notToy fail-closed on ELF l04l55ig; AndToy fail-closed on ELF p763g8sb; RejectXor.lean 467 hooked; RejectStrictOr EXISTS 510; RejectStrictAnd EXISTS 510; RejectStrictAnd source GREEN; RejectStrictAnd typedPass hook GREEN";
+  held = "occupancy 49; allTypesUseCheckDone false; source keep of CompilePathTypes and CompilePathProgram landed this wave; independently reviewed ELF still /nix/store/n7xg5dkxr2jkjmlqyzmj8y1gm6rc9nzm-slake-bootstrap (149599304 bytes); remote accept not sampled; flag false; mills 55-69 stay; Dual clocks unadded";
+  nextLeft = "rebuild 24 BLOCKED: Mult-place.drv /nix/store/vnaf6g728b5pph6pgkjj2idmy7jk9sf2-slake-bootstrap-Mult-place.drv signal 9; rebuild 24 prior miss; no NEW ELF from rebuild 24; copy set already on the builder; next leftover after infix Boolean tokens || && ^^ dest-and-hook done is being named; RejectAndInfix.lean EXISTS (done dest); infix && toy CHECK_EXIT 1 kept reject; RejectXorInfix.lean EXISTS (done dest); infix ^^ toy CHECK_EXIT 1 kept reject; infix Boolean tokens || && ^^ are dest-and-hook done; RejectNotPrefix.lean EXISTS (done dest); Prefix-not toy CHECK_EXIT 1 kept reject; CompilePathLinear CHECK_EXIT 0; RejectBoolBeq.lean EXISTS (done dest); Bool.beq toy CHECK_EXIT 1 kept reject; Token == already lives in RejectBeqThm; Bool.beq lives in RejectBoolBeq; BeqIdentToy is not a product dest; An Ident-suffix name is not a dest; the later toy directory is bool-beq; RejectBoolBeq EXISTS 531; RejectBoolBne.lean EXISTS (rename GREEN); old Ident-suffix path missing; Bool.bne lives in RejectBoolBne; living RejectBne.lean EXISTS for token != only; RejectBoolBne EXISTS 528; the current produced slake-bootstrap ELF; current independently reviewed ELF /nix/store/n7xg5dkxr2jkjmlqyzmj8y1gm6rc9nzm-slake-bootstrap (149599304 bytes); /nix/store/97p32bdbdw6v79yxydi1y4s4s39ksp8j-slake-bootstrap (149467016 bytes) is no longer current; /nix/store/4s8fq7rcyq65nfl0qgj1pdx6kk7jpf5k-slake-bootstrap (149447232 bytes) is no longer current; /nix/store/jzaimy5hq45h12h1905ajk1qyjgdjjia-slake-bootstrap (149423320 bytes) is no longer current; /nix/store/s7achs1g5mlxdwk92a6mqnpxwz19c0mz-slake-bootstrap (149403616 bytes) is no longer current; /nix/store/2b2yl85hy7nbcx27xm02h2xq5jcg0mnh-slake-bootstrap (149384352 bytes) is no longer current; /nix/store/vd819cjncxn614xzk47d051msvd93gr1-slake-bootstrap (149334976 bytes) is no longer current; wpc482yn is no longer current; ildbshq8 is no longer current; l04l55ig is no longer current; p763g8sb is no longer current; TopScan.olean is not the living miss; StrictAndToy fail-closed (CHECK_EXIT 1, banner kept reject) on the current produced slake-bootstrap ELF; CompilePathLinear CHECK_EXIT 0 (banner checker returned true) on the current produced slake-bootstrap ELF; Bool.beq toy CHECK_EXIT 1 kept reject on the current produced slake-bootstrap ELF; Prefix-not toy CHECK_EXIT 1 kept reject; infix || toy CHECK_EXIT 1 kept reject on the current independently reviewed ELF; CompilePathLinear CHECK_EXIT 0 on the current independently reviewed ELF; RejectOrInfix.lean EXISTS (done dest); strictOrToy fail-closed (CHECK_EXIT 1, banner kept reject) on ELF wpc482yn; xorToy fail-closed on ELF ildbshq8; notToy fail-closed on ELF l04l55ig; AndToy fail-closed on ELF p763g8sb; RejectXor.lean 467 hooked; RejectStrictOr EXISTS 510; RejectStrictAnd EXISTS 510; RejectStrictAnd source GREEN; RejectStrictAnd typedPass hook GREEN";
   liveTail = "${liveCurrent}; ${retiredOlder}; Rebuild 16 GREEN; Rebuild 17 GREEN; Rebuild 18 GREEN; Rebuild 19 GREEN; Rebuild 20 GREEN; Rebuild 21 GREEN; Rebuild 22 GREEN; Rebuild 23 GREEN; ${liveToys}; ${liveDcond}; ${liveOr}; ${liveAnd}; ${liveNot}; ${usecheck}; ${held}; ${nextLeft}";
   histCond = "CondToy CHECK_EXIT 1 (fail-closed historically); CondToy fail-closed historically on ELF l85gkygc; RejectCond fail-closed on l85gkygc";
   histIf = "IfToy fail-closed (CHECK_EXIT 1, banner kept reject) on ELF wiky18mm; if then else is fail-closed on ELF wiky18mm; RejectIf fail-closed on wiky18mm";
@@ -97,16 +108,19 @@ in
   lineFailOver = 1000;
 
   millHeld = "mill 69 of 69 (held constant; do not mill); mills 55-69 stay";
-  keepClock = "clock specimen keep: count 1 (not added to day clocks)";
+  keepClock = "clock specimen keep: source keep of CompilePathTypes and CompilePathProgram this wave (not added to day clocks; independently reviewed ELF still /nix/store/n7xg5dkxr2jkjmlqyzmj8y1gm6rc9nzm-slake-bootstrap (149599304 bytes); remote accept not sampled)";
   lean4Clock = "clock Lean 4 typed elaborator: 10.0 days / 40.0m";
   mathlibClock = "clock mathlib: 5.0 days / 20.0m";
   dualClocksUnaddedRow = "Dual clocks unadded (specimen keep not added to Lean 4 10.0 days / 40.0m or mathlib 5.0 days / 20.0m)";
-  keepRow = "keep: specimen keep count 1 on disk when C functions exist";
+  keepRow = "keep: source keep of CompilePathTypes and CompilePathProgram landed this wave; independently reviewed ELF is still /nix/store/n7xg5dkxr2jkjmlqyzmj8y1gm6rc9nzm-slake-bootstrap (149599304 bytes); remote accept not sampled; CompilePathLinear CHECK_EXIT 0 on that ELF is not package ownership; source keep of Types/Program is not package ownership; flag stays false";
   emitRow = "emit: later regenerate; keep is not emit";
   remoteRow = "remote ELF proof is out of this gate";
   # Rebuild 23 GREEN. Current independently reviewed ELF
+  # /nix/store/n7xg5dkxr2jkjmlqyzmj8y1gm6rc9nzm-slake-bootstrap
+  # (149599304 bytes). That path is not
   # /nix/store/97p32bdbdw6v79yxydi1y4s4s39ksp8j-slake-bootstrap
-  # (149467016 bytes). That path is not
+  # (149467016 bytes). /nix/store/97p32bdbdw6v79yxydi1y4s4s39ksp8j-slake-bootstrap
+  # (149467016 bytes) is no longer current.
   # /nix/store/4s8fq7rcyq65nfl0qgj1pdx6kk7jpf5k-slake-bootstrap
   # (149447232 bytes). /nix/store/4s8fq7rcyq65nfl0qgj1pdx6kk7jpf5k-slake-bootstrap
   # (149447232 bytes) is no longer current.
@@ -123,6 +137,14 @@ in
   # dest RejectNotPrefix.lean done. Prefix-not toy CHECK_EXIT 1 kept reject.
   # infix || toy CHECK_EXIT 1 kept reject on the current independently reviewed ELF.
   # CompilePathLinear CHECK_EXIT 0. RejectOrInfix.lean EXISTS (done dest).
+  # Source keep of CompilePathTypes and CompilePathProgram landed this wave.
+  # Independently reviewed ELF is
+  # /nix/store/n7xg5dkxr2jkjmlqyzmj8y1gm6rc9nzm-slake-bootstrap
+  # (149599304 bytes). Predecessor
+  # /nix/store/f26yaj9jw123hwmjfs2p3gv3wakv6s94-slake-bootstrap
+  # (149579048 bytes) is no longer current. Remote accept not sampled. Flag stays false.
+  # Do not claim package ownership from CompilePathLinear CHECK_EXIT 0
+  # or from source keep of Types/Program.
   # next leftover after infix Boolean tokens || && ^^ dest-and-hook done is being named.
   # infix && toy CHECK_EXIT 1 kept reject. RejectAndInfix.lean EXISTS (done dest).
   # infix ^^ toy CHECK_EXIT 1 kept reject. RejectXorInfix.lean EXISTS (done dest).
@@ -151,7 +173,7 @@ in
   rebuild21GreenRow = "Rebuild 21 GREEN: previous ELF /nix/store/l04l55ig3h63n2wxkgnxk44kvnsap342-slake-bootstrap (l04l55ig is no longer current, 149182256 bytes); produced ELF /nix/store/ildbshq8lffrj0nzy97x21c6s8bzvzk8-slake-bootstrap (ildbshq8 is no longer current, 149216304 bytes); xorToy CHECK_EXIT 1 (banner kept reject) on ELF ildbshq8; CompilePathLinear CHECK_EXIT 0 (banner checker returned true) on ELF ildbshq8; HostKernel 779 (closed; not the exclusive remote job); rebuild 21 is not in flight; notToy fail-closed on ELF l04l55ig; AndToy fail-closed on ELF p763g8sb; ${liveTail}; remote ELF proof is out of this gate";
   rebuild22GreenRow = "Rebuild 22 GREEN: previous ELF /nix/store/ildbshq8lffrj0nzy97x21c6s8bzvzk8-slake-bootstrap (ildbshq8 is no longer current, 149216304 bytes); produced ELF /nix/store/wpc482ynsqa9ambfszvjabmfrsdj2408-slake-bootstrap (wpc482yn is no longer current, 149261080 bytes); strictOrToy CHECK_EXIT 1 (banner kept reject) on ELF wpc482yn; CompilePathLinear CHECK_EXIT 0 (banner checker returned true) on ELF wpc482yn; HostKernel 779 (closed; not the exclusive remote job); rebuild 22 is not in flight; xorToy fail-closed on ELF ildbshq8; notToy fail-closed on ELF l04l55ig; AndToy fail-closed on ELF p763g8sb; ${liveTail}; remote ELF proof is out of this gate";
   rebuild23GreenRow = "Rebuild 23 GREEN: previous ELF /nix/store/wpc482ynsqa9ambfszvjabmfrsdj2408-slake-bootstrap (wpc482yn is no longer current, 149261080 bytes); produced ELF /nix/store/s0sjpz1gz8vq50cm9fsks6ccs8yhvmk3-slake-bootstrap (s0sjpz1 is no longer current, 149297912 bytes); StrictAndToy CHECK_EXIT 1 (banner kept reject) on the current produced slake-bootstrap ELF; CompilePathLinear CHECK_EXIT 0 (banner checker returned true) on the current produced slake-bootstrap ELF; HostKernel 779 (closed; not the exclusive remote job); rebuild 23 is not in flight; strictOrToy fail-closed on ELF wpc482yn; xorToy fail-closed on ELF ildbshq8; notToy fail-closed on ELF l04l55ig; AndToy fail-closed on ELF p763g8sb; ${liveTail}; remote ELF proof is out of this gate";
-  rebuild24BlockedRow = "rebuild 24 BLOCKED: Mult-place.drv /nix/store/vnaf6g728b5pph6pgkjj2idmy7jk9sf2-slake-bootstrap-Mult-place.drv signal 9; rebuild 24 prior miss; no NEW ELF from rebuild 24; copy set already on the builder; next leftover after infix Boolean tokens || && ^^ dest-and-hook done is being named; RejectAndInfix.lean EXISTS (done dest); infix && toy CHECK_EXIT 1 kept reject; RejectXorInfix.lean EXISTS (done dest); infix ^^ toy CHECK_EXIT 1 kept reject; infix Boolean tokens || && ^^ are dest-and-hook done; RejectNotPrefix.lean EXISTS (done dest); Prefix-not toy CHECK_EXIT 1 kept reject; CompilePathLinear CHECK_EXIT 0; RejectBoolBeq.lean EXISTS (done dest); Bool.beq toy CHECK_EXIT 1 kept reject; Token == already lives in RejectBeqThm; Bool.beq lives in RejectBoolBeq; BeqIdentToy is not a product dest; An Ident-suffix name is not a dest; the later toy directory is bool-beq; RejectBoolBeq EXISTS 531; RejectBoolBne.lean EXISTS (rename GREEN); old Ident-suffix path missing; Bool.bne lives in RejectBoolBne; RejectBoolBne EXISTS 528; the current produced slake-bootstrap ELF; current independently reviewed ELF /nix/store/97p32bdbdw6v79yxydi1y4s4s39ksp8j-slake-bootstrap (149467016 bytes); /nix/store/4s8fq7rcyq65nfl0qgj1pdx6kk7jpf5k-slake-bootstrap (149447232 bytes) is no longer current; /nix/store/jzaimy5hq45h12h1905ajk1qyjgdjjia-slake-bootstrap (149423320 bytes) is no longer current; /nix/store/s7achs1g5mlxdwk92a6mqnpxwz19c0mz-slake-bootstrap (149403616 bytes) is no longer current; /nix/store/2b2yl85hy7nbcx27xm02h2xq5jcg0mnh-slake-bootstrap (149384352 bytes) is no longer current; /nix/store/vd819cjncxn614xzk47d051msvd93gr1-slake-bootstrap (149334976 bytes) is no longer current; Rebuild 23 GREEN; do not name rebuild 24 GREEN; ${liveTail}; remote ELF proof is out of this gate";
+  rebuild24BlockedRow = "rebuild 24 BLOCKED: Mult-place.drv /nix/store/vnaf6g728b5pph6pgkjj2idmy7jk9sf2-slake-bootstrap-Mult-place.drv signal 9; rebuild 24 prior miss; no NEW ELF from rebuild 24; copy set already on the builder; next leftover after infix Boolean tokens || && ^^ dest-and-hook done is being named; RejectAndInfix.lean EXISTS (done dest); infix && toy CHECK_EXIT 1 kept reject; RejectXorInfix.lean EXISTS (done dest); infix ^^ toy CHECK_EXIT 1 kept reject; infix Boolean tokens || && ^^ are dest-and-hook done; RejectNotPrefix.lean EXISTS (done dest); Prefix-not toy CHECK_EXIT 1 kept reject; CompilePathLinear CHECK_EXIT 0; RejectBoolBeq.lean EXISTS (done dest); Bool.beq toy CHECK_EXIT 1 kept reject; Token == already lives in RejectBeqThm; Bool.beq lives in RejectBoolBeq; BeqIdentToy is not a product dest; An Ident-suffix name is not a dest; the later toy directory is bool-beq; RejectBoolBeq EXISTS 531; RejectBoolBne.lean EXISTS (rename GREEN); old Ident-suffix path missing; Bool.bne lives in RejectBoolBne; RejectBoolBne EXISTS 528; the current produced slake-bootstrap ELF; current independently reviewed ELF /nix/store/n7xg5dkxr2jkjmlqyzmj8y1gm6rc9nzm-slake-bootstrap (149599304 bytes); /nix/store/97p32bdbdw6v79yxydi1y4s4s39ksp8j-slake-bootstrap (149467016 bytes) is no longer current; /nix/store/4s8fq7rcyq65nfl0qgj1pdx6kk7jpf5k-slake-bootstrap (149447232 bytes) is no longer current; /nix/store/jzaimy5hq45h12h1905ajk1qyjgdjjia-slake-bootstrap (149423320 bytes) is no longer current; /nix/store/s7achs1g5mlxdwk92a6mqnpxwz19c0mz-slake-bootstrap (149403616 bytes) is no longer current; /nix/store/2b2yl85hy7nbcx27xm02h2xq5jcg0mnh-slake-bootstrap (149384352 bytes) is no longer current; /nix/store/vd819cjncxn614xzk47d051msvd93gr1-slake-bootstrap (149334976 bytes) is no longer current; Rebuild 23 GREEN; do not name rebuild 24 GREEN; ${liveTail}; remote ELF proof is out of this gate";
   probeBan = "slake_linearFixtureProgramReady_true";
 
   seesStart = "def seesDecls";
@@ -317,7 +339,7 @@ in
   staleSshBlockedLeftoverNeedle = "SSH BLOCKED independent resample";
   s0sjpz1LeftoverNotCurrentNeedle = "s0sjpz1 is leftover, not current";
   independentlyReviewedWpcNeedle = "current independently reviewed ELF /nix/store/wpc482ynsqa9ambfszvjabmfrsdj2408-slake-bootstrap";
-  independentlyReviewedS0Needle = "current independently reviewed ELF /nix/store/97p32bdbdw6v79yxydi1y4s4s39ksp8j-slake-bootstrap";
+  independentlyReviewedS0Needle = "current independently reviewed ELF /nix/store/n7xg5dkxr2jkjmlqyzmj8y1gm6rc9nzm-slake-bootstrap";
   independentlyReviewed4s8Needle = "current independently reviewed ELF /nix/store/4s8fq7rcyq65nfl0qgj1pdx6kk7jpf5k-slake-bootstrap";
   independentlyReviewedJzaimyNeedle = "current independently reviewed ELF /nix/store/jzaimy5hq45h12h1905ajk1qyjgdjjia-slake-bootstrap";
   independentlyReviewedS7achsNeedle = "current independently reviewed ELF /nix/store/s7achs1g5mlxdwk92a6mqnpxwz19c0mz-slake-bootstrap";
@@ -388,14 +410,14 @@ in
   iteToyFailClosedNeedle = "IteToy fail-closed";
   iteToyFailClosedAltNeedle = "iteToy fail-closed";
   iteToyNotFailClosedNeedle = "IteToy is not fail-closed";
-  currentElfHashNeedle = "97p32bdbdw6v79yxydi1y4s4s39ksp8j";
-  currentElfShortNeedle = "97p32bdb";
-  currentElfBytesNeedle = "149467016";
-  staleCurrentElfShortNeedle = "current ELF 97p32bdb";
-  staleCurrentElfPrefixNeedle = "store prefix 97p32bdb";
-  staleCurrentElfParenNeedle = "(97p32bdb,";
-  staleCurrentElfOnNeedle = "on ELF 97p32bdb";
-  staleCurrentElfStaysNeedle = "stays 97p32bdb";
+  currentElfHashNeedle = "n7xg5dkxr2jkjmlqyzmj8y1gm6rc9nzm";
+  currentElfShortNeedle = "n7xg5dkx";
+  currentElfBytesNeedle = "149599304";
+  staleCurrentElfShortNeedle = "current ELF n7xg5dkx";
+  staleCurrentElfPrefixNeedle = "store prefix n7xg5dkx";
+  staleCurrentElfParenNeedle = "(n7xg5dkx,";
+  staleCurrentElfOnNeedle = "on ELF n7xg5dkx";
+  staleCurrentElfStaysNeedle = "stays n7xg5dkx";
   staleCurrent4s8StoreNeedle = "current ELF /nix/store/4s8fq7rc";
   staleCurrent4s8ShortNeedle = "current ELF 4s8fq7rc";
   staleCurrent4s8ProducedNeedle = "current produced ELF /nix/store/4s8fq7rc";

@@ -23,6 +23,7 @@
   Module: SystemsLean.SlakeTypecheckHostModuleCheckEmitBodyTermKernel
   Checkable writer: lean --run SlakeTypecheckHostModuleCheckEmitBodyTermKernel.lean
   (no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveHostModuleCheckEmitBodyTermKernelSource

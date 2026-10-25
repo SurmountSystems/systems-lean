@@ -7,6 +7,7 @@
   appended to the third slice (7 + 17 = 24). Not a constant true.
   Not kernelCheck of the whole 150. Not HostKernel edits.
   FullHost stays false. Occupancy stays 49. Host tools stay 69 of 69.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveHostTerm

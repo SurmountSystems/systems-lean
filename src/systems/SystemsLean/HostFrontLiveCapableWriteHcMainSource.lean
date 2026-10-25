@@ -16,7 +16,7 @@
   HOST-FRONT-LIVE-CAPABLE-WRITE-HC-MAIN
   CAPABLE-WRITE-HC-MAIN
   Greppable: SYSTEMS_LEAN_HOST, liveCapableWriteHcMainSource,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveCapableWriteHcMainSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

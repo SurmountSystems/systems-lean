@@ -24,7 +24,7 @@
   HOST-FRONT
   SLAKE_HOST_FRONT
   Greppable: SYSTEMS_LEAN_HOST, liveHostFrontMainSource,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveHostFrontMainSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

@@ -9,6 +9,7 @@
   Greppable: SYSTEMS_LEAN_HOST, HOST-SLAKE-HOST-TOOL-ELF, SLAKE_HOST_TOOL_ELF_V0,
   HOST-HOST-TOOL-MAIN-CATCH.
   Module: SystemsLean.SlakeHostToolElfMainCatch
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.CatchReturn

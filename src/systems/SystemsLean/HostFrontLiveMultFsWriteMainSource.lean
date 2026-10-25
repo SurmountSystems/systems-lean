@@ -22,7 +22,7 @@
   P1 Path A host-cc C print retired
   MultFsDeepen multFsWrite
   Greppable: SYSTEMS_LEAN_HOST, liveMultFsWriteMainSource,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveMultFsWriteMainSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

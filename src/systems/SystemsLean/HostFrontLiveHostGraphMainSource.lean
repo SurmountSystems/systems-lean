@@ -21,7 +21,7 @@
   HOST-GRAPH
   SLAKE_HOST_GRAPH
   Greppable: SYSTEMS_LEAN_HOST, liveHostGraphMainSource,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveHostGraphMainSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

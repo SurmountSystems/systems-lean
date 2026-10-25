@@ -8,7 +8,7 @@
   liveRel is the bare name PackageTypecheck.lean. Do not redefine it
   in the parser.
   Greppable: SYSTEMS_LEAN_HOST, livePackageTypecheckSource, liveRel,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   File module: SystemsLean.HostFrontLivePackageTypecheckSource
   Namespace: SystemsLean.HostFrontLivePackageTypecheck
   Not FullHost. Not FullBackend. Not freestanding residual free. Not PROVABLY.

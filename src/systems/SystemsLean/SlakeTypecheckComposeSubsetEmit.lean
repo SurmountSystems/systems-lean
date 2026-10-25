@@ -19,6 +19,7 @@
   Module: SystemsLean.SlakeTypecheckComposeSubsetEmit
   Checkable writer: just slake-typecheck-composesubsetemit
   (lean --run; no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveComposeSubsetEmit

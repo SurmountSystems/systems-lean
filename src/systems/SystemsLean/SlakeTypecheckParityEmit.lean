@@ -18,6 +18,7 @@
   Module: SystemsLean.SlakeTypecheckParityEmit
   Checkable writer: just slake-typecheck-parityemit
   (lean --run; no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveParityEmit

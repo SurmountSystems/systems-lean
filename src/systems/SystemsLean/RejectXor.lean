@@ -41,6 +41,7 @@
   Not skipIdent of the current cons cell. The xor matcher
   is whole-identifier `xor`, not keyword `or`, not a
   substring of `xorb`, and not infix `^^`.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.KeptWalk

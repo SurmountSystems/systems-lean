@@ -18,6 +18,7 @@
   PARSE-LIVE-PROGRAM-SUBSET-REBUILD, PROGRAM-SUBSET-REBUILD.
   Module: SystemsLean.SlakeTypecheckProgramSubsetRebuild
   Checkable writer: lean --run of this driver (no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveProgramSubsetRebuild

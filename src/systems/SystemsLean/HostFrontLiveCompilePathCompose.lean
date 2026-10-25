@@ -2,9 +2,10 @@
   SYSTEMS_LEAN_HOST partial -- parse live
   src/systems/SystemsLean/CompilePathCompose.lean.
   Side: classic Lean elaborator under src/systems/ (not freestanding C).
-  Short role: HostFrontLiveCompilePathCompose. Reuses HostFrontLiveHostTerm
-  skip-un-kernelable fold (Types-style atom bodies). Not HostFront G1.
-  Not HostTerm.multFixtureModule.
+  Short role: HostFrontLiveCompilePathCompose. parseSource keep of
+  CompilePathCompose.lean, module name SystemsLean.CompilePathCompose.
+  Not HostFront G1.
+  Not HostTerm.multFixtureModule. Not parseLiveHostTermSource on CompilePathCompose text.
   This wrap parses CompilePathCompose.lean only.
   Unique needles use trailing newline so HostFrontLiveCompilePathCompose is not a
   prefix hit on HostFrontLiveCompilePathComposeSource or a Theorems peel.
@@ -18,23 +19,24 @@
   Not HostFrontLiveCompilePathApply. Not HostFrontLiveCompilePathErasure.
 
   Spec (readable):
-  - parseLiveCompilePathComposeSource turns live CompilePathCompose.lean
-    text into HostTerm.Module.
-  - Module name is SystemsLean.CompilePathCompose even without a module line.
-  - kernelCheckLiveCompilePathComposeSource is HostKernel.kernelCheck of
-    that parse.
-  - Un-kernelable bodies (match, let, lambdas, !, dotted names, string ++,
-    field proj, .isNone / .isSome, theorem proof scripts, tactics, example
-    smokes the kernel cannot type, boolean && chains, Term.app, IO mains)
-    are skip-folded. Kernelable string/Nat/Bool atom defs plus namespace /
-    end remain. This live file has two dotted import lines (kept). Skip-head
-    still sees def composeFixtureMintId and def composeFixtureTagErased.
-  - Skip-fold ALL theorems and examples. Compound && Ready bodies skip.
-  - Imports/opens skip-fold: dotted import kept; open skipped.
-    parseOneCmd none => skipUntilCmd. Drop defs whose body fails
-    termKnownN / termNoBadProjN / termNoAppN / termIsKernelAtom.
-  - Living namespace lastSeg is CompilePath.
-  - Wrap-assigned module lastSeg is CompilePathCompose.
+  - parseLiveCompilePathComposeSource is HostFront.parseSource of live
+    CompilePathCompose.lean text, then keep/register the module name
+    SystemsLean.CompilePathCompose. parseSource is what --slake-check
+    reads (walkKept keep, not a skip-fold of this module).
+  - Wrap-assigned module name is SystemsLean.CompilePathCompose even without a
+    module line (module lastSeg CompilePathCompose).
+  - Living namespace lastSeg is CompilePath (product uses namespace
+    SystemsLean.CompilePath).
+  - kernelCheckLiveCompilePathComposeSource is HostKernel.kernelCheck of that parse.
+  - hostFrontParseSourceCompilePathCompose is parseSource keep of the
+    frozen bytes, renamed to SystemsLean.CompilePathCompose.
+  - Graph-shape sequential keep on this on-disk module matching
+    CompilePathCompose: composeFixtureMintId (Nat 9),
+    lowerComposeFixtureCompose, composeFixtureLiveView,
+    composeFixtureSpentView, keep lowerComposeFixtureCompose_isSome
+    with decide. Sequential, not mutual.
+  - Do not skip-fold CompilePathCompose away from --slake-check.
+  - liveRel is CompilePathCompose.lean.
 
   Intentional non-claims:
   - Not full Lean 4. Not FullHost. Not live HostTerm.lean / HostFront.lean.
@@ -54,7 +56,10 @@
   parseLiveCompilePathComposeSource,
   kernelCheckLiveCompilePathComposeSource,
   hostFrontLiveCompilePathComposeReady, liveCompilePathComposeSource,
-  liveCompilePathComposeRel, UNIT_SURFACE host surface, MULT-0,
+  liveCompilePathComposeRel, liveRel, hostFrontParseSourceCompilePathCompose,
+  composeFixtureMintId, composeFixtureLiveView, composeFixtureSpentView,
+  lowerComposeFixtureCompose, lowerComposeFixtureCompose_isSome,
+  UNIT_SURFACE host surface, MULT-0,
   liveParseDoesNotUseMultFixture.
   Module: SystemsLean.HostFrontLiveCompilePathCompose
   Red/green: dests-skipped until barrel; lake build
@@ -66,6 +71,7 @@
 import SystemsLean.HostFrontLiveHostTerm
 import SystemsLean.HostFrontLiveCompilePathComposeSource
 import SystemsLean.HostKernel
+import SystemsLean.HostCompose
 
 namespace SystemsLean.HostFrontLiveCompilePathCompose
 
@@ -75,6 +81,7 @@ open SystemsLean.HostKernel
 open SystemsLean.HostFrontLiveMult
 open SystemsLean.HostFrontLiveExtract
 open SystemsLean.HostFrontLiveHostTerm
+open SystemsLean.HostCompose (Host)
 
 /-- Greppable primary stage id. -/
 def stageId : String := "SLAKE_HOST_FRONT_LIVE_COMPILE_PATH_COMPOSE_V0"
@@ -92,6 +99,14 @@ def liveRel : String := "CompilePathCompose.lean"
 def liveCompilePathComposeRel : String :=
   "src/systems/SystemsLean/CompilePathCompose.lean"
 
+/-- HostFront.parseSource is what --slake-check reads (walkKept keep).
+    Not a skip-fold of CompilePathCompose. Name register is
+    parseLiveCompilePathComposeSource (SystemsLean.CompilePathCompose). -/
+def hostFrontParseSourceCompilePathCompose : Bool :=
+  match parseSource liveCompilePathComposeSource with
+  | FrontResult.accept m => isWellFormed m
+  | FrontResult.reject _ => false
+
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
 
@@ -104,10 +119,42 @@ def hostFrontLiveCompilePathComposeResidualFreeClaimed : Bool := false
 /-- Honesty: not PROVABLY. -/
 def hostFrontLiveCompilePathComposeProvablyUnlocked : Bool := false
 
+/-- Fixed Compose fixture mint id (nonzero; Graph 8, Compose 9). -/
+def composeFixtureMintId : Nat := 9
+
+/-- Mint-id honesty: Compose fixture uses 9. -/
+theorem composeFixtureMintId_eq : composeFixtureMintId = 9 := rfl
+
+/-- Compose fixture host ready for unit compile path.
+    mint MULT-1 live token on empty compose. FAIL-CLOSED: none if mint fails.
+    Greppable: lowerComposeFixtureCompose, HOST-COMPOSE. -/
+def lowerComposeFixtureCompose : Option Host :=
+  match HostCompose.mint HostCompose.empty composeFixtureMintId with
+  | HostCompose.MintResult.ok hc' => some hc'
+  | _ => none
+
+/-- Live view: minted MULT-1 host (ConsumeToken). -/
+def composeFixtureLiveView : Option Host :=
+  lowerComposeFixtureCompose
+
+/-- Spent view: ConsumeToken consume of composeFixtureLiveView. -/
+def composeFixtureSpentView : Option Host :=
+  match composeFixtureLiveView with
+  | none => none
+  | some hcLive =>
+      match HostCompose.consume hcLive with
+      | HostCompose.ConsumeResult.ok hcSpent _ => some hcSpent
+      | HostCompose.ConsumeResult.notLive => none
+
+/-- lowerComposeFixtureCompose is some (mint path).
+    Greppable: lowerComposeFixtureCompose_isSome. -/
+theorem lowerComposeFixtureCompose_isSome :
+    lowerComposeFixtureCompose.isSome = true := by decide
+
 /-- Parse fuel (command fold). -/
 def liveCompilePathComposeParseFuel : Nat := 256
 
-/-- Skip fuel for theorem / example / un-kernelable tails. -/
+/-- Fuel for token walks (def names in live text). -/
 def liveCompilePathComposeSkipFuel : Nat := 8192
 
 /-- Strip comments; keep dash-dash and block-open inside string payloads.
@@ -212,7 +259,7 @@ def cmdAddsCompilePathCompose (c : Cmd) : List String :=
   | _ => []
 
 /-- Tokenizer drops `++`, so string concat is an untyped app.
-    Kernel cannot apply String. Skip any Term.app. -/
+    Kernel cannot apply String. Leftover helper. parseLive uses parseSource keep. -/
 def termNoAppN : Nat -> Term -> Bool
   | 0, _ => false
   | Nat.succ _, Term.var _ => true
@@ -232,7 +279,8 @@ def termNoAppN : Nat -> Term -> Bool
       fs.all (fun p => termNoAppN n p.snd)
   | Nat.succ _, Term.match_ _ _ => false
 
-/-- Atom bodies the kernel can type without && / ++ / struct / ite. -/
+/-- Atom bodies the kernel can type without && / ++ / struct / ite.
+    Leftover helper. parseLive uses parseSource keep. -/
 def termIsKernelAtom : Term -> Bool
   | Term.var _ => true
   | Term.litNat _ => true
@@ -242,7 +290,7 @@ def termIsKernelAtom : Term -> Bool
   | Term.const _ => true
   | _ => false
 
-/-- UInt32 / IO / Int types poison kernelCheck of the skip-fold. -/
+/-- UInt32 / IO / Int types. Leftover helper. parseLive uses parseSource keep. -/
 def typeHasUInt32OrIo : HostType -> Bool
   | HostType.named x =>
       lastSeg x.raw == "UInt32" || lastSeg x.raw == "IO" || lastSeg x.raw == "Int"
@@ -250,7 +298,7 @@ def typeHasUInt32OrIo : HostType -> Bool
   | HostType.arrow d c => typeHasUInt32OrIo d || typeHasUInt32OrIo c
   | _ => false
 
-/-- Body is kernel-known, no untyped proj, no Term.app, atom only. -/
+/-- Leftover helper. parseLive uses parseSource keep, not this predicate. -/
 def cmdBodyKnownCompilePathCompose (kn : List String) : Cmd -> Bool
   | Cmd.def_ _ ty body =>
       (match ty with
@@ -270,8 +318,8 @@ def cmdBodyKnownCompilePathCompose (kn : List String) : Cmd -> Bool
   | _ => true
 
 /-- Typed assign `def` whose body is one atom (lit / const). Do not use
-    parseTermHt: a Bool/String lit followed by `def` becomes Term.app
-    and skip-folds the kernelable def. Compound && / == bodies fail closed. -/
+    parseTermHt: a Bool/String lit followed by `def` becomes Term.app.
+    Compound && / == bodies fail closed. parseLive uses parseSource keep. -/
 def parseDefCompilePathCompose (fuel : Nat) (dname : String) (rest : List String) :
     Option (Prod Cmd (List String)) :=
   match parseBindersHt fuel rest [] with
@@ -312,8 +360,8 @@ def parseDefCompilePathCompose (fuel : Nat) (dname : String) (rest : List String
                 else none
     | _ => none
 
-/-- Parse one command. none means skip this keyword (caller skipUntilCmd).
-    Types-style: import / namespace / end / def. Open skipped. -/
+/-- Parse one command. none means the caller advances. import / namespace /
+    end / def. parseLiveCompilePathComposeSource uses parseSource keep. -/
 def parseOneCmdCompilePathCompose (fuel : Nat) (toks : List String) :
     Option (Prod Cmd (List String)) :=
   match toks with
@@ -335,32 +383,7 @@ def parseOneCmdCompilePathCompose (fuel : Nat) (toks : List String) :
     | none => none
   | _ => none
 
-/-- Fold commands. Skip theorem / example / set_option / open / structure /
-    un-kernelable defs. -/
-def parseCmdsCompilePathCompose : Nat -> List String -> List String ->
-    List Cmd -> Option (List Cmd)
-  | 0, [], _, acc => some acc
-  | 0, _ :: _, _, _ => none
-  | Nat.succ _, [], _, acc => some acc
-  | Nat.succ n, toks, kn, acc =>
-    match parseOneCmdCompilePathCompose liveCompilePathComposeParseFuel toks with
-    | some (c, rest) =>
-      let rest2 := skipNonCmd liveCompilePathComposeSkipFuel rest
-      if cmdBodyKnownCompilePathCompose kn c then
-        parseCmdsCompilePathCompose n rest2
-          (kn ++ cmdAddsCompilePathCompose c) (acc ++ [c])
-      else
-        parseCmdsCompilePathCompose n rest2 kn acc
-    | none =>
-      match toks with
-      | _ :: rest =>
-        let rest2 := skipUntilCmd liveCompilePathComposeSkipFuel rest
-        if rest2.length < toks.length then
-          parseCmdsCompilePathCompose n rest2 kn acc
-        else none
-      | [] => some acc
-
-/-- Token walk: live text has `def` named `nm` even if the body was skipped. -/
+/-- Token walk: live text has `def` named `nm`. -/
 def toksHaveDefNamed : Nat -> List String -> String -> Bool
   | 0, _, _ => false
   | Nat.succ _, [], _ => false
@@ -371,23 +394,21 @@ def toksHaveDefNamed : Nat -> List String -> String -> Bool
   | Nat.succ n, _ :: rest, nm => toksHaveDefNamed n rest nm
 
 /-- Parse live CompilePathCompose.lean text.
+    HostFront.parseSource is the keep path --slake-check reads.
+    Keep/register names SystemsLean.CompilePathCompose.
     Greppable: parseLiveCompilePathComposeSource,
     PARSE-LIVE-COMPILE-PATH-COMPOSE. -/
 def parseLiveCompilePathComposeSource (src : String) : FrontResult :=
-  let toks := tokenizeHostTerm (stripCommentsCpp src)
-  if toks.isEmpty then FrontResult.reject reasonEmptyModule
+  if src.isEmpty then FrontResult.reject reasonEmptyModule
   else
-    match parseCmdsCompilePathCompose liveCompilePathComposeParseFuel
-        toks [] [] with
-    | none => FrontResult.reject reasonParseFail
-    | some cmds =>
-      if cmds.isEmpty then FrontResult.reject reasonEmptyModule
-      else
-        let m : Module :=
-          { name := HostTerm.n "SystemsLean.CompilePathCompose"
-            commands := cmds }
-        if isWellFormed m then FrontResult.accept m
-        else FrontResult.reject reasonNotWellFormed
+    match parseSource src with
+    | FrontResult.reject r => FrontResult.reject r
+    | FrontResult.accept m =>
+      let kept : Module :=
+        { name := HostTerm.n "SystemsLean.CompilePathCompose"
+          commands := m.commands }
+      if isWellFormed kept then FrontResult.accept kept
+      else FrontResult.reject reasonNotWellFormed
 
 /-- Kernel-check live CompilePathCompose parse. Not a fixture.
     Not occupancy Term. Greppable: kernelCheckLiveCompilePathComposeSource,
@@ -458,7 +479,7 @@ def liveParseHasEmitComposeImport : Bool :=
       | Cmd.importModule x => x.raw == "SystemsLean.EmitCompose"
       | _ => false
 
-/-- Skip-head: defs unique to CompilePathCompose.lean (not CompilePath.lean
+/-- Defs unique to CompilePathCompose.lean (not CompilePath.lean
     and not occupancy Term string payloads). Greppable: composeFixtureMintId,
     composeFixtureTagErased. -/
 def liveParseHasCoreDefs : Bool :=
@@ -482,6 +503,8 @@ def hostFrontLiveCompilePathComposeReady : Bool :=
     && (parseId == "PARSE-LIVE-COMPILE-PATH-COMPOSE")
     && (liveCompilePathComposeRel
       == "src/systems/SystemsLean/CompilePathCompose.lean")
+    && (liveRel == "CompilePathCompose.lean")
+    && hostFrontParseSourceCompilePathCompose
     && liveParseDoesNotUseMultFixture
     && !hostFrontLiveCompilePathComposeFullHost
     && !hostFrontLiveCompilePathComposeResidualFreeClaimed
@@ -521,7 +544,7 @@ def runLiveCompilePathCompose (root : System.FilePath) : IO Unit := do
     throw (IO.userError s!"PARSE-LIVE-COMPILE-PATH-COMPOSE reject {reason}")
   | FrontResult.accept m =>
     let k := HostKernel.kernelCheck m
-    IO.println s!"PASS PARSE-LIVE-COMPILE-PATH-COMPOSE ACCEPT cmds={m.commands.length} kernelCheck={k}"
+    IO.println s!"PASS PARSE-LIVE-COMPILE-PATH-COMPOSE ACCEPT liveRel={liveRel} cmds={m.commands.length} kernelCheck={k}"
     unless k do
       IO.eprintln "error: kernelCheck live CompilePathCompose parse false"
       throw (IO.userError "kernelCheck live CompilePathCompose parse false")

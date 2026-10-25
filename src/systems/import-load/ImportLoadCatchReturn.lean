@@ -5,6 +5,7 @@ import SystemsLean.CatchReturn
   The Lean import loads that module. Its column-0 import count is printed.
   catchCode is referenced as a value. withCatch and onCatch are not called.
   This file is not the package check.
+  Module must stay ASCII. Not freestanding residual free. Not PROVABLY. SKELETON.
 -/
 
 def isColumn0Import (line : String) : Bool :=
@@ -21,7 +22,7 @@ def main : IO UInt32 := do
   let loaded : UInt32 := SystemsLean.CatchReturn.catchCode
   if loaded != 1 then
     return 1
-  let src ← IO.FS.readFile "src/systems/SystemsLean/CatchReturn.lean"
+  let src <- IO.FS.readFile "src/systems/SystemsLean/CatchReturn.lean"
   let n := column0ImportCount src
   IO.println "liveRel=CatchReturn.lean"
   IO.println s!"imports={n}"

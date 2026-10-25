@@ -3,7 +3,7 @@
   Side: classic Lean elaborator under src/systems/ (not freestanding C).
   Short role: HostFrontLiveHostGraphSource01. Not occupancy name 50. Not mill 70.
   Greppable: SYSTEMS_LEAN_HOST, PARSE-LIVE-HOST-GRAPH, liveHostGraphSource1,
-  HOST-FRONT-LIVE-HOST-GRAPH, UNIT_SURFACE host surface.
+  HOST-FRONT-LIVE-HOST-GRAPH, UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveHostGraphSource01
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

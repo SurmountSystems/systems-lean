@@ -13,6 +13,7 @@
   PARSE-LIVE-HOST-FRONT-THEOREMS.
   Module: SystemsLean.SlakeTypecheckHostFrontTheorems
   Checkable writer: lean --run SlakeTypecheckHostFrontTheorems (no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveHostFrontTheorems

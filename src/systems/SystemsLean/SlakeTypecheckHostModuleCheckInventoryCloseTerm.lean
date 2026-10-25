@@ -23,6 +23,7 @@
   Module: SystemsLean.SlakeTypecheckHostModuleCheckInventoryCloseTerm
   Checkable writer: lean --run SlakeTypecheckHostModuleCheckInventoryCloseTerm.lean
   (no mill; no lake).
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostFrontLiveHostModuleCheckInventoryCloseTermSource

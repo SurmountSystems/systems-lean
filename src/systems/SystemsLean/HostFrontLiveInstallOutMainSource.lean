@@ -27,7 +27,7 @@
   freestandingCapableInstallFreestandingOut
   SKELETON
   Greppable: SYSTEMS_LEAN_HOST, liveInstallOutMainSource,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveInstallOutMainSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

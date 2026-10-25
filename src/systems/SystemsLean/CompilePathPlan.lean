@@ -200,6 +200,19 @@ def planFixtureCompilePathReady : Bool :=
 def planFixtureDoesNotMeanResidualFree : Bool :=
   planFixtureCompilePathReady && !planFixtureResidualFreeClaimed
 
+/-- Live view: marked and minted Plan host (ConsumeToken). -/
+def planFixtureLiveView : Option Host :=
+  lowerPlanFixtureCompose
+
+/-- Spent view: ConsumeToken consume of planFixtureLiveView. -/
+def planFixtureSpentView : Option Host :=
+  match planFixtureLiveView with
+  | none => none
+  | some hcLive =>
+      match HostCompose.consume hcLive with
+      | HostCompose.ConsumeResult.ok hcSpent _ => some hcSpent
+      | HostCompose.ConsumeResult.notLive => none
+
 /-! ### COMPILE-PATH-PLAN-THEOREM (readable Plan e2e statements, then proofs)
 
   Real Lean theorems for Plan fixture compile path only. Does not flip

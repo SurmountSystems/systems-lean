@@ -5,6 +5,7 @@
   Module: SystemsLean.HostFrontLiveTraitObjectVtableSource02
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 namespace SystemsLean.HostFrontLiveTraitObjectVtable

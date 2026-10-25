@@ -5,6 +5,7 @@
   A false Bool stays false. Bool true is not emitted.
   Does not call Lean.Elab.processCommands.
   slakeOwnsPackageTypecheck stays false.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.Scan

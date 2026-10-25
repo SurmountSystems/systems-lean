@@ -7,6 +7,7 @@
   keeps the same names. Not a new check.
   Module: SystemsLean.HostModuleCheckRealModuleImportEarly
   Module must stay ASCII.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostModuleCheckFixtures

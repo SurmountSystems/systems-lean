@@ -18,7 +18,7 @@
   parseLiveLlvmMultTextMainSource,
   kernelCheckLiveLlvmMultTextMainSource,
   hostFrontLiveLlvmMultTextMainReady, liveLlvmMultTextMainSource,
-  liveRel, liveLlvmMultTextMainRel, UNIT_SURFACE host surface,
+  liveRel, liveLlvmMultTextMainRel, UNIT_SURFACE host surface, MULT-0,
   PARSE-LIVE-LLVM-MULT-TEXT-MAIN,
   HOST-FRONT-LIVE-LLVM-MULT-TEXT-MAIN,
   SLAKE_HOST_FRONT_LIVE_LLVM_MULT_TEXT_MAIN_V0.

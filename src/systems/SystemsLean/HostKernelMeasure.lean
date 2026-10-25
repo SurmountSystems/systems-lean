@@ -1,13 +1,14 @@
 /-
   Module: SystemsLean.HostKernelMeasure
   One stored IO Unit measure. The condition is measureIf applied
-  to the Bool name. The then-arm is a non-empty IO.println spine.
+  to the Bool name. The then-arm is a non-empty nested IO.println.
   The else-arm is IO.eprintln and IO.userError, both strings.
   Bool true is not this measure. A false Bool stays false.
   This runs only after the apply body misses.
   Does not call Lean.Elab.processCommands.
   slakeOwnsPackageTypecheck stays false.
   Module must stay ASCII.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.HostTerm
@@ -23,11 +24,11 @@ def printOne (s : String) : Term :=
   Term.app (Term.const (n "IO.println")) (Term.litString s)
 
 /-- Right-nested prints. Empty is not a println. -/
-def printSpine : List String -> Term
+def printLines : List String -> Term
   | [] => Term.const (n "measureEmpty")
   | s :: [] => printOne s
   | s :: r :: rest =>
-    Term.app (printOne s) (printSpine (r :: rest))
+    Term.app (printOne s) (printLines (r :: rest))
 
 def elseArm (errS throwS : String) : Term :=
   Term.app
@@ -39,7 +40,7 @@ def measureBody (cond : String) (lines : List String)
     (errS throwS : String) : Term :=
   Term.ite
     (Term.app (Term.const (n "measureIf")) (Term.var (n cond)))
-    (printSpine lines)
+    (printLines lines)
     (elseArm errS throwS)
 
 def isMeasureIf (t : Term) : Bool :=

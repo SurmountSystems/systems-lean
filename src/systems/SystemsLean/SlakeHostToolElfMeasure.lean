@@ -12,6 +12,7 @@
   HOST-HOST-TOOL-MEASURE-GREEN, printSelfHostCompleteMeasure,
   self-host-complete-measure.native-ir.txt, writeMeasureNativeIr.
   Module: SystemsLean.SlakeHostToolElfMeasure
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.SlakeHostToolElfMeasureFields

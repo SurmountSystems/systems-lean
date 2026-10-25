@@ -24,7 +24,7 @@
   SLAKE_HOST_FRAGMENT_CHECK
   hostFragmentCheckReady
   Greppable: SYSTEMS_LEAN_HOST, liveHostCheckMainSource,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveHostCheckMainSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

@@ -47,6 +47,10 @@ open SystemsLean.Extract (RuntimeClaim)
 
 set_option maxRecDepth 8192
 
+/-- Fixed Extract fixture mint id (nonzero; Mult 4, Types 5, Program 6, Linear 7,
+    Graph 8, Compose 9, Plan 10, Apply 11, Body 12). -/
+def extractFixtureMintId : Nat := 13
+
 /-- fixtureExtractGateOk hc -- extract gate on a host compose.
     RUNTIME-FS accept and classic/edge reject. Honesty: extractOkFs and
     extractClaimOk runtimeFs are definitionally the same HostCompose path under
@@ -133,6 +137,30 @@ def extractRuntimeFsGateReady : Bool :=
 def extractRuntimeFsDoesNotMeanResidualFree : Bool :=
   extractRuntimeFsGateReady && !extractRuntimeFsResidualFreeClaimed
 
+/-- lowerExtractFixtureCompose -- Extract fixture host ready for unit compile path.
+    markErased + mint with extractFixtureMintId on Program raw compose.
+    FAIL-CLOSED: none if raw lower or mint fails.
+    Greppable: lowerExtractFixtureCompose, EXTRACT-RUNTIME-FS, HOST-COMPOSE. -/
+def lowerExtractFixtureCompose : Option Host :=
+  match lowerProgramFixtureComposeRaw with
+  | none => none
+  | some hcRaw =>
+    let hcMarked := HostCompose.markErased hcRaw
+    mintFixtureHost hcMarked extractFixtureMintId
+
+/-- Live view: marked and minted Extract host (ConsumeToken). -/
+def extractFixtureLiveView : Option Host :=
+  lowerExtractFixtureCompose
+
+/-- Spent view: ConsumeToken consume of extractFixtureLiveView. -/
+def extractFixtureSpentView : Option Host :=
+  match extractFixtureLiveView with
+  | none => none
+  | some hcLive =>
+      match HostCompose.consume hcLive with
+      | HostCompose.ConsumeResult.ok hcSpent _ => some hcSpent
+      | HostCompose.ConsumeResult.notLive => none
+
 /-! ### COMPILE-PATH-EXTRACT-THEOREM (readable extract gate statements, then proofs)
 
   Real Lean theorems for extract gate on Mult + Program fixtures only. Does not
@@ -167,8 +195,7 @@ theorem programFixtureExtractRawReject_true :
 /-- Joint extract RUNTIME-FS gate ready on Mult + Program fixtures (Track 2).
     Greppable: extractRuntimeFsGateReady_true, COMPILE-PATH-EXTRACT-THEOREM,
     COMPILE-PATH-EXTRACT, EXTRACT-RUNTIME-FS, HOST-COMPILE-PATH. -/
-theorem extractRuntimeFsGateReady_true :
-    extractRuntimeFsGateReady = true := by decide
+theorem extractRuntimeFsGateReady_true : extractRuntimeFsGateReady = true := by decide
 
 /-- Extract gate ready does not claim residual free.
     Greppable: extractRuntimeFsDoesNotMeanResidualFree_true, COMPILE-PATH-EXTRACT-THEOREM. -/

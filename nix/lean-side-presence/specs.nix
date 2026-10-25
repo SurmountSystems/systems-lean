@@ -1,7 +1,8 @@
 # SPDX-License-Identifier: Unlicense
-# Data only: Lean-side dual required paths, honesty tokens, and banned jargon
-# under examples/*.lean. Imported by ./default.nix.
-# Former static mill lived in src/lean4/check.sh (Wave A pure Nix port).
+# Data only: Lean-side dual required paths, honesty tokens, Lean 4.35.0
+# toolchain pin, and banned jargon under examples/*.lean. Imported by
+# ./default.nix. Former static mill lived in src/lean4/check.sh
+# (Wave A pure Nix port).
 {
   # Required dual artifacts (presence only; Lake elaborator stays process glue).
   requiredFiles = [
@@ -18,6 +19,7 @@
     "src/lean4/JOIN.md"
     "src/lean4/lakefile.toml"
     "src/lean4/lean-toolchain"
+    "src/systems/lean-toolchain"
     "src/lean4/lake-manifest.json"
   ];
 
@@ -113,6 +115,20 @@
         "RuntimeExtract"
         "AffineDrop"
         "AffineOwn"
+      ];
+    }
+    # Fail-closed Lean 4 pin. Missing or wrong leanprover/lean4:v4.35.0
+    # in either toolchain file fails just lean-side.
+    {
+      rel = "src/lean4/lean-toolchain";
+      all = [
+        "leanprover/lean4:v4.35.0"
+      ];
+    }
+    {
+      rel = "src/systems/lean-toolchain";
+      all = [
+        "leanprover/lean4:v4.35.0"
       ];
     }
   ];

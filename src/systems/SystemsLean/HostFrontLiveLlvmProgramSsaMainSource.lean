@@ -26,7 +26,7 @@
   HOST-LLVM-PROGRAM-SSA
   SLAKE_LLVM_PROGRAM_SSA
   Greppable: SYSTEMS_LEAN_HOST, liveLlvmProgramSsaMainSource,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveLlvmProgramSsaMainSource
   Not FullHost. Not freestanding residual free. Not PROVABLY. Not FullBackend.
   Module must stay ASCII.

@@ -299,6 +299,13 @@ private def thmLinearNode : IrNode :=
 
 private def thmSingleValueProg : Program := { nodes := [thmValueNode] }
 
+/-- Fixed CompilePath fixture mint id (nonzero; matches COMPILE-PATH-SMOKE mint 4). -/
+def compilePathFixtureMintId : Nat := 4
+
+/-- Mint-id honesty: CompilePath fixture uses 4 (COMPILE-PATH-SMOKE mint).
+    Greppable: compilePathFixtureMintId_eq, COMPILE-PATH-THEOREM. -/
+theorem compilePathFixtureMintId_eq : compilePathFixtureMintId = 4 := rfl
+
 private def thmHostMult1Unminted : Host := {
   graph := { prog := { nodes := [thmLinearNode] }, edges := [] }
   linear := HostCompose.LinearHost.empty
@@ -307,7 +314,7 @@ private def thmHostMult1Unminted : Host := {
 
 private def thmHostMult1Minted : Host := {
   graph := { prog := { nodes := [thmLinearNode] }, edges := [] }
-  linear := { live := true, id := 4 }
+  linear := { live := true, id := compilePathFixtureMintId }
   erased := Erasure.unmarked
 }
 
@@ -326,8 +333,7 @@ theorem compileReady_mult1_unminted_false :
 /-- MULT-1 host with mint is unit-compile-ready (unit bar + grade surface).
     Greppable: unitCompileReady_mult1_minted_true, MULT-1, COMPILE-PATH-THEOREM,
     HOST-COMPILE-PATH-THEOREM. -/
-theorem unitCompileReady_mult1_minted_true :
-    unitCompileReady thmHostMult1Minted = true := by decide
+theorem unitCompileReady_mult1_minted_true : unitCompileReady thmHostMult1Minted = true := by decide
 
 
 /-! ### Shared fixture helpers (used by CompilePath* peels)
@@ -360,6 +366,30 @@ def addFixtureHostEdge (hc : Host) (fromIdx toIdx : Nat) : Option Host :=
   match HostCompose.addHostEdge hc fromIdx toIdx with
   | HostCompose.HostAddEdgeResult.ok hc' => some hc'
   | _ => none
+
+/-- CompilePath fixture host ready for unit compile path.
+    mint MULT-1 on the existing unminted theorem host.
+    FAIL-CLOSED: none if mint fails.
+    Greppable: lowerCompilePathFixtureCompose, HOST-COMPOSE. -/
+def lowerCompilePathFixtureCompose : Option Host :=
+  mintFixtureHost thmHostMult1Unminted compilePathFixtureMintId
+
+/-- Live view: minted MULT-1 host (ConsumeToken). -/
+def compilePathFixtureLiveView : Option Host :=
+  lowerCompilePathFixtureCompose
+
+/-- Spent view: ConsumeToken consume of compilePathFixtureLiveView. -/
+def compilePathFixtureSpentView : Option Host :=
+  match compilePathFixtureLiveView with
+  | none => none
+  | some hcLive =>
+      match HostCompose.consume hcLive with
+      | HostCompose.ConsumeResult.ok hcSpent _ => some hcSpent
+      | HostCompose.ConsumeResult.notLive => none
+
+/-- lowerCompilePathFixtureCompose is some (mint path).
+    Greppable: lowerCompilePathFixtureCompose_isSome, COMPILE-PATH-THEOREM. -/
+theorem lowerCompilePathFixtureCompose_isSome : lowerCompilePathFixtureCompose.isSome = true := by decide
 
 
 /-! ### Compile-path smoke (behavioral; lake build fails if an example does not hold)

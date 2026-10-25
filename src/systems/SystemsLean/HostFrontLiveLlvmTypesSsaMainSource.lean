@@ -26,7 +26,7 @@
   SLAKE_LLVM_TYPES_SSA
   SKELETON
   Greppable: SYSTEMS_LEAN_HOST, liveLlvmTypesSsaMainSource,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveLlvmTypesSsaMainSource
   Not FullHost. Not FullBackend. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

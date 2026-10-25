@@ -45,6 +45,7 @@
   identifier `beq`, and not a substring of `bneb`. dropWord
   and skipMods copy String.Slice before String ops on Lean
   4.35.0.
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 import SystemsLean.KeptWalk

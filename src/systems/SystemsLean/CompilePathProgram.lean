@@ -184,6 +184,19 @@ def programFixtureCompilePathReady : Bool :=
 def programFixtureDoesNotMeanResidualFree : Bool :=
   programFixtureCompilePathReady && !programFixtureResidualFreeClaimed
 
+/-- Live view: marked and minted Program host (ConsumeToken). -/
+def programFixtureLiveView : Option Host :=
+  lowerProgramFixtureCompose
+
+/-- Spent view: ConsumeToken consume of programFixtureLiveView. -/
+def programFixtureSpentView : Option Host :=
+  match programFixtureLiveView with
+  | none => none
+  | some hcLive =>
+      match HostCompose.consume hcLive with
+      | HostCompose.ConsumeResult.ok hcSpent _ => some hcSpent
+      | HostCompose.ConsumeResult.notLive => none
+
 /-! ### COMPILE-PATH-PROGRAM-THEOREM (readable Program e2e statements, then proofs)
 
   Real Lean theorems for Program fixture compile path only. Does not flip

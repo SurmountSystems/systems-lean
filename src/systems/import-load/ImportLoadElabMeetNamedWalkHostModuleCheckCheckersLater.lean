@@ -5,6 +5,7 @@ import SystemsLean.ElabMeetNamedWalkHostModuleCheckCheckersLater
   SystemsLean.ElabMeetNamedWalkHostModuleCheckCheckersLater.
   The Lean import loads that module. Its column-0 import count is printed.
   This file is not the package check.
+  Module must stay ASCII. Not freestanding residual free. Not PROVABLY. SKELETON.
 -/
 
 def isColumn0Import (line : String) : Bool :=
@@ -23,7 +24,7 @@ def checkersLaterSubsetNames : List String :=
 
 def main : IO UInt32 := do
   let _used := checkersLaterSubsetNames.length
-  let src ← IO.FS.readFile
+  let src <- IO.FS.readFile
     "src/systems/SystemsLean/ElabMeetNamedWalkHostModuleCheckCheckersLater.lean"
   let n := column0ImportCount src
   IO.println "liveRel=ElabMeetNamedWalkHostModuleCheckCheckersLater.lean"

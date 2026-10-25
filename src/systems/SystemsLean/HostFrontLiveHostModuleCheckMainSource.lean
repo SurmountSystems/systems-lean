@@ -8,7 +8,7 @@
   liveRel is the bare name HostModuleCheckMain.lean. Do not redefine it
   in the parser.
   Greppable: SYSTEMS_LEAN_HOST, liveHostModuleCheckMainSource, liveRel,
-  UNIT_SURFACE host surface.
+  UNIT_SURFACE host surface, MULT-0.
   Module: SystemsLean.HostFrontLiveHostModuleCheckMainSource
   Not FullHost. Not freestanding residual free. Not PROVABLY.
   Module must stay ASCII.

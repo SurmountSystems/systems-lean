@@ -4,6 +4,7 @@
   The HostKernel toy grammar has def and structure, not theorem.
   Host Lean contract. Not an input the toy checker must parse.
   Module: SystemsLean.CompilerSpec.Theorem
+  SKELETON honesty marker (unit walk; host elaborator package).
 -/
 
 namespace SystemsLean.CompilerSpec.Theorem

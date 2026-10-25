@@ -202,6 +202,19 @@ def typesFixtureCompilePathReady : Bool :=
 def typesFixtureDoesNotMeanResidualFree : Bool :=
   typesFixtureCompilePathReady && !typesFixtureResidualFreeClaimed
 
+/-- Live view: marked and minted TYPED_IR host (ConsumeToken). -/
+def typesFixtureLiveView : Option Host :=
+  lowerTypesFixtureCompose
+
+/-- Spent view: ConsumeToken consume of typesFixtureLiveView. -/
+def typesFixtureSpentView : Option Host :=
+  match typesFixtureLiveView with
+  | none => none
+  | some hcLive =>
+      match HostCompose.consume hcLive with
+      | HostCompose.ConsumeResult.ok hcSpent _ => some hcSpent
+      | HostCompose.ConsumeResult.notLive => none
+
 /-! ### COMPILE-PATH-TYPES-THEOREM (readable Types e2e statements, then proofs)
 
   Real Lean theorems for Types fixture compile path only. Does not flip
