@@ -497,15 +497,13 @@ def liveParseRejectsEmpty : Bool :=
     Same walkKept four-form as CompilePathLinear.lean (linearFixtureLiveView /
     linearFixtureSpentView / linearFixtureMintId / by decide).
     Greppable: liveCompilePathLinearLiveView, WALKKEPT-KEEP. -/
-mutual
-  /-- Live view: accepted parse of CompilePathLinear.lean when keep succeeds. -/
-  def liveCompilePathLinearLiveView : Option Module :=
-    liveCompilePathLinearParsed?
+/-- Live view: accepted parse of CompilePathLinear.lean when keep succeeds. -/
+def liveCompilePathLinearLiveView : Option Module :=
+  liveCompilePathLinearParsed?
 
-  /-- Spent view: no extra resource after the live parse is named. -/
-  def liveCompilePathLinearSpentView : Option Module :=
-    none
-end
+/-- Spent view: no extra resource after the live parse is named. -/
+def liveCompilePathLinearSpentView : Option Module :=
+  none
 
 /-- walkKept keep: theorem plus decide tactic, matching CompilePathLinear.
     Greppable: hostFrontLiveCompilePathLinearFullHost_false, WALKKEPT-KEEP.

@@ -425,16 +425,72 @@ def namedClosedExtractCompileOrder : List String :=
 def barrelListsNamedExtractSubset (text : String) : Bool :=
   barrelListsNamedMembers text namedClosedExtractSubsetNames
 
+/-- Each named member has a live source and a zero `--slake-check` exit.
+    The child starts from main, so `IO.initializing` is false there.
+    Greppable: slakeCheckEachNamedMember. slakeCheckExitZero. -/
+def slakeCheckEachNamedMember (ms : List String) : IO Bool := do
+  match ms with
+  | [] => return true
+  | m :: rest =>
+    let live? <- findLiveModulePath m
+    match live? with
+    | none => return false
+    | some _ =>
+      let one <- slakeCheckExitZero m none
+      if !one then
+        return false
+      slakeCheckEachNamedMember rest
+
+/-- Lakefile, library name, and barrel gates, then child checks.
+    In-process `parseHeader` calls `mkEmptyEnvironment`, which throws
+    while `IO.initializing` is true inside this probe. A temp snippet
+    and a fake package are not the live lakefile, so they stay false.
+    Greppable: tryCompileNamedSubsetBySlakeCheck. -/
+unsafe def tryCompileNamedSubsetBySlakeCheck
+    (srcPath oleanDir : System.FilePath)
+    (memberNames compileOrder : List String) : IO Bool := do
+  enableInitializersExecution
+  let liveLake? <- findLiveLakefilePath
+  match liveLake? with
+  | none => return false
+  | some liveLake =>
+    if srcPath.toString != liveLake.toString then
+      return false
+    let text <-
+      try
+        IO.FS.readFile liveLake
+      catch _ =>
+        return false
+    let some libName := parseRealLakeLibraryName text | return false
+    if libName != "SystemsLean" then
+      return false
+    let barrel? <- findLiveBarrelPath
+    match barrel? with
+    | none => return false
+    | some barrel =>
+      let barrelText <-
+        try
+          IO.FS.readFile barrel
+        catch _ =>
+          return false
+      if !barrelListsNamedMembers barrelText memberNames then
+        return false
+      match compileOrder with
+      | [] => return false
+      | first :: _ =>
+        if first != "SystemsLean.Mult" then
+          return false
+        IO.FS.createDirAll (oleanDir / "SystemsLean")
+        slakeCheckEachNamedMember compileOrder
+
 /-- Compile the named Extract closed subset after reading the
-    live lakefile. Seven-module wrapper over tryCompileNamedMemberListIO.
-    Compile order honors imports: Mult first, then search path,
-    then Types, MultTheorems, TypesTheorems, Erasure,
-    ErasureTheorems, Extract.
+    live lakefile. Seven-module child `--slake-check` list.
+    Not in-process `parseHeader`. Compile order is Mult first.
     Greppable: tryCompileNamedExtractSubset.
-    tryCompileOnDiskModule. SystemsLean.Extract. -/
+    slakeCheckExitZero. SystemsLean.Extract. -/
 unsafe def tryCompileNamedExtractSubsetIO
     (srcPath oleanDir : System.FilePath) : IO Bool := do
-  tryCompileNamedMemberListIO srcPath oleanDir
+  tryCompileNamedSubsetBySlakeCheck srcPath oleanDir
     namedClosedExtractSubsetNames namedClosedExtractCompileOrder
 
 @[implemented_by tryCompileNamedExtractSubsetIO]
@@ -520,15 +576,14 @@ def barrelListsNamedExtractTheoremsSubset (text : String) : Bool :=
   barrelListsNamedMembers text namedClosedExtractTheoremsSubsetNames
 
 /-- Compile the named ExtractTheorems closed subset after reading the
-    live lakefile. Eight-module wrapper over tryCompileNamedMemberListIO.
-    Compile order honors imports: Mult first, then search path,
-    then Types, MultTheorems, TypesTheorems, Erasure,
-    ErasureTheorems, Extract, ExtractTheorems.
+    live lakefile. Eight-module child `--slake-check` list.
+    Not in-process `parseHeader`. Compile order is Mult first,
+    ExtractTheorems last.
     Greppable: tryCompileNamedExtractTheoremsSubset.
-    tryCompileOnDiskModule. SystemsLean.ExtractTheorems. -/
+    slakeCheckExitZero. SystemsLean.ExtractTheorems. -/
 unsafe def tryCompileNamedExtractTheoremsSubsetIO
     (srcPath oleanDir : System.FilePath) : IO Bool := do
-  tryCompileNamedMemberListIO srcPath oleanDir
+  tryCompileNamedSubsetBySlakeCheck srcPath oleanDir
     namedClosedExtractTheoremsSubsetNames
     namedClosedExtractTheoremsCompileOrder
 

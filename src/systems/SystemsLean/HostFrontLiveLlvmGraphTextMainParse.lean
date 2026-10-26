@@ -53,7 +53,7 @@ def parseId : String := "PARSE-LIVE-LLVM-GRAPH-TEXT-MAIN"
 
 /-- Same bare name as liveRel. The Source def. Do not redefine liveRel.
     The value must not contain a slash. -/
-def liveLlvmGraphTextMainRel : String := liveRel
+def liveLlvmGraphTextMainRel : String := HostFrontLiveLlvmGraphTextMain.liveRel
 
 /-- Honesty: this parser is not the HostTerm Mult fixture. -/
 def liveParseDoesNotUseMultFixture : Bool := true
@@ -452,9 +452,9 @@ def hostFrontLiveLlvmGraphTextMainReady : Bool :=
   (stageId == "SLAKE_HOST_FRONT_LIVE_LLVM_GRAPH_TEXT_MAIN_V0")
     && (hostId == "HOST-FRONT-LIVE-LLVM-GRAPH-TEXT-MAIN")
     && (parseId == "PARSE-LIVE-LLVM-GRAPH-TEXT-MAIN")
-    && (liveRel == "LlvmGraphTextMain.lean")
+    && (HostFrontLiveLlvmGraphTextMain.liveRel == "LlvmGraphTextMain.lean")
     && (liveLlvmGraphTextMainRel == "LlvmGraphTextMain.lean")
-    && (liveRel.splitOn "/").length == 1
+    && (HostFrontLiveLlvmGraphTextMain.liveRel.splitOn "/").length == 1
     && liveParseDoesNotUseMultFixture
     && !hostFrontLiveLlvmGraphTextMainFullHost
     && !hostFrontLiveLlvmGraphTextMainFullBackend
@@ -473,9 +473,9 @@ def hostFrontLiveLlvmGraphTextMainReady : Bool :=
 
 def runLiveLlvmGraphTextMain (root : System.FilePath) : IO Unit := do
   IO.println s!"== {stageId}: PARSE-LIVE-LLVM-GRAPH-TEXT-MAIN =="
-  IO.println s!"liveRel={liveRel}"
+  IO.println s!"liveRel={HostFrontLiveLlvmGraphTextMain.liveRel}"
   IO.println s!"  host={hostId} file={liveLlvmGraphTextMainRel}"
-  let path := root / "src/systems/SystemsLean" / liveRel
+  let path := root / "src/systems/SystemsLean" / HostFrontLiveLlvmGraphTextMain.liveRel
   unless (<- path.pathExists) do
     IO.eprintln s!"error: missing {liveLlvmGraphTextMainRel}"
     throw (IO.userError s!"missing {liveLlvmGraphTextMainRel}")

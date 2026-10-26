@@ -3,15 +3,16 @@
   Side: classic Lean elaborator under src/systems/ (not freestanding C).
   New companion so ElabMeetCompile stays under the line cap. Same namespace
   SystemsLean.ElabMeet. Probe plus live-path helpers live here.
-  Reuses tryCompileOnDiskModuleIO (no second elaborator).
+  Live accept spawns this ELF `--slake-check` (no in-process environment).
 
   Spec (readable):
   - findLiveMultPath resolves SystemsLean/Mult.lean from Lake cwd
     (src/systems) or repo-root cwd. none if neither exists.
     Does not write Mult into temp.
-  - tryCompileLiveModule compiles only that live path. A temp
-    snippet is not this accept. .olean goes under a temp
-    directory, never under src/systems.
+  - tryCompileLiveModule compiles only that live path by spawning
+    this ELF `--slake-check SystemsLean.Mult`. A temp snippet is
+    not this accept. In-process mkEmptyEnvironment throws while
+    IO.initializing is true, so the accept is the child exit.
   - Good reads the real live file. Bad writes a temp copy plus
     a planted type error. Isolation keeps the Name 99 temp-file
     walk and rejects that walk as this accept.
@@ -19,9 +20,9 @@
   - findLiveMultTheoremsPath resolves SystemsLean/MultTheorems.lean
     from Lake cwd or repo-root cwd. none if neither exists.
     Does not write MultTheorems into temp.
-  - tryCompileLiveTheorems compiles live Mult, puts that .olean on
-    the search path, then compiles live MultTheorems. A live Mult
-    path is not this accept. .olean files go under a temp directory.
+  - tryCompileLiveTheorems spawns this ELF for live Mult, then
+    for live MultTheorems. A live Mult path is not this accept.
+    The accept is the child exit, not an in-process environment.
   - Good reads the real live MultTheorems file. Bad writes a temp
     copy plus a planted type error, with Mult .olean on the search
     path so the reject is the planted error, not a missing import.
@@ -93,12 +94,49 @@ def findLiveMultTheoremsPath : IO (Option System.FilePath) := do
     return some candB
   return none
 
+/-- This bootstrap ELF. A child `--slake-check` starts from main, so
+    `IO.initializing` is false there. Zero exit accepts. Nonzero rejects.
+    Do not set HOME. Do not call upstream lean.
+    Greppable: slakeBootstrapElf, slakeCheckExitZero. -/
+def slakeBootstrapElf : String :=
+  "/nix/store/1z7byiviiga5zffpdfaxa87qikfs0r8l-slake-bootstrap"
+
+def slakeCheckArgs (modName : String) (walkRoot : Option System.FilePath) :
+    Array String :=
+  match walkRoot with
+  | none => #["--slake-check", modName]
+  | some root =>
+    #["--slake-check", modName, "--walk-root", root.toString]
+
+/-- Spawn this ELF. `walkRoot` is the existing `--walk-root` flag.
+    A temp snippet is a file under that directory, checked, then deleted
+    by the caller. Does not set HOME. -/
+def slakeCheckExitZero (modName : String) (walkRoot : Option System.FilePath) :
+    IO Bool := do
+  let out <- IO.Process.output {
+    cmd := slakeBootstrapElf
+    args := slakeCheckArgs modName walkRoot
+    cwd := some "/home/nixbuilder/iso"
+    env := #[
+      ("LEAN_NUM_THREADS", some "1"),
+      ("LEAN_SYSROOT", some
+        "/nix/store/4bfysnfphwfi7yy4rx1plkr51c2q0s92-lean4-4.35.0"),
+      ("SLAKE_OLEAN_DIR", some
+        "/home/nixbuilder/iso/build/package-typecheck"),
+      ("SLAKE_SYSTEMS_ROOT", some "/home/nixbuilder/iso/src/systems"),
+      ("LD_LIBRARY_PATH", some
+        "/nix/store/4bfysnfphwfi7yy4rx1plkr51c2q0s92-lean4-4.35.0/lib/lean"),
+      ("LD_PRELOAD", some
+        "/nix/store/4bfysnfphwfi7yy4rx1plkr51c2q0s92-lean4-4.35.0/lib/lean/libleanshared.so")
+    ]
+  }
+  pure (out.exitCode == 0)
+
 /-- Live-path-gated compile. False if srcPath is not the live Mult path.
-    Write .olean under oleanDir (temp), never under src/systems.
-    createDirAll (oleanDir / "SystemsLean") before write.
-    Reuses tryCompileOnDiskModuleIO (no second elaborator).
-    Success requires compile true and SystemsLean/Mult.olean exists.
-    Greppable: tryCompileLiveModule. tryCompileOnDiskModule. -/
+    Accept is a zero exit of `--slake-check SystemsLean.Mult`.
+    In-process mkEmptyEnvironment throws while IO.initializing is true.
+    createDirAll still runs. The child writes its own .olean.
+    Greppable: tryCompileLiveModule. slakeCheckExitZero. -/
 unsafe def tryCompileLiveModuleIO (srcPath oleanDir : System.FilePath) :
     IO Bool := do
   enableInitializersExecution
@@ -109,11 +147,7 @@ unsafe def tryCompileLiveModuleIO (srcPath oleanDir : System.FilePath) :
     if srcPath.toString != live.toString then
       return false
     IO.FS.createDirAll (oleanDir / "SystemsLean")
-    let compiled <-
-      tryCompileOnDiskModuleIO srcPath `SystemsLean.Mult oleanDir
-    let oleanPath :=
-      Lean.modToFilePath oleanDir `SystemsLean.Mult "olean"
-    pure (compiled && (<- oleanPath.pathExists))
+    slakeCheckExitZero "SystemsLean.Mult" none
 
 @[implemented_by tryCompileLiveModuleIO]
 opaque tryCompileLiveModuleIOSafe (srcPath oleanDir : System.FilePath) :
@@ -128,31 +162,38 @@ def tryCompileLiveModule (srcPath oleanDir : System.FilePath) :
   catch _ =>
     pure false
 
-/-- Compile live Mult, put that .olean on the search path, then compile
-    srcPath as thmMod. Used for the planted-error sidecar so the reject
-    is a type error, not a missing import.
-    Greppable: tryCompileLiveTheorems. tryCompileOnDiskModule. -/
+/-- Spawn this ELF for live Mult, then for srcPath.
+    The live MultTheorems path uses `--slake-check SystemsLean.MultTheorems`.
+    Any other srcPath is a temp file: existing `--walk-root` is the parent
+    directory and the module name is the file stem. A planted type error
+    exits nonzero, so badCompiled stays false. Do not set HOME.
+    Greppable: tryCompileLiveTheorems. slakeCheckExitZero. -/
 unsafe def tryCompileTheoremsAfterLiveMultIO
     (srcPath oleanDir : System.FilePath) (thmMod : Name) : IO Bool := do
   enableInitializersExecution
   let liveMult? <- findLiveMultPath
   match liveMult? with
   | none => return false
-  | some liveMult =>
+  | some _ =>
     IO.FS.createDirAll (oleanDir / "SystemsLean")
-    let compiledMult <-
-      tryCompileOnDiskModuleIO liveMult `SystemsLean.Mult oleanDir
+    let compiledMult <- slakeCheckExitZero "SystemsLean.Mult" none
     if !compiledMult then
       return false
-    let multOlean := Lean.modToFilePath oleanDir `SystemsLean.Mult "olean"
-    if !(<- multOlean.pathExists) then
-      return false
-    let prev <- searchPathRef.get
-    searchPathRef.set (oleanDir :: prev)
-    try
-      tryCompileOnDiskModuleIO srcPath thmMod oleanDir
-    finally
-      searchPathRef.set prev
+    let liveThm? <- findLiveMultTheoremsPath
+    match liveThm? with
+    | some liveThm =>
+      if srcPath.toString == liveThm.toString then
+        slakeCheckExitZero "SystemsLean.MultTheorems" none
+      else
+        match thmMod, srcPath.fileStem, srcPath.parent with
+        | .str _ last, some stem, some parent =>
+          if last == stem then
+            slakeCheckExitZero stem (some parent)
+          else
+            return false
+        | _, _, _ =>
+          return false
+    | none => return false
 
 @[implemented_by tryCompileTheoremsAfterLiveMultIO]
 opaque tryCompileTheoremsAfterLiveMultIOSafe
@@ -169,11 +210,9 @@ def tryCompileTheoremsAfterLiveMult
     pure false
 
 /-- Live-path-gated theorems compile. False if srcPath is not the live
-    MultTheorems path, or if live Mult is missing. Compiles live Mult
-    first, then live MultTheorems with that .olean on the search path.
-    Write .olean under oleanDir (temp), never under src/systems.
-    Success requires both compiles true and both .olean files exist.
-    Greppable: tryCompileLiveTheorems. tryCompileOnDiskModule. -/
+    MultTheorems path, or if live Mult is missing. Spawns live Mult,
+    then live MultTheorems. Accept is the child exit.
+    Greppable: tryCompileLiveTheorems. slakeCheckExitZero. -/
 unsafe def tryCompileLiveTheoremsIO (srcPath oleanDir : System.FilePath) :
     IO Bool := do
   enableInitializersExecution
@@ -183,15 +222,8 @@ unsafe def tryCompileLiveTheoremsIO (srcPath oleanDir : System.FilePath) :
   | some _, some liveThm =>
     if srcPath.toString != liveThm.toString then
       return false
-    let compiledThm <-
-      tryCompileTheoremsAfterLiveMultIO
-        srcPath oleanDir `SystemsLean.MultTheorems
-    if !compiledThm then
-      return false
-    let multOlean := Lean.modToFilePath oleanDir `SystemsLean.Mult "olean"
-    let thmOlean :=
-      Lean.modToFilePath oleanDir `SystemsLean.MultTheorems "olean"
-    pure ((<- multOlean.pathExists) && (<- thmOlean.pathExists))
+    tryCompileTheoremsAfterLiveMultIO
+      srcPath oleanDir `SystemsLean.MultTheorems
   | _, _ => return false
 
 @[implemented_by tryCompileLiveTheoremsIO]
@@ -231,13 +263,13 @@ elab "#elabMeetLiveModuleProbe" : command => do
       let badPath := badDir / "ElabMeetLiveBad.lean"
       let planted := "\ndef plantedTypeError : Nat := true\n"
       liftIO (IO.FS.writeFile badPath (liveText ++ planted))
-      tryCompileOnDiskModule badPath `ElabMeetLiveBad badDir
+      liftIO (slakeCheckExitZero "ElabMeetLiveBad" (some badDir))
   let goodIso := isoDir / "good.lean"
   let badIso := isoDir / "bad.lean"
   liftIO (IO.FS.writeFile goodIso "def n : Nat := 0")
   liftIO (IO.FS.writeFile badIso "def n : Nat := true")
-  let name99Good <- tryElabFileFromDisk goodIso
-  let name99Bad <- tryElabFileFromDisk badIso
+  let name99Good <- liftIO (slakeCheckExitZero "good" (some isoDir))
+  let name99Bad <- liftIO (slakeCheckExitZero "bad" (some isoDir))
   let name99Ok := name99Good && !name99Bad
   let thisOnTempSnippet <- tryCompileLiveModule goodIso isoDir
   let isolation := name99Ok && !thisOnTempSnippet

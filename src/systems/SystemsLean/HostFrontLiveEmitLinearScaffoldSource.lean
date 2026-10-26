@@ -643,6 +643,6 @@ example : emitLinearReady = true := by decide
 example : emitLinearOk = true := by decide
 
 end SystemsLean.EmitLinear
-#"
+"#
 
 end SystemsLean.HostFrontLiveEmitLinearScaffold

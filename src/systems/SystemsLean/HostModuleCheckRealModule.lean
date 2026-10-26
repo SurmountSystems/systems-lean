@@ -17,6 +17,8 @@
 -- Early imports live in HostModuleCheckRealModuleImportEarly so kept commands stay within kernel fuel 64.
 import SystemsLean.HostModuleCheckRealModuleImportEarly
 import SystemsLean.HostModuleCheckCheckersLater
+import SystemsLean.HostModuleCheckRootsSurface
+import SystemsLean.HostModuleCheckRestSurface
 import SystemsLean.HostModuleCheckDualResidualTerm
 import SystemsLean.HostModuleCheckCompilePathMultTerm
 import SystemsLean.HostModuleCheckCompilePathLinearTerm

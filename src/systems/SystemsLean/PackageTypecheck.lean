@@ -5,7 +5,8 @@
   ElabMeet tryCompileOnDiskModuleIO (header+body, leakEnv false).
   Does not import ElabMeetCompile: that module runs live probes on load.
   .olean files go under build/package-typecheck (durable; SLAKE_OLEAN_DIR),
-  never IO.FS.createTempDir, never under src/systems sources.
+  never IO.FS.createTempDir. A check that returns true also writes the
+  .olean sibling of the compiled .lean.
   Chunked: parent spawns --compile-one children. Ready-queue: a module
   runs only when every in-walk import already has an olean (or the
   import is omitted from the default walk). Up to SLAKE_TYPECHECK_JOBS
@@ -157,7 +158,7 @@ def collectPackageModules (srcRoot : System.FilePath) :
     (mods.toArray.qsort (fun a b => a.fst < b.fst)).toList
   pure sorted
 
-/-- Durable olean dir. Never temp. Never under src/systems sources. -/
+/-- Durable olean dir. Never temp. This dir is not the source tree. -/
 def resolveOleanDir : IO System.FilePath := do
   match <- IO.getEnv "SLAKE_OLEAN_DIR" with
   | some d =>
@@ -167,6 +168,23 @@ def resolveOleanDir : IO System.FilePath := do
       pure d
   | none =>
     pure "build/package-typecheck"
+
+/-- Read-only Lean package library (`lib/lean`). Not an olean write root.
+    `LEAN_SYSROOT`, or `lean --print-prefix`, then `getLibDir`.
+    Does not read or set `SLAKE_OLEAN_DIR`. -/
+def resolveLeanLibDir : IO System.FilePath := do
+  try
+    let sysroot <- findSysroot
+    let libDir <- getLibDir sysroot
+    let marker := libDir / "Lean" / "Elab" / "Frontend.olean"
+    if (<- marker.pathExists) then
+      pure libDir
+    else
+      IO.eprintln s!"resolveLeanLibDir: missing {marker}"
+      pure "/no-lean-lib"
+  catch e =>
+    IO.eprintln s!"resolveLeanLibDir failed: {e.toString}"
+    pure "/no-lean-lib"
 
 /-- True when args or env ask for collect+omit only. -/
 def wantListCheck (args : List String) : IO Bool := do
@@ -243,7 +261,7 @@ def printMessageLog (msgs : MessageLog) : IO Unit := do
   (<- IO.getStderr).flush
 
 /-- Same kernel compile as ElabMeet.tryCompileOnDiskModuleIO.
-    leakEnv false. Writes .olean under oleanDir only.
+    leakEnv false. Writes .olean under oleanDir and beside srcPath.
     On fail, print Lean messages (parse / header / commands / write). -/
 unsafe def tryCompileOnDiskModuleIO (srcPath : System.FilePath)
     (libMod : Name) (oleanDir : System.FilePath) : IO Bool := do
@@ -278,8 +296,10 @@ unsafe def tryCompileOnDiskModuleIO (srcPath : System.FilePath)
     IO.eprintln s!"processCommands failed: {libMod}"
     printMessageLog s.commandState.messages
     return false
+  let besideSrc := srcPath.withExtension "olean"
   try
     writeModule s.commandState.env oleanPath (writeIR := false)
+    writeModule s.commandState.env besideSrc (writeIR := false)
     pure true
   catch e =>
     IO.eprintln s!"writeModule failed: {libMod} {e.toString}"
@@ -446,8 +466,9 @@ unsafe def runSlakeCheckOnDiskIO (n : String) : IO UInt32 := do
       return 1
     let oleanDir <- resolveOleanDir
     IO.FS.createDirAll oleanDir
+    let leanLib <- resolveLeanLibDir
     let prev <- searchPathRef.get
-    searchPathRef.set (srcRoot :: oleanDir :: prev)
+    searchPathRef.set (srcRoot :: oleanDir :: leanLib :: prev)
     try
       let compiled <- tryCompileOnDiskModuleIO srcPath (String.toName n) oleanDir
       if compiled then
@@ -484,8 +505,9 @@ unsafe def runSlakeCheckAtRoot (n : String) (root : System.FilePath) : IO UInt32
       return 1
     let oleanDir <- resolveOleanDir
     IO.FS.createDirAll oleanDir
+    let leanLib <- resolveLeanLibDir
     let prev <- searchPathRef.get
-    searchPathRef.set (root :: oleanDir :: prev)
+    searchPathRef.set (root :: oleanDir :: leanLib :: prev)
     try
       let compiled <- tryCompileOnDiskModuleIO srcPath (String.toName n) oleanDir
       if compiled then
@@ -568,8 +590,9 @@ unsafe def runCompileOneIO (n : String) : IO UInt32 := do
     IO.FS.createDirAll oleanDir
     IO.println s!"oleanDir={oleanDir} (durable; never src/systems sources)"
     flushOut
+    let leanLib <- resolveLeanLibDir
     let prev <- searchPathRef.get
-    searchPathRef.set (oleanDir :: prev)
+    searchPathRef.set (oleanDir :: leanLib :: prev)
     try
       let modName := String.toName n
       let compiled <- tryCompileOnDiskModuleIO srcPath modName oleanDir
