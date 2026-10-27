@@ -43,3 +43,15 @@ Use the project **lean4** skill as the default **host Lean** workbench whenever 
 
 **Do not use lean4 skill as a substitute for:** inventing residual, growing shell/C product work, forging freestanding/PROVABLY claims, agent commits, or pure Nix policy mills.
 
+## Scheduler command
+
+From `/home/nixbuilder/iso`, with the pinned toolchain, nice 19, and one Lean thread:
+
+```bash
+cd /home/nixbuilder/iso && LEAN_NUM_THREADS=1 /run/current-system/sw/bin/nice -n 19 /nix/store/4bfysnfphwfi7yy4rx1plkr51c2q0s92-lean4-4.35.0/bin/lake --dir /home/nixbuilder/iso/src/systems exe slake-check-pool -- --module SimdTargetFeatures --module SlakeCheckLogCompare
+```
+
+The Lake executable is `slake-check-pool`. The packaging ELF is `/home/nixbuilder/iso/src/systems/.lake/build/bin/slake-check-pool`. Bare `lean` over ssh is the wrong command. `slake-memory-pair` compares logs. `slake-check-record` calls `checkRecordComplete`.
+
+A citation needs the tool name, the canonical command, a real path under `/home/nixbuilder/iso`, sha256, exit code, and log lines. A `/tmp` citation fails.
+

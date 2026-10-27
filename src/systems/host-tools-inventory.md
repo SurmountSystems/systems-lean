@@ -266,8 +266,12 @@ compile+link rows. That mill fence is still **not** Lake gone and
 | 68 | slake-runtime-bench-stack-twin | SystemsLean.RuntimeBenchStackTwinMain |
 | 69 | slake-runtime-bench-fail-closed-shape | SystemsLean.RuntimeBenchFailClosedShapeMain |
 
-Recount: **69** rows. If `lakefile.lean` gains or drops a `lean_exe` row,
+Recount: **69** rows. If `lakefile.lean` gains or drops a mill `lean_exe` row,
 update this list in the same slice and keep the living metric in step.
+
+`slake-check-pool`, `slake-memory-pair`, and `slake-check-record` are Lake
+verification executables. They are not mill rows 70, 71, or 72. Mills 55
+through 69 stay built. Do not mill them.
 
 ## Honesty
 

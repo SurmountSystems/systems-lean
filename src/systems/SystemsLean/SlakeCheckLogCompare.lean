@@ -260,7 +260,7 @@ inductive PoolStep where
   | finish (i : Nat)
   deriving Repr, DecidableEq, BEq
 
-def poolTrace (count : Nat) : List PoolStep :=
+partial def poolTrace (count : Nat) : List PoolStep :=
   let rec go (next live : Nat) (queue : List Nat) (acc : List PoolStep) : List PoolStep :=
     if live < concurrentChecks && next < count then
       go (next + 1) (live + 1) (queue ++ [next]) (acc ++ [.start next])
@@ -489,6 +489,711 @@ def waitFirst (flight : List Flight) : IO (ModuleCheckDone × List Flight) := do
       let remaining := flight.filter (fun item => item.index != done.index)
       return (done, remaining)
 
+/-
+Admission, the launch ceiling, monitor disagreement, memory-pair tolerance,
+and citation completeness. These definitions are total.
+`poolTrace` stays `partial def` and is not a premise here.
+-/
+
+/-- Admit one more worker only when fewer than 32 are in flight and work is still queued.
+    Thirty-two already in flight returns false. Nothing queued returns false. -/
+def admitWorker (inFlight queued : Nat) : Bool :=
+  decide (inFlight < concurrentChecks) && decide (0 < queued)
+
+theorem admitWorker_false_when_inFlight_atLeast32
+    (inFlight queued : Nat)
+    (hFlight : 32 ≤ inFlight)
+    (hQueued : 0 < queued) :
+    admitWorker inFlight queued = false := by
+  unfold admitWorker
+  have hNot : ¬ inFlight < concurrentChecks := by
+    rw [concurrentChecks]
+    exact Nat.not_lt_of_le hFlight
+  have hYes : decide (0 < queued) = true := decide_eq_true hQueued
+  rw [decide_eq_false hNot, hYes]
+  rfl
+
+-- guard_admitWorker_32_queued_false
+#guard admitWorker 32 1 == false
+
+-- guard_admitWorker_31_queued_true
+#guard admitWorker 31 1 == true
+
+-- guard_admitWorker_31_nothingQueued_false
+#guard admitWorker 31 0 == false
+
+-- guard_admitWorker_33_queued_false
+#guard admitWorker 33 1 == false
+
+/-- Launch gate in resident bytes. This is 192 GB, not the 206158430208 MemoryMax. -/
+def launchCeilingBytes : Nat := 192000000000
+
+/-- Ceiling hold alone. Projected resident bytes above `launchCeilingBytes` return false. -/
+def ceilingAllows (projectedResidentBytes : Nat) : Bool :=
+  decide (projectedResidentBytes ≤ launchCeilingBytes)
+
+theorem ceilingAllows_false_when_aboveLaunchGate
+    (projectedResidentBytes : Nat)
+    (h : 192000000000 < projectedResidentBytes) :
+    ceilingAllows projectedResidentBytes = false := by
+  unfold ceilingAllows
+  have hNot : ¬ projectedResidentBytes ≤ launchCeilingBytes := by
+    rw [launchCeilingBytes]
+    exact Nat.not_le_of_gt h
+  exact decide_eq_false hNot
+
+-- guard_ceilingAllows_192000000001_false
+#guard ceilingAllows 192000000001 == false
+
+-- guard_ceilingAllows_192000000000_true
+#guard ceilingAllows 192000000000 == true
+
+-- guard_ceilingAllows_206158430208_false
+#guard ceilingAllows 206158430208 == false
+
+/-- While the scheduler reading and the monitor reading disagree, use the larger.
+    Equal readings return that shared value. -/
+def disagreementResident (schedulerReading monitorReading : Nat) : Nat :=
+  Nat.max schedulerReading monitorReading
+
+theorem disagreementResident_eq_max
+    (schedulerReading monitorReading : Nat) :
+    disagreementResident schedulerReading monitorReading =
+      Nat.max schedulerReading monitorReading := by
+  unfold disagreementResident
+  rfl
+
+-- guard_disagreementResident_100_250
+#guard disagreementResident 100 250 == 250
+
+-- guard_disagreementResident_equal
+#guard disagreementResident 100 100 == 100
+
+/-- Absolute difference of two natural numbers. Nat subtraction saturates, so the sum is the gap. -/
+def natAbsDiff (a b : Nat) : Nat :=
+  (a - b) + (b - a)
+
+/-- Absolute difference of two resident-byte readings. -/
+def absDiffBytes (a b : Nat) : Nat :=
+  natAbsDiff a b
+
+/-- Integer percent of the larger reading, truncating toward zero.
+    This figure is not the inside-tolerance test. Truncation would widen that test. -/
+def absDiffPercentOfLarger (a b : Nat) : Nat :=
+  let larger := Nat.max a b
+  if larger == 0 then 0 else (absDiffBytes a b * 100) / larger
+
+/-- Locked by `doc/memory-compare-rule.md` before any sample. Do not widen.
+    ToleranceNumber: 1
+    ToleranceUnit: percent of the larger of the two resident-byte readings -/
+def memoryCompareToleranceNumber : Nat := 1
+
+/-- The rule keeps a pair only when the absolute timestamp difference is at most 1 second. -/
+def pairTimestampWindowSec : Nat := 1
+
+/-- True when the byte gap is at most the locked percent of the larger reading.
+    ToleranceNumber: 1
+    ToleranceUnit: percent of the larger of the two resident-byte readings
+    The test is `diff * 100 ≤ larger * ToleranceNumber`, not the truncated percent. -/
+def withinLockedTolerance (schedulerBytes monitorBytes : Nat) : Bool :=
+  let diff := absDiffBytes schedulerBytes monitorBytes
+  let larger := Nat.max schedulerBytes monitorBytes
+  decide (diff * 100 ≤ larger * memoryCompareToleranceNumber)
+
+-- Pair 2 captured readings. Absolute difference 3305472.
+-- 59760640 - 56455168 = 3305472
+-- 3305472 * 100 = 330547200
+-- 59760640 * 1 = 59760640
+-- 330547200 <= 59760640 is false, so the pair is outside.
+-- guard_withinLockedTolerance_59760640_56455168_outside
+#guard withinLockedTolerance 59760640 56455168 == false
+
+-- Both-workers captured readings. Absolute difference 1130496.
+-- 208367616 - 207237120 = 1130496
+-- 1130496 * 100 = 113049600
+-- 208367616 * 1 = 208367616
+-- 113049600 <= 208367616 is true, so the pair is inside.
+-- guard_withinLockedTolerance_208367616_207237120_inside
+#guard withinLockedTolerance 208367616 207237120 == true
+
+-- Pair 4 captured readings. Absolute difference 192049152.
+-- 208367616 - 16318464 = 192049152
+-- 192049152 * 100 = 19204915200
+-- 208367616 * 1 = 208367616
+-- 19204915200 <= 208367616 is false, so the pair is outside.
+-- guard_withinLockedTolerance_16318464_208367616_outside
+#guard withinLockedTolerance 16318464 208367616 == false
+
+-- Outside pair 1. Scheduler bytes 16719872. Independent bytes 0.
+-- 16719872 - 0 = 16719872
+-- 16719872 * 100 = 1671987200
+-- 16719872 * 1 = 16719872
+-- 1671987200 <= 16719872 is false, so the pair is outside.
+-- guard_withinLockedTolerance_16719872_0_outside
+#guard withinLockedTolerance 16719872 0 == false
+
+-- Outside pair 5. Scheduler bytes 16863232. Independent bytes 560463872.
+-- 560463872 - 16863232 = 543600640
+-- 543600640 * 100 = 54360064000
+-- 560463872 * 1 = 560463872
+-- 54360064000 <= 560463872 is false, so the pair is outside.
+-- guard_withinLockedTolerance_16863232_560463872_outside
+#guard withinLockedTolerance 16863232 560463872 == false
+
+/-- One resident-byte sample. `timestampSec` is a whole-second clock. -/
+structure ResidentSample where
+  timestampSec : Nat
+  residentBytes : Nat
+  deriving Repr, BEq, DecidableEq
+
+/-- One scheduler sample paired with one monitor sample. -/
+structure MemoryPair where
+  scheduler : ResidentSample
+  monitor : ResidentSample
+  deriving Repr, BEq, DecidableEq
+
+/-- Closer monitor wins. On an equal distance, the earlier timestamp wins. -/
+def preferMonitor (schedTs : Nat) (best cand : ResidentSample) : ResidentSample :=
+  let bestDist := natAbsDiff schedTs best.timestampSec
+  let candDist := natAbsDiff schedTs cand.timestampSec
+  if candDist < bestDist then
+    cand
+  else if candDist == bestDist then
+    if cand.timestampSec < best.timestampSec then cand else best
+  else
+    best
+
+def foldNearest (schedTs : Nat) (best : Option ResidentSample) (cand : ResidentSample) :
+    Option ResidentSample :=
+  match best with
+  | none => some cand
+  | some chosen => some (preferMonitor schedTs chosen cand)
+
+/-- Nearest monitor sample. Empty input returns none. -/
+def nearestMonitor (schedTs : Nat) (monitors : List ResidentSample) : Option ResidentSample :=
+  monitors.foldl (foldNearest schedTs) none
+
+/-- Pair by nearest timestamp. Keep the pair only inside the 1 second window.
+    If two monitor samples are equally near, use the earlier timestamp.
+    A sample outside the window is not paired. -/
+def pairByNearestTimestamp (scheduler : ResidentSample) (monitors : List ResidentSample) :
+    Option MemoryPair :=
+  match nearestMonitor scheduler.timestampSec monitors with
+  | none => none
+  | some monitor =>
+    if decide (natAbsDiff scheduler.timestampSec monitor.timestampSec ≤ pairTimestampWindowSec) then
+      some { scheduler := scheduler, monitor := monitor }
+    else
+      none
+
+/-- A pair is inside tolerance only when the timestamps are at most 1 second apart
+    and the resident-byte gap is at most the locked percent of the larger reading.
+    ToleranceNumber: 1
+    ToleranceUnit: percent of the larger of the two resident-byte readings
+    A pair outside the timestamp window is not inside tolerance. Do not widen the number. -/
+def memoryPairInsideTolerance (pair : MemoryPair) : Bool :=
+  decide (natAbsDiff pair.scheduler.timestampSec pair.monitor.timestampSec ≤
+      pairTimestampWindowSec) &&
+    withinLockedTolerance pair.scheduler.residentBytes pair.monitor.residentBytes
+
+-- guard_absDiffBytes_100_250
+#guard absDiffBytes 100 250 == 150
+
+-- guard_absDiffPercentOfLarger_100_250
+#guard absDiffPercentOfLarger 100 250 == 60
+
+-- guard_memoryPairInsideTolerance_overTolerance_false
+#guard memoryPairInsideTolerance
+    { scheduler := { timestampSec := 10, residentBytes := 100 }
+    , monitor := { timestampSec := 10, residentBytes := 250 } } == false
+
+-- guard_memoryPairInsideTolerance_equalWithinWindow_true
+#guard memoryPairInsideTolerance
+    { scheduler := { timestampSec := 10, residentBytes := 4096 }
+    , monitor := { timestampSec := 11, residentBytes := 4096 } } == true
+
+-- guard_memoryPairInsideTolerance_exactOnePercent_true
+#guard memoryPairInsideTolerance
+    { scheduler := { timestampSec := 10, residentBytes := 10000 }
+    , monitor := { timestampSec := 10, residentBytes := 9900 } } == true
+
+-- guard_memoryPairInsideTolerance_oneByteOverOnePercent_false
+#guard memoryPairInsideTolerance
+    { scheduler := { timestampSec := 10, residentBytes := 10000 }
+    , monitor := { timestampSec := 10, residentBytes := 9899 } } == false
+
+-- guard_memoryPairInsideTolerance_outsideWindow_false
+#guard memoryPairInsideTolerance
+    { scheduler := { timestampSec := 10, residentBytes := 4096 }
+    , monitor := { timestampSec := 12, residentBytes := 4096 } } == false
+
+-- guard_pairByNearestTimestamp_earlierTie
+#guard pairByNearestTimestamp
+    { timestampSec := 100, residentBytes := 5 }
+    [ { timestampSec := 101, residentBytes := 1 }
+    , { timestampSec := 99, residentBytes := 2 } ] ==
+  some { scheduler := { timestampSec := 100, residentBytes := 5 }
+       , monitor := { timestampSec := 99, residentBytes := 2 } }
+
+-- guard_pairByNearestTimestamp_nearerNotEarlier
+#guard pairByNearestTimestamp
+    { timestampSec := 100, residentBytes := 5 }
+    [ { timestampSec := 90, residentBytes := 1 }
+    , { timestampSec := 101, residentBytes := 7 } ] ==
+  some { scheduler := { timestampSec := 100, residentBytes := 5 }
+       , monitor := { timestampSec := 101, residentBytes := 7 } }
+
+-- guard_pairByNearestTimestamp_outsideWindow_none
+#guard pairByNearestTimestamp
+    { timestampSec := 100, residentBytes := 5 }
+    [ { timestampSec := 103, residentBytes := 1 } ] == none
+
+-- Two monitor samples share timestamp 1793064791.
+-- The earlier sample is listed first (208367616). The later sample is 16318464.
+-- Equal distance keeps the earlier sample.
+-- guard_pairByNearestTimestamp_sameTsEarlierSample_208367616
+#guard pairByNearestTimestamp
+    { timestampSec := 1793064791, residentBytes := 5 }
+    [ { timestampSec := 1793064791, residentBytes := 208367616 }
+    , { timestampSec := 1793064791, residentBytes := 16318464 } ] ==
+  some { scheduler := { timestampSec := 1793064791, residentBytes := 5 }
+       , monitor := { timestampSec := 1793064791, residentBytes := 208367616 } }
+
+/-- Columns of one `ps -o pid=,rss=,args=` line. Leading spaces are empty fields. -/
+def psColumns (line : String) : List String :=
+  (line.splitOn " ").filter fun word => word != ""
+
+def psTextHas (needle line : String) : Bool :=
+  (line.splitOn needle).length > 1
+
+/-- A Lake command contains `/bin/lake`. The pool path does not. -/
+def psLineIsLake (line : String) : Bool :=
+  psTextHas "/bin/lake" line
+
+/-- `lean --version` is not a worker and is not the scheduler. -/
+def psLineIsLeanVersion (line : String) : Bool :=
+  psTextHas "/bin/lean" line && psTextHas "--version" line
+
+def psLineIsBootstrap (line : String) : Bool :=
+  psTextHas "slake-bootstrap" line && !psLineIsLake line
+
+/-- argv0 from a `pid rss args` line. A later argument is not the executable. -/
+def psExecutableWord (line : String) : Option String :=
+  match psColumns line with
+  | _ :: _ :: exe :: _ => some exe
+  | _ => none
+
+/-- True when argv0 is `bash` or a path ending in `/bash`. -/
+def psExecutableIsBash (line : String) : Bool :=
+  match psExecutableWord line with
+  | some exe => exe == "bash" || String.endsWith exe "/bash"
+  | none => false
+
+/-- True when argv0 is the `slake-check-pool` binary.
+    A script path that only contains that substring is not the binary. -/
+def psExecutableIsPoolBinary (line : String) : Bool :=
+  match psExecutableWord line with
+  | some exe => exe == "slake-check-pool" || String.endsWith exe "/slake-check-pool"
+  | none => false
+
+/-- The pool binary only. Bash running a script is not the pool, even when the
+    script path contains `slake-check-pool`. `/bin/lake` stays out.
+    `slake-bootstrap` stays out. -/
+def psLineIsScheduler (line : String) : Bool :=
+  psExecutableIsPoolBinary line && !psLineIsLake line && !psLineIsBootstrap line &&
+    !psExecutableIsBash line
+
+/-- Pinned Lean 4.35.0. A `slake-bootstrap` path is not this binary. -/
+def pinnedLeanBin : String :=
+  "/nix/store/4bfysnfphwfi7yy4rx1plkr51c2q0s92-lean4-4.35.0/bin/lean"
+
+def psArgIsCheckoutLean (word : String) : Bool :=
+  String.startsWith word "/home/nixbuilder/iso/" && String.endsWith word ".lean"
+
+def psArgsHaveCheckoutLean : List String → Bool
+  | [] => false
+  | word :: rest => psArgIsCheckoutLean word || psArgsHaveCheckoutLean rest
+
+/-- Pinned Lean whose arguments include a checkout `.lean` file.
+    `lean --version` is not a worker. Lake is a different binary. -/
+def psLineIsPinnedLeanWorker (line : String) : Bool :=
+  psTextHas pinnedLeanBin line && !psLineIsLeanVersion line &&
+    (match psColumns line with
+      | _ :: _ :: args => psArgsHaveCheckoutLean args
+      | _ => false)
+
+def psPidSeen (pid : Nat) : List Nat → Bool
+  | [] => false
+  | found :: rest => found == pid || psPidSeen pid rest
+
+/-- Kibibytes already accepted from one ps text. Duplicate pids are not added twice. -/
+structure PsColumnSum where
+  schedulerKib : Nat
+  sawScheduler : Bool
+  workerKib : Nat
+  seen : List Nat
+
+/-- Lake, `lean --version`, and bash stay out of the sum.
+    Bash is not the pool even when a script path contains `slake-check-pool`.
+    A pinned Lean worker on a checkout `.lean` file is counted with the bootstrap workers.
+    A counted line that is not pid, rss, args makes the whole text unreadable. -/
+def addPsLine (acc : PsColumnSum) (line : String) : Option PsColumnSum :=
+  let trimmed := line.trimAscii.copy
+  if trimmed == "" || psLineIsLake trimmed || psLineIsLeanVersion trimmed then
+    some acc
+  else if psLineIsScheduler trimmed || psLineIsBootstrap trimmed ||
+      psLineIsPinnedLeanWorker trimmed then
+    match psColumns trimmed with
+    | pidText :: rssText :: _ =>
+      match pidText.toNat?, rssText.toNat? with
+      | some pid, some kib =>
+        if psPidSeen pid acc.seen then
+          some acc
+        else if psLineIsScheduler trimmed then
+          some {
+            acc with
+            schedulerKib := acc.schedulerKib + kib
+            sawScheduler := true
+            seen := pid :: acc.seen
+          }
+        else
+          some {
+            acc with
+            workerKib := acc.workerKib + kib
+            seen := pid :: acc.seen
+          }
+      | _, _ => none
+    | _ => none
+  else
+    some acc
+
+def foldPsLines (acc : Option PsColumnSum) : List String → Option PsColumnSum
+  | [] => acc
+  | line :: rest =>
+    match acc with
+    | none => none
+    | some total => foldPsLines (addPsLine total line) rest
+
+/-- Resident bytes from one captured ps text.
+    The sum is the pool binary RSS, each `slake-bootstrap` worker RSS, and each pinned Lean
+    worker on a checkout `.lean` file, times 1024.
+    `/bin/lake` is not added. A `lean --version` process is not added.
+    A bash process is not added, even when its script path contains `slake-check-pool`.
+    `none` means the text has no pool binary line, or a counted line is unreadable. -/
+def capturedPsResidentBytes (text : String) : Option Nat :=
+  let start : PsColumnSum :=
+    { schedulerKib := 0, sawScheduler := false, workerKib := 0, seen := [] }
+  match foldPsLines (some start) (text.splitOn "\n") with
+  | none => none
+  | some total =>
+    if total.sawScheduler then
+      some ((total.schedulerKib + total.workerKib) * 1024)
+    else
+      none
+
+/-- Rows from one ps tick at ts=1793064791. RSS column is scheduler 15928,
+    worker 94168, worker 93388. Hand sum 15928 + 94168 + 93388, times 1024. -/
+def capturedBothWorkersPsText : String :=
+  "1821052 15928 /home/nixbuilder/iso/src/systems/.lake/build/bin/slake-check-pool -- " ++
+    "--module SimdTargetFeatures --module SlakeCheckLogCompare\n" ++
+  "1821065 94168 /nix/store/1z7byiviiga5zffpdfaxa87qikfs0r8l-slake-bootstrap " ++
+    "--slake-check SimdTargetFeatures\n" ++
+  "1821080 93388 /nix/store/1z7byiviiga5zffpdfaxa87qikfs0r8l-slake-bootstrap " ++
+    "--slake-check SlakeCheckLogCompare\n"
+
+/-- The same tick also printed Lake. That row stays in the text and stays out of the sum. -/
+def capturedBothWorkersPlusLakePsText : String :=
+  "1821024 830692 /nix/store/4bfysnfphwfi7yy4rx1plkr51c2q0s92-lean4-4.35.0/bin/lake " ++
+    "--dir /home/nixbuilder/iso/src/systems exe slake-check-pool -- " ++
+    "--module SimdTargetFeatures --module SlakeCheckLogCompare\n" ++
+  capturedBothWorkersPsText
+
+-- guard_capturedPsResidentBytes_hand_sum_excludes_lake
+-- Hand sum of the counted RSS column: (15928 + 94168 + 93388) * 1024.
+-- The Lake row rss 830692 is in the second text and is not part of that sum.
+#guard
+  capturedPsResidentBytes capturedBothWorkersPsText ==
+      some ((15928 + 94168 + 93388) * 1024) &&
+    capturedPsResidentBytes capturedBothWorkersPlusLakePsText ==
+      some ((15928 + 94168 + 93388) * 1024) &&
+    capturedPsResidentBytes capturedBothWorkersPlusLakePsText !=
+      some ((15928 + 94168 + 93388 + 830692) * 1024)
+
+
+/-- Captured ps text slake-one-ps-sample-1.txt. Lake stays in the text and out of the sum. -/
+def capturedOnePsSample1Text : String :=
+  "   1649 14420 /run/current-system/systemd/lib/systemd/systemd --user --deserialize=32\n" ++
+  "   1700  4096 (sd-pam)\n" ++
+  " 213639  4344 /nix/store/yly12cgk8diwbba5pjdr7g0b3hk8db0c-dbus-broker-37/bin/dbus-broker-launch --scope user\n" ++
+  " 213641  2896 dbus-broker --log 11 --controller 10 --machine-id f091e79e00eb4cae97244bc8500a4464 --max-bytes 100000000000000 --max-fds 25000000000000 --max-matches 5000000000\n" ++
+  "1845901  6464 sshd-session: nixbuilder@notty\n" ++
+  "1845902  4280 /run/current-system/sw/bin/bash -lc export PATH=/nix/store/3d1c302vw7kc8a5vknhmn34c0pd7zm6m-gcc-wrapper-15.3.0/bin:$PATH; cd /home/nixbuilder/iso; { echo START $(date -Is); command -v cc || echo CC_MISSING; stat -c \"POOL_BEFOR\n" ++
+  "1845905 832436 /nix/store/4bfysnfphwfi7yy4rx1plkr51c2q0s92-lean4-4.35.0/bin/lake --dir /home/nixbuilder/iso/src/systems exe slake-check-pool -- --module SimdTargetFeatures --module SlakeCheckLogCompare\n" ++
+  "1845984 16072 /home/nixbuilder/iso/src/systems/.lake/build/bin/slake-check-pool -- --module SimdTargetFeatures --module SlakeCheckLogCompare\n" ++
+  "1845989  4436 /run/current-system/sw/bin/ps -o pid=,rss=,args=\n"
+
+/-- Captured ps text slake-one-ps-sample-2.txt. Lake stays in the text and out of the sum. -/
+def capturedOnePsSample2Text : String :=
+  "   1649 14420 /run/current-system/systemd/lib/systemd/systemd --user --deserialize=32\n" ++
+  "   1700  4096 (sd-pam)\n" ++
+  " 213639  4344 /nix/store/yly12cgk8diwbba5pjdr7g0b3hk8db0c-dbus-broker-37/bin/dbus-broker-launch --scope user\n" ++
+  " 213641  2896 dbus-broker --log 11 --controller 10 --machine-id f091e79e00eb4cae97244bc8500a4464 --max-bytes 100000000000000 --max-fds 25000000000000 --max-matches 5000000000\n" ++
+  "1845901  6464 sshd-session: nixbuilder@notty\n" ++
+  "1845902  4280 /run/current-system/sw/bin/bash -lc export PATH=/nix/store/3d1c302vw7kc8a5vknhmn34c0pd7zm6m-gcc-wrapper-15.3.0/bin:$PATH; cd /home/nixbuilder/iso; { echo START $(date -Is); command -v cc || echo CC_MISSING; stat -c \"POOL_BEFOR\n" ++
+  "1845905 832436 /nix/store/4bfysnfphwfi7yy4rx1plkr51c2q0s92-lean4-4.35.0/bin/lake --dir /home/nixbuilder/iso/src/systems exe slake-check-pool -- --module SimdTargetFeatures --module SlakeCheckLogCompare\n" ++
+  "1845984 16140 /home/nixbuilder/iso/src/systems/.lake/build/bin/slake-check-pool -- --module SimdTargetFeatures --module SlakeCheckLogCompare\n" ++
+  "1845992 90208 /nix/store/1z7byiviiga5zffpdfaxa87qikfs0r8l-slake-bootstrap --slake-check SimdTargetFeatures\n" ++
+  "1845997  4444 /run/current-system/sw/bin/ps -o pid=,rss=,args=\n"
+
+/-- Captured ps text slake-one-ps-sample-3.txt. Lake stays in the text and out of the sum. -/
+def capturedOnePsSample3Text : String :=
+  "   1649 14420 /run/current-system/systemd/lib/systemd/systemd --user --deserialize=32\n" ++
+  "   1700  4096 (sd-pam)\n" ++
+  " 213639  4344 /nix/store/yly12cgk8diwbba5pjdr7g0b3hk8db0c-dbus-broker-37/bin/dbus-broker-launch --scope user\n" ++
+  " 213641  2896 dbus-broker --log 11 --controller 10 --machine-id f091e79e00eb4cae97244bc8500a4464 --max-bytes 100000000000000 --max-fds 25000000000000 --max-matches 5000000000\n" ++
+  "1845901  6464 sshd-session: nixbuilder@notty\n" ++
+  "1845902  4280 /run/current-system/sw/bin/bash -lc export PATH=/nix/store/3d1c302vw7kc8a5vknhmn34c0pd7zm6m-gcc-wrapper-15.3.0/bin:$PATH; cd /home/nixbuilder/iso; { echo START $(date -Is); command -v cc || echo CC_MISSING; stat -c \"POOL_BEFOR\n" ++
+  "1845905 832436 /nix/store/4bfysnfphwfi7yy4rx1plkr51c2q0s92-lean4-4.35.0/bin/lake --dir /home/nixbuilder/iso/src/systems exe slake-check-pool -- --module SimdTargetFeatures --module SlakeCheckLogCompare\n" ++
+  "1845984 16220 /home/nixbuilder/iso/src/systems/.lake/build/bin/slake-check-pool -- --module SimdTargetFeatures --module SlakeCheckLogCompare\n" ++
+  "1846000 91692 /nix/store/1z7byiviiga5zffpdfaxa87qikfs0r8l-slake-bootstrap --slake-check SlakeCheckLogCompare\n" ++
+  "1846008  4432 /run/current-system/sw/bin/ps -o pid=,rss=,args=\n"
+
+/-- Captured ps text slake-one-ps-sample-4.txt. Lake stays in the text and out of the sum. -/
+def capturedOnePsSample4Text : String :=
+  "   1649 14420 /run/current-system/systemd/lib/systemd/systemd --user --deserialize=32\n" ++
+  "   1700  4096 (sd-pam)\n" ++
+  " 213639  4344 /nix/store/yly12cgk8diwbba5pjdr7g0b3hk8db0c-dbus-broker-37/bin/dbus-broker-launch --scope user\n" ++
+  " 213641  2896 dbus-broker --log 11 --controller 10 --machine-id f091e79e00eb4cae97244bc8500a4464 --max-bytes 100000000000000 --max-fds 25000000000000 --max-matches 5000000000\n" ++
+  "1845901  6464 sshd-session: nixbuilder@notty\n" ++
+  "1845902  4280 /run/current-system/sw/bin/bash -lc export PATH=/nix/store/3d1c302vw7kc8a5vknhmn34c0pd7zm6m-gcc-wrapper-15.3.0/bin:$PATH; cd /home/nixbuilder/iso; { echo START $(date -Is); command -v cc || echo CC_MISSING; stat -c \"POOL_BEFOR\n" ++
+  "1845905 832436 /nix/store/4bfysnfphwfi7yy4rx1plkr51c2q0s92-lean4-4.35.0/bin/lake --dir /home/nixbuilder/iso/src/systems exe slake-check-pool -- --module SimdTargetFeatures --module SlakeCheckLogCompare\n" ++
+  "1845984 16280 /home/nixbuilder/iso/src/systems/.lake/build/bin/slake-check-pool -- --module SimdTargetFeatures --module SlakeCheckLogCompare\n" ++
+  "1846013  4420 /run/current-system/sw/bin/ps -o pid=,rss=,args=\n"
+
+/-- Captured ps text slake-one-ps-sample-5.txt. Lake stays in the text and out of the sum. -/
+def capturedOnePsSample5Text : String :=
+  "   1649 14420 /run/current-system/systemd/lib/systemd/systemd --user --deserialize=32\n" ++
+  "   1700  4096 (sd-pam)\n" ++
+  " 213639  4344 /nix/store/yly12cgk8diwbba5pjdr7g0b3hk8db0c-dbus-broker-37/bin/dbus-broker-launch --scope user\n" ++
+  " 213641  2896 dbus-broker --log 11 --controller 10 --machine-id f091e79e00eb4cae97244bc8500a4464 --max-bytes 100000000000000 --max-fds 25000000000000 --max-matches 5000000000\n" ++
+  "1845901  6464 sshd-session: nixbuilder@notty\n" ++
+  "1845902  4280 /run/current-system/sw/bin/bash -lc export PATH=/nix/store/3d1c302vw7kc8a5vknhmn34c0pd7zm6m-gcc-wrapper-15.3.0/bin:$PATH; cd /home/nixbuilder/iso; { echo START $(date -Is); command -v cc || echo CC_MISSING; stat -c \"POOL_BEFOR\n" ++
+  "1845905 832436 /nix/store/4bfysnfphwfi7yy4rx1plkr51c2q0s92-lean4-4.35.0/bin/lake --dir /home/nixbuilder/iso/src/systems exe slake-check-pool -- --module SimdTargetFeatures --module SlakeCheckLogCompare\n" ++
+  "1845984 16284 /home/nixbuilder/iso/src/systems/.lake/build/bin/slake-check-pool -- --module SimdTargetFeatures --module SlakeCheckLogCompare\n" ++
+  "1846015  4424 /run/current-system/sw/bin/ps -o pid=,rss=,args=\n"
+
+-- guard_capturedOnePsSample1_hand_sum
+-- Hand sum of the counted RSS column on slake-one-ps-sample-1.txt: 16072.
+-- Lake rss 832436 is in the text and is not part of that sum.
+#guard capturedPsResidentBytes capturedOnePsSample1Text == some (16072 * 1024) &&
+  capturedPsResidentBytes capturedOnePsSample1Text != some ((16072 + 832436) * 1024)
+
+-- guard_capturedOnePsSample2_hand_sum
+-- Hand sum: 16140 + 90208. Lake rss 832436 stays out.
+#guard capturedPsResidentBytes capturedOnePsSample2Text == some ((16140 + 90208) * 1024) &&
+  capturedPsResidentBytes capturedOnePsSample2Text != some ((16140 + 90208 + 832436) * 1024)
+
+-- guard_capturedOnePsSample3_hand_sum
+-- Hand sum: 16220 + 91692. Lake rss 832436 stays out.
+#guard capturedPsResidentBytes capturedOnePsSample3Text == some ((16220 + 91692) * 1024) &&
+  capturedPsResidentBytes capturedOnePsSample3Text != some ((16220 + 91692 + 832436) * 1024)
+
+-- guard_capturedOnePsSample4_hand_sum
+-- Hand sum: 16280. Lake rss 832436 stays out.
+#guard capturedPsResidentBytes capturedOnePsSample4Text == some (16280 * 1024) &&
+  capturedPsResidentBytes capturedOnePsSample4Text != some ((16280 + 832436) * 1024)
+
+-- guard_capturedOnePsSample5_hand_sum
+-- Hand sum: 16284. Lake rss 832436 stays out.
+#guard capturedPsResidentBytes capturedOnePsSample5Text == some (16284 * 1024) &&
+  capturedPsResidentBytes capturedOnePsSample5Text != some ((16284 + 832436) * 1024)
+
+/-- Captured ps text scratch/captured-ps-20000047.txt.
+    Copied from builder file /tmp/slake-monitor-ps-one-live/20000047.txt.
+    The guard reads this string. It does not read `/tmp`.
+    Counted rows: slake-check-pool rss 16208 and pinned Lean rss 501976.
+    Lake rss 832048 stays in the text and stays out of the sum. -/
+def capturedPinnedLean20000047Text : String :=
+  "   1649 14420 /run/current-system/systemd/lib/systemd/systemd --user --deserialize=32\n" ++
+  "   1700  4096 (sd-pam)\n" ++
+  " 213639  4344 /nix/store/yly12cgk8diwbba5pjdr7g0b3hk8db0c-dbus-broker-37/bin/dbus-broker-launch --scope user\n" ++
+  " 213641  2896 dbus-broker --log 11 --controller 10 --machine-id f091e79e00eb4cae97244bc8500a4464 --max-bytes 100000000000000 --max-fds 25000000000000 --max-matches 5000000000\n" ++
+  "1853158 10424 sshd-session: nixbuilder@notty\n" ++
+  "1853159  7364 /nix/store/kmzlca218j6j1ar292fxj7707qzypij8-systemd-260.5/bin/systemd-run --user --quiet --collect --pipe --wait --slice=surmount-builder.slice --property=MemoryMax=192G --property=CPUQuota=6080% --property=Nice=19 --property=IOSchedulingClass=idle -- /nix/store/5np0yidzrnyjbb243hvgqpgpss865p0n-nix-2.34.9/bin/nix-daemon --stdio\n" ++
+  "1853162 43388 /nix/store/5np0yidzrnyjbb243hvgqpgpss865p0n-nix-2.34.9/bin/nix-daemon --stdio\n" ++
+  "1859564  6456 sshd-session: nixbuilder@notty\n" ++
+  "1859565  4156 /run/current-system/sw/bin/bash -s\n" ++
+  "1859567  4276 /run/current-system/sw/bin/bash -c  i=20000000 while true; do   /run/current-system/sw/bin/ps -o pid=,rss=,args= > /tmp/slake-monitor-ps-one-live/${i}.txt.tmp   mv /tmp/slake-monitor-ps-one-live/${i}.txt.tmp /tmp/slake-monitor-ps-one-live/${i}.txt   i=$((i+1))   /run/current-system/sw/bin/sleep 0.2 done \n" ++
+  "1859571 832048 /nix/store/4bfysnfphwfi7yy4rx1plkr51c2q0s92-lean4-4.35.0/bin/lake --dir /home/nixbuilder/iso/src/systems exe slake-check-pool -- --module SimdTargetFeatures --module SlakeCheckLogCompare\n" ++
+  "1859754 16208 /home/nixbuilder/iso/src/systems/.lake/build/bin/slake-check-pool -- --module SimdTargetFeatures --module SlakeCheckLogCompare\n" ++
+  "1859799 501976 /nix/store/4bfysnfphwfi7yy4rx1plkr51c2q0s92-lean4-4.35.0/bin/lean /home/nixbuilder/iso/src/systems/SystemsLean/SlakeCheckLogCompare.lean\n" ++
+  "1859826  4440 /run/current-system/sw/bin/ps -o pid=,rss=,args=\n"
+
+-- guard_capturedPinnedLean20000047_full_hand_sum
+-- Hand sum: (16208 + 501976) * 1024 = 530620416.
+-- Included kibibytes are slake-check-pool 16208 and the pinned Lean worker 501976.
+-- Lake rss 832048 is not included. This guard expects 530620416.
+#guard capturedPsResidentBytes capturedPinnedLean20000047Text == some 530620416
+
+-- guard_capturedPinnedLean20000047_pool_only_is_not_full_sum
+-- Pool-only is slake-check-pool rss 16208 times 1024. That product is not 530620416.
+-- The pinned Lean worker is in the full hand sum and is not in the pool-only product.
+#guard capturedPsResidentBytes capturedPinnedLean20000047Text != some (16208 * 1024)
+
+/-- Captured ps text from builder file /tmp/slake-monitor-ps-one-live/40000029.txt.
+    Copied to /tmp/grok-goal-4a11e76a3421/implementer/40000029.txt.
+    The guard reads this string. It does not read `/tmp`.
+    Counted row: slake-check-pool rss 15916. No pinned Lean worker is in this text.
+    Bash rss 4188 runs run-slake-check-pool-once.sh and stays out of the sum.
+    Lake rss 831140 stays in the text and stays out of the sum. -/
+def capturedBash40000029Text : String :=
+  "   1649 14420 /run/current-system/systemd/lib/systemd/systemd --user --deserialize=32\n" ++
+  "   1700  4096 (sd-pam)\n" ++
+  " 213639  4344 /nix/store/yly12cgk8diwbba5pjdr7g0b3hk8db0c-dbus-broker-37/bin/dbus-broker-launch --scope user\n" ++
+  " 213641  2896 dbus-broker --log 11 --controller 10 --machine-id f091e79e00eb4cae97244bc8500a4464 --max-bytes 100000000000000 --max-fds 25000000000000 --max-matches 5000000000\n" ++
+  "1853158 10424 sshd-session: nixbuilder@notty\n" ++
+  "1853159  7364 /nix/store/kmzlca218j6j1ar292fxj7707qzypij8-systemd-260.5/bin/systemd-run --user --quiet --collect --pipe --wait --slice=surmount-builder.slice --property=MemoryMax=192G --property=CPUQuota=6080% --property=IOSchedulingClass=idle -- /nix/store/5np0yidzrnyjbb243hvgqpgpss865p0n-nix-2.34.9/bin/nix-daemon --stdio\n" ++
+  "1853162 43388 /nix/store/5np0yidzrnyjbb243hvgqpgpss865p0n-nix-2.34.9/bin/nix-daemon --stdio\n" ++
+  "1864188  6504 sshd-session: nixbuilder@notty\n" ++
+  "1864189  4188 /run/current-system/sw/bin/bash /home/nixbuilder/iso/src/systems/SystemsLean/scratch/run-slake-check-pool-once.sh\n" ++
+  "1864191  4264 /run/current-system/sw/bin/bash -c i=40000000; while true; do /run/current-system/sw/bin/ps -o pid=,rss=,args= > /tmp/slake-monitor-ps-one-live/${i}.txt.tmp; mv /tmp/slake-monitor-ps-one-live/${i}.txt.tmp /tmp/slake-monitor-ps-one-live/${i}.txt; i=$((i+1)); /run/current-system/sw/bin/sleep 0.2; done\n" ++
+  "1864203 831140 /nix/store/4bfysnfphwfi7yy4rx1plkr51c2q0s92-lean4-4.35.0/bin/lake --dir /home/nixbuilder/iso/src/systems exe slake-check-pool -- --module SimdTargetFeatures --module SlakeCheckLogCompare\n" ++
+  "1864335 15916 /home/nixbuilder/iso/src/systems/.lake/build/bin/slake-check-pool -- --module SimdTargetFeatures --module SlakeCheckLogCompare\n" ++
+  "1864336  4448 /run/current-system/sw/bin/ps -o pid=,rss=,args=\n"
+
+-- guard_capturedBash40000029_hand_sum
+-- Hand sum: 15916 * 1024 = 16297984.
+-- The only counted row is slake-check-pool rss 15916. No pinned Lean worker is in this text.
+-- Bash rss 4188 is in the text and is not part of that sum.
+-- Lake rss 831140 is in the text and is not part of that sum.
+-- This guard does not expect 20586496.
+#guard capturedPsResidentBytes capturedBash40000029Text == some 16297984 &&
+  capturedPsResidentBytes capturedBash40000029Text != some ((15916 + 4188) * 1024) &&
+  capturedPsResidentBytes capturedBash40000029Text != some ((15916 + 831140) * 1024)
+
+/-- Short ps text with no pool binary and no pinned Lean worker.
+    Lake, a bash script whose path contains `slake-check-pool`, and `lean --version`
+    are in the text. The tree-sum returns `none`, not a byte count.
+    The outside-pair-1 tolerance guard uses the number 0, not this `none`. -/
+def outsidePair1NoPoolPsText : String :=
+  "100 1200 /nix/store/4bfysnfphwfi7yy4rx1plkr51c2q0s92-lean4-4.35.0/bin/lake " ++
+    "--dir /home/nixbuilder/iso/src/systems exe slake-check-pool\n" ++
+  "101 4188 /run/current-system/sw/bin/bash " ++
+    "/home/nixbuilder/iso/src/systems/SystemsLean/scratch/run-slake-check-pool-once.sh\n" ++
+  "102 1111 /nix/store/4bfysnfphwfi7yy4rx1plkr51c2q0s92-lean4-4.35.0/bin/lean --version\n"
+
+-- guard_capturedPsResidentBytes_outsidePair1_noPool_none
+#guard capturedPsResidentBytes outsidePair1NoPoolPsText == none
+
+/-- Short ps text with only the pool at rss 16468.
+    Lake, the bash script, and `lean --version` stay in the text and out of the sum. -/
+def outsidePair5PoolPsText : String :=
+  outsidePair1NoPoolPsText ++
+  "200 16468 /home/nixbuilder/iso/src/systems/.lake/build/bin/slake-check-pool " ++
+    "-- --module SimdTargetFeatures\n"
+
+-- Hand sum: 16468 * 1024 = 16863232.
+-- guard_capturedPsResidentBytes_outsidePair5_pool_16468
+#guard capturedPsResidentBytes outsidePair5PoolPsText == some 16863232
+
+/-- That pool plus a pinned Lean worker at rss 530860.
+    The worker argument is a checkout path under `/home/nixbuilder/iso/` ending in `.lean`. -/
+def outsidePair5PoolAndWorkerPsText : String :=
+  outsidePair5PoolPsText ++
+  "201 530860 /nix/store/4bfysnfphwfi7yy4rx1plkr51c2q0s92-lean4-4.35.0/bin/lean " ++
+    "/home/nixbuilder/iso/src/systems/SystemsLean/SlakeCheckLogCompare.lean\n"
+
+-- Hand sum: (16468 + 530860) * 1024 = 560463872.
+-- guard_capturedPsResidentBytes_outsidePair5_pool_and_worker
+#guard capturedPsResidentBytes outsidePair5PoolAndWorkerPsText == some 560463872
+
+/-- Checkout prefix for a builder citation. A path that does not start here is rejected. -/
+def builderCheckoutPrefix : String :=
+  "/home/nixbuilder/iso/"
+
+/-- True for `/tmp` and for any path under `/tmp/`. -/
+def pathUnderTmp (path : String) : Bool :=
+  path == "/tmp" || String.startsWith path "/tmp/"
+
+/-- Missing and empty digests are both rejected. -/
+def sha256Accepted (sha : Option String) : Bool :=
+  match sha with
+  | none => false
+  | some value => value != ""
+
+/-- One tool citation. `sha256` and `exitCode` use `none` for a missing field.
+    Exit code 0 is not required for completeness. -/
+structure CheckRecord where
+  toolName : String
+  canonicalCommand : String
+  checkoutPath : String
+  sha256 : Option String
+  exitCode : Option Nat
+  logLines : List String
+  deriving Repr, BEq, DecidableEq
+
+/-- Accept only a non-empty tool name, a non-empty canonical command,
+    a checkout path under `/home/nixbuilder/iso/`, a non-empty sha256,
+    a present exit code, and at least one log line.
+    A path under `/tmp` is rejected. Exit code 0 is not required. -/
+def checkRecordComplete (record : CheckRecord) : Bool :=
+  record.toolName != "" &&
+    record.canonicalCommand != "" &&
+    String.startsWith record.checkoutPath builderCheckoutPrefix &&
+    (!pathUnderTmp record.checkoutPath) &&
+    sha256Accepted record.sha256 &&
+    record.exitCode.isSome &&
+    (!record.logLines.isEmpty)
+
+/-- Fields for the accepted citation. The sha256 is a non-empty stand-in, not a measured digest. -/
+def acceptedCheckRecord : CheckRecord where
+  toolName := "slake-bootstrap"
+  canonicalCommand :=
+    "/nix/store/1z7byiviiga5zffpdfaxa87qikfs0r8l-slake-bootstrap --slake-check SlakeCheckLogCompare"
+  checkoutPath := "/home/nixbuilder/iso/src/systems/SystemsLean/SlakeCheckLogCompare.lean"
+  sha256 := some "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+  exitCode := some 0
+  logLines := ["WALK_DONE names=1 pass=1 fail=0"]
+
+-- guard_checkRecordComplete_tmp_rejected
+#guard checkRecordComplete { acceptedCheckRecord with
+  checkoutPath := "/tmp/somewhere" } == false
+
+-- guard_checkRecordComplete_emptySha_rejected
+#guard checkRecordComplete { acceptedCheckRecord with
+  sha256 := some "" } == false
+
+-- guard_checkRecordComplete_missingSha_rejected
+#guard checkRecordComplete { acceptedCheckRecord with
+  sha256 := none } == false
+
+-- guard_checkRecordComplete_accepted
+#guard checkRecordComplete acceptedCheckRecord == true
+
+-- guard_checkRecordComplete_nonzeroExit_accepted
+#guard checkRecordComplete { acceptedCheckRecord with
+  exitCode := some 7 } == true
+
+-- guard_checkRecordComplete_missingExit_rejected
+#guard checkRecordComplete { acceptedCheckRecord with
+  exitCode := none } == false
+
+-- guard_checkRecordComplete_emptyLog_rejected
+#guard checkRecordComplete { acceptedCheckRecord with
+  logLines := [] } == false
+
+-- guard_checkRecordComplete_emptyTool_rejected
+#guard checkRecordComplete { acceptedCheckRecord with
+  toolName := "" } == false
+
+-- guard_checkRecordComplete_emptyCommand_rejected
+#guard checkRecordComplete { acceptedCheckRecord with
+  canonicalCommand := "" } == false
+
+-- guard_checkRecordComplete_tmpExact_rejected
+#guard checkRecordComplete { acceptedCheckRecord with
+  checkoutPath := "/tmp" } == false
+
 def main (args : List String) : IO UInt32 := do
   match args with
   | "--checks" :: path :: _ =>
@@ -503,5 +1208,5 @@ def main (args : List String) : IO UInt32 := do
 
 end SlakeCheckLogCompare
 
-def main (args : List String) : IO UInt32 :=
-  SlakeCheckLogCompare.main args
+-- Compare and `--checks` stay `SlakeCheckLogCompare.main`.
+-- A root `main` here clashes with Lake roots that import this module.

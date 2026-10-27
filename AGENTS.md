@@ -14,3 +14,4 @@ Keep this file under 1000 tokens. Do not append novels. Do not dual-pin every co
 - Do not write or recreate `WATCHER.md`. The operator deleted it. Living leftover is a short Open in `RESIDUAL-systems.md` and a short status in `doc/SESSION-HANDOFF.md`. Do not append lockstep novels. This file stays under 1000 tokens.
 - Name the check that would falsify the claim. Quote command and stdout, or say not sampled. Never assume.
 - Agents never git add, commit, or push. Novel work is Unlicense.
+- The scheduler command is in `doc/lean4-skill-use.md`. Bare `lean` over ssh is wrong. A citation needs the tool name, that command, a real path under `/home/nixbuilder/iso`, sha256, exit code, and log lines. A `/tmp` citation fails.

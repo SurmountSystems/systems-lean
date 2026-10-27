@@ -1,3 +1,31 @@
+The five one-ps-text pairs are inside diff*100 <= larger*1. Both readings of each pair come from one captured ps text and equal the hand sum of slake-check-pool RSS plus slake-bootstrap worker RSS in that text, times 1024. The log is /tmp/grok-goal-4a11e76a3421/implementer/memory-run-one-ps-text.log. The #guard on those texts elaborated with exit 0. Historical pair 2 and pair 4 stay outside. The tolerance stays 1. This paragraph does not claim the memory clause passed.
+
+Pair 2's guard elaborated exit 0. Pair 4's guard is this land (`#guard withinLockedTolerance 16318464 208367616 == false`). Both live pairs stay outside. The tolerance was not widened. The memory clause is not a pass.
+
+Statistics block appended 2026-10-26. The four saved absolute differences are 69632, 40353792, 1130496, and 192049152. They match those four numbers. No inside= flag was changed. No new #guard was applied.
+
+Check the sum before the mean. 69632 + 40353792 = 40423424. 40423424 + 1130496 = 41553920. 41553920 + 192049152 = 233603072. Shown as one addition: 69632 + 40353792 + 1130496 + 192049152 = 233603072. Pair count is 4. Mean is 233603072 divided by 4. The quotient is 58400768 and the remainder is 0. It divides evenly. Maximum is 192049152, the largest of the four, and it is pair 4.
+
+One SAMPLE line is unpaired (resident_bytes=missing). Quoted line: ts=1793064791 resident_bytes=missing in_flight=1 queued=0. It is not a fifth pair. No difference was invented for it.
+
+Pair 1 readings from the file are sched=16171008 and mon=16101376. The larger reading is the scheduler reading 16171008. abs_diff * 100 = 69632 * 100 = 6963200. 6963200 divided by 16171008 = quotient 0 remainder 6963200. Not rounded.
+
+Pair 2 readings from the file are sched=56455168 and mon=16101376. The larger reading is the scheduler reading 56455168. abs_diff * 100 = 40353792 * 100 = 4035379200. 4035379200 divided by 56455168 = quotient 71 remainder 27062272. Not rounded.
+
+Pair 3 readings from the file are sched=207237120 and mon=208367616. The larger reading is the monitor reading 208367616. abs_diff * 100 = 1130496 * 100 = 113049600. 113049600 divided by 208367616 = quotient 0 remainder 113049600. Not rounded.
+
+Pair 4 readings from the file are sched=16318464 and mon=208367616. The larger reading is the monitor reading 208367616. abs_diff * 100 = 192049152 * 100 = 19204915200. 19204915200 divided by 208367616 = quotient 92 remainder 35094528. Not rounded.
+
+Peak scheduler resident bytes among the four published readings is 207237120. The four published scheduler readings are 16171008, 56455168, 207237120, and 16318464. 207237120 is one of those four and is the largest of those four. Peak monitor tree bytes among the four paired readings is 208367616. The four paired monitor tree readings are 16101376, 16101376, 208367616, and 208367616. 208367616 is one of those four and is the largest of those four. Lake RSS is not part of either peak. Lake RSS was not added. Both peaks are under the launch ceiling 192000000000. 207237120 * 1 = 207237120 <= 192000000000, and that inequality holds. 208367616 * 1 = 208367616 <= 192000000000, and that inequality holds.
+
+Concurrency is already in the file: peak=2 average=0 queue=2. Quoted lines: SCHEDULER tool=slake-check-pool cap=32 ceiling=192000000000 queue=2. SCHEDULE_DONE names=2 pass=0 fail=2 peak=2 average=0. CEILING held_any_launch=false. Quoted line: CEILING held_any_launch=false. No slot idled while work was queued, because in_flight followed the queue from 2 to 0 and the ceiling held nothing. Quoted in_flight lines that show 2 then 0: ts=1793064791 resident_bytes=207237120 in_flight=2 queued=0. ts=1793064791 resident_bytes=16318464 in_flight=0 queued=0.
+
+Pair 2 and pair 4 stay outside. Their causes stay the causes already written in the file. This append does not fix them. inside=yes and inside=no were not changed. Quoted pair 2 cause: Cause: R1 has the pool and no slake-bootstrap worker. The in_flight=1 published reading includes one worker. A later block in the same second has pool 15864 kibibytes plus worker pid 1821065 at 42496 kibibytes, tree 15864*1024+42496*1024=59760640. That later block is not the tie-break winner. Against that later block, diff=59760640-56455168=3305472, diff*100=330547200, larger*1=59760640, and 330547200 <= 59760640 is false. The worker RSS moved more than 1 percent between the scheduler ps and the monitor ps. Quoted pair 4 cause: Cause: the earlier block at ts=1793064791 still lists both workers, tree 208367616. The in_flight=0 sample was taken after the workers had exited. A later block in the same second is pool-only, pid 1821052 rss_kib=15936, bytes=15936*1024=16318464, which equals the published 16318464. diff for that later block is 0, and 0 <= 16318464 is true, but that later block is not the tie-break winner. The selected pair stays outside.
+
+The memory clause is not a pass while pair 2 and pair 4 are outside and no new #guard has reproduced a fix. Held false stays false: slakeOwnsPackageTypecheck, FullHost, occupancy 49.
+
+pair 2 stays outside even against the same-second monitor block that contains the one worker (59760640 versus 56455168, diff 3305472), so a new #guard on that captured disagreement is still owed, and pair 4 stays outside because the locked earlier-timestamp tie-break keeps the both-workers block.
+
 # Session handoff
 
 Reseed after compaction or a new chat. Read in order with `AGENTS.md`.
@@ -14,6 +42,10 @@ Do not claim Slake-from-Slake done. Do not mint a dest.
 
 Held false: slakeOwnsPackageTypecheck stays false. FullHost stays false.
 Occupancy stays 49. Mills 55 through 69 stay built. HostKernel.lean 779 closed.
+
+The 2026-10-26 Lake build of slake-check-pool, slake-memory-pair, and slake-check-record did not start, because lake pids 990565, 990731, 990878, 991078, and 992608 were already running on surmount-1.
+
+The three Lake executables slake-check-pool, slake-memory-pair, and slake-check-record were not built. scheduler-run-1.log and scheduler-run-2.log were not written. memory-run.log and report-gate.log were not written. The decision file on both trees was last recorded as sha256 c81ae1a98d79e9daa9593bfe81e0fe36c2f5a4b8140a37f2c0ca147c6491c864. The exit-0 elaboration in decision-guards.log is the older hash 36e31c0ffa14fa669a402c5f47cbee4553c317e70e1ff066263be3fb4ed99678. The current hash has not been re-elaborated. Foreign lake builds on surmount-1 blocked the build. They were not killed. Hollow guards stay in the source. The proposed replacements were not applied. One is `#guard startedIndices (schedulePool (moduleNames 40) []) == List.range 32` for the concurrentChecks guard. The other is `#guard ceilingAllows slakeBootstrapBytes == true` for the byte-count guard. The second replacement still does not measure the ELF. Once a fresh process snapshot shows those foreign lake processes are gone, build the three Lake targets with the pinned toolchain from /home/nixbuilder/iso, then run the documented scheduler command twice on SimdTargetFeatures and SlakeCheckLogCompare. Do not flip slakeOwnsPackageTypecheck, FullHost, or occupancy. Do not claim the package accepted. The quoted pool log remains WALK_DONE names=2801 pass=2777 fail=24.
 
 The gate `nix/lean-string-slice-copy` exists and still fail-closes a
 Slice-without-`.copy` miss. Edmonton owns that eval. Do not re-eval.

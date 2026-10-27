@@ -83,6 +83,9 @@ ASCII string names (hyphenated); no guillemet identifiers.
   slake-runtime-bench-lean -> SystemsLean.RuntimeBenchLeanMain
   slake-runtime-bench-stack-twin -> SystemsLean.RuntimeBenchStackTwinMain
   slake-runtime-bench-fail-closed-shape -> SystemsLean.RuntimeBenchFailClosedShapeMain
+  slake-check-pool -> SystemsLean.CheckPoolMain
+  slake-memory-pair -> SystemsLean.MemoryPairMain
+  slake-check-record -> SystemsLean.CheckRecordMain
 -/
 
 package SystemsLean where
@@ -368,4 +371,17 @@ lean_exe "slake-runtime-bench-stack-twin" where
 
 lean_exe "slake-runtime-bench-fail-closed-shape" where
   root := `SystemsLean.RuntimeBenchFailClosedShapeMain
+  supportInterpreter := true
+
+-- Verification tools. Not mill rows. Mills 55 through 69 stay built.
+lean_exe "slake-check-pool" where
+  root := `SystemsLean.CheckPoolMain
+  supportInterpreter := true
+
+lean_exe "slake-memory-pair" where
+  root := `SystemsLean.MemoryPairMain
+  supportInterpreter := true
+
+lean_exe "slake-check-record" where
+  root := `SystemsLean.CheckRecordMain
   supportInterpreter := true

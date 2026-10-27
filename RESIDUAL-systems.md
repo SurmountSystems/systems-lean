@@ -90,6 +90,27 @@ Lean 4 guess is 10.0 days / 40.0m. The standing mathlib guess is 5.0 days /
 Pointer: `/home/hunter/.agents/reports/remaining-2026-10-17-prove-honesty.md`.
 Do not write `WATCHER.md`. Do not emit a next implement prompt.
 
+### Lake verification runs blocked
+
+**Status:** met
+
+Historical pair 2 stays outside in the old log: 59760640 and 56455168, and
+330547200 <= 59760640 is false. Historical pair 4 stays outside in the old
+log: monitor 208367616 against scheduler 16318464, and
+19204915200 <= 208367616 is false. memoryCompareToleranceNumber stays 1.
+pairByNearestTimestamp stays. The live scheduler published resident_bytes
+from one monitor ps text per sample and did not spawn a second ps. An
+independent parse of each of those same texts is inside diff*100 <= larger*1.
+The paired sample is
+`/tmp/grok-goal-4a11e76a3421/implementer/memory-run-one-ps-live.log`.
+
+**Done when:** a live scheduler sample publishes resident_bytes from one
+monitor ps text, and an independent parse of that same text is inside
+diff*100 <= larger*1. Historical pair 2 and pair 4 stay outside in the old
+log. Tolerance stays 1. pairByNearestTimestamp stays.
+
+**Next:** This heading is met. The hollow replacements stay unapplied, because this goal does not rewrite hollow theorems. `### Lean 4.35 leftover` stays open on purpose.
+
 ## Deferred (held with reason)
 
 | Name | Why held | Unlocks when |

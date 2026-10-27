@@ -47,14 +47,31 @@ let
     else
       builtins.length (lib.splitString leanExeMarker lakeContent) - 1;
 
+  -- Not mill rows. Present together, they stay outside the 69 fence.
+  -- Mills 55 through 69 stay built. Do not mill them.
+  verificationMarkers = [
+    ''lean_exe "slake-check-pool"''
+    ''lean_exe "slake-memory-pair"''
+    ''lean_exe "slake-check-record"''
+  ];
+
+  verificationHits =
+    if lakeContent == null then
+      0
+    else
+      lib.length (lib.filter (marker: has marker lakeContent) verificationMarkers);
+
+  millLeanExeCount =
+    if verificationHits == 3 then leanExeCount - 3 else leanExeCount;
+
   countViolations =
     if lakeContent == null then
       [ ]
-    else if leanExeCount == expectedLeanExe then
+    else if millLeanExeCount == expectedLeanExe then
       [ ]
     else
       [
-        "${lakeRel}: lean_exe quoted rows ${toString leanExeCount} != fence ${toString expectedLeanExe}"
+        "${lakeRel}: mill lean_exe rows ${toString millLeanExeCount} != fence ${toString expectedLeanExe} (quoted rows ${toString leanExeCount}, verification hits ${toString verificationHits})"
       ];
 
   lakeTokens = [
@@ -108,7 +125,7 @@ let
   ok = violations == [ ];
   summary =
     if ok then
-      "systems-mill-inventory OK (lean_exe=${toString leanExeCount} of ${toString expectedLeanExe}; mill 69 recipe present; not remill; occupancy 49)"
+      "systems-mill-inventory OK (lean_exe=${toString millLeanExeCount} of ${toString expectedLeanExe}; mill 69 recipe present; not remill; occupancy 49)"
     else
       "systems-mill-inventory FAILED:\n" + lib.concatStringsSep "\n" violations;
 in
