@@ -300,7 +300,21 @@ def checkEnv : Array (String × Option String) := #[
   ("LD_PRELOAD", some "/nix/store/4bfysnfphwfi7yy4rx1plkr51c2q0s92-lean4-4.35.0/lib/lean/libleanshared.so")
 ]
 
-abbrev Slot := Task (String × Except IO.Error Bool)
+/-- One log line. Newlines in process text must not split a FAIL row. -/
+def oneLineReason (text : String) : String :=
+  let flat := ((text.replace "\r\n" " ").replace "\n" " ").replace "\r" " "
+  flat.trimAscii.copy
+
+/-- Stderr, then stdout. An empty pair keeps the exit code, which is the only text left. -/
+def slotFailReason (stdout stderr : String) (code : UInt32) : String :=
+  let errText := oneLineReason stderr
+  let outText := oneLineReason stdout
+  if errText != "" && outText != "" then s!"{errText} | {outText}"
+  else if errText != "" then errText
+  else if outText != "" then outText
+  else s!"exit={code}"
+
+abbrev Slot := Task (String × Except IO.Error (Bool × String))
 
 def startSlot (name : String) : IO Slot := do
   let task ← IO.asTask (prio := Task.Priority.dedicated) do
@@ -310,9 +324,12 @@ def startSlot (name : String) : IO Slot := do
       cwd := some "/home/nixbuilder/iso"
       env := checkEnv
     }
-    return out.exitCode == 0
+    let reason :=
+      if out.exitCode == 0 then ""
+      else slotFailReason out.stdout out.stderr out.exitCode
+    return (out.exitCode == 0, reason)
   return task.map (sync := true) fun
-    | Except.ok ok => (name, Except.ok ok)
+    | Except.ok payload => (name, Except.ok payload)
     | Except.error err => (name, Except.error err)
 
 partial def fill (pending : List String) (live : List Slot) : IO (List String × List Slot) := do
@@ -330,10 +347,15 @@ partial def drain (pending : List String) (live : List Slot) (pass fail : Nat) :
   match live with
   | [] => return (pass, fail)
   | head :: tail =>
-    let ((_, result), rest) ← IO.waitAny' (head :: tail) (Nat.succ_pos _)
+    let ((name, result), rest) ← IO.waitAny' (head :: tail) (Nat.succ_pos _)
     match result with
-    | Except.ok true => drain pending rest (pass + 1) fail
-    | _ => drain pending rest pass (fail + 1)
+    | Except.ok (true, _) => drain pending rest (pass + 1) fail
+    | Except.ok (false, reason) =>
+      IO.println s!"FAIL name={name} reason={reason}"
+      drain pending rest pass (fail + 1)
+    | Except.error err =>
+      IO.println s!"FAIL name={name} reason={oneLineReason s!"{err}"}"
+      drain pending rest pass (fail + 1)
 
 def runChecks (namesPath : System.FilePath) : IO UInt32 := do
   let text ← IO.FS.readFile namesPath
@@ -624,6 +646,121 @@ def withinLockedTolerance (schedulerBytes monitorBytes : Nat) : Bool :=
 -- guard_withinLockedTolerance_16318464_208367616_outside
 #guard withinLockedTolerance 16318464 208367616 == false
 
+/-- One historical comparison. The raw byte pair stays outside ToleranceNumber 1.
+    A scored whole-tree pair needs a monitor text on the scheduler sample,
+    the monitor block the tie-break actually selected, and the same worker set.
+    `sameWorkerSet = none` means the scheduler ps text is not in evidence.
+    This does not invent pid, rss, or args rows. -/
+structure HistoricalCompare where
+  schedulerBytes : Nat
+  monitorBytes : Nat
+  schedulerMonitorAbsent : Bool
+  selectedMonitorBlock : Bool
+  sameWorkerSet : Option Bool
+  deriving Repr, BEq, DecidableEq
+
+/-- The fixed reader does not score an absent monitor field, an unselected
+    later block, or a different worker set. A same-set selected pair is scored
+    even when the bytes are outside tolerance. Tolerance stays 1. -/
+def historicalScoredWholeTree (row : HistoricalCompare) : Option (Nat × Nat) :=
+  if row.schedulerMonitorAbsent || !row.selectedMonitorBlock ||
+      !(row.sameWorkerSet == some true) then
+    none
+  else
+    some (row.schedulerBytes, row.monitorBytes)
+
+/-- Cause for a comparison the fixed reader does not score.
+    `none` when `historicalScoredWholeTree` returns the pair. -/
+def historicalUnscoredCause (row : HistoricalCompare) : Option String :=
+  match historicalScoredWholeTree row with
+  | some _ => none
+  | none =>
+    if !row.selectedMonitorBlock then
+      some "later-block-not-tie-break-winner-scheduler-monitor-bytes-absent"
+    else if row.sameWorkerSet == some false then
+      some "earlier-timestamp-tie-break-kept-different-worker-set"
+    else if row.schedulerMonitorAbsent then
+      some "scheduler-monitor-bytes-absent"
+    else
+      some "worker-set-not-in-evidence"
+
+/-- Pair 2. Scheduler SAMPLE resident_bytes=56455168 has monitor_bytes=absent.
+    59760640 is the later same-second block, (15864 + 42496) * 1024.
+    That block was not the tie-break winner.
+    The scheduler ps text that printed 56455168 is not in the monitor file.
+    Evidence: scheduler-run-after-live-tree.log and
+    memory-monitor-live-l3-2026-10-26.txt. -/
+def historicalPair2Compare : HistoricalCompare :=
+  { schedulerBytes := 56455168
+    monitorBytes := 59760640
+    schedulerMonitorAbsent := true
+    selectedMonitorBlock := false
+    sameWorkerSet := none }
+
+/-- Pair 4. The in_flight=0 sample is pool-only 15936 * 1024 = 16318464.
+    The tie-break kept the earlier both-workers block
+    (15928 + 94168 + 93388) * 1024 = 208367616.
+    Those worker sets differ. The SAMPLE field is monitor_bytes=absent. -/
+def historicalPair4Compare : HistoricalCompare :=
+  { schedulerBytes := 16318464
+    monitorBytes := 208367616
+    schedulerMonitorAbsent := true
+    selectedMonitorBlock := true
+    sameWorkerSet := some false }
+
+/-- Same-set selected pair. This is not historical pair 2 or pair 4. -/
+def historicalInsideCompare : HistoricalCompare :=
+  { schedulerBytes := 208367616
+    monitorBytes := 207237120
+    schedulerMonitorAbsent := false
+    selectedMonitorBlock := true
+    sameWorkerSet := some true }
+
+/-- Log line for one unscored historical comparison. The raw numbers stay outside. -/
+def historicalUnscoredLine (label : String) (left right : Nat) (row : HistoricalCompare) : String :=
+  let diff := absDiffBytes left right
+  let larger := Nat.max left right
+  let tol := memoryCompareToleranceNumber
+  let holdsText := if withinLockedTolerance left right then "true" else "false"
+  let scoredText :=
+    match historicalScoredWholeTree row with
+    | some _ => "true"
+    | none => "false"
+  let causeText :=
+    match historicalUnscoredCause row with
+    | some cause => cause
+    | none => "scored"
+  s!"UNSCORED {label}={left},{right} diff*100={diff * 100} " ++
+    s!"larger*{tol}={larger * tol} holds={holdsText} scored={scoredText} cause={causeText}\n"
+
+-- guard_historical_pair2_pair4_unscored_raw_outside
+-- (15864 + 42496) * 1024 = 59760640. 15936 * 1024 = 16318464.
+-- (15928 + 94168 + 93388) * 1024 = 208367616.
+-- Both raw pairs stay outside. Neither is a scored whole-tree pair.
+-- 59760640 versus 56455168 is not marked inside.
+-- 16318464 versus 208367616 is not marked inside.
+#guard
+  (15864 + 42496) * 1024 == 59760640 &&
+    15936 * 1024 == 16318464 &&
+    (15928 + 94168 + 93388) * 1024 == 208367616 &&
+    withinLockedTolerance 59760640 56455168 == false &&
+    withinLockedTolerance 16318464 208367616 == false &&
+    historicalScoredWholeTree historicalPair2Compare == none &&
+    historicalScoredWholeTree historicalPair4Compare == none &&
+    historicalUnscoredCause historicalPair2Compare ==
+      some "later-block-not-tie-break-winner-scheduler-monitor-bytes-absent" &&
+    historicalUnscoredCause historicalPair4Compare ==
+      some "earlier-timestamp-tie-break-kept-different-worker-set" &&
+    historicalScoredWholeTree historicalInsideCompare == some (208367616, 207237120) &&
+    historicalUnscoredCause historicalInsideCompare == none &&
+    withinLockedTolerance 208367616 207237120 == true &&
+    ((historicalUnscoredLine "pair2" 59760640 56455168 historicalPair2Compare).splitOn
+        "scored=false cause=later-block-not-tie-break-winner-scheduler-monitor-bytes-absent").length ==
+      2 &&
+    ((historicalUnscoredLine "pair4" 16318464 208367616 historicalPair4Compare).splitOn
+        "scored=false cause=earlier-timestamp-tie-break-kept-different-worker-set").length ==
+      2
+
 -- Outside pair 1. Scheduler bytes 16719872. Independent bytes 0.
 -- 16719872 - 0 = 16719872
 -- 16719872 * 100 = 1671987200
@@ -639,6 +776,18 @@ def withinLockedTolerance (schedulerBytes monitorBytes : Nat) : Bool :=
 -- 54360064000 <= 560463872 is false, so the pair is outside.
 -- guard_withinLockedTolerance_16863232_560463872_outside
 #guard withinLockedTolerance 16863232 560463872 == false
+
+-- Full-tree pair from zfulltree000017.txt and zfulltree000016.txt.
+-- Both texts count pool pid 927284 at 16736 kibibytes and pinned Lean pid 927301.
+-- That Lean rss is 529572 kibibytes on one side and 523668 on the other.
+-- 529572 - 523668 = 5904. 5904 * 1024 = 6045696.
+-- 559419392 - 553373696 = 6045696.
+-- 6045696 * 100 = 604569600.
+-- 559419392 * 1 = 559419392.
+-- 604569600 <= 559419392 is false, so the pair is outside.
+-- The gap is that worker's resident bytes moving. It is not a dropped pid.
+-- guard_withinLockedTolerance_559419392_553373696_outside
+#guard withinLockedTolerance 559419392 553373696 == false
 
 /-- One resident-byte sample. `timestampSec` is a whole-second clock. -/
 structure ResidentSample where
@@ -833,16 +982,16 @@ structure PsColumnSum where
   workerKib : Nat
   seen : List Nat
 
-/-- Lake, `lean --version`, and bash stay out of the sum.
-    Bash is not the pool even when a script path contains `slake-check-pool`.
+/-- `/bin/lake` is in the sum. `doc/memory-compare-rule.md` does not exclude it.
+    `lean --version` stays out. Bash stays out.
     A pinned Lean worker on a checkout `.lean` file is counted with the bootstrap workers.
     A counted line that is not pid, rss, args makes the whole text unreadable. -/
 def addPsLine (acc : PsColumnSum) (line : String) : Option PsColumnSum :=
   let trimmed := line.trimAscii.copy
-  if trimmed == "" || psLineIsLake trimmed || psLineIsLeanVersion trimmed then
+  if trimmed == "" || psLineIsLeanVersion trimmed then
     some acc
   else if psLineIsScheduler trimmed || psLineIsBootstrap trimmed ||
-      psLineIsPinnedLeanWorker trimmed then
+      psLineIsPinnedLeanWorker trimmed || psLineIsLake trimmed then
     match psColumns trimmed with
     | pidText :: rssText :: _ =>
       match pidText.toNat?, rssText.toNat? with
@@ -875,11 +1024,13 @@ def foldPsLines (acc : Option PsColumnSum) : List String → Option PsColumnSum
     | some total => foldPsLines (addPsLine total line) rest
 
 /-- Resident bytes from one captured ps text.
-    The sum is the pool binary RSS, each `slake-bootstrap` worker RSS, and each pinned Lean
-    worker on a checkout `.lean` file, times 1024.
-    `/bin/lake` is not added. A `lean --version` process is not added.
+    The sum is the pool binary RSS, each `/bin/lake` RSS, each `slake-bootstrap` worker RSS,
+    and each pinned Lean worker on a checkout `.lean` file, times 1024.
+    `doc/memory-compare-rule.md` does not exclude `/bin/lake`.
+    A `lean --version` process is not added.
     A bash process is not added, even when its script path contains `slake-check-pool`.
-    `none` means the text has no pool binary line, or a counted line is unreadable. -/
+    `none` means the text has no pool binary line, or a counted line is unreadable.
+    The preserved zfulltree pair uses `everyRealPsLineBytes`, not this sum. -/
 def capturedPsResidentBytes (text : String) : Option Nat :=
   let start : PsColumnSum :=
     { schedulerKib := 0, sawScheduler := false, workerKib := 0, seen := [] }
@@ -901,26 +1052,26 @@ def capturedBothWorkersPsText : String :=
   "1821080 93388 /nix/store/1z7byiviiga5zffpdfaxa87qikfs0r8l-slake-bootstrap " ++
     "--slake-check SlakeCheckLogCompare\n"
 
-/-- The same tick also printed Lake. That row stays in the text and stays out of the sum. -/
+/-- The same tick also printed Lake. That row is in the sum. The rule file does not exclude it. -/
 def capturedBothWorkersPlusLakePsText : String :=
   "1821024 830692 /nix/store/4bfysnfphwfi7yy4rx1plkr51c2q0s92-lean4-4.35.0/bin/lake " ++
     "--dir /home/nixbuilder/iso/src/systems exe slake-check-pool -- " ++
     "--module SimdTargetFeatures --module SlakeCheckLogCompare\n" ++
   capturedBothWorkersPsText
 
--- guard_capturedPsResidentBytes_hand_sum_excludes_lake
--- Hand sum of the counted RSS column: (15928 + 94168 + 93388) * 1024.
--- The Lake row rss 830692 is in the second text and is not part of that sum.
+-- guard_capturedPsResidentBytes_hand_sum_includes_lake
+-- Hand sum without Lake: (15928 + 94168 + 93388) * 1024.
+-- The Lake row rss 830692 is in the second text and is in that sum.
 #guard
   capturedPsResidentBytes capturedBothWorkersPsText ==
       some ((15928 + 94168 + 93388) * 1024) &&
     capturedPsResidentBytes capturedBothWorkersPlusLakePsText ==
-      some ((15928 + 94168 + 93388) * 1024) &&
+      some ((15928 + 94168 + 93388 + 830692) * 1024) &&
     capturedPsResidentBytes capturedBothWorkersPlusLakePsText !=
-      some ((15928 + 94168 + 93388 + 830692) * 1024)
+      some ((15928 + 94168 + 93388) * 1024)
 
 
-/-- Captured ps text slake-one-ps-sample-1.txt. Lake stays in the text and out of the sum. -/
+/-- Captured ps text slake-one-ps-sample-1.txt. Lake rss 832436 is in the sum. -/
 def capturedOnePsSample1Text : String :=
   "   1649 14420 /run/current-system/systemd/lib/systemd/systemd --user --deserialize=32\n" ++
   "   1700  4096 (sd-pam)\n" ++
@@ -932,7 +1083,7 @@ def capturedOnePsSample1Text : String :=
   "1845984 16072 /home/nixbuilder/iso/src/systems/.lake/build/bin/slake-check-pool -- --module SimdTargetFeatures --module SlakeCheckLogCompare\n" ++
   "1845989  4436 /run/current-system/sw/bin/ps -o pid=,rss=,args=\n"
 
-/-- Captured ps text slake-one-ps-sample-2.txt. Lake stays in the text and out of the sum. -/
+/-- Captured ps text slake-one-ps-sample-2.txt. Lake rss 832436 is in the sum. -/
 def capturedOnePsSample2Text : String :=
   "   1649 14420 /run/current-system/systemd/lib/systemd/systemd --user --deserialize=32\n" ++
   "   1700  4096 (sd-pam)\n" ++
@@ -945,7 +1096,7 @@ def capturedOnePsSample2Text : String :=
   "1845992 90208 /nix/store/1z7byiviiga5zffpdfaxa87qikfs0r8l-slake-bootstrap --slake-check SimdTargetFeatures\n" ++
   "1845997  4444 /run/current-system/sw/bin/ps -o pid=,rss=,args=\n"
 
-/-- Captured ps text slake-one-ps-sample-3.txt. Lake stays in the text and out of the sum. -/
+/-- Captured ps text slake-one-ps-sample-3.txt. Lake rss 832436 is in the sum. -/
 def capturedOnePsSample3Text : String :=
   "   1649 14420 /run/current-system/systemd/lib/systemd/systemd --user --deserialize=32\n" ++
   "   1700  4096 (sd-pam)\n" ++
@@ -958,7 +1109,7 @@ def capturedOnePsSample3Text : String :=
   "1846000 91692 /nix/store/1z7byiviiga5zffpdfaxa87qikfs0r8l-slake-bootstrap --slake-check SlakeCheckLogCompare\n" ++
   "1846008  4432 /run/current-system/sw/bin/ps -o pid=,rss=,args=\n"
 
-/-- Captured ps text slake-one-ps-sample-4.txt. Lake stays in the text and out of the sum. -/
+/-- Captured ps text slake-one-ps-sample-4.txt. Lake rss 832436 is in the sum. -/
 def capturedOnePsSample4Text : String :=
   "   1649 14420 /run/current-system/systemd/lib/systemd/systemd --user --deserialize=32\n" ++
   "   1700  4096 (sd-pam)\n" ++
@@ -970,7 +1121,7 @@ def capturedOnePsSample4Text : String :=
   "1845984 16280 /home/nixbuilder/iso/src/systems/.lake/build/bin/slake-check-pool -- --module SimdTargetFeatures --module SlakeCheckLogCompare\n" ++
   "1846013  4420 /run/current-system/sw/bin/ps -o pid=,rss=,args=\n"
 
-/-- Captured ps text slake-one-ps-sample-5.txt. Lake stays in the text and out of the sum. -/
+/-- Captured ps text slake-one-ps-sample-5.txt. Lake rss 832436 is in the sum. -/
 def capturedOnePsSample5Text : String :=
   "   1649 14420 /run/current-system/systemd/lib/systemd/systemd --user --deserialize=32\n" ++
   "   1700  4096 (sd-pam)\n" ++
@@ -983,36 +1134,36 @@ def capturedOnePsSample5Text : String :=
   "1846015  4424 /run/current-system/sw/bin/ps -o pid=,rss=,args=\n"
 
 -- guard_capturedOnePsSample1_hand_sum
--- Hand sum of the counted RSS column on slake-one-ps-sample-1.txt: 16072.
--- Lake rss 832436 is in the text and is not part of that sum.
-#guard capturedPsResidentBytes capturedOnePsSample1Text == some (16072 * 1024) &&
-  capturedPsResidentBytes capturedOnePsSample1Text != some ((16072 + 832436) * 1024)
+-- Job rows: pool 16072 plus lake 832436. Systemd, bash, and ps stay out of this sum.
+#guard capturedPsResidentBytes capturedOnePsSample1Text == some ((16072 + 832436) * 1024) &&
+  capturedPsResidentBytes capturedOnePsSample1Text != some (16072 * 1024)
 
 -- guard_capturedOnePsSample2_hand_sum
--- Hand sum: 16140 + 90208. Lake rss 832436 stays out.
-#guard capturedPsResidentBytes capturedOnePsSample2Text == some ((16140 + 90208) * 1024) &&
-  capturedPsResidentBytes capturedOnePsSample2Text != some ((16140 + 90208 + 832436) * 1024)
+-- Hand sum: 16140 + 90208 + lake 832436.
+#guard capturedPsResidentBytes capturedOnePsSample2Text ==
+    some ((16140 + 90208 + 832436) * 1024) &&
+  capturedPsResidentBytes capturedOnePsSample2Text != some ((16140 + 90208) * 1024)
 
 -- guard_capturedOnePsSample3_hand_sum
--- Hand sum: 16220 + 91692. Lake rss 832436 stays out.
-#guard capturedPsResidentBytes capturedOnePsSample3Text == some ((16220 + 91692) * 1024) &&
-  capturedPsResidentBytes capturedOnePsSample3Text != some ((16220 + 91692 + 832436) * 1024)
+-- Hand sum: 16220 + 91692 + lake 832436.
+#guard capturedPsResidentBytes capturedOnePsSample3Text ==
+    some ((16220 + 91692 + 832436) * 1024) &&
+  capturedPsResidentBytes capturedOnePsSample3Text != some ((16220 + 91692) * 1024)
 
 -- guard_capturedOnePsSample4_hand_sum
--- Hand sum: 16280. Lake rss 832436 stays out.
-#guard capturedPsResidentBytes capturedOnePsSample4Text == some (16280 * 1024) &&
-  capturedPsResidentBytes capturedOnePsSample4Text != some ((16280 + 832436) * 1024)
+-- Hand sum: 16280 + lake 832436.
+#guard capturedPsResidentBytes capturedOnePsSample4Text == some ((16280 + 832436) * 1024) &&
+  capturedPsResidentBytes capturedOnePsSample4Text != some (16280 * 1024)
 
 -- guard_capturedOnePsSample5_hand_sum
--- Hand sum: 16284. Lake rss 832436 stays out.
-#guard capturedPsResidentBytes capturedOnePsSample5Text == some (16284 * 1024) &&
-  capturedPsResidentBytes capturedOnePsSample5Text != some ((16284 + 832436) * 1024)
+-- Hand sum: 16284 + lake 832436.
+#guard capturedPsResidentBytes capturedOnePsSample5Text == some ((16284 + 832436) * 1024) &&
+  capturedPsResidentBytes capturedOnePsSample5Text != some (16284 * 1024)
 
 /-- Captured ps text scratch/captured-ps-20000047.txt.
     Copied from builder file /tmp/slake-monitor-ps-one-live/20000047.txt.
     The guard reads this string. It does not read `/tmp`.
-    Counted rows: slake-check-pool rss 16208 and pinned Lean rss 501976.
-    Lake rss 832048 stays in the text and stays out of the sum. -/
+    Counted rows: slake-check-pool rss 16208, pinned Lean rss 501976, and lake rss 832048. -/
 def capturedPinnedLean20000047Text : String :=
   "   1649 14420 /run/current-system/systemd/lib/systemd/systemd --user --deserialize=32\n" ++
   "   1700  4096 (sd-pam)\n" ++
@@ -1030,10 +1181,10 @@ def capturedPinnedLean20000047Text : String :=
   "1859826  4440 /run/current-system/sw/bin/ps -o pid=,rss=,args=\n"
 
 -- guard_capturedPinnedLean20000047_full_hand_sum
--- Hand sum: (16208 + 501976) * 1024 = 530620416.
--- Included kibibytes are slake-check-pool 16208 and the pinned Lean worker 501976.
--- Lake rss 832048 is not included. This guard expects 530620416.
-#guard capturedPsResidentBytes capturedPinnedLean20000047Text == some 530620416
+-- Hand sum: (16208 + 501976 + 832048) * 1024 = 1382637568.
+-- Pool-plus-lean without lake is 530620416 and is not this sum.
+#guard capturedPsResidentBytes capturedPinnedLean20000047Text == some 1382637568 &&
+  capturedPsResidentBytes capturedPinnedLean20000047Text != some 530620416
 
 -- guard_capturedPinnedLean20000047_pool_only_is_not_full_sum
 -- Pool-only is slake-check-pool rss 16208 times 1024. That product is not 530620416.
@@ -1045,7 +1196,7 @@ def capturedPinnedLean20000047Text : String :=
     The guard reads this string. It does not read `/tmp`.
     Counted row: slake-check-pool rss 15916. No pinned Lean worker is in this text.
     Bash rss 4188 runs run-slake-check-pool-once.sh and stays out of the sum.
-    Lake rss 831140 stays in the text and stays out of the sum. -/
+    Lake rss 831140 is in the sum. -/
 def capturedBash40000029Text : String :=
   "   1649 14420 /run/current-system/systemd/lib/systemd/systemd --user --deserialize=32\n" ++
   "   1700  4096 (sd-pam)\n" ++
@@ -1062,14 +1213,11 @@ def capturedBash40000029Text : String :=
   "1864336  4448 /run/current-system/sw/bin/ps -o pid=,rss=,args=\n"
 
 -- guard_capturedBash40000029_hand_sum
--- Hand sum: 15916 * 1024 = 16297984.
--- The only counted row is slake-check-pool rss 15916. No pinned Lean worker is in this text.
--- Bash rss 4188 is in the text and is not part of that sum.
--- Lake rss 831140 is in the text and is not part of that sum.
--- This guard does not expect 20586496.
-#guard capturedPsResidentBytes capturedBash40000029Text == some 16297984 &&
+-- Hand sum: (15916 + 831140) * 1024 = 867385344.
+-- Bash rss 4188 stays out. Pool-only 16297984 is not this sum.
+#guard capturedPsResidentBytes capturedBash40000029Text == some 867385344 &&
   capturedPsResidentBytes capturedBash40000029Text != some ((15916 + 4188) * 1024) &&
-  capturedPsResidentBytes capturedBash40000029Text != some ((15916 + 831140) * 1024)
+  capturedPsResidentBytes capturedBash40000029Text != some 16297984
 
 /-- Short ps text with no pool binary and no pinned Lean worker.
     Lake, a bash script whose path contains `slake-check-pool`, and `lean --version`
@@ -1085,16 +1233,18 @@ def outsidePair1NoPoolPsText : String :=
 -- guard_capturedPsResidentBytes_outsidePair1_noPool_none
 #guard capturedPsResidentBytes outsidePair1NoPoolPsText == none
 
-/-- Short ps text with only the pool at rss 16468.
-    Lake, the bash script, and `lean --version` stay in the text and out of the sum. -/
+/-- Short ps text with the pool at rss 16468.
+    Lake rss 1200 is in the sum. Bash and `lean --version` stay out. -/
 def outsidePair5PoolPsText : String :=
   outsidePair1NoPoolPsText ++
   "200 16468 /home/nixbuilder/iso/src/systems/.lake/build/bin/slake-check-pool " ++
     "-- --module SimdTargetFeatures\n"
 
--- Hand sum: 16468 * 1024 = 16863232.
+-- Hand sum: (1200 + 16468) * 1024 = 18092032. Lake rss 1200 is included.
+-- Pool-only 16863232 is not this sum.
 -- guard_capturedPsResidentBytes_outsidePair5_pool_16468
-#guard capturedPsResidentBytes outsidePair5PoolPsText == some 16863232
+#guard capturedPsResidentBytes outsidePair5PoolPsText == some 18092032 &&
+  capturedPsResidentBytes outsidePair5PoolPsText != some 16863232
 
 /-- That pool plus a pinned Lean worker at rss 530860.
     The worker argument is a checkout path under `/home/nixbuilder/iso/` ending in `.lean`. -/
@@ -1103,9 +1253,361 @@ def outsidePair5PoolAndWorkerPsText : String :=
   "201 530860 /nix/store/4bfysnfphwfi7yy4rx1plkr51c2q0s92-lean4-4.35.0/bin/lean " ++
     "/home/nixbuilder/iso/src/systems/SystemsLean/SlakeCheckLogCompare.lean\n"
 
--- Hand sum: (16468 + 530860) * 1024 = 560463872.
+-- Hand sum: (1200 + 16468 + 530860) * 1024 = 561692672. Lake rss 1200 is included.
 -- guard_capturedPsResidentBytes_outsidePair5_pool_and_worker
-#guard capturedPsResidentBytes outsidePair5PoolAndWorkerPsText == some 560463872
+#guard capturedPsResidentBytes outsidePair5PoolAndWorkerPsText == some 561692672 &&
+  capturedPsResidentBytes outsidePair5PoolAndWorkerPsText != some 560463872
+
+/-- Scheduler ps text for later pair 1.
+    Pool pid 4105308 rss 16328. 16328 * 1024 = 16719872.
+    No pinned Lean worker is in this text.
+    Lake rss 1200 is in the sum. The bash script and `lean --version` stay out.
+    The independent monitor's raw columns are pid, ppid, rss, args.
+    This string is the pid, rss, args row `capturedPsResidentBytes` already reads. -/
+def outsidePair1PoolPsText : String :=
+  outsidePair1NoPoolPsText ++
+  "4105308 16328 /home/nixbuilder/iso/src/systems/.lake/build/bin/slake-check-pool " ++
+    "-- --module SimdTargetFeatures --module SlakeCheckLogCompare\n"
+
+/-- Independent snapshot ts=1793083784.861244836, the later snapshot inside the
+    1 second window that still contains pool pid 4105308.
+    Pool rss 16388. Pinned Lean worker pid 4105397 rss 49560 is only on this side.
+    Lake rss 1200 from the shared prefix is in the sum. The nearer snapshot has no pool line. -/
+def outsidePair1LaterMonitorPsText : String :=
+  outsidePair1NoPoolPsText ++
+  "4105308 16388 /home/nixbuilder/iso/src/systems/.lake/build/bin/slake-check-pool " ++
+    "-- --module SimdTargetFeatures --module SlakeCheckLogCompare\n" ++
+  "4105397 49560 /nix/store/4bfysnfphwfi7yy4rx1plkr51c2q0s92-lean4-4.35.0/bin/lean " ++
+    "/home/nixbuilder/iso/src/systems/SystemsLean/SimdTargetFeatures.lean\n"
+
+-- guard_capturedPsResidentBytes_outsidePair1_pool_16328
+-- Hand sum is lake 1200 plus pool 16328. The old pool-only reading is 16719872.
+#guard capturedPsResidentBytes outsidePair1PoolPsText == some ((1200 + 16328) * 1024) &&
+  capturedPsResidentBytes outsidePair1PoolPsText != some (16328 * 1024)
+
+-- guard_capturedPsResidentBytes_outsidePair1_later_full_sum
+-- Lake 1200 plus pool 16388 plus the one-sided worker 49560.
+#guard capturedPsResidentBytes outsidePair1LaterMonitorPsText ==
+  some ((1200 + 16388 + 49560) * 1024)
+
+/-- One counted process: the pool binary, a `slake-bootstrap` worker, or a pinned Lean worker. -/
+structure CountedPsProc where
+  pid : Nat
+  kib : Nat
+  deriving Repr, BEq, DecidableEq
+
+def countedPidSeen (pid : Nat) : List CountedPsProc → Bool
+  | [] => false
+  | found :: rest => found.pid == pid || countedPidSeen pid rest
+
+/-- `/bin/lake` is counted. `doc/memory-compare-rule.md` does not exclude it.
+    `lean --version` and bash stay out.
+    A counted line that is not pid, rss, args makes the whole text unreadable.
+    A duplicate pid is kept once. -/
+def addCountedProc (acc : Option (List CountedPsProc)) (line : String) :
+    Option (List CountedPsProc) :=
+  match acc with
+  | none => none
+  | some procs =>
+    let trimmed := line.trimAscii.copy
+    if trimmed == "" || psLineIsLeanVersion trimmed || psExecutableIsBash trimmed then
+      some procs
+    else if psLineIsScheduler trimmed || psLineIsBootstrap trimmed ||
+        psLineIsPinnedLeanWorker trimmed || psLineIsLake trimmed then
+      match psColumns trimmed with
+      | pidText :: rssText :: _ =>
+        match pidText.toNat?, rssText.toNat? with
+        | some pid, some kib =>
+          if countedPidSeen pid procs then
+            some procs
+          else
+            some ({ pid := pid, kib := kib } :: procs)
+        | _, _ => none
+      | _ => none
+    else
+      some procs
+
+def countedProcsOf (text : String) : Option (List CountedPsProc) :=
+  (text.splitOn "\n").foldl addCountedProc (some [])
+
+def kibOfCountedPid (pid : Nat) : List CountedPsProc → Option Nat
+  | [] => none
+  | proc :: rest =>
+    if proc.pid == pid then some proc.kib else kibOfCountedPid pid rest
+
+def natSeen (pid : Nat) : List Nat → Bool
+  | [] => false
+  | head :: rest => head == pid || natSeen pid rest
+
+def countedPidList : List CountedPsProc → List Nat
+  | [] => []
+  | proc :: rest => proc.pid :: countedPidList rest
+
+/-- Pids counted on either text. A pid present on only one side is kept.
+    It is not omitted, and it is not inserted as 0 kibibytes on the other side. -/
+def sharedCountedPids : List CountedPsProc → List CountedPsProc → List Nat
+  | [], other => countedPidList other
+  | proc :: rest, other =>
+    let tail := sharedCountedPids rest other
+    if natSeen proc.pid tail then tail else proc.pid :: tail
+
+/-- Each side is the full `capturedPsResidentBytes` sum: every counted pool,
+    `slake-bootstrap`, and pinned Lean pid in that text.
+    A one-sided pid stays in that side's sum. It is not dropped to the intersection,
+    and it is not inserted as 0 on the other side.
+    A text with no pool binary returns `none`. `/bin/lake` is added on each side that has it.
+    A `lean --version` process is not added. Bash whose path contains `slake-check-pool` is not added.
+    The preserved zfulltree files have more than these rows. `scoredFullTreePair` sums every real line. -/
+def pairedSameProcessBytes (schedulerPs monitorPs : String) : Option (Nat × Nat) :=
+  match capturedPsResidentBytes schedulerPs, capturedPsResidentBytes monitorPs with
+  | some schedulerBytes, some monitorBytes => some (schedulerBytes, monitorBytes)
+  | _, _ => none
+
+-- guard_sharedCountedPids_keeps_one_sided_worker_201
+-- Pid 201 is the pinned Lean worker on the monitor text only.
+-- The intersection would drop it. The union keeps it.
+#guard
+  match countedProcsOf outsidePair5PoolPsText, countedProcsOf outsidePair5PoolAndWorkerPsText with
+  | some left, some right =>
+    natSeen 201 (sharedCountedPids left right) &&
+      natSeen 200 (sharedCountedPids left right)
+  | _, _ => false
+
+-- guard_pairedSameProcessBytes_outsidePair5_full_sums_outside
+-- Lake rss 1200 is on both sides. The one-sided worker stays in the monitor sum.
+-- Intersection on pid 200 alone would hide that worker. ToleranceNumber stays 1.
+-- Larger reading is (1200 + 16468 + 530860) * 1024 = 561692672.
+#guard
+  (match pairedSameProcessBytes outsidePair1PoolPsText outsidePair1LaterMonitorPsText with
+    | some (schedBytes, monBytes) => withinLockedTolerance schedBytes monBytes == false
+    | none => false) &&
+  (match pairedSameProcessBytes outsidePair5PoolPsText outsidePair5PoolAndWorkerPsText with
+    | some (schedBytes, monBytes) =>
+      schedBytes == 18092032 &&
+        monBytes == 561692672 &&
+        withinLockedTolerance schedBytes monBytes == false &&
+        disagreementResident schedBytes monBytes == 561692672 &&
+        schedBytes != 16863232 &&
+        monBytes != 560463872
+    | none => false) &&
+  pairedSameProcessBytes outsidePair1PoolPsText outsidePair1NoPoolPsText == none
+
+-- guard_one_sided_pid_changes_only_that_side
+-- Pid 201 rss 530860 is only on the worker text. The pool side has no pid 201.
+-- Pool side stays (1200 + 16468) * 1024 = 18092032.
+-- Worker side is that sum plus 530860 * 1024, which is 561692672.
+-- 561692672 - 18092032 = 543600640 = 530860 * 1024.
+-- disagreementResident sees those two full sums. ToleranceNumber stays 1.
+-- The shared-pid intersection would hide pid 201. These totals are not 16863232 or 560463872.
+#guard
+  match capturedPsResidentBytes outsidePair5PoolPsText,
+      capturedPsResidentBytes outsidePair5PoolAndWorkerPsText with
+  | some left, some right =>
+    left == 18092032 &&
+      right == 561692672 &&
+      right - left == 530860 * 1024 &&
+      right - left == 543600640 &&
+      withinLockedTolerance left right == false &&
+      disagreementResident left right == 561692672 &&
+      disagreementResident left right == right &&
+      memoryCompareToleranceNumber == 1 &&
+      match pairedSameProcessBytes outsidePair5PoolPsText outsidePair5PoolAndWorkerPsText with
+      | some (schedBytes, monBytes) =>
+        schedBytes == left &&
+          monBytes == right &&
+          schedBytes == 18092032 &&
+          monBytes == 561692672 &&
+          disagreementResident schedBytes monBytes == 561692672
+      | none => false
+  | _, _ => false
+
+-- guard_capturedPsResidentBytes_duplicate_pid_not_twice
+-- Repeating the worker text does not add pid 201 twice.
+-- The sum stays 561692672. The pool side stays 18092032.
+-- Those are the full sums, not 16863232 and not 560463872.
+#guard
+  capturedPsResidentBytes outsidePair5PoolAndWorkerPsText == some 561692672 &&
+    capturedPsResidentBytes
+        (outsidePair5PoolAndWorkerPsText ++ outsidePair5PoolAndWorkerPsText) ==
+      some 561692672 &&
+    capturedPsResidentBytes outsidePair5PoolPsText == some 18092032 &&
+    capturedPsResidentBytes (outsidePair5PoolPsText ++ outsidePair5PoolPsText) ==
+      some 18092032 &&
+    capturedPsResidentBytes outsidePair5PoolAndWorkerPsText != some (561692672 * 2)
+
+/-- `stat -c %Y` of zfulltree000017.txt. Whole seconds. Not a made-up gap. -/
+def fullTree017EpochSec : Nat := 1793191296
+
+/-- `stat -c %Y` of zfulltree000016.txt. One second earlier. The window is 1. -/
+def fullTree016EpochSec : Nat := 1793191295
+
+/-- Shared rows of zfulltree000017.txt and zfulltree000016.txt.
+    Eleven process lines are in each file. These eight match, including lake pid 927257. -/
+def fullTreeSharedPsPrefix : String :=
+  "   1649 14456 /run/current-system/systemd/lib/systemd/systemd --user --deserialize=32\n" ++
+  "   1700  4096 (sd-pam)\n" ++
+  " 213639  4344 /nix/store/yly12cgk8diwbba5pjdr7g0b3hk8db0c-dbus-broker-37/bin/dbus-broker-launch --scope user\n" ++
+  " 213641  2904 dbus-broker --log 11 --controller 10 --machine-id " ++
+    "f091e79e00eb4cae97244bc8500a4464 --max-bytes 100000000000000 --max-fds 25000000000000 " ++
+    "--max-matches 5000000000\n" ++
+  " 927235  6740 sshd-session: nixbuilder@notty\n" ++
+  " 927236  4172 bash -s\n" ++
+  " 927248  4160 /run/current-system/sw/bin/bash -c  i=1 while true; do   " ++
+    "n=$(printf \"%06d\" \"$i\")   /run/current-system/sw/bin/ps -o pid=,rss=,args= > " ++
+    "/tmp/slake-monitor-ps-one-live/zfulltree${n}.txt.tmp   " ++
+    "mv /tmp/slake-monitor-ps-one-live/zfulltree${n}.txt.tmp " ++
+    "/tmp/slake-monitor-ps-one-live/zfulltree${n}.txt   i=$((i+1))   " ++
+    "/run/current-system/sw/bin/sleep 0.2 done \n" ++
+  "927257 830928 /nix/store/4bfysnfphwfi7yy4rx1plkr51c2q0s92-lean4-4.35.0/bin/lake " ++
+    "--dir /home/nixbuilder/iso/src/systems exe slake-check-pool -- " ++
+    "--module SimdTargetFeatures --module SlakeCheckLogCompare\n" ++
+  "927284 16736 /home/nixbuilder/iso/src/systems/.lake/build/bin/slake-check-pool " ++
+    "-- --module SimdTargetFeatures --module SlakeCheckLogCompare\n"
+
+/-- Every pid line from zfulltree000017.txt. Lean rss 529572. One-sided ps pid 927374. -/
+def fullTree017CountedPsText : String :=
+  fullTreeSharedPsPrefix ++
+  "927301 529572 " ++ pinnedLeanBin ++ " " ++
+    "/home/nixbuilder/iso/src/systems/SystemsLean/SlakeCheckLogCompare.lean\n" ++
+  " 927374  4436 /run/current-system/sw/bin/ps -o pid=,rss=,args=\n"
+
+/-- Every pid line from zfulltree000016.txt. Lean rss 523668. One-sided ps pid 927370. -/
+def fullTree016CountedPsText : String :=
+  fullTreeSharedPsPrefix ++
+  "927301 523668 " ++ pinnedLeanBin ++ " " ++
+    "/home/nixbuilder/iso/src/systems/SystemsLean/SlakeCheckLogCompare.lean\n" ++
+  " 927370  4424 /run/current-system/sw/bin/ps -o pid=,rss=,args=\n"
+
+/-- Kibibytes of every pid, rss, args line. A one-sided pid stays in that side.
+    A duplicate pid is kept once. A line that is not pid and rss makes the text unreadable.
+    Blank lines are skipped. This is the preserved-file sum, not the job-tree filter. -/
+def foldEveryRealPsLine (acc : Option (Nat × List Nat)) (line : String) :
+    Option (Nat × List Nat) :=
+  match acc with
+  | none => none
+  | some (kibSum, seen) =>
+    let trimmed := line.trimAscii.copy
+    if trimmed == "" then
+      some (kibSum, seen)
+    else
+      match psColumns trimmed with
+      | pidText :: rssText :: _ =>
+        match pidText.toNat?, rssText.toNat? with
+        | some pid, some kib =>
+          if psPidSeen pid seen then
+            some (kibSum, seen)
+          else
+            some (kibSum + kib, pid :: seen)
+        | _, _ => none
+      | _ => none
+
+/-- Resident bytes of every real ps line, times 1024. -/
+def everyRealPsLineBytes (text : String) : Option Nat :=
+  match (text.splitOn "\n").foldl foldEveryRealPsLine (some (0, [])) with
+  | none => none
+  | some (kibSum, _) => some (kibSum * 1024)
+
+-- guard_pool_plus_lean_only_559419392_553373696_outside
+-- (16736 + 529572) * 1024 = 559419392. (16736 + 523668) * 1024 = 553373696.
+-- 604569600 <= 559419392 is false. Tolerance stays 1. These are not the file sums.
+#guard
+  (16736 + 529572) * 1024 == 559419392 &&
+    (16736 + 523668) * 1024 == 553373696 &&
+    (529572 - 523668) == 5904 &&
+    (529572 - 523668) * 1024 == 6045696 &&
+    withinLockedTolerance 559419392 553373696 == false &&
+    absDiffBytes 559419392 553373696 * 100 == 604569600 &&
+    Nat.max 559419392 553373696 * memoryCompareToleranceNumber == 559419392
+
+-- guard_pairedSameProcessBytes_fulltree_job_tree_includes_lake
+-- The job-tree reader counts pool, lake, and pinned Lean. It does not count systemd.
+-- Those three are inside. They are not the eleven-line file sum.
+#guard
+  (16736 + 529572 + 830928) * 1024 == 1410289664 &&
+    (16736 + 523668 + 830928) * 1024 == 1404243968 &&
+    830928 * 1024 == 850870272 &&
+    match pairedSameProcessBytes fullTree017CountedPsText fullTree016CountedPsText with
+    | some (schedBytes, monBytes) =>
+      schedBytes == 1410289664 &&
+        monBytes == 1404243968 &&
+        schedBytes != 559419392 &&
+        monBytes != 553373696 &&
+        withinLockedTolerance schedBytes monBytes == true &&
+        absDiffBytes schedBytes monBytes == 6045696
+    | none => false
+
+/-- A scored pair exists only inside the 1 second timestamp window.
+    Missing timestamps are not a pair. A wider gap is not a pair.
+    The byte sums are every real pid line. Tolerance stays 1. -/
+def scoredFullTreePair (schedTs monTs : Option Nat) (schedPs monPs : String) :
+    Option (Nat × Nat) :=
+  match schedTs, monTs, everyRealPsLineBytes schedPs, everyRealPsLineBytes monPs with
+  | some a, some b, some left, some right =>
+    if decide (natAbsDiff a b ≤ pairTimestampWindowSec) then
+      some (left, right)
+    else
+      none
+  | _, _, _, _ => none
+
+-- guard_scoredFullTreePair_missing_timestamps_not_scored
+-- A call with no timestamps is not a pair. These two files are not that call.
+-- Their epochs are fullTree017EpochSec and fullTree016EpochSec.
+#guard scoredFullTreePair none none fullTree017CountedPsText fullTree016CountedPsText == none
+
+-- guard_scoredFullTreePair_two_second_gap_not_scored
+-- The window is 1 second. 1793191298 is not the sample epoch of zfulltree000016.txt.
+-- That epoch is 1793191295. Pool-plus-lean-only stays outside.
+#guard
+  withinLockedTolerance 559419392 553373696 == false &&
+    scoredFullTreePair (some fullTree017EpochSec) (some 1793191298)
+      fullTree017CountedPsText fullTree016CountedPsText == none
+
+-- guard_scoredFullTreePair_file_epochs_inside
+-- Sample epochs 1793191296 and 1793191295. The difference is 1.
+-- 1 <= pairTimestampWindowSec, so the rule scores the pair.
+-- Eleven lines on each side. Left bytes 1456685056. Right bytes 1450627072.
+-- 605798400 <= 1456685056 is true. Pool-plus-lean-only stays outside.
+#guard
+  natAbsDiff fullTree017EpochSec fullTree016EpochSec == 1 &&
+    everyRealPsLineBytes fullTree017CountedPsText == some 1456685056 &&
+    everyRealPsLineBytes fullTree016CountedPsText == some 1450627072 &&
+    match scoredFullTreePair (some fullTree017EpochSec) (some fullTree016EpochSec)
+        fullTree017CountedPsText fullTree016CountedPsText with
+    | some (left, right) =>
+      left == 1456685056 &&
+        right == 1450627072 &&
+        left != 559419392 &&
+        right != 553373696 &&
+        left != 1410289664 &&
+        right != 1404243968 &&
+        withinLockedTolerance left right == true &&
+        absDiffBytes left right == 6057984 &&
+        absDiffBytes left right * 100 == 605798400 &&
+        Nat.max left right * memoryCompareToleranceNumber == 1456685056 &&
+        withinLockedTolerance 559419392 553373696 == false
+    | none => false
+
+-- guard_scoredFullTreePair_same_snapshot_inside
+-- One file against itself. This is not zfulltree000016 versus zfulltree000017.
+-- It does not move 559419392 versus 553373696 inside.
+#guard
+  withinLockedTolerance 559419392 553373696 == false &&
+    match scoredFullTreePair (some fullTree017EpochSec) (some fullTree017EpochSec)
+        fullTree017CountedPsText fullTree017CountedPsText with
+    | some (left, right) =>
+      left == 1456685056 &&
+        right == 1456685056 &&
+        withinLockedTolerance left right == true &&
+        left != 559419392 &&
+        left != 553373696
+    | none => false
+
+-- Previous official same-timestamp pairs from one SAMPLE clock each.
+-- 1049374720 - 1043390464 = 5984256. 598425600 <= 1049374720.
+-- 565981184 - 561565696 = 4415488. 441548800 <= 565981184.
+-- guard_withinLockedTolerance_official_same_timestamp_pairs_inside
+#guard withinLockedTolerance 1049374720 1043390464 == true &&
+  withinLockedTolerance 565981184 561565696 == true
 
 /-- Checkout prefix for a builder citation. A path that does not start here is rejected. -/
 def builderCheckoutPrefix : String :=
@@ -1209,4 +1711,7 @@ def main (args : List String) : IO UInt32 := do
 end SlakeCheckLogCompare
 
 -- Compare and `--checks` stay `SlakeCheckLogCompare.main`.
--- A root `main` here clashes with Lake roots that import this module.
+-- A file-root `main` here clashes with Lake roots that import this module:
+-- CheckPoolMain.lean:2222, CheckRecordMain.lean:147, and MemoryPairMain.lean:145
+-- each report `main` has already been declared. `lean --run` needs a file-root
+-- `main` in the script copy, not in this imported module.

@@ -34,6 +34,8 @@ the work description; "human-directed product residual" without a Name.
 
 ## Open (living queue. Drives implement.)
 
+foldAdmitWorker admits two workers when the queue length is 2 and the ceiling is not holding, refuses a third worker, admits 32 from a queue of 33 against cap 32, and admits none of the short queue while the ceiling is holding.
+
 ### Lean 4.35 leftover
 
 **Status:** open
@@ -103,13 +105,39 @@ from one monitor ps text per sample and did not spawn a second ps. An
 independent parse of each of those same texts is inside diff*100 <= larger*1.
 The paired sample is
 `/tmp/grok-goal-4a11e76a3421/implementer/memory-run-one-ps-live.log`.
+Later paired-run pair 1 raw comparison stays outside: 16719872 versus 0, because
+1671987200 <= 16719872 is false. Later paired-run pair 5 raw comparison stays outside:
+16863232 versus 560463872, because 54360064000 <= 560463872 is false.
+Those raw pairs were not moved inside by widening tolerance.
+The 2026-10-27 paired rerun compared the same process set on both sides.
+Pair count is 8. The sum of the absolute differences is 3604480 bytes.
+The mean absolute difference is 3604480/8, which is 450560 bytes.
+The maximum absolute difference is 2031616 bytes.
+Every new pair is inside the 1 percent tolerance.
+Historical pair 2 and historical pair 4 stay outside and were not fixed. Tolerance stays 1.
 
 **Done when:** a live scheduler sample publishes resident_bytes from one
 monitor ps text, and an independent parse of that same text is inside
 diff*100 <= larger*1. Historical pair 2 and pair 4 stay outside in the old
 log. Tolerance stays 1. pairByNearestTimestamp stays.
 
-**Next:** This heading is met. The hollow replacements stay unapplied, because this goal does not rewrite hollow theorems. `### Lean 4.35 leftover` stays open on purpose.
+**Next:** This heading is met. The hollow replacements stay unapplied, because this goal does not rewrite hollow theorems. `### Lean 4.35 leftover` stays open on purpose. CheckPoolMain.lean lines 393, 402, and 409 are constant-only hollow guards, and those replacements stay unapplied.
+
+### Package accept stays false
+
+**Status:** open
+
+**Goal:** Package accept stays false. The pool log on the builder is `/tmp/slake-check-pool32-2026-10-25.log`. Its one line is `DONE WALK_DONE names=2801 pass=2777 fail=24 versus_names=2801 versus_pass=2754 versus_fail=47 pass_delta=23 fail_delta=-23 arithmetic=2777+24=2801 arithmetic_ok=true`. 2777+24=2801. Do not start that walk. Do not restart the 2801-name pool.
+
+**Done when:** not this turn.
+
+### Historical memory pairs stay outside
+
+**Status:** open
+
+**Goal:** Historical pair 2 stays 59760640 versus 56455168. Historical pair 4 stays 16318464 versus 208367616. They stay outside. Do not mark them fixed. Tolerance stays 1. The original ps texts are absent and the memory run fails.
+
+**Done when:** not this turn. Those pairs are not rewritten.
 
 ## Deferred (held with reason)
 
